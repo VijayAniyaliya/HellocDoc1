@@ -1,0 +1,74 @@
+body{
+    /* min-height: 100vh; */
+}
+
+.container-fluid{
+    /* background: #fafafa; */
+}
+
+.main-content{
+    border-radius: 1%;
+}
+
+.back-btn{
+    width: 80px;
+}
+.submit-btn{
+    width: 80px;
+}
+.cancel-btn{
+    width: 80px;
+}
+
+
+
+.dark-mode {
+    background-color: black;
+    color: white;
+  }
+
+  /*.footer-content{*/
+    /* position: absolute; */
+    /* bottom: 0px; */
+  /*}*/
+
+  .iti{
+    display: inline-block;
+    width: 100%;
+  }
+
+  .iti__country-list {
+  max-width: 360px;
+  /* background: transparent; */
+}
+
+.form-floating > .form-control{
+    background: transparent;
+}
+
+#phone{
+    /* background: transparent; */
+}
+
+.form-control {
+    /* border-width: 2px; */
+    /* border-color: gray; */
+  } 
+  .form-control:focus {
+    border-color: #01bce9;
+    box-shadow: none;
+  }
+  label {
+    color: gray;
+  }
+  .form-floating > .form-control:focus ~ label {
+    color: #01bce9;
+    
+  }
+
+  .custom-file-button input[type=file]::-webkit-file-upload-button {
+    display: none;
+  }
+  .input-group input[type=file]::-webkit-file-upload-button {
+    display: none;
+  }

@@ -1,0 +1,181 @@
+﻿@{
+    ViewData["Title"] = "Concierge_request_screen";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+
+<div class="body-content container">
+
+
+    <div class="mb-2 mr-1 d-flex justify-content-end">
+        <a asp-area="" asp-controller="Patient" asp-action="Submit_request_screen" class="btn back-btn border border-info text-info p-2">
+            &lt; Back
+        </a>
+    </div>
+
+    <div class="main-content  px-4 py-3 shadow-lg">
+
+        <div class="concierge-info">
+            <div class="h5 mb-4">Concierge Information</div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                               placeholder="your first name" />
+                        <label for="floatingInput" class="">Your First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                               placeholder="your last name" />
+                        <label for="floatingInput" class="">Your Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" class="form-control pt-3 pb-3" id="phone">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                               placeholder="abc@gmail.com" />
+                        <label for="floatingInput" class="">Your Email</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                               placeholder="hotel/property name" />
+                        <label for="floatingInput" class="">Hotel/Property Name</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="location-info">
+            <div class="h5 mb-4 mt-4">Concierge Location</div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                               placeholder="street address" />
+                        <label for="floatingInput" class="">Street</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="city" />
+                        <label for="floatingInput" class="">City</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="state" />
+                        <label for="floatingInput" class="">State</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="zip codes" />
+                        <label for="floatingInput" class="">Zip Code</label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="patient-info">
+            <div class="h5 mb-4 mt-4">Patient Information</div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="enter patient information"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Enter Brief Details Of Symptoms
+                            (Optional)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                        <label for="floatingInput" class="">First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                        <label for="floatingInput" class="">Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                        <label for="floatingInput" class="">Date of Birth</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="contact-info">
+            <div class="h5 mb-4 mt-4">Patient Contact Information</div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                               placeholder="abc@gmail.com" />
+                        <label for="floatingInput" class="">Email</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" class="form-control pt-3 pb-3" id="phone1">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="patient-location-info">
+            <div class="h5 mb-4 mt-4">Patient Location</div>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="room" />
+                    <label for="floatingInput" class="">Room # / Suite (Optional)</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
+            <button type="button" class="btn submit-btn border border-info bg-info text-white p-2">
+                Submit
+            </button>
+            <button type="button" class="btn cancel-btn border border-info text-info p-2">
+                Cancel
+            </button>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+
+

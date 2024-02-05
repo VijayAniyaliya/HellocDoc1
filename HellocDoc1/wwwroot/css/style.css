@@ -1,0 +1,283 @@
+body{
+    display: flex;
+    min-height: 100vh;
+    /* justify-content: center; */
+    /* align-items: center; */
+
+}
+
+.container-fluid{
+}
+
+
+/*.subdiv {
+    background-image: linear-gradient( 0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9) ), url(../Images/11116016_415.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    / opacity: 0.2;
+    / background-blend-mode: lighten;
+}*/
+
+.back-img{
+    z-index: -1;
+    position: absolute;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    opacity: 0.3;
+    filter: blur(3px);
+}
+
+
+.hellodoc-img{
+    
+    height: 120px;
+}
+.hellodoc-image{
+    position: absolute;
+    top: 15px;
+    height: 120px;
+}
+
+@media only screen and (max-width:426px){
+    .hellodoc-image{
+        display: none;
+    }
+}
+
+
+.content{
+    margin-top: 100px;
+}
+
+@media only screen and (max-width:426px){
+    .hellodoc-img{
+        display: none;
+    }
+    .content{
+        margin-top: 235px;
+    }
+}
+
+.back-btn{
+    padding-right: 250px;
+}
+
+.back-btn-txt{
+    font-size: 20px;
+}
+
+@media only screen and (max-width:520px) {
+    .type-txt{
+        position:relative;
+        right:40px;
+    }
+}
+
+.inputs{
+    width: 350px;
+    margin: auto;
+}
+
+@media only screen and (max-width:900px){
+    .inputs{
+        width: 300px;
+    }
+}
+
+.input-icon{
+    left: 42%;
+    position: relative;
+    bottom: 42px;
+}
+
+.label{
+    color: black;
+}
+
+
+.btn{
+    color: white;
+}
+
+
+.moon-icon{
+    position: absolute;
+    top: 0px;
+    right: 8px;
+}
+
+.btn-1{
+    width: 40%;
+}
+.btn-2{
+    width: 40%;
+    background-color: rgb(8, 8, 129);
+}
+
+@media only screen and (max-width:995px){
+    .btn-1{
+        width: 50%;
+    }
+    .btn-2{
+        width: 50%;
+    }
+}
+@media only screen and (max-width:771px){
+    .btn-1{
+        width: 60%;
+    }
+    .btn-2{
+        width: 60%;
+    }
+}
+@media only screen and (max-width:571px){
+    .btn-1{
+        width: 80%;
+    }
+    .btn-2{
+        width: 80%;
+    }
+}
+
+.back-button{
+    border-radius: 8px;
+    position: absolute;
+    right: 25%;
+}
+
+.submit-request-btn{
+    width: 18%;
+    position: relative;
+    height: 7vh;
+}
+
+@media only screen and (max-width:1450px){
+    .submit-request-btn{
+        width: 20%;
+    }
+}
+@media only screen and (max-width:1135px){
+    .submit-request-btn{
+        width: 25%;
+    }
+}
+@media only screen and (max-width:950px){
+    .submit-request-btn{
+        width: 30%;
+    }
+}
+@media only screen and (max-width:772px){
+    .submit-request-btn{
+        width: 35%;
+    }
+}
+@media only screen and (max-width:600px){
+    .submit-request-btn{
+        width: 40%;
+    }
+}
+@media only screen and (max-width:540px){
+    .submit-request-btn{
+        width: 200px;
+    }
+}
+
+.button-1{
+    background-color: rgba(170,178,207,0.280);
+    border: 1px solid rgba(193,202,255);
+    border-radius: 8px;
+}
+.button-2{
+    background-color: rgba(166,216,235,0.418);
+    border: 1px solid rgb(175,235,244);
+    border-radius: 8px;
+}
+.button-3{
+    background-color: rgba(163,203,163,0.300);
+    border: 1px solid rgb(221,250,198);
+    border-radius: 8px;
+}
+.button-4{
+    background-color: rgba(207,190,214,0.363);
+    border: 1px solid rgb(233,209,240);
+    border-radius: 8px;
+}
+
+.btn-txt{
+    position: absolute;
+    left: 15px;
+    top: 6px;
+}
+
+.button-1-txt{
+    color: rgb(118, 118, 238);
+    font-size: 20px;
+    font-weight: bold;
+}
+.button-2-txt{
+    color: rgb(42, 192, 234);
+    font-size: 20px;
+    font-weight: bold;
+}
+.button-3-txt{
+    color: rgb(65, 153, 59);
+    font-size: 20px;
+    font-weight: bold;
+}
+.button-4-txt{
+    color: rgb(198, 70, 190);
+    font-size: 20px;
+    font-weight: bold;
+}
+
+@media only screen and (max-width:710px){
+    .button-1-txt{
+        font-size: 15px;
+    }
+    .button-2-txt{
+        font-size: 15px;
+    }
+    .button-3-txt{
+        font-size: 15px;
+    }
+    .button-4-txt{
+        font-size: 15px;
+    }
+}
+
+
+#footer-content {
+    position: absolute;
+    bottom: 0;
+    height: 4%;
+}
+
+#footer-info {
+    position: absolute;
+    bottom: 0;
+    height: 4%;
+}
+
+.dark-mode {
+    background-color: black;
+    color: white;
+}
+
+  .form-control {
+    /* border-width: 2px; */
+    /* border-color: gray; */
+  }
+  .form-control:focus {
+    border-color: #01bce9;
+    box-shadow: none;
+  }
+  .form-floating > .form-control:focus ~ label {
+    color: #01bce9;
+    
+  }
+  .form-floating > label {
+    color: gray;
+    
+  }
