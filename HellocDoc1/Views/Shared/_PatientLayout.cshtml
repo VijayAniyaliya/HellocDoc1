@@ -58,7 +58,7 @@
                         </p>
                     </div>
                     <div class="mb-4 mt-4 d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary px-4" data-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-primary px-4" id="modelOkBtn" data-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>
@@ -86,6 +86,9 @@
     <script>
         $(document).ready(function () {
             $('#reloadAlert').modal('show');
+        });
+        $('#modelOkBtn').click(function () {
+            $('#reloadAlert').modal('hide');
         });
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
