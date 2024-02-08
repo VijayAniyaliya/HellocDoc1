@@ -56,11 +56,11 @@ namespace HelloDoc1.Services
 
         public IdentityResult Login(LoginViewModel model)
         {
-            AspNetUser? user = _context.AspNetUser.Where(u => u.Email == model.Email).FirstOrDefault();
+            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefault();
 
             if (user == null)
                 return IdentityResult.Failed(new IdentityError() { Description = "Email is Not Found" });
-            if (user.PasswordHash == null)
+            if (user.PasswordHash==  null)
                 return IdentityResult.Failed(new IdentityError() { Description = "There is no Password with this Account" });
             if (user.PasswordHash == model.Password)
                 return IdentityResult.Success;

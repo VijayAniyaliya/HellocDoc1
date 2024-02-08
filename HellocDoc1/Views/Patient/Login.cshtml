@@ -47,7 +47,7 @@
                 <div class="h3 mt-3">Login to your account</div>
 
                 <form asp-action="Login" method="post">
-@*                  <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
+                   <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
 
                 <div class="form-floating inputs mb-1 mt-4">
                     <input type="email" class="form-control patient-input" id="floatingInput"
@@ -62,7 +62,7 @@
                     </svg>
                 </div>
                     <span asp-validation-for="Email" class="text-danger"></span>
-                <div class="form-floating inputs mb-1">
+                <div class="form-floating inputs mb-0">
                     <input type="password" class="form-control patient-input" id="floatingPassword"
                                placeholder="Password" asp-for="Password">
                     <label for="floatingPassword" class="label">Password</label>
@@ -79,7 +79,7 @@
                 </form>
 
 
-                <div class="mt-5">
+                <div class="mt-4">
                     <a asp-area="" asp-controller="Patient" asp-action="Reset_password" class="nav-link text-decoration-none h5">
                         <span class="h5 text-info">
                             Forget

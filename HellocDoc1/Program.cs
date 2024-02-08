@@ -1,10 +1,14 @@
 using HellocDoc1.DataContext;
+using HellocDoc1.Services;
+using HelloDoc1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddTransient<IHashing, Hashing>();
+builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +28,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Patient}/{action=Login}/{id?}");
 
 app.Run();
