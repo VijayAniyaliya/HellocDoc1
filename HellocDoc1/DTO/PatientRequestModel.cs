@@ -2,40 +2,29 @@
 {
     public class PatientRequestModel
     {
-        //[Required]
-        //public string FirstName { get; set; }
+        public string Symptoms { get; set; }
+
+        public string FirstName { get; set; }
         
-        //public string LastName { get; set; }
+        public string LastName { get; set; }
 
+        public DateTime DOB { get; set; }
         
-        //public DateTime  { get; set; }
-        
-        //public string { get; set; }
+        public string Email { get; set; }
 
-        //[Required]
-        //public string { get; set; }
-        //[Required]
-        //public string P { get; set; }
+        public string PhoneNumber { get; set; }
 
-        //[Required]
-        //public string Email { get; set; }
-        //[Required]
-        //public string Password { get; set; }
+        public string Street { get; set; }
 
-        //[Required]
-        //public string Email { get; set; }
-        //[Required]
-        //public string Password { get; set; }
+        public string City { get; set; }
 
-        //[Required]
-        //public string Email { get; set; }
-        //[Required]
-        //public string Password { get; set; }
+        public string State { get; set; }
 
-        //[Required]
-        //public string Email { get; set; }
-        //[Required]
-        //public string Password { get; set; }
+        public string ZipCode { get; set; }
+
+        public int Room { get; set; }
+
+        public string Doc { get; set; }
 
 
     }

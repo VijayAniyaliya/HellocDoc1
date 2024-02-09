@@ -16,14 +16,16 @@
     </div>
 
     <div class="main-content px-4 py-3 shadow-lg">
+        <form asp-action="Patient_request" method="post">
 
+        
         <div class="patient-info">
             <div class="h5 mb-4">Patient-information</div>
 
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" placeholder="enter patient information"
+                        <textarea asp-for="Symptoms" class="form-control" placeholder="enter patient information"
                                   id="floatingTextarea2" style="height: 100px"></textarea>
                         <label for="floatingTextarea2" class="">
                             Enter Brief Details Of Symptoms
@@ -35,19 +37,19 @@
                 <!-- <div class="row"> -->
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                        <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" />
                         <label for="floatingInput" class="">First Name</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                        <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="last name" />
                         <label for="floatingInput" class="">Last Name</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <input type="date" asp-for="DOB" class="form-control" id="floatingInput" placeholder="last name" />
                         <label for="floatingInput" class="">Date of Birth</label>
                     </div>
                 </div>
@@ -63,14 +65,14 @@
                 <!-- <div class="row"> -->
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput"
+                            <input type="email" asp-for="Email" class="form-control" id="floatingInput"
                                placeholder="abc@gmail.com" />
                         <label for="floatingInput" class="">Email</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
-                        <input type="tel" class="form-control pt-3 pb-3" id="phone">
+                            <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone">
                     </div>
                 </div>
                 <!-- </div> -->
@@ -85,32 +87,32 @@
                 <!-- <div class="row"> -->
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput"
+                            <input type="text" asp-for="Street" class="form-control" id="floatingInput"
                                placeholder="street address" />
                         <label for="floatingInput" class="">Street</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="city" />
+                            <input type="text" asp-for="City" class="form-control" id="floatingInput" placeholder="city" />
                         <label for="floatingInput" class="">City</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="state" />
+                            <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" />
                         <label for="floatingInput" class="">State</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="zip codes" />
+                            <input type="text" asp-for="ZipCode" class="form-control" id="floatingInput" placeholder="zip codes" />
                         <label for="floatingInput" class="">Zip Code</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="room" />
+                            <input type="text" asp-for="Room" class="form-control" id="floatingInput" placeholder="room" />
                         <label for="floatingInput" class="">Room # / Suite (Optional)</label>
                     </div>
                 </div>
@@ -122,7 +124,7 @@
             <div class="h5 mb-4 mt-4">(Optional) Upload Photo or Document</div>
 
             <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                <input type="file" class="form-control" id="inputGroupFile02" style="display: none;">
+                    <input type="file" asp-for="Doc" class="form-control" id="inputGroupFile02" style="display: none;">
                 <label class="my-auto ms-2" id="fileselect">Select file</label>
                 <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff"
@@ -141,16 +143,16 @@
         </div>
 
         <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
-            <button type="button" class="btn submit-btn border border-info bg-info text-white p-2">
+            <button type="submit" class="btn submit-btn border border-info bg-info text-white p-2">
                 Submit
             </button>
-            <button type="button" class="btn cancel-btn border border-info text-info p-2">
+            <button type="reset" class="btn cancel-btn border border-info text-info p-2">
                 Cancel
             </button>
         </div>
 
 
-
+        </form>
     </div>
 </div>
 

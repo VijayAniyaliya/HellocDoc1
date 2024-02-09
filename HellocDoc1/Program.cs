@@ -9,6 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddTransient<IHashing, Hashing>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
+builder.Services.AddTransient<IPatientRequest, PatientRequest>();
+builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
