@@ -11,6 +11,8 @@ builder.Services.AddTransient<IHashing, Hashing>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
 builder.Services.AddTransient<IPatientRequest, PatientRequest>();
 builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
+builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
+builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

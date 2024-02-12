@@ -5,19 +5,29 @@ using System.Collections;
 
 namespace HellocDoc1.Services
 {
-    public class FamilyRequest : IFamilyRequest
+    public class BusinessRequest : IBusinessRequest
     {
         private readonly ApplicationDbContext _context;
 
-        public FamilyRequest(ApplicationDbContext context)
+        public BusinessRequest(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public void Family_request(FamilyRequestModel model)
+        public void Business_request(BusinessRequestModel model)
         {
 
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
+
+            Business business = new Business
+            {
+                Name = model.FirstName + " " + model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                CreatedDate = DateTime.Now,
+                RegionId = 1
+            };
+
+            _context.Businesses.Add(business);
 
             Request request = new Request
             {
@@ -26,7 +36,6 @@ namespace HellocDoc1.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
-                RelationName= model.RelationWithPatient,
                 Status = 1,
                 IsUrgentEmailSent = new BitArray(1),
                 CreatedDate = DateTime.Now
@@ -36,18 +45,18 @@ namespace HellocDoc1.Services
 
             RequestClient requestclient = new RequestClient
             {
-                FirstName= model.PatientFirstName, 
-                LastName= model.PatientLastName,
+                FirstName = model.PatientFirstName,
+                LastName = model.PatientLastName,
                 IntDate = model.PatientDOB.Day,
-                IntYear= model.PatientDOB.Year, 
-                StrMonth= (model.PatientDOB.Month).ToString(),
-                Email= model.PatientEmail,
-                PhoneNumber= model.PatientPhoneNumber,
+                IntYear = model.PatientDOB.Year,
+                StrMonth = (model.PatientDOB.Month).ToString(),
+                Email = model.PatientEmail,
+                PhoneNumber = model.PatientPhoneNumber,
+                Notes = model.Symptoms,
                 Street= model.PatientStreet,
-                State= model.PatientState,
                 City= model.PatientCity,
-                ZipCode= model.PatientZipCode,
-                Notes= model.Symptoms
+                State= model.PatientState,
+                ZipCode= model.PatientZipCode
 
 
 
@@ -58,6 +67,7 @@ namespace HellocDoc1.Services
             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();
+
         }
     }
 }

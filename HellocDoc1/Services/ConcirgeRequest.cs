@@ -5,19 +5,30 @@ using System.Collections;
 
 namespace HellocDoc1.Services
 {
-    public class FamilyRequest : IFamilyRequest
+    public class ConcirgeRequest : IConcirgeRequest
     {
         private readonly ApplicationDbContext _context;
 
-        public FamilyRequest(ApplicationDbContext context)
+        public ConcirgeRequest(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public void Family_request(FamilyRequestModel model)
+        public void Concierge_request(ConciergeRequestModel model)
         {
-
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
+
+            Concierge concirge = new Concierge
+            {
+                ConciergeName= model.FirstName + " " + model.LastName,
+                Street= model.Street,
+                State= model.State,
+                City= model.City,
+                ZipCode= model.ZipCode,
+                CreatedDate= DateTime.Now,
+                RegionId= 1
+            };
+            _context.Concierges.Add(concirge);
 
             Request request = new Request
             {
@@ -26,7 +37,6 @@ namespace HellocDoc1.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
-                RelationName= model.RelationWithPatient,
                 Status = 1,
                 IsUrgentEmailSent = new BitArray(1),
                 CreatedDate = DateTime.Now
@@ -36,18 +46,14 @@ namespace HellocDoc1.Services
 
             RequestClient requestclient = new RequestClient
             {
-                FirstName= model.PatientFirstName, 
-                LastName= model.PatientLastName,
+                FirstName = model.PatientFirstName,
+                LastName = model.PatientLastName,
                 IntDate = model.PatientDOB.Day,
-                IntYear= model.PatientDOB.Year, 
-                StrMonth= (model.PatientDOB.Month).ToString(),
-                Email= model.PatientEmail,
-                PhoneNumber= model.PatientPhoneNumber,
-                Street= model.PatientStreet,
-                State= model.PatientState,
-                City= model.PatientCity,
-                ZipCode= model.PatientZipCode,
-                Notes= model.Symptoms
+                IntYear = model.PatientDOB.Year,
+                StrMonth = (model.PatientDOB.Month).ToString(),
+                Email = model.PatientEmail,
+                PhoneNumber = model.PatientPhoneNumber,
+                Notes = model.Symptoms
 
 
 

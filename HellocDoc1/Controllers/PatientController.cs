@@ -14,12 +14,16 @@ namespace HellocDoc1.Controllers
         private readonly ILoginHandler loginHandler;
         private readonly IPatientRequest patientRequest;
         private readonly IFamilyRequest familyRequest;
+        private readonly IConcirgeRequest concirgeRequest;
+        private readonly IBusinessRequest businessRequest;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
             this.familyRequest = familyRequest;
+            this.concirgeRequest = concirgeRequest;
+            this.businessRequest = businessRequest;
         }
 
         [HttpGet]
@@ -112,7 +116,38 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Concierge_request(ConciergeRequestModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                concirgeRequest.Concierge_request(model);
+                return RedirectToAction("Index", "Home");   
+            }
+            return View();
+        }
+
         public IActionResult Business_request()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public IActionResult Business_request(BusinessRequestModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                businessRequest.Business_request(model);
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
+
+        public IActionResult Patient_Dashboard()
         {
             return View();
         }

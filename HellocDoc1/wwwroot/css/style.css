@@ -6,10 +6,6 @@ body{
 
 }
 
-.container-fluid{
-}
-
-
 /*.subdiv {
     background-image: linear-gradient( 0deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9) ), url(../Images/11116016_415.jpg);
     background-repeat: no-repeat;
@@ -18,11 +14,16 @@ body{
     / opacity: 0.2;
     / background-blend-mode: lighten;
 }*/
+.container-fluid{
+}
 
-.back-img{
+
+
+.back-img {
     z-index: -1;
     position: absolute;
     height: 100vh;
+    min-width:100%;
     display: flex;
     justify-content: center;
     opacity: 0.3;
@@ -30,8 +31,9 @@ body{
 }
 
 
-.hellodoc-img{
-    
+
+
+.hellodoc-img {
     height: 120px;
 }
 .hellodoc-image{

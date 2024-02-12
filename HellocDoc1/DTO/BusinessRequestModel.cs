@@ -1,7 +1,10 @@
-﻿namespace HellocDoc1.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HellocDoc1.DTO
 {
-    public class FamilyRequestModel
+    public class BusinessRequestModel
     {
+        [Required(ErrorMessage = "First name is required")] 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -10,7 +13,9 @@
 
         public string Email { get; set; }
 
-        public string RelationWithPatient { get; set; }
+        public string PropertyName { get; set; }
+
+        public string CaseNumber { get; set; }
 
         public string Symptoms { get; set; }
 
@@ -33,7 +38,5 @@
         public string PatientZipCode { get; set; }
 
         public int PatientRoom { get; set; }
-
-        public IFormFile Doc { get; set; }
     }
 }
