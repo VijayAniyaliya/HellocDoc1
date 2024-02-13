@@ -18,7 +18,11 @@ namespace HellocDoc1.Services
         {
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
 
-            Concierge concirge = new Concierge
+            if (aspnetuser != null)
+            {
+
+
+                Concierge concirge = new Concierge
             {
                 ConciergeName= model.FirstName + " " + model.LastName,
                 Street= model.Street,
@@ -29,6 +33,7 @@ namespace HellocDoc1.Services
                 RegionId= 1
             };
             _context.Concierges.Add(concirge);
+
 
             Request request = new Request
             {
@@ -60,10 +65,17 @@ namespace HellocDoc1.Services
                 //Request= request,
             };
 
+            RequestConcierge requestConcierge = new RequestConcierge
+            {
+                RequestId= request.RequestId,
+                ConciergeId= concirge.ConciergeId
+            };
+
 
             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();
+            };
         }
     }
 }

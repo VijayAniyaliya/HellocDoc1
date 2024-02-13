@@ -72,3 +72,42 @@ body{
   .input-group input[type=file]::-webkit-file-upload-button {
     display: none;
   }
+
+  .dashboard{
+      /*background:#fafafa;*/
+  }
+
+.dashboard-content{
+    border:0px solid black;
+    border-radius:10px;
+}
+
+.dashboard-content-aco {
+    border: 0px solid black;
+    border-radius: 10px;
+    display:none;
+}
+
+@media only screen and (max-width:425px) {
+    .dashboard-content {
+        display: none;
+    }
+}
+
+@media only screen and (max-width:425px){
+    .dashboard-content-aco {
+        border: 0px solid black;
+        border-radius: 10px;
+        display: block;
+    }
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    border-bottom: 3px solid #17a2b8;
+    color: #17a2b8;
+}
+
+.profile-content {
+    border: 0px solid black;
+    border-radius: 10px;
+}

@@ -28,7 +28,7 @@ namespace HellocDoc1.Services
                 {
 
                 //Id= Guid.Parse("xyz");
-                Id="10",
+                Id="9",
                 UserName = model.FirstName + " " + model.LastName,
                 PasswordHash = "abc",
                 Email = model.Email,
@@ -66,6 +66,7 @@ namespace HellocDoc1.Services
 
             Request request = new Request
             {
+                UserId= 6,
                 RequestTypeId = 3,
                 FirstName = model.FirstName,
                 LastName = model.LastName,

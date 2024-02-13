@@ -19,6 +19,9 @@ namespace HellocDoc1.Services
 
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
 
+            if (aspnetuser != null) { 
+            
+
             Request request = new Request
             {
                 RequestTypeId = 2,
@@ -58,6 +61,7 @@ namespace HellocDoc1.Services
             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();
+            };
         }
     }
 }

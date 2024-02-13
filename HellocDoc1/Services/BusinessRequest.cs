@@ -19,7 +19,11 @@ namespace HellocDoc1.Services
 
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
 
-            Business business = new Business
+            if (aspnetuser != null)
+            {
+
+
+                Business business = new Business
             {
                 Name = model.FirstName + " " + model.LastName,
                 PhoneNumber = model.PhoneNumber,
@@ -63,10 +67,17 @@ namespace HellocDoc1.Services
                 //Request= request,
             };
 
+            RequestBusiness requestBusiness = new RequestBusiness
+            {
+                RequestId= request.RequestId,
+                BusinessId= business.BusinessId
+            };
+
 
             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();
+            };
 
         }
     }

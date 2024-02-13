@@ -16,14 +16,16 @@ namespace HellocDoc1.Controllers
         private readonly IFamilyRequest familyRequest;
         private readonly IConcirgeRequest concirgeRequest;
         private readonly IBusinessRequest businessRequest;
+        private readonly IPatientServices patientServices;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
             this.familyRequest = familyRequest;
             this.concirgeRequest = concirgeRequest;
             this.businessRequest = businessRequest;
+            this.patientServices = patientServices;
         }
 
         [HttpGet]
@@ -41,7 +43,8 @@ namespace HellocDoc1.Controllers
                 IdentityResult? result = loginHandler.Login(user);
             if (result.Succeeded)
             {
-            return RedirectToAction("Index", "Home");
+                   HttpContext.Session.SetString("Email", user.Email);
+            return RedirectToAction("Patient_Dashboard", "Patient");
             }
             else
             {
@@ -147,9 +150,14 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+
         public IActionResult Patient_Dashboard()
         {
-            return View();
+            
+            var email = HttpContext.Session.GetString("Email");
+            var data = patientServices.DashboardService(email);
+            return View(data);
         }
+
     }
 }

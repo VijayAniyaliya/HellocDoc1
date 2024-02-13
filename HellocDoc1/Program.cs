@@ -13,6 +13,13 @@ builder.Services.AddTransient<IPatientRequest, PatientRequest>();
 builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
+builder.Services.AddTransient<IPatientServices, PatientServices>();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +34,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

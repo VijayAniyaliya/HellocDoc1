@@ -1,27 +1,18 @@
-﻿
+﻿@model List<HellocDoc1.DataModels.Request>
+
 @{
     ViewData["Title"] = "Patient_Dashboard";
     Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
 }
 
 
-<hr class="my-0" />
 
 
-<ul class="nav nav-pills mb-3 ms-5" id="pills-tab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active bg-white text-info h4" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link bg-white text-info h4" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
-    </li>
-</ul>
 
-<div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-            <div class="mt-5 mx-5" style="">
-                <h4>Medical History</h4>
-                <div class="px-2" style="background-color: white;">
+    <div class="tab-pane fade show active align-items-center justify-content-center pt-5" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class=" mx-auto" style="width:95%">
+                <h4 class="">Medical History</h4>
+                <div class="px-2 shadow dashboard-content" style="">
                     
                         <button type="button"
                                 class="btn text-info border-1 border-info float-end my-2">
@@ -37,49 +28,168 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jacob</td>
-                                        <td>Thornton</td>
-                                        <td><button type="button" class="btn text-info border-1 border-info">(1) Document</button></td>
-                                    </tr>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td></td>
-                                </tr>
+                            @foreach(var item in Model)
+                            {      
+                                
                                 <tr>
-                                    <td>twitter</td>
-                                    <td>twitter</td>
-                                    <td></td>
+                                    <td>@item.CreatedDate</td>
+                                    <td>@item.Status</td>
+                                    <td><button type="button" class="btn text-info border-1 border-info">(1) Document</button></td>
                                 </tr>
+
+                            }
                                 </tbody>
                             </table>
                         </div>
 
                    
                 </div>
+                <div class="px-2 shadow dashboard-content-aco" style="">
+
+                <button type="button"
+                        class="btn text-info border-1 border-info float-end my-2">
+                    <span class="h5 fw-bold">+</span>
+
+                </button>
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Accordion Item #1
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                Accordion Item #2
+                            </button>
+                        </h2>
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                Accordion Item #3
+                            </button>
+                        </h2>
+                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                </div>
             </div>
     </div>
-    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">..asdadasd.</div>
-</div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+    <div class=" mx-auto" style="width:87%">
+
+        <div class="d-flex justify-content-between pt-3">
+        <h4 class="">User Profile</h4>
+            <a asp-area="" asp-controller="Patient" asp-action="Submit_request_screen" class="btn back-btn border border-info text-info p-2">
+                &lt; Back
+            </a>
+
+        </div>
+        <div class="px-3 pt-4 shadow profile-content mt-3" style="">
+
+            <div class="general-info">
+                <div class="h5 mb-4">General Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-info mt-3">
+                <div class="h5 mb-4">Contact Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Loc-info">
+                <div class="h5 mb-4">Location Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+    </div>
+
 
 
