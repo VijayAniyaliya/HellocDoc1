@@ -12,10 +12,21 @@ namespace HellocDoc1.Services
     public class PatientRequest : IPatientRequest
     {
         private readonly ApplicationDbContext _context;
+        private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment;
 
-        public PatientRequest(ApplicationDbContext context)
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+
+        public PatientRequest(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            this.environment = environment;
         }
 
         public void Patient_request(PatientRequestModel model)
@@ -24,7 +35,7 @@ namespace HellocDoc1.Services
 
             if (aspnetuser == null)
             {
-                AspNetUser aspnetuser1 = new AspNetUser
+                AspNetUser aspnetuser1 = new AspNetUser()
                 {
 
                 //Id= Guid.Parse("xyz");
@@ -39,7 +50,7 @@ namespace HellocDoc1.Services
 
                 _context.AspNetUsers.Add(aspnetuser1);
                 //aspnetuser = aspnetuser1;
-                User user = new User
+                User user = new User()
                 {
                     UserId = 6,
                     FirstName = model.FirstName,
@@ -64,7 +75,7 @@ namespace HellocDoc1.Services
 
 
 
-            Request request = new Request
+            Request request = new Request()
             {
                 UserId= 6,
                 RequestTypeId = 3,
@@ -79,7 +90,7 @@ namespace HellocDoc1.Services
         };
             _context.Requests.Add(request);
 
-            RequestClient requestclient = new RequestClient
+            RequestClient requestclient = new RequestClient()
             {
 
                 FirstName = model.FirstName,
@@ -93,6 +104,24 @@ namespace HellocDoc1.Services
                 Notes= model.Symptoms
                 //Request= request,
             };
+
+            var file = model.Doc;
+            var uniqueFileName = GetUniqueFileName(file.FileName);
+            var uploads = Path.Combine(environment.WebRootPath, "uploads");
+            var filePath = Path.Combine(uploads, uniqueFileName);
+            file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+            RequestWiseFile requestWiseFile = new RequestWiseFile()
+            {
+                Request=request,
+                FileName=uniqueFileName,
+                CreatedDate= DateTime.Now,
+
+            };
+
+            _context.RequestWiseFiles.Add(requestWiseFile);
+
+
             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();

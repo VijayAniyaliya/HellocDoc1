@@ -1,6 +1,7 @@
 ﻿using HellocDoc1.DataContext;
 using HellocDoc1.DataModels;
 using HellocDoc1.DTO;
+using System;
 using System.Collections;
 
 namespace HellocDoc1.Services
@@ -8,10 +9,21 @@ namespace HellocDoc1.Services
     public class FamilyRequest : IFamilyRequest
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment environment;
 
-        public FamilyRequest(ApplicationDbContext context)
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+
+        public FamilyRequest(ApplicationDbContext context , IWebHostEnvironment environment)
         {
             _context = context;
+            this.environment = environment;
         }
 
         public void Family_request(FamilyRequestModel model)
@@ -22,8 +34,9 @@ namespace HellocDoc1.Services
             if (aspnetuser != null) { 
             
 
-            Request request = new Request
+            Request request = new Request()
             {
+                UserId = 6,
                 RequestTypeId = 2,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -37,7 +50,7 @@ namespace HellocDoc1.Services
             };
             _context.Requests.Add(request);
 
-            RequestClient requestclient = new RequestClient
+            RequestClient requestclient = new RequestClient()
             {
                 FirstName= model.PatientFirstName, 
                 LastName= model.PatientLastName,
@@ -57,8 +70,26 @@ namespace HellocDoc1.Services
                 //Request= request,
             };
 
+                var file = model.Doc;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(environment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
 
-            request.RequestClients.Add(requestclient);
+                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                {
+                    Request = request,
+                    FileName = uniqueFileName,
+                    CreatedDate = DateTime.Now,
+
+                };
+
+                _context.RequestWiseFiles.Add(requestWiseFile);
+
+
+
+
+             request.RequestClients.Add(requestclient);
             _context.RequestClients.Add(requestclient);
             _context.SaveChanges();
             };

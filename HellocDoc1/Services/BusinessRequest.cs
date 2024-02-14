@@ -23,7 +23,7 @@ namespace HellocDoc1.Services
             {
 
 
-                Business business = new Business
+                Business business = new Business()
             {
                 Name = model.FirstName + " " + model.LastName,
                 PhoneNumber = model.PhoneNumber,
@@ -33,8 +33,9 @@ namespace HellocDoc1.Services
 
             _context.Businesses.Add(business);
 
-            Request request = new Request
+            Request request = new Request()
             {
+                UserId = 6,
                 RequestTypeId = 2,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -47,7 +48,7 @@ namespace HellocDoc1.Services
             };
             _context.Requests.Add(request);
 
-            RequestClient requestclient = new RequestClient
+            RequestClient requestclient = new RequestClient()
             {
                 FirstName = model.PatientFirstName,
                 LastName = model.PatientLastName,
@@ -67,7 +68,7 @@ namespace HellocDoc1.Services
                 //Request= request,
             };
 
-            RequestBusiness requestBusiness = new RequestBusiness
+            RequestBusiness requestBusiness = new RequestBusiness()
             {
                 RequestId= request.RequestId,
                 BusinessId= business.BusinessId

@@ -22,7 +22,7 @@ namespace HellocDoc1.Services
             {
 
 
-                Concierge concirge = new Concierge
+                Concierge concirge = new Concierge()
             {
                 ConciergeName= model.FirstName + " " + model.LastName,
                 Street= model.Street,
@@ -35,8 +35,9 @@ namespace HellocDoc1.Services
             _context.Concierges.Add(concirge);
 
 
-            Request request = new Request
+            Request request = new Request()
             {
+                UserId = 6,
                 RequestTypeId = 2,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -49,7 +50,7 @@ namespace HellocDoc1.Services
             };
             _context.Requests.Add(request);
 
-            RequestClient requestclient = new RequestClient
+            RequestClient requestclient = new RequestClient()
             {
                 FirstName = model.PatientFirstName,
                 LastName = model.PatientLastName,
@@ -65,7 +66,7 @@ namespace HellocDoc1.Services
                 //Request= request,
             };
 
-            RequestConcierge requestConcierge = new RequestConcierge
+            RequestConcierge requestConcierge = new RequestConcierge()
             {
                 RequestId= request.RequestId,
                 ConciergeId= concirge.ConciergeId

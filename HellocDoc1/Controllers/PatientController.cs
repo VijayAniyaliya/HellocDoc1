@@ -159,5 +159,15 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
+        public IActionResult Patient_Document(int request_id)
+        {
+            var data = patientServices.DocumentService(request_id);
+            return View(data);
+        }
+
+        public IActionResult Patient_Profile()
+        {
+            return View();
+        }
     }
 }

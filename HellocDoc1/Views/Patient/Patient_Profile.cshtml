@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewData["Title"] = "Patient_Profile";
+    Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
+}
+
+
+<div class="align-items-center justify-content-center pt-5">
+    <div class=" mx-auto" style="width:87%">
+
+        <div class="d-flex justify-content-between pt-3">
+            <h4 class="">User Profile</h4>
+            <a asp-area="" asp-controller="Patient" asp-action="Submit_request_screen" class="btn back-btn border border-info text-info p-2">
+                &lt; Back
+            </a>
+
+        </div>
+        <div class="px-3 pt-4 shadow profile-content mt-3" style="">
+
+            <div class="general-info">
+                <div class="h5 mb-4">General Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-info mt-3">
+                <div class="h5 mb-4">Contact Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating  mb-3">
+                            <input type="tel" class="form-control pt-3 pb-3" id="phone">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="floatingInput"
+                                   placeholder="abc@gmail.com" />
+                            <label for="floatingInput" class="">Email</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Loc-info">
+                <div class="h5 mb-4">Location Information</div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="first name" />
+                            <label for="floatingInput" class="">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="last name" />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+
+
+

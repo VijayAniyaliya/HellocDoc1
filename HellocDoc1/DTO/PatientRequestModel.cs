@@ -24,7 +24,7 @@
 
         public int Room { get; set; }
 
-        public string Doc { get; set; }
+        public IFormFile Doc { get; set; }
 
 
     }

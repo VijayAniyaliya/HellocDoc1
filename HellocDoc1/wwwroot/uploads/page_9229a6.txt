@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link rel="stylesheet" href="/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="/CSS/style.css">
+</head>
+<body>
+        <div class="container-fluid row">
+
+            <div class="col-md-6 col-12" style="border: 1px solid black;">
+                <img src="/Images/11116016_415.jpg" class=""  width="100%" alt="">
+            </div>
+
+            <div class="col-md-6 col-12 text-center" style="border: 1px solid black;">
+
+                <img src="/Images/image_2024_01_17T04_17_17_762Z.png" class="float-right mt-1" width="10%" alt="">
+
+                <img src="/Images/image_2024_01_17T04_17_17_750Z.png" class="mt-5" width="30%" alt="">
+
+                <div class="h4 mt-3">Login to your account</div>
+
+                <form>
+                    <div class="mb-3 mt-5">
+                      <input type="email" class="form-control " id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                      <input type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+
+            </div>
+
+        </div>
+
+</body>
+</html>

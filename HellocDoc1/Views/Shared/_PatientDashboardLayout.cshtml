@@ -47,20 +47,31 @@
 
         <div class="shadow">
 
-            <ul class="nav nav-pills mb-3 mx-auto" id="pills-tab" role="tablist" style="width:95%">
+            <div class="mb-3 py-2 mx-auto h5" style="width:95%">
 
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active bg-transparent rounded-0 h5" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link bg-transparent  rounded-0 h5" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
-                </li>
-            </ul>
+                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
+
+                    <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info">Profile</a>
+
+            </div>
         </div>
         <div class="tab-content dashboard" id="pills-tabContent">
         @RenderBody()
         </div>
     </div>
     <script src="~/js/custom.js"></script>
+    <script>
+        const phoneInputField = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script> *@
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
