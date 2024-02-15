@@ -5,6 +5,6 @@ namespace HellocDoc1.Services
 {
     public interface IPatientRequest
     {
-        void Patient_request(PatientRequestModel model);
+        Task Patient_request(PatientRequestModel model);
     }
 }

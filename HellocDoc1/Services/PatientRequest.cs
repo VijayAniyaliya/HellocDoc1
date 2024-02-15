@@ -4,6 +4,7 @@ using HellocDoc1.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Net;
 
@@ -29,30 +30,30 @@ namespace HellocDoc1.Services
             this.environment = environment;
         }
 
-        public void Patient_request(PatientRequestModel model)
+        public async Task Patient_request(PatientRequestModel model)
         {
-            AspNetUser aspnetuser= _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
+            AspNetUser aspnetuser= await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
 
             if (aspnetuser == null)
             {
                 AspNetUser aspnetuser1 = new AspNetUser()
                 {
-
-                //Id= Guid.Parse("xyz");
-                Id="9",
-                UserName = model.FirstName + " " + model.LastName,
-                PasswordHash = "abc",
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                CreatedDate = DateTime.Now
+                    Id = Guid.NewGuid().ToString(),
+                    //Id="9",
+                    UserName = model.FirstName + " " + model.LastName,
+                    PasswordHash = "abc",
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    CreatedDate = DateTime.Now
 
                  };
 
-                _context.AspNetUsers.Add(aspnetuser1);
+                await _context.AspNetUsers.AddAsync(aspnetuser1);
                 //aspnetuser = aspnetuser1;
                 User user = new User()
                 {
-                    UserId = 6,
+                    AspNetUserId= aspnetuser1.Id,
+                    UserId= 9,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Email = model.Email,
@@ -69,7 +70,7 @@ namespace HellocDoc1.Services
                     //AspNetUser = aspnetuser
 
                 };
-                _context.Users.Add(user);
+                await _context.Users.AddAsync(user);
 
             }
 
@@ -88,7 +89,7 @@ namespace HellocDoc1.Services
                 IsUrgentEmailSent = new BitArray(1)
             //User = user,
         };
-            _context.Requests.Add(request);
+            await _context.Requests.AddAsync(request);
 
             RequestClient requestclient = new RequestClient()
             {
@@ -119,12 +120,12 @@ namespace HellocDoc1.Services
 
             };
 
-            _context.RequestWiseFiles.Add(requestWiseFile);
+            await _context.RequestWiseFiles.AddAsync(requestWiseFile);
 
 
             request.RequestClients.Add(requestclient);
-            _context.RequestClients.Add(requestclient);
-            _context.SaveChanges();
+            await _context.RequestClients.AddAsync(requestclient);
+            await _context.SaveChangesAsync();
 
         }
 

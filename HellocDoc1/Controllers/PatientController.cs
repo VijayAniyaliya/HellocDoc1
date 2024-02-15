@@ -1,6 +1,6 @@
 ﻿using HellocDoc1.DataContext;
 using HellocDoc1.DTO;
-using HellocDoc1.Models;
+using HellocDoc1.DataModels;
 using HellocDoc1.Services;
 using HelloDoc1.Services;
 using Microsoft.AspNetCore.Identity;
@@ -44,7 +44,7 @@ namespace HellocDoc1.Controllers
             if (result.Succeeded)
             {
                    HttpContext.Session.SetString("Email", user.Email);
-            return RedirectToAction("Patient_Dashboard", "Patient");
+                  return RedirectToAction("Patient_Dashboard", "Patient");
             }
             else
             {
@@ -73,13 +73,6 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        //private readonly ILoginHandler loginHandler;
-
-        //public PatientController(ILoginHandler loginHandler)
-        //{
-        //    this.loginHandler = loginHandler;
-        //}
-
         public IActionResult Patient_request()
         {
             return View();
@@ -87,11 +80,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Patient_request(PatientRequestModel model)
+        public async Task<IActionResult> Patient_request(PatientRequestModel model)
         {
             if(ModelState.IsValid)
             {
-                patientRequest.Patient_request(model);
+                await patientRequest.Patient_request(model);
                 return RedirectToAction("Index", "Home");
             }
             return View();
@@ -167,7 +160,16 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Patient_Profile()
         {
-            return View();
+            var email = HttpContext.Session.GetString("Email");
+            var data= patientServices.ProfileService(email);
+            return View(data);
+        }
+
+        public IActionResult Editing(User model)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            patientServices.Editing(email, model);
+            return RedirectToAction("Patient_Profile", "Patient");
         }
     }
 }

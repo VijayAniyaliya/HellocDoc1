@@ -20,7 +20,7 @@ namespace HellocDoc1.Services
                       + Path.GetExtension(fileName);
         }
 
-        public FamilyRequest(ApplicationDbContext context , IWebHostEnvironment environment)
+        public FamilyRequest(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
             this.environment = environment;
@@ -31,44 +31,42 @@ namespace HellocDoc1.Services
 
             AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
 
-            if (aspnetuser != null) { 
-            
-
-            Request request = new Request()
+            if (aspnetuser != null)
             {
-                UserId = 6,
-                RequestTypeId = 2,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber,
-                Email = model.Email,
-                RelationName= model.RelationWithPatient,
-                Status = 1,
-                IsUrgentEmailSent = new BitArray(1),
-                CreatedDate = DateTime.Now
-
-            };
-            _context.Requests.Add(request);
-
-            RequestClient requestclient = new RequestClient()
-            {
-                FirstName= model.PatientFirstName, 
-                LastName= model.PatientLastName,
-                IntDate = model.PatientDOB.Day,
-                IntYear= model.PatientDOB.Year, 
-                StrMonth= (model.PatientDOB.Month).ToString(),
-                Email= model.PatientEmail,
-                PhoneNumber= model.PatientPhoneNumber,
-                Street= model.PatientStreet,
-                State= model.PatientState,
-                City= model.PatientCity,
-                ZipCode= model.PatientZipCode,
-                Notes= model.Symptoms
 
 
+                Request request = new Request()
+                {
+                    UserId = 6,
+                    RequestTypeId = 2,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    Email = model.Email,
+                    RelationName = model.RelationWithPatient,
+                    Status = 1,
+                    IsUrgentEmailSent = new BitArray(1),
+                    CreatedDate = DateTime.Now
 
-                //Request= request,
-            };
+                };
+                _context.Requests.Add(request);
+
+                RequestClient requestclient = new RequestClient()
+                {
+                    FirstName = model.PatientFirstName,
+                    LastName = model.PatientLastName,
+                    IntDate = model.PatientDOB.Day,
+                    IntYear = model.PatientDOB.Year,
+                    StrMonth = (model.PatientDOB.Month).ToString(),
+                    Email = model.PatientEmail,
+                    PhoneNumber = model.PatientPhoneNumber,
+                    Street = model.PatientStreet,
+                    State = model.PatientState,
+                    City = model.PatientCity,
+                    ZipCode = model.PatientZipCode,
+                    Notes = model.Symptoms
+                    //Request= request,
+                };
 
                 var file = model.Doc;
                 var uniqueFileName = GetUniqueFileName(file.FileName);
@@ -89,9 +87,9 @@ namespace HellocDoc1.Services
 
 
 
-             request.RequestClients.Add(requestclient);
-            _context.RequestClients.Add(requestclient);
-            _context.SaveChanges();
+                request.RequestClients.Add(requestclient);
+                _context.RequestClients.Add(requestclient);
+                _context.SaveChanges();
             };
         }
     }

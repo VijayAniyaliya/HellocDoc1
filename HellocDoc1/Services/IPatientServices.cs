@@ -8,5 +8,7 @@ namespace HellocDoc1.Services
         List<Request> DashboardService(string Email);
 
         PatientServiceModel DocumentService(int Requestid);
+        void Editing(string Email, User model);
+        User ProfileService(string Email);
     }
 }
