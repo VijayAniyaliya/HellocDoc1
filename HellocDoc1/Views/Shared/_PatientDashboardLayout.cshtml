@@ -1,4 +1,8 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,13 +34,16 @@
                 <div class="d-flex align-items-center">
                     <span>
                         Welcome
-                        <span class="fw-bold">Tests Testing</span>
+                        <span class="fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("username")</span>
                     </span>
                 </div>
                 <div>
-                    <button type="button" class="btn text-info border-1 border-info">
+                    <a type="button" asp-controller="Patient" asp-action="Logout" class="btn text-info border-1 border-info logout">
                         Logout
-                    </button>
+                    </a>
+                    <a type="button" asp-controller="Patient" asp-action="Logout" class="btn text-info border-1 border-info Logout">
+                        <i class="bi bi-box-arrow-left"></i>
+                    </a>
                 </div>
                 <div>
                     <img src="~/Images/light.png" onclick="myFunction()" height="40px" alt="" />
@@ -48,7 +55,7 @@
         <div class="shadow">
 
             <div class="mb-3 py-2 mx-auto h5" style="width:95%">
-
+                    
                     <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
 
                     <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info">Profile</a>

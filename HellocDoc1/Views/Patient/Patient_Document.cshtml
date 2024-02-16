@@ -1,4 +1,4 @@
-﻿@model HellocDoc1.DTO.PatientServiceModel
+﻿@model HellocDoc1.Services.Models.PatientServiceModel
 
 @{
     ViewData["Title"] = "Patient_Document";
@@ -9,7 +9,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
-        <h4 >Documents</h4>
+        <h4>Documents</h4>
         <a asp-area="" asp-controller="Patient" asp-action="Patient_Dashboard" class="btn back-btn border border-info text-info p-2">
             &lt; Back
         </a>
@@ -57,20 +57,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var item in Model.requestWiseFile)
+                    @foreach (var item in Model.requestWiseFile)
                     {
-                        
-                    <tr>
-                        <th><input type="checkbox" />&nbsp;</th>
-                        <td>@item.FileName</td>
-                        <td>@item.Request.FirstName</td>
-                        <td>@item.CreatedDate</td>
-                        <td>
-                            <button type="button" class="btn text-info border-1 border-info p-1 px-2">
-                                <i class="bi bi-cloud-arrow-down"></i>
-                            </button>
-                        </td>
-                    </tr>
+                        <tr>
+                            <th><input type="checkbox" />&nbsp;</th>
+                            <td>@item.FileName</td>
+                            <td>@item.Request.FirstName</td>
+                            <td>@item.CreatedDate</td>
+                            <td>
+                                <a href="~/uploads/@item.FileName" class="border border-info rounded-3 py-1 px-2" download="">
+                                    <i class="bi bi-cloud-arrow-down text-info"></i>
+                                </a>
+
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>

@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_PatientLayout.cshtml";
 }
 
-@model HellocDoc1.DTO.PatientRequestModel
+@model HellocDoc1.Services.Models.PatientRequestModel
 
 
 <div class="body-content container mb-3">
@@ -39,18 +39,21 @@
                     <div class="form-floating mb-3">
                         <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" />
                         <label for="floatingInput" class="">First Name</label>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="last name" />
                         <label for="floatingInput" class="">Last Name</label>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                             <input type="date" asp-for="DOB" class="form-control" id="floatingInput" placeholder="last name" />
                         <label for="floatingInput" class="">Date of Birth</label>
+                            <span asp-validation-for="DOB" class="text-danger"></span>
                     </div>
                 </div>
                 <!-- </div> -->
@@ -68,11 +71,13 @@
                             <input type="email" asp-for="Email" class="form-control" id="floatingInput"
                                placeholder="abc@gmail.com" />
                         <label for="floatingInput" class="">Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
                             <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
                 <!-- </div> -->
@@ -90,24 +95,28 @@
                             <input type="text" asp-for="Street" class="form-control" id="floatingInput"
                                placeholder="street address" />
                         <label for="floatingInput" class="">Street</label>
+                            <span asp-validation-for="Street" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                             <input type="text" asp-for="City" class="form-control" id="floatingInput" placeholder="city" />
                         <label for="floatingInput" class="">City</label>
+                            <span asp-validation-for="City" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                             <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" />
                         <label for="floatingInput" class="">State</label>
+                            <span asp-validation-for="State" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                             <input type="text" asp-for="ZipCode" class="form-control" id="floatingInput" placeholder="zip codes" />
                         <label for="floatingInput" class="">Zip Code</label>
+                            <span asp-validation-for="ZipCode" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -124,7 +133,7 @@
             <div class="h5 mb-4 mt-4">(Optional) Upload Photo or Document</div>
 
             <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                    <input type="file" asp-for="Doc" class="form-control" id="inputGroupFile02" style="display: none;">
+                    <input type="file" asp-for="Doc" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
                 <label class="my-auto ms-2" id="fileselect">Select file</label>
                 <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff"

@@ -1,11 +1,8 @@
-﻿using HellocDoc1.DataContext;
-using HellocDoc1.DTO;
-using HellocDoc1.DataModels;
-using HellocDoc1.Services;
-using HelloDoc1.Services;
+﻿using Data.Entity;
+using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
+using Services.Contracts;
 
 namespace HellocDoc1.Controllers
 {
@@ -38,25 +35,31 @@ namespace HellocDoc1.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(LoginViewModel user)
         {
-            if (ModelState.IsValid) 
-            { 
+            if (ModelState.IsValid)
+            {
                 IdentityResult? result = loginHandler.Login(user);
-            if (result.Succeeded)
-            {
-                   HttpContext.Session.SetString("Email", user.Email);
-                  return RedirectToAction("Patient_Dashboard", "Patient");
-            }
-            else
-            {
-                ModelState.AddModelError("", result.Errors.First().Description);
-                return View();
+                if (result.Succeeded)
+                {
+                    HttpContext.Session.SetString("Email", user.Email);
+                    return RedirectToAction("Patient_Dashboard", "Patient");
+                }
+                else
+                {
+                    ModelState.AddModelError("", result.Errors.First().Description);
+                    return View();
 
-            }
+                }
             }
             return View();
 
         }
 
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("Email");
+
+            return RedirectToAction("Login", "Patient");
+        }
 
         public IActionResult Reset_password()
         {
@@ -82,10 +85,10 @@ namespace HellocDoc1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Patient_request(PatientRequestModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 await patientRequest.Patient_request(model);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Submit_request", "Patient");
             }
             return View();
         }
@@ -114,13 +117,12 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public IActionResult Concierge_request(ConciergeRequestModel model)
         {
             if (ModelState.IsValid)
             {
                 concirgeRequest.Concierge_request(model);
-                return RedirectToAction("Index", "Home");   
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
@@ -132,13 +134,12 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         public IActionResult Business_request(BusinessRequestModel model)
         {
             if (ModelState.IsValid)
             {
                 businessRequest.Business_request(model);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Submit_request", "Patient");
             }
             return View();
         }
@@ -146,9 +147,9 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Patient_Dashboard()
         {
-            
             var email = HttpContext.Session.GetString("Email");
             var data = patientServices.DashboardService(email);
+
             return View(data);
         }
 
@@ -161,7 +162,7 @@ namespace HellocDoc1.Controllers
         public IActionResult Patient_Profile()
         {
             var email = HttpContext.Session.GetString("Email");
-            var data= patientServices.ProfileService(email);
+            var data = patientServices.ProfileService(email);
             return View(data);
         }
 

@@ -1,6 +1,7 @@
-using HellocDoc1.DataContext;
+using Data.Context;
 using HellocDoc1.Services;
 using HelloDoc1.Services;
+using Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(10);
@@ -41,6 +43,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Patient}/{action=Login}/{id?}");
+    pattern: "{controller=Patient}/{action=Submit_request}/{id?}");
 
 app.Run();

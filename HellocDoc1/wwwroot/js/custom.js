@@ -23,12 +23,6 @@ try {
 
     document.getElementById('editButton').addEventListener('click', function () {
         var elements = document.querySelectorAll('[disabled]');
-        var show = document.querySelectorAll("#saveButton, #cancelButton");
-        if (show.style.display === 'none') {
-            show.style.display = 'block';
-        } else {
-            show.style.display = 'none';
-        }
         elements.forEach(function (element) {
             element.removeAttribute('disabled');
         });
@@ -37,3 +31,5 @@ try {
 catch (err) {
 
 }
+
+

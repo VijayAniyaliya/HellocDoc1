@@ -1,45 +1,66 @@
-﻿@model List<HellocDoc1.DataModels.Request>
+﻿@model List<Data.Entity.Request>
 
 @{
     ViewData["Title"] = "Patient_Dashboard";
     Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
 }
 
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Create New Request</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-secondary">Here, I want to create mew request for...</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a class="btn bg-info text-white">Me</a>
+                    <a class="btn border border-info text-info">Someone One Else</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-info text-white">Continue</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
+<div class="align-items-center justify-content-center pt-5">
+    <div class=" mx-auto" style="width:95%">
+        <h4 class="">Medical History</h4>
+        <div class="px-2 shadow dashboard-content" style="">
 
+            <button type="button"
+                    class="btn text-info border-1 border-info float-end my-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Create New Request
+            </button>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Created Date ↓</th>
+                            <th scope="col">Current Status</th>
+                            <th scope="col">Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
 
-    <div class="align-items-center justify-content-center pt-5">
-            <div class=" mx-auto" style="width:95%">
-                <h4 class="">Medical History</h4>
-                <div class="px-2 shadow dashboard-content" style="">
-                    
-                        <button type="button"
-                                class="btn text-info border-1 border-info float-end my-2">
-                            Create New Request
-                        </button>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Created Date ↓</th>
-                                        <th scope="col">Current Status</th>
-                                        <th scope="col">Document</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                            @foreach(var item in Model)
-                            {      
-                                
-                                <tr>
-                                    <td>@item.CreatedDate</td>
-                                    <td>@item.Status</td>
-                                @if(item.RequestWiseFiles.Count > 0)
+                            <tr>
+                                <td>@item.CreatedDate</td>
+                                <td>@item.Status</td>
+                                @if (item.RequestWiseFiles.Count > 0)
                                 {
                                     <td>
                                         <a asp-controller="Patient" asp-route-request_id="@item.RequestId" asp-action="Patient_Document" class="btn text-info border-1 border-info">(@item.RequestWiseFiles.Count) Document</a>
                                     </td>
-          
+
                                 }
                                 else
                                 {
@@ -47,59 +68,56 @@
                                 }
                             </tr>
 
-                            }
-                                </tbody>
-                            </table>
-                        </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-                   
-                </div>
-                <div class="px-2 shadow dashboard-content-aco" style="">
 
-                <button type="button"
-                        class="btn text-info border-1 border-info float-end my-2">
-                    <span class="h5 fw-bold">+</span>
+        </div>
+        <div class="px-2 shadow dashboard-content-aco" style="">
 
-                </button>
-                <div class="accordion accordion-flush" id="accordionFlushExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                Accordion Item #1
-                            </button>
-                        </h2>
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                Accordion Item #2
-                            </button>
-                        </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                Accordion Item #3
-                            </button>
-                        </h2>
-                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
-                        </div>
+            <button type="button"
+                    class="btn text-info border-1 border-info float-end my-2">
+                <span class="h5 fw-bold">+</span>
+
+            </button>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Accordion Item #1
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
                     </div>
                 </div>
-
-
-
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Accordion Item #2
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            Accordion Item #3
+                        </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    </div>
                 </div>
             </div>
+
+
+
+        </div>
     </div>
-   
-
-
+</div>
 

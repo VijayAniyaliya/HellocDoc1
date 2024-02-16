@@ -2,7 +2,7 @@
     Layout = "";
 }
 
-@model HellocDoc1.DTO.LoginViewModel
+@model HellocDoc1.Services.Models.LoginViewModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@
             <div class="content ">
 
                 <div class=" back-btn">
-                    <a href="#" class="link-info text-decoration-none">
+                    <a asp-controller="Patient" asp-action="Submit_request" class="link-info text-decoration-none">
 
                         <span class="back-btn-txt h5">&lt; Back</span>
                     </a>
@@ -46,35 +46,36 @@
                 <div class="h3 mt-3">Login to your account</div>
 
                 <form asp-action="Login" method="post">
-                   <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-floating inputs mb-1 mt-4">
-                    <input type="email" class="form-control patient-input" id="floatingInput"
-                           placeholder="name@example.com" asp-for="Email">
-                    <label for="floatingInput" class="label">Email address</label>
-                   
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-person-circle input-icon" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                        <path fill-rule="evenodd"
-                              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                    </svg>
-                </div>
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                <div class="form-floating inputs mb-0">
-                    <input type="password" class="form-control patient-input" id="floatingPassword"
+                    <div class="form-floating inputs mb-1 mt-4">
+                        <input type="email" class="form-control patient-input" id="floatingInput"
+                               placeholder="name@example.com" asp-for="Email">
+                        <label for="floatingInput" class="label">Email address</label>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-person-circle input-icon" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd"
+                                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger "></span>
+                    <div class="form-floating inputs mb-0">
+                        <input type="password" class="form-control patient-input" id="floatingPassword"
                                placeholder="Password" asp-for="Password">
-                    <label for="floatingPassword" class="label">Password</label>
-                       
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-eye input-icon" viewBox="0 0 16 16">
-                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                    </svg>
-                </div>
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                    <br />
-                <button type="submit"  class="btn bg-info inputs py-3">Log in</button>
+                        <label for="floatingPassword" class="label">Password</label>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-eye input-icon" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                        </svg>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger d-block "></span>
+
+
+                    <button type="submit" class="btn bg-info inputs py-3">Log in</button>
                 </form>
 
 
@@ -102,12 +103,13 @@
         <img src="~/images/11116016_415.jpg" width="100%" alt="">
     </div>
 
-@*     <partial name="_ValidationScriptsPartial" /> *@
+    @*     <partial name="_ValidationScriptsPartial" /> *@
     <script src="~/js/custom.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 
 </body>
+
 
 </html>

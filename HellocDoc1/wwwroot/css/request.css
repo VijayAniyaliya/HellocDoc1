@@ -73,9 +73,18 @@ body{
     display: none;
   }
 
-  .dashboard{
-      /*background:#fafafa;*/
-  }
+.Logout{
+    display:none;
+}
+
+@media only screen and (max-width:425px) {
+    .logout {
+        display: none;
+    }
+    .Logout{
+        display:block;
+    }
+}
 
 .dashboard-content{
     border:0px solid black;
@@ -112,3 +121,4 @@ body{
     border: 0px solid black;
     border-radius: 10px;
 }
+
