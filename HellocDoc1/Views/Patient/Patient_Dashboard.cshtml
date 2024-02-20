@@ -17,8 +17,8 @@
             <div class="modal-body">
                 <p class="text-secondary">Here, I want to create mew request for...</p>
                 <div class="d-flex justify-content-center gap-2">
-                    <a class="btn bg-info text-white">Me</a>
-                    <a class="btn border border-info text-info">Someone One Else</a>
+                    <a asp-controller="Patient" asp-action="SubmitInformationMe" class="btn bg-info text-white">Me</a>
+                    <a asp-controller="Patient" asp-action="SubmitInformationSomeone" class="btn border border-info text-info">Someone One Else</a>
                 </div>
             </div>
             <div class="modal-footer">
@@ -54,7 +54,17 @@
 
                             <tr>
                                 <td>@item.CreatedDate</td>
-                                <td>@item.Status</td>
+                                <td>
+                                    @switch (item.Status)
+                                    {
+                                        case 1:
+                                            <p>unassigned</p>
+                                            break;
+                                        default:
+                                            < p > valid </ p >
+                                            break;
+                                    }
+                                </td>
                                 @if (item.RequestWiseFiles.Count > 0)
                                 {
                                     <td>
@@ -121,3 +131,14 @@
     </div>
 </div>
 
+
+
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

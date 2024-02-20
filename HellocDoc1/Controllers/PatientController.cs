@@ -1,8 +1,11 @@
-﻿using Data.Entity;
+﻿using Common.Enum;
+using Data.Entity;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
 using Services.Contracts;
+using Services.Models;
 
 namespace HellocDoc1.Controllers
 {
@@ -37,15 +40,17 @@ namespace HellocDoc1.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityResult? result = loginHandler.Login(user);
-                if (result.Succeeded)
+                LoginResponseViewModel? result = loginHandler.Login(user);
+                if (result.Status ==ResponseStatus.Success)
                 {
                     HttpContext.Session.SetString("Email", user.Email);
+                    TempData["Success"] = "Login Successfully";
                     return RedirectToAction("Patient_Dashboard", "Patient");
                 }
                 else
                 {
-                    ModelState.AddModelError("", result.Errors.First().Description);
+                    ModelState.AddModelError("", result.Message);
+                    TempData["Error"]=result.Message;
                     return View();
 
                 }
@@ -62,6 +67,11 @@ namespace HellocDoc1.Controllers
         }
 
         public IActionResult Reset_password()
+        {
+            return View();
+        }
+
+        public IActionResult CreatePatientAccount()
         {
             return View();
         }
@@ -105,7 +115,7 @@ namespace HellocDoc1.Controllers
             if (ModelState.IsValid)
             {
                 familyRequest.Family_request(model);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Submit_request", "Patient");
             }
             return View();
         }
@@ -144,6 +154,15 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        public IActionResult SubmitInformationMe()
+        {
+            return View();
+        }
+
+        public IActionResult SubmitInformationSomeone()
+        {
+            return View();
+        }
 
         public IActionResult Patient_Dashboard()
         {
@@ -158,6 +177,14 @@ namespace HellocDoc1.Controllers
             var data = patientServices.DocumentService(request_id);
             return View(data);
         }
+
+        public async Task<IActionResult> DownloadAll(int request_id)
+        {
+           var download= await patientServices.DownloadFilesForRequest(request_id);
+            return File(download, "application/zip", "RequestFiles.zip");
+        }
+
+
 
         public IActionResult Patient_Profile()
         {
@@ -174,3 +201,5 @@ namespace HellocDoc1.Controllers
         }
     }
 }
+
+

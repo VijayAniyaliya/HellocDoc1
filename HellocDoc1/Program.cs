@@ -1,4 +1,5 @@
 using Data.Context;
+using HalloDoc.Utility;
 using HellocDoc1.Services;
 using HelloDoc1.Services;
 using Services.Contracts;
@@ -16,6 +17,7 @@ builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(10);

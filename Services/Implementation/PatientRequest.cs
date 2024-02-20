@@ -75,7 +75,7 @@ namespace HellocDoc1.Services
                 LastName = model.LastName,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
-                Status = 1,
+                Status = (int)Common.Enum.RequestStatus.Unassigned,
                 CreatedDate = DateTime.Now,
                 IsUrgentEmailSent = new BitArray(1)
             };
