@@ -1,8 +1,12 @@
 ﻿using Common.Enum;
+using Data.Context;
 using Data.Entity;
+using HellocDoc1.Services;
 using HellocDoc1.Services.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using Services.Contracts;
 using Services.Models;
@@ -17,8 +21,9 @@ namespace HellocDoc1.Controllers
         private readonly IConcirgeRequest concirgeRequest;
         private readonly IBusinessRequest businessRequest;
         private readonly IPatientServices patientServices;
+        private readonly ApplicationDbContext _context;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, ApplicationDbContext context)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
@@ -26,6 +31,7 @@ namespace HellocDoc1.Controllers
             this.concirgeRequest = concirgeRequest;
             this.businessRequest = businessRequest;
             this.patientServices = patientServices;
+            _context = context;
         }
 
         [HttpGet]
@@ -41,7 +47,7 @@ namespace HellocDoc1.Controllers
             if (ModelState.IsValid)
             {
                 LoginResponseViewModel? result = loginHandler.Login(user);
-                if (result.Status ==ResponseStatus.Success)
+                if (result.Status == ResponseStatus.Success)
                 {
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
@@ -50,7 +56,7 @@ namespace HellocDoc1.Controllers
                 else
                 {
                     ModelState.AddModelError("", result.Message);
-                    TempData["Error"]=result.Message;
+                    TempData["Error"] = result.Message;
                     return View();
 
                 }
@@ -68,6 +74,31 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Reset_password()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Reset_password(AspNetUser user)
+        {
+            var aspuser = _context.AspNetUsers.FirstOrDefault(x => x.Email == user.Email);
+            if (aspuser != null)
+            {
+                patientServices.ResetPassword(aspuser.Email);
+            }
+
+            return RedirectToAction("Login", "Patient");
+        }
+
+        [HttpGet("[controller]/[action]/{email}")]
+        public IActionResult ChangePassword(string email)
+        {
+            ViewBag.Email = email;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ChangePassword(ChangePassViewModel model)
+        {
+            patientServices.ChangePassword(model.Email, model);
             return View();
         }
 
@@ -101,6 +132,14 @@ namespace HellocDoc1.Controllers
                 return RedirectToAction("Submit_request", "Patient");
             }
             return View();
+        }
+
+        [Route("/Patient/Patient_request/checkmail/{email}")]
+        [HttpGet]
+        public IActionResult CheckEmail(string email)
+        {
+            var emailExists = _context.AspNetUsers.Any(u => u.Email == email);
+            return Json(new { exists = emailExists });
         }
 
         public IActionResult Family_request()
@@ -159,10 +198,16 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult SubmitInformationSomeone()
+        public IActionResult SubmitInformationSomeone(SubmitInfoViewModel model)
         {
+            if (ModelState.IsValid)
+            {
+                patientServices.SubmitInformationSomeone(model);
+                return RedirectToAction("Patient_Dashboard", "Patient");
+            }
             return View();
         }
+
 
         public IActionResult Patient_Dashboard()
         {
@@ -180,7 +225,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> DownloadAll(int request_id)
         {
-           var download= await patientServices.DownloadFilesForRequest(request_id);
+            var download = await patientServices.DownloadFilesForRequest(request_id);
             return File(download, "application/zip", "RequestFiles.zip");
         }
 
@@ -198,6 +243,11 @@ namespace HellocDoc1.Controllers
             var email = HttpContext.Session.GetString("Email");
             patientServices.Editing(email, model);
             return RedirectToAction("Patient_Profile", "Patient");
+        }
+
+        public IActionResult ReviewAgreement()
+        {
+            return View();
         }
     }
 }

@@ -9,6 +9,10 @@ using System.Text;
 using System.IO.Compression;
 using System;
 using Microsoft.AspNetCore.Hosting;
+using System.Collections;
+using Common.Enum;
+using Services.Models;
+using HalloDoc.Utility;
 
 namespace HellocDoc1.Services
 {
@@ -18,6 +22,14 @@ namespace HellocDoc1.Services
         private readonly IHttpContextAccessor HttpContextAccessor;
         private readonly IHostingEnvironment _environment;
 
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
         public PatientServices(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, IHostingEnvironment environment)
         {
             _context = context;
@@ -104,7 +116,7 @@ namespace HellocDoc1.Services
 
                 userdata.FirstName = model.FirstName;
                 userdata.LastName = model.LastName;
-                userdata.Mobile = model.Mobile; 
+                userdata.Mobile = model.Mobile;
                 userdata.Email = model.Email;
                 userdata.Street = model.Street;
                 userdata.City = model.City;
@@ -123,7 +135,7 @@ namespace HellocDoc1.Services
                     UserName = model.FirstName + " " + model.LastName,
                     Email = model.Email,
                     PhoneNumber = model.Mobile,
-                    ModifiedDate= DateTime.Now,
+                    ModifiedDate = DateTime.Now,
 
                 };
 
@@ -132,6 +144,93 @@ namespace HellocDoc1.Services
 
 
 
+        }
+
+        public void SubmitInformationSomeone(SubmitInfoViewModel model)
+        {
+
+            AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
+
+            if (aspnetuser != null)
+            {
+
+
+                Request request = new Request()
+                {
+                    UserId = 6,
+                    RequestTypeId = 2,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    Email = model.Email,
+                    RelationName = model.RelationWithPatient,
+                    Status = 1,
+                    IsUrgentEmailSent = new BitArray(1),
+                    CreatedDate = DateTime.Now
+
+                };
+                _context.Requests.Add(request);
+
+                RequestClient requestclient = new RequestClient()
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    IntDate = model.DOB.Day,
+                    IntYear = model.DOB.Year,
+                    StrMonth = (model.DOB.Month).ToString(),
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Street = model.Street,
+                    State = model.State,
+                    City = model.City,
+                    ZipCode = model.ZipCode,
+                    Notes = model.Symptoms
+                    //Request= request,
+                };
+
+                var file = model.Doc;
+                var uniqueFileName = GetUniqueFileName(file.FileName);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                file.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                {
+                    Request = request,
+                    FileName = uniqueFileName,
+                    CreatedDate = DateTime.Now,
+
+                };
+
+                _context.RequestWiseFiles.Add(requestWiseFile);
+
+
+
+                request.RequestClients.Add(requestclient);
+                _context.RequestClients.Add(requestclient);
+                _context.SaveChanges();
+            };
+        }
+
+        public void ResetPassword(string email)
+        {
+            var user = _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefault();
+
+            if (user != null)
+            {
+                EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{email}\">Reset</a>");
+            }
+        }
+
+        public void ChangePassword(string email, ChangePassViewModel model)
+        {
+            var user = _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefault();
+
+            user.PasswordHash = model.Password;
+
+            _context.AspNetUsers.Update(user);
+            _context.SaveChanges();
+            
         }
 
     }

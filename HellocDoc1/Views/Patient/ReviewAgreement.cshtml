@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "ReviewAgreement";
+    Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
+}
+
+<div class="container mt-5">
+    <p class="text-secondary">
+        To provide best medical services, we cannot determine the cost right away.
+        if you agree to our service, so we will provide care and follow-up until all
+        care is completed. So with this points, if you like us to provide care to you c
+        lick on 'Agree' abd we'll get started immediately. if you do not agree simply click 'Cancel'.'
+    </p>
+    <div class="d-flex justify-content-around mt-5">
+        <button type="button"
+                class="btn bg-success text-white border-1  float-end my-2" >
+            I Agree
+        </button>
+        <button type="button"
+                class="btn bg-danger text-white border-1  float-end my-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Cancel
+        </button>
+    </div>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="staticBackdropLabel">Cancel Confirmation</h5>
+                    <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">Test test,</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" placeholder="reason"
+                                          id="floatingTextarea2" style="height: 100px"></textarea>
+                                <label for="floatingTextarea2" class="">
+                                    Please Provide a brief explanation for your cancelation
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-info text-white">Continue</button>
+                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

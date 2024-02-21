@@ -53,16 +53,16 @@ body{
     margin-top: 100px;
 }
 
-@media only screen and (max-width:426px){
-    .hellodoc-img{
+@media only screen and (max-width:426px) {
+    .hellodoc-img {
         display: none;
     }
-    .content{
+
+    .content {
         margin-top: 235px;
     }
 }
-
-.back-btn{
+.back-btn {
     padding-right: 250px;
 }
 

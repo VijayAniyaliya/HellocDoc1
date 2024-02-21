@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HellocDoc1</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="d-flex justify-content-between">
+        <div class="ms-5">
+            <img src="~/Images/image_2024_01_17T04_17_17_750Z.png"
+                 height="60px"
+                 alt="" />
+        </div>
+        <div class="d-flex gap-3 mr-3 justify-content-center align-items-center">
+            <div class="d-flex align-items-center">
+                <span>
+                    Welcome
+                    <span class="fw-bold">test</span>
+                </span>
+            </div>
+            <div>
+                <a type="button" class="btn text-info border-1 border-info logout">
+                    Logout
+                </a>
+                <a type="button" class="btn text-info border-1 border-info Logout d-none">
+                    <i class="bi bi-box-arrow-left"></i>
+                </a>
+            </div>
+            <div>
+                <img src="~/Images/light.png" onclick="myFunction()" height="40px" alt="" />
+            </div>
+        </div>
+    </header>
+    <hr class="my-0" />
+    <div class="shadow">
+        <div class="mb-3 pt-2 pb-3 mx-auto h6 " style="width:93%">
+            <a  class="text-decoration-none text-info pr-4">Dashboard</a>
+            <a class="text-decoration-none text-info pr-4">Provider Location</a>
+            <a class="text-decoration-none text-info pr-4">My Profile</a>
+            <a class="text-decoration-none text-info pr-4">Providers</a>
+            <a class="text-decoration-none text-info pr-4">Partners</a>
+            <a class="text-decoration-none text-info pr-4">Access</a>
+            <a class="text-decoration-none text-info">Records</a>
+        </div>
+    </div>
+    @RenderBody()
+
+
+    <script src="~/js/custom.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     @* <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

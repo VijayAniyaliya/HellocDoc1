@@ -110,7 +110,24 @@ body{
         display: block;
     }
 }
+.canvas{
+    display:none;
+}
 
+@media only screen and (max-width:505px) {
+    .canvas {
+        display:block;
+        position:absolute;
+        top:8px;
+        left:2px;
+    }
+    .canvas-content{
+        display:none;
+    }
+    .doc-img{
+        margin-left:14%;
+    }
+}
 
 .profile-content {
     border: 0px solid black;
@@ -122,3 +139,6 @@ body{
     border-radius: 10px;
 }
 
+.passDisplay{
+    display:none;
+}

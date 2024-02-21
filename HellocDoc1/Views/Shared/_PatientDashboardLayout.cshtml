@@ -24,15 +24,20 @@
 </head>
 <body>
     <div class="container-fluid p-0">
+        <button class="btn border py-0 canvas" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <i class="bi bi-list h2"></i>
+        </button>
+
+
         <header class="d-flex justify-content-between">
-            <div class="ms-5">
-                <img src="~/Images/image_2024_01_17T04_17_17_750Z.png"
+            <div class="ms-5 ">
+                <img src="~/Images/image_2024_01_17T04_17_17_750Z.png" class="doc-img"
                      height="60px"
                      alt="" />
             </div>
             <div class="d-flex gap-3 mr-3 justify-content-center align-items-center">
-                <div class="d-flex align-items-center">
-                    <span>
+                <div class="d-flex align-items-center ">
+                    <span class="canvas-content">
                         Welcome
                         <span class="fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("username")</span>
                     </span>
@@ -54,7 +59,7 @@
 
         <div class="shadow">
 
-            <div class="mb-3 py-2 mx-auto h5" style="width:95%">
+            <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
                     
                     <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
 
@@ -64,6 +69,26 @@
         </div>
         <div class="tab-content dashboard" id="pills-tabContent">
         @RenderBody()
+        </div>
+        <div class="offcanvas offcanvas-start canvas-body" tabindex="-1" id="offcanvasExample" style="width:200px" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasExampleLabel">Profile</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+                    <span>
+                        <span class="fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("username")</span>
+                    </span>
+                    <div class="d-flex flex-column gap-2 h6 mt-2" style="">
+
+                        <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
+
+                        <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info">Profile</a>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="~/js/custom.js"></script>
