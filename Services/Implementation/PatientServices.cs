@@ -63,6 +63,31 @@ namespace HellocDoc1.Services
 
         }
 
+        public void UploadDocument(PatientServiceModel model,int request_id)
+        {
+            IEnumerable<IFormFile>upload = model.Doc;
+            foreach (var item in upload)
+            {
+
+                var file = item.FileName;
+                var uniqueFileName = GetUniqueFileName(file);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                item.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                {
+                    FileName = item.FileName,
+                    CreatedDate= DateTime.Now,
+                    
+                };
+                _context.RequestWiseFiles.Add(requestWiseFile);
+                requestWiseFile.RequestId = request_id;
+                
+            }
+            _context.SaveChanges();
+        }
+
         public async Task<byte[]> DownloadFilesForRequest(int request_id)
         {
 

@@ -3,51 +3,66 @@
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<div class="d-flex justify-content-center bg-black">
+<div class="d-flex justify-content-center">
     <div class="" style="width:95%">
-        <div class="row gap-3 mt-3 mb-4 mx-auto">
-            <a class="col rounded-3 new">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">NEW</span>
+
+        <div class="row  mt-3 mb-4 mx-auto">
+
+            <div class="col-md-2 col-4 px-2 pb-2" id="pills-new-tab">
+                <div class="px-2 new rounded-3">
+                    <div class="mt-1 ">
+                        <i class="bi bi-check2-circle icons h6"></i>
+                        <span class="ms-1 small fw-bold">NEW</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
-            <a class="col rounded-3 pending">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">PENDING</span>
+
+            </div>
+            <div class="col-md-2 col-4 px-2 pb-2" id="pills-pending-tab">
+                <div class="px-2 rounded-3 pending">
+                    <div class="mt-1">
+                        <i class="bi bi-check2-circle icons h6"></i>
+                        <span class="ms-1 small fw-bold">PENDING</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
-            <a class="col rounded-3 active">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">ACTIVE</span>
+            </div>
+            <div class="col-md-2 col-4 px-2 pb-2" id="pills-active-tab">
+                <div class="px-2 rounded-3 active">
+                    <div class="mt-1">
+                        <i class="bi bi-check2-circle icons h6"></i>
+                        <span class="ms-1 small fw-bold">ACTIVE</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
-            <a class="col rounded-3 conclude">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">CONCLUDE</span>
+            </div>
+            <div class="col-md-2 col-4 px-2">
+                <div class="px-2 rounded-3 conclude" id="pills-conclude-tab">
+                    <div class="mt-1">
+                        <i class="bi bi-stop watch icons h6"></i>
+                        <span class="ms-1 small fw-bold">CONCLUDE</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
-            <a class="col rounded-3 toclose">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">TO CLOSE</span>
+            </div>
+            <div class="col-md-2 col-4 px-2" id="pills-close-tab">
+                <div class="px-2 rounded-3 toclose">
+                    <div class="mt-1">
+                        <i class="bi bi-check2-circle icons h6"></i>
+                        <span class="ms-1 small fw-bold">TO CLOSE</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
-            <a class="col rounded-3 unpaid">
-                <div class="mt-1">
-                    <i class="bi bi-check2-circle h4"></i>
-                    <span class="ms-1 h6">UNPAID</span>
+            </div>
+            <div class="col-md-2 col-4 px-2">
+                <div class="px-2 rounded-3 unpaid" id="pills-unpaid-tab">
+                    <div class="mt-1">
+                        <i class="bi bi-check2-circle icons h6"></i>
+                        <span class="ms-1 small fw-bold">UNPAID</span>
+                    </div>
+                    <div class="mt-2 h4">1452</div>
                 </div>
-                <div class="mt-2 h4">1452</div>
-            </a>
+            </div>
         </div>
         <div class="d-flex flex-row justify-content-between mt-5 mb-3">
             <div>
@@ -57,23 +72,23 @@
             <div class="d-flex gap-1">
                 <a class="bg-info text-white rounded-3 p-2">
                     <i class="bi bi-check2-circle h5 mr-1"></i>
-                    <span>Send Link</span>
+                    <span class="link-text">Send Link</span>
                 </a>
                 <a class="bg-info text-white rounded-3 p-2">
                     <i class="bi bi-check2-circle h5 mr-1"></i>
-                    <span>Create Requests</span>
+                    <span class="link-text">Create Requests</span>
                 </a>
                 <a class="bg-info text-white rounded-3 p-2">
                     <i class="bi bi-check2-circle h5 mr-1"></i>
-                    <span>Export</span>
+                    <span class="link-text">Export</span>
                 </a>
                 <a class="bg-info text-white rounded-3 p-2">
                     <i class="bi bi-check2-circle h5 mr-1"></i>
-                    <span>Export All</span>
+                    <span class="link-text">Export All</span>
                 </a>
                 <a class="bg-info text-white rounded-3 p-2">
                     <i class="bi bi-check2-circle h5 mr-1"></i>
-                    <span>Request DTY Support</span>
+                    <span class="link-text">Request DTY Support</span>
                 </a>
             </div>
         </div>
@@ -95,24 +110,24 @@
 
 
                 </div>
-                <div class="d-flex gap-4">
-                    <a class="text-secondary ">
+                <div class="">
+                    <a class="text-secondary mr-2">
 
                         <span>ALL</span>
                     </a>
-                    <a class="text-secondary ">
+                    <a class="text-secondary mr-2">
                         <i class="bi bi-circle-fill text-success mr-1"></i>
                         <span>Patient</span>
                     </a>
-                    <a class="text-secondary ">
+                    <a class="text-secondary mr-2">
                         <i class="bi bi-circle-fill text-warning mr-1"></i>
                         <span>Family/Friend</span>
                     </a>
-                    <a class="text-secondary ">
+                    <a class="text-secondary mr-2">
                         <i class="bi bi-circle-fill mr-1" style="color:pink;"></i>
                         <span>Business</span>
                     </a>
-                    <a class="text-secondary  ">
+                    <a class="text-secondary  mr-2">
                         <i class="bi bi-circle-fill text-primary mr-1"></i>
                         <span>Concierge</span>
                     </a>
@@ -125,49 +140,164 @@
 
             </div>
 
-            <div class="table-responsive mt-4">
+            <div id="tableContent" class="table-responsive mt-4 ">
 
-                <table class="table table-secondary">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Date Of Birth</th>
-                            <th scope="col">Requestor</th>
-                            <th scope="col">Request Date</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Notes</th>
-                            <th scope="col">Chat With</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-light">
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                        </tr>
-                        <tr class="table-light">
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                        </tr>
 
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/NewState",
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#tableContent").html('An error has occurred');
+            }
+        });
+        $('#pills-new-tab').click(function () {
+            $.ajax({
+                url: "/Admin/NewState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-pending-tab').click(function () {
+            $.ajax({
+                url: "/Admin/PendingState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-active-tab').click(function () {
+            $.ajax({
+                url: "/Admin/ActiveState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-conclude-tab').click(function () {
+            $.ajax({
+                url: "/Admin/ConcludeState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-close-tab').click(function () {
+            $.ajax({
+                url: "/Admin/ToCloseState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-unpaid-tab').click(function () {
+            $.ajax({
+                url: "/Admin/UnpaidState",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#tableContent").html(data);
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+    });
+
+
+    function newState() {
+        document.getElementById("pills-new-tab").classList.add("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+
+    function pendingState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.add("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function activeState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.add("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function concludeState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.add("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function closeState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.add("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function unpaidState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.add("unpaidActive");
+    }
+</script>

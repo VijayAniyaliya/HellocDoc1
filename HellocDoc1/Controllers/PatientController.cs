@@ -223,6 +223,14 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
+        [HttpPost]
+        public IActionResult UploadDocument(PatientServiceModel model,int request_id)
+        {
+            patientServices.UploadDocument(model,request_id);
+            return RedirectToAction("Patient_Document", new {request_id=request_id});
+        }
+
+
         public async Task<IActionResult> DownloadAll(int request_id)
         {
             var download = await patientServices.DownloadFilesForRequest(request_id);

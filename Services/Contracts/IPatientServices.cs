@@ -21,5 +21,6 @@ namespace Services.Contracts
         void ResetPassword(string email);
 
         void SubmitInformationSomeone(SubmitInfoViewModel model);
+        void UploadDocument(PatientServiceModel model, int request_id);
     }
 }

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body >
     <header class="d-flex justify-content-between">
         <div class="ms-5">
             <img src="~/Images/image_2024_01_17T04_17_17_750Z.png"
@@ -55,7 +55,11 @@
         </div>
     </div>
     @RenderBody()
-
+    <footer class="bg-dark  text-white d-flex justify-content-end py-2 fixed-bottom">
+        <a href="#" class="text-secondary my-auto"><span class="text-white mr-1">Terms of condition</span></a>
+        <span class="my-auto mr-1">|</span>
+        <a href="#" class="text-secondary my-auto"><span class="text-white mr-3">Privacy policy</span></a>
+    </footer>
 
     <script src="~/js/custom.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

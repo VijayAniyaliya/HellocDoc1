@@ -39,7 +39,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="date" asp-for="ModifiedDate" class="form-control" id="floatingInput" placeholder="last name" />
+                                <input type="date" asp-for="ModifiedDate" class="form-control" id="floatingInput" placeholder="last name" disabled />
                                 <label for="floatingInput" class="">Date of Birth</label>
                             </div>
                         </div>
@@ -117,11 +117,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end pt-3 pb-4">
+                <div class="d-flex justify-content-end pt-3 pb-4 mb-5">
 
-                    <button type="button" id="editButton" class="btn bg-info text-white border-1 border-info  px-4 py-2">Edit</button>
+                    <button type="button" id="editButton" class="btn bg-info text-white border-1 border-info  px-4 py-2 mr-1">Edit</button>
                     <button type="submit" id="saveButton" class="btn bg-info text-white border-1 border-info px-3 py-1 mr-2">Submit</button>
-                    <button type="button" id="cancelButton" class="btn  text-info border-1 border-info px-3 py-1">Cancel</button>
+                    @* <button type="button" id="cancelButton" class="btn  text-info border-1 border-info px-3 py-1">Cancel</button> *@
                 </div>
             </form>
         </div>

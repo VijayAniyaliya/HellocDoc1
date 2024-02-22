@@ -1,4 +1,8 @@
-﻿.dark-mode {
+﻿body{
+    height:100vh;
+}
+
+.dark-mode {
     background-color: black;
     color: white;
 }
@@ -36,6 +40,7 @@
     .pending:hover {
         background-color: #47cde7;
     }
+
 
 .active {
     background-color: #E9F0E8;
@@ -105,3 +110,15 @@
     .unpaid:hover {
         background-color: #ab40dd;
     }
+
+@media only screen and (max-width:915px) {
+    .link-text {
+        display:none;
+    }
+}
+
+@media only screen and (max-width:480px) {
+    .icons {
+        display: none;
+    }
+}

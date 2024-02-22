@@ -21,12 +21,17 @@ catch (err) {
 try {
 
 
+
     document.getElementById('editButton').addEventListener('click', function () {
         var elements = document.querySelectorAll('[disabled]');
         elements.forEach(function (element) {
             element.removeAttribute('disabled');
         });
+        savebtn.style.display = 'block';
+        document.getElementById('editButton').style.display = 'none';
     });
+    
+
 }
 catch (err) {
 

@@ -142,3 +142,9 @@ body{
 .passDisplay{
     display:none;
 }
+
+.eye-icon {
+    position: relative;
+    bottom: 42px;
+    left: 94%;
+}

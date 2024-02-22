@@ -8,5 +8,32 @@ namespace HellocDoc1.Controllers
         {
             return View();
         }
+
+        public IActionResult NewState()
+        {
+            return View();
+        }
+        public IActionResult PendingState()
+        {
+            return View();
+        }
+        public IActionResult ActiveState()
+        {
+            return View();
+        }
+        public IActionResult ConcludeState()
+        {
+            return View();
+        }
+
+        public IActionResult ToCloseState()
+        {
+            return View();
+        }
+
+        public IActionResult UnpaidState()
+        {
+            return View();
+        }
     }
 }
