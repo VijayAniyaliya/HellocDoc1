@@ -2,6 +2,7 @@
 using Data.Context;
 using Data.Entity;
 using HellocDoc1.Services.Models;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using System.Collections;
 
@@ -16,69 +17,83 @@ namespace HellocDoc1.Services
             _context = context;
         }
 
-        public void Concierge_request(ConciergeRequestModel model)
+        public async Task Concierge_request(ConciergeRequestModel model)
         {
-            AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
-
-            if (aspnetuser != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
 
+                try
+                {
 
-                Concierge concirge = new Concierge()
-            {
-                ConciergeName= model.FirstName + " " + model.LastName,
-                Street= model.Street,
-                State= model.State,
-                City= model.City,
-                ZipCode= model.ZipCode,
-                CreatedDate= DateTime.Now,
-                RegionId= 1
-            };
-            _context.Concierges.Add(concirge);
+                    AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
+
+                    if (aspnetuser != null)
+                    {
 
 
-            Request request = new Request()
-            {
-                UserId = 6,
-                RequestTypeId = 2,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber,
-                Email = model.Email,
-                Status = 1,
-                IsUrgentEmailSent = new BitArray(1),
-                CreatedDate = DateTime.Now
-
-            };
-            _context.Requests.Add(request);
-
-            RequestClient requestclient = new RequestClient()
-            {
-                FirstName = model.PatientFirstName,
-                LastName = model.PatientLastName,
-                IntDate = model.PatientDOB.Day,
-                IntYear = model.PatientDOB.Year,
-                StrMonth = (model.PatientDOB.Month).ToString(),
-                Email = model.PatientEmail,
-                PhoneNumber = model.PatientPhoneNumber,
-                Notes = model.Symptoms
+                        Concierge concirge = new Concierge()
+                        {
+                            ConciergeName = model.FirstName + " " + model.LastName,
+                            Street = model.Street,
+                            State = model.State,
+                            City = model.City,
+                            ZipCode = model.ZipCode,
+                            CreatedDate = DateTime.Now,
+                            RegionId = 1
+                        };
+                        await _context.Concierges.AddAsync(concirge);
 
 
+                        Request request = new Request()
+                        {
+                            UserId = 6,
+                            RequestTypeId = 2,
+                            FirstName = model.FirstName,
+                            LastName = model.LastName,
+                            PhoneNumber = model.PhoneNumber,
+                            Email = model.Email,
+                            Status = 1,
+                            IsUrgentEmailSent = new BitArray(1),
+                            CreatedDate = DateTime.Now
 
-                //Request= request,
-            };
+                        };
+                        await _context.Requests.AddAsync(request);
 
-            RequestConcierge requestConcierge = new RequestConcierge()
-            {
-                RequestId= request.RequestId,
-                ConciergeId= concirge.ConciergeId
-            };
+                        RequestClient requestclient = new RequestClient()
+                        {
+                            FirstName = model.PatientFirstName,
+                            LastName = model.PatientLastName,
+                            IntDate = model.PatientDOB.Day,
+                            IntYear = model.PatientDOB.Year,
+                            StrMonth = (model.PatientDOB.Month).ToString(),
+                            Email = model.PatientEmail,
+                            PhoneNumber = model.PatientPhoneNumber,
+                            Notes = model.Symptoms
 
 
-            request.RequestClients.Add(requestclient);
-            _context.RequestClients.Add(requestclient);
-            _context.SaveChanges();
-            };
+
+                            //Request= request,
+                        };
+
+                        RequestConcierge requestConcierge = new RequestConcierge()
+                        {
+                            RequestId = request.RequestId,
+                            ConciergeId = concirge.ConciergeId
+                        };
+
+
+                        request.RequestClients.Add(requestclient);
+                        await _context.RequestClients.AddAsync(requestclient);
+                        await _context.SaveChangesAsync();
+                        transaction.Commit();
+                    };
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+
+            }
         }
     }
 }

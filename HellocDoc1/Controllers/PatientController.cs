@@ -149,11 +149,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Family_request(FamilyRequestModel model)
+        public async Task<IActionResult> Family_request(FamilyRequestModel model)
         {
             if (ModelState.IsValid)
             {
-                familyRequest.Family_request(model);
+                await familyRequest.Family_request(model);
                 return RedirectToAction("Submit_request", "Patient");
             }
             return View();
@@ -166,11 +166,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Concierge_request(ConciergeRequestModel model)
+        public async Task<IActionResult> Concierge_request(ConciergeRequestModel model)
         {
             if (ModelState.IsValid)
             {
-                concirgeRequest.Concierge_request(model);
+                await concirgeRequest.Concierge_request(model);
                 return RedirectToAction("Index", "Home");
             }
             return View();
@@ -183,11 +183,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Business_request(BusinessRequestModel model)
+        public async Task<IActionResult> Business_request(BusinessRequestModel model)
         {
             if (ModelState.IsValid)
             {
-                businessRequest.Business_request(model);
+                await businessRequest.Business_request(model);
                 return RedirectToAction("Submit_request", "Patient");
             }
             return View();
@@ -196,7 +196,7 @@ namespace HellocDoc1.Controllers
         public IActionResult SubmitInformationMe()
         {
             return View();
-        }
+        }   
 
         public IActionResult SubmitInformationSomeone(SubmitInfoViewModel model)
         {

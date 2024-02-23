@@ -4,6 +4,6 @@ namespace Services.Contracts
 {
     public interface IConcirgeRequest
     {
-        void Concierge_request(ConciergeRequestModel model);
+        Task Concierge_request(ConciergeRequestModel model);
     }
 }

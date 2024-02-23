@@ -1,17 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
+using Services.Models;
 
 namespace HellocDoc1.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly IAdminServices _adminServices;
+
+        public AdminController(IAdminServices adminServices)
+        {
+            _adminServices = adminServices;
+            
+        }
         public IActionResult AdminDashboard()
         {
-            return View();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestCount = _adminServices.AdminDashboard().requestCount;
+            return View(model);
         }
+
 
         public IActionResult NewState()
         {
-            return View();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients= _adminServices.NewState().requestClients;
+
+            return View(model);
         }
         public IActionResult PendingState()
         {

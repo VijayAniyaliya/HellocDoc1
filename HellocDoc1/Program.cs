@@ -3,6 +3,7 @@ using HalloDoc.Utility;
 using HellocDoc1.Services;
 using HelloDoc1.Services;
 using Services.Contracts;
+using Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddTransient<IAdminServices, AdminServices>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(10);

@@ -60,15 +60,15 @@
         <div class="shadow">
 
             <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
-                    
-                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
 
-                    <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info">Profile</a>
+                <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info mr-3">Dashboard</a>
+
+                <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info">Profile</a>
 
             </div>
         </div>
         <div class="tab-content dashboard" id="pills-tabContent">
-        @RenderBody()
+            @RenderBody()
         </div>
         <footer class="bg-dark  text-white d-flex justify-content-end py-2 fixed-bottom">
             <a href="#" class="text-secondary my-auto"><span class="text-white mr-1">Terms of condition</span></a>

@@ -1,42 +1,96 @@
-﻿@{
+﻿@using System.Globalization;
+@model Services.Models.AdminDashboardViewModel
+
+@{
     Layout = "";
 }
 
 
-<table class="table table-secondary">
-    <thead>
+<table class="table ">
+    <thead class="table-secondary">
         <tr>
             <th scope="col">Name</th>
+            <th></th>
             <th scope="col">Date Of Birth</th>
             <th scope="col">Requestor</th>
-            <th scope="col">Request Date</th>
+            <th scope="col">Requested Date</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
             <th scope="col">Notes</th>
             <th scope="col">Chat With</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
-        <tr class="table-light">
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-        </tr>
-        <tr class="table-light">
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-        </tr>
+        @foreach (var item in Model.requestClients)
+        {
+
+            <tr class="style_@item.Request.RequestTypeId">
+                <td scope="row">@item.FirstName, @item.LastName</td>
+                <td><i class="bi bi-envelope h5"></i></td>
+                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
+                @* @DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(Int32.Parse(@item.StrMonth)) *@
+                @switch (item.Request.RequestTypeId)
+                {
+                    case 1:
+                        <td>Patient @item.Request.FirstName, @item.Request.LastName</td>
+                        break;
+                    case 2:
+                        <td>Family/Friend @item.Request.FirstName, @item.Request.LastName</td>
+                        break;
+                    case 3:
+                        <td>Business @item.Request.FirstName, @item.Request.LastName</td>
+                        break;
+                    case 4:
+                        <td>Concierge @item.Request.FirstName, @item.Request.LastName</td>
+                        break;
+                }
+
+                <td>@item.Request.CreatedDate</td>
+
+                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button></td>
+
+                <td>@item.Street @item.City @item.State</td>
+                <td>@item.Notes</td>
+                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
+                <td><button type="button" class="btn border rounded-3 text-white">Actions</button></td>
+            </tr>
+        }
 
     </tbody>
 </table>
+
+
+
+@* <div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        Accordion Item #2
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        Accordion Item #3
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+    </div>
+  </div>
+</div> *@

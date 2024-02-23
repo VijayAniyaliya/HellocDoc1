@@ -7,16 +7,33 @@
     color: white;
 }
 
+.canvas {
+    display: none;
+}
+
+@media only screen and (max-width:768px) {
+    .canvas {
+        display: block;
+        position: absolute;
+        top: 8px;
+        left: 2px;
+    }
+
+    .doc-img {
+        margin-left: 14%;
+    }
+}
+
 .new {
     background-color: #E9EAEF;
     border: 1px solid rgb(62, 43, 190);
 }
 
-    .new > div {
+    .new {
         color: rgb(62, 43, 190);
     }
 
-    .new:hover div {
+    .new:hover {
         color: white;
     }
 
@@ -24,16 +41,22 @@
         background-color: #4f68e2;
     }
 
+.newActive {
+    background-color: #4f68e2;
+    color:white;
+}
+
+
 .pending {
     background-color: #E5F2FA;
     border: 1px solid #47cde7;
 }
 
-    .pending > div {
+    .pending  {
         color: #47cde7;
     }
 
-    .pending:hover div {
+    .pending:hover  {
         color: white;
     }
 
@@ -41,17 +64,21 @@
         background-color: #47cde7;
     }
 
+.pendingActive {
+    background-color: #47cde7;
+    color: white;
+}
 
 .active {
     background-color: #E9F0E8;
     border: 1px solid #628D61;
 }
 
-    .active > div {
+    .active  {
         color: #628D61;
     }
 
-    .active:hover div {
+    .active:hover  {
         color: white;
     }
 
@@ -59,16 +86,21 @@
         background-color: #628D61;
     }
 
+.activeStateActive {
+    background-color: #628D61;
+    color: white;
+}
+
 .conclude {
     background-color: #F7E6EC;
     border: 1px solid #C184AE;
 }
 
-    .conclude > div {
+    .conclude  {
         color: #C184AE;
     }
 
-    .conclude:hover div {
+    .conclude:hover  {
         color: white;
     }
 
@@ -76,16 +108,21 @@
         background-color: #e465bc;
     }
 
+.concludeActive {
+    background-color: #e465bc;
+    color: white;
+}
+
 .toclose {
     background-color: #E5F2FA;
     border: 1px solid #479ae7;
 }
 
-    .toclose > div {
+    .toclose {
         color: #479ae7;
     }
 
-    .toclose:hover div {
+    .toclose:hover  {
         color: white;
     }
 
@@ -93,23 +130,33 @@
         background-color: #477fe7;
     }
 
+.tocloseActive {
+    background-color: #477fe7;
+    color: white;
+}
+
 
 .unpaid {
     background-color: #E9EAEF;
     border: 1px solid rgb(157, 67, 199);
 }
 
-    .unpaid > div {
+    .unpaid  {
         color: rgb(157, 67, 199);
     }
 
-    .unpaid:hover div {
+    .unpaid:hover  {
         color: white;
     }
 
     .unpaid:hover {
         background-color: #ab40dd;
     }
+
+.unpaidActive {
+    background-color: #ab40dd;
+    color: white;
+}
 
 @media only screen and (max-width:915px) {
     .link-text {
@@ -121,4 +168,25 @@
     .icons {
         display: none;
     }
+}
+
+
+.style_1 {
+    background-color: forestgreen;
+    color: white;
+}
+
+.style_2 {
+    background-color: #c7b008;
+    color: white;
+}
+
+.style_3 {
+    background-color: #ec3e95;
+    color: white;
+}
+
+.style_4 {
+    background-color:#0e94f3;
+    color: white;
 }
