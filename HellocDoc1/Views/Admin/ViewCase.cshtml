@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "ViewCase";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between pt-1">
+        <div class="d-flex flex-row">
+        <h4 class="mr-3 fw-bold">New Request</h4>
+        <span class="border rounded-pill bg-success text-white px-3 pt-1 pb-2 h5">Patient</span>
+        </div>
+        <a   class="btn back-btn border-2 border-info text-info px-2 pt-2 fw-bold">
+            &lt; Back
+        </a>
+
+    </div>
+    <div class="px-3 pt-4 mt-4 mb-5 pb-4 shadow rounded-3" >
+
+        <div class="patient-info">
+            <div class="h5 mb-4 fw-bold">Patient Information</div>
+            <div class="d-flex flex-column my-3">
+                <span class="text-secondary">Confirmation Number</span>
+                <span class="text-info h4">MD123PA</span>
+            </div>
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea  class="form-control" placeholder="patient notes"
+                                  id="floatingTextarea2" style="height: 100px" disabled></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Patient Notes
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text"  class="form-control" id="floatingInput"
+                               placeholder="your first name" disabled/>
+                        <label for="floatingInput" class="">Your First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text"  class="form-control" id="floatingInput" placeholder="last name" disabled />
+                        <label for="floatingInput" class="">Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date"  class="form-control" id="floatingInput" placeholder="date of birth" disabled />
+                        <label for="floatingInput" class="">Date of Birth</label>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-10 col-9">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" class="form-control pt-3 pb-3" id="phone" disabled />
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-2 col-3 p-0 "> 
+
+                    <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-telephone h3 fw-bolder"></i></button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                               placeholder="abc@gmail.com" disabled/>
+                        <label for="floatingInput" class="">Email</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="location-info mt-3">
+            <div class="h5 mb-4 fw-bold">Location Information</div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="region" disabled />
+                        <label for="floatingInput" class="">Region</label>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-10 col-9">
+                    <div class="form-floating mb-3">
+                        <input type="text"  class="form-control" id="floatingInput"
+                               placeholder="address" disabled />
+                        <label for="floatingInput" class="">Business Name/Address</label>
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-2 col-3 p-0 ">
+                    <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-geo-alt h3 fw-bolder"></i></button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="room" disabled/>
+                        <label for="floatingInput" class="">Room # / Suite (Optional)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-end mb-4">
+            <button type="button" class="btn bg-info text-white h5">Assign</button>
+            <a class="btn bg-info text-white h5">View Notes</a>
+            <button type="button" class="btn bg-danger text-white h5">Cancel</button>
+        </div>
+    </div>
+</div>
+<br>
+
+<script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+</script>

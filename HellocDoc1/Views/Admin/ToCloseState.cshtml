@@ -2,28 +2,130 @@
     Layout = "";
 }
 
+@model Services.Models.AdminDashboardViewModel
 
-<table class="table table-secondary">
-    <thead>
+
+<table class="table d-md-table d-none">
+    <thead class=" table-secondary">
         <tr>
             <th scope="col">Name</th>
+            <th></th>
             <th scope="col">Date Of Birth</th>
-            <th scope="col">Requestor</th>
+            <th scope="col">Region</th>
+            <th scope="col">Physician Name</th>
+            <th>Date of Service</th>
+            <th scope="col">Address</th>
+            <th scope="col">Notes</th>
+            <th scope="col">Chat With</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
-        <tr class="table-light">
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-        </tr>
-        <tr class="table-light">
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Mark</td>
-        </tr>
+        @foreach (var item in Model.requestClients)
+        {
+            <tr class="style_@item.Request.RequestTypeId">
+                <td scope="row">@item.FirstName, @item.LastName</td>
+                <td><i class="bi bi-envelope h5"></i></td>
+                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
+                <td>@item.Request.Physician.FirstName</td>
+                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
+                <td>@item.Request.CreatedDate</td>
+
+                <td>@item.Street @item.City @item.State</td>
+                <td>@item.Notes</td>
+                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
+                <td><button type="button" class="btn border rounded-3 text-white">Actions</button></td>
+            </tr>
+        }
 
     </tbody>
 </table>
+
+
+<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+    <div class="accordion-item">
+        @foreach (var item in Model.requestClients)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.RequestId" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                    <div class="col d-flex flex-column">
+                        <span class="">@item.FirstName, @item.LastName</span>
+                        <span class=" mt-4">@item.Street @item.City @item.State</span>
+                    </div>
+                    <div class="col d-flex flex-column text-end mt-2 p-0">
+                        <div>
+                            @switch (item.Request.RequestTypeId)
+                            {
+                                case 1:
+                                    <span>Patient</span>
+                                    <i class="bi bi-circle-fill text-success h6"></i>
+                                    break;
+                                case 2:
+                                    <span>Family/Friend</span>
+                                    <i class="bi bi-circle-fill text-warning h6"></i>
+                                    break;
+                                case 3:
+                                    <span>Business</span>
+                                    <i class="bi bi-circle-fill " style="color:pink;"></i>
+                                    break;
+                                case 4:
+                                    <span>Concierge</span>
+                                    <i class="bi bi-circle-fill text-primary h6"></i>
+                                    break;
+                            }
+
+                        </div>
+                        <div>
+                            <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:150px">
+                                Map Location
+                            </div>
+                        </div>
+
+                    </div>
+                </button>
+                <hr class="m-0">
+            </h2>
+
+            <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
+                    <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
+                    <div><i class="bi bi-card-text mr-1 icn"></i>Transfer Notes: abc</div>
+                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service: @item.Request.CreatedDate</div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Region: @item.Request.FirstName</div>
+                </div>
+                <div class="row mx-3">
+                    <div class="col-6 ps-0 pr-3 pb-2">
+                        <a class="btn w-100 bg-danger  text-white rounded-pill p-1 btn-sm">Close Case</a>
+                    </div>
+                    <div class="col-6 p-0  pb-2">
+                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                    </div>
+                    <div class="col-6 p-0 pr-3 pb-2">
+                        <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background:#3c6b5d;">Doctor Note</a>
+                    </div>
+                    <div class="col-6 p-0 pb-2">
+                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
+                    </div>
+                    <div class="col-6 p-0 pr-3 pb-2">
+                        <a class="btn w-100  bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                    </div>
+                    <div class="col-6 p-0 pb-2">
+                        <a class="btn w-100  bg-warning text-white rounded-pill p-1 btn-sm">Clear Case</a>
+                    </div>
+                    <div class="col-6 p-0 pr-3">
+                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pt-2">
+                    <span>Chat with: </span>
+                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
+                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -8,5 +8,10 @@ namespace Services.Contracts
         AdminDashboardViewModel NewState();
 
         AdminDashboardViewModel AdminDashboard();
+        List<RequestClient> PendingState();
+        List<RequestClient> ActiveState();
+        List<RequestClient> ConcludeState();
+        List<RequestClient> ToCloseState();
+        List<RequestClient> UnpaidState();
     }
 }

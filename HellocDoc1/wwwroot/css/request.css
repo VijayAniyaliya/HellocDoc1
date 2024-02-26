@@ -146,5 +146,10 @@ body{
 .eye-icon {
     position: relative;
     bottom: 42px;
-    left: 94%;
+    left: 94%;  
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
 }

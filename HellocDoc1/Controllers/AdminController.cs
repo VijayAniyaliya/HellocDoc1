@@ -16,7 +16,7 @@ namespace HellocDoc1.Controllers
         public IActionResult AdminDashboard()
         {
             AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestCount = _adminServices.AdminDashboard().requestCount;
+            model = _adminServices.AdminDashboard();
             return View(model);
         }
 
@@ -30,23 +30,38 @@ namespace HellocDoc1.Controllers
         }
         public IActionResult PendingState()
         {
-            return View();
+            AdminDashboardViewModel model= new AdminDashboardViewModel();
+            model.requestClients = _adminServices.PendingState();
+            return View(model);
         }
         public IActionResult ActiveState()
         {
-            return View();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = _adminServices.ActiveState();
+            return View(model);
         }
         public IActionResult ConcludeState()
         {
-            return View();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = _adminServices.ConcludeState();  
+            return View(model);
         }
 
         public IActionResult ToCloseState()
         {
-            return View();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = _adminServices.ToCloseState();
+            return View(model);
         }
 
         public IActionResult UnpaidState()
+        {
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = _adminServices.UnpaidState();
+            return View(model);
+        }
+
+        public IActionResult ViewCase()
         {
             return View();
         }

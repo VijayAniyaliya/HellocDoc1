@@ -48,6 +48,8 @@ namespace HellocDoc1.Services.Models
         public string PatientState { get; set; }
 
         [Required(ErrorMessage = "ZipCode is required")]
+
+        [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string PatientZipCode { get; set; }
 
         public int PatientRoom { get; set; }
