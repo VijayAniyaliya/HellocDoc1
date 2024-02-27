@@ -10,64 +10,64 @@
 
         <div class="row  mt-3 mb-4 mx-auto">
 
-            <div class="col-md-2 col-4 px-2 pb-2" >
-                <div class="px-2 new newActive rounded-3 pt-1  " id="pills-new-tab" onclick="newState()">
-            
-                        <i class="bi bi-patch-plus icons h6"></i>
+            <div class="col-md-2 col-4 px-2 pb-2 status" id="1">
+                <div class="px-2 new newActive rounded-3 pt-1  " id="pills-new-tab">
 
-                        <span class="ms-1 small fw-bold newTxt">NEW</span>
-                  
+                    <i class="bi bi-patch-plus icons h6"></i>
+
+                    <span class="ms-1 small fw-bold newTxt">NEW</span>
+
                     <span class="mt-2 h4 newTxt d-block">@Model.newCount</span>
                 </div>
 
             </div>
-            <div class="col-md-2 col-4 px-2 pb-2" >
+            <div class="col-md-2 col-4 px-2 pb-2 status" id="2">
                 <div class="px-2 rounded-3 pending pt-1" id="pills-pending-tab" onclick="pendingState()">
-                    
-                        <i class="bi bi-clock-history icons h6"></i>
 
-                        <span class="ms-1 small fw-bold">PENDING</span>
-                  
+                    <i class="bi bi-clock-history icons h6"></i>
+
+                    <span class="ms-1 small fw-bold">PENDING</span>
+
                     <span class="mt-2 h4 d-block">@Model.pendingCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 pb-2" >
+            <div class="col-md-2 col-4 px-2 pb-2 status" id="3">
                 <div class="px-2 rounded-3 active pt-1" id="pills-active-tab" onclick="activeState()">
-                  
-                        <i class="bi bi-check2-circle icons h6"></i>
 
-                        <span class="ms-1 small fw-bold">ACTIVE</span>
-                  
+                    <i class="bi bi-check2-circle icons h6"></i>
+
+                    <span class="ms-1 small fw-bold">ACTIVE</span>
+
                     <span class="mt-2 h4 d-block">@Model.activeCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2" >
+            <div class="col-md-2 col-4 px-2 status" id="4">
                 <div class="px-2 rounded-3 conclude pt-1" id="pills-conclude-tab" onclick="concludeState()">
-                    
-                        <i class="bi bi-arrow-counterclockwise icons h6"></i>
 
-                        <span class="ms-1 small fw-bold">CONCLUDE</span>
-                
+                    <i class="bi bi-arrow-counterclockwise icons h6"></i>
+
+                    <span class="ms-1 small fw-bold">CONCLUDE</span>
+
                     <span class="mt-2 h4 d-block">@Model.concludeCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2" >
+            <div class="col-md-2 col-4 px-2 status" id="5">
                 <div class="px-2 rounded-3 toclose pt-1" id="pills-close-tab" onclick="closeState()">
-                    
-                        <i class="bi bi-x-circle icons h6"></i>
 
-                        <span class="ms-1 small fw-bold">TO CLOSE</span>
-                   
+                    <i class="bi bi-x-circle icons h6"></i>
+
+                    <span class="ms-1 small fw-bold">TO CLOSE</span>
+
                     <span class="mt-2 h4 d-block">@Model.tocloseCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2">
+            <div class="col-md-2 col-4 px-2 status" id="6">
                 <div class="px-2 rounded-3 unpaid pt-1" id="pills-unpaid-tab" onclick="unpaidState()">
-             
-                        <i class="bi bi-ban icons h6"></i>
 
-                        <span class="ms-1 small fw-bold">UNPAID</span>
-                    
+                    <i class="bi bi-ban icons h6"></i>
+
+                    <span class="ms-1 small fw-bold">UNPAID</span>
+
                     <span class="mt-2 h4 d-block">@Model.unpaidCount</span>
                 </div>
             </div>
@@ -117,23 +117,23 @@
 
 
                 <div class="col-xl-6 col-md-12 mt-2 ms-1 m-xl-0 text-xl-end">
-                    <button class="text-secondary mr-2 border-info rounded-2 bg-transparent all">
+                    <button class="text-secondary mr-2 border-info rounded-2 bg-transparent selected">
 
                         <span>ALL</span>
                     </button>
-                    <button class="text-secondary mr-2 border-0 bg-transparent patient">
+                    <button class="text-secondary mr-2 border-0 bg-transparent selected" id="1">
                         <i class="bi bi-circle-fill text-success mr-1"></i>
                         <span>Patient</span>
                     </button>
-                    <button class="text-secondary mr-2 border-0 bg-transparent family">
+                    <button class="text-secondary mr-2 border-0 bg-transparent selected" id="2">
                         <i class="bi bi-circle-fill text-warning mr-1"></i>
                         <span>Family/Friend</span>
                     </button>
-                    <button class="text-secondary mr-2 border-0 bg-transparent business">
+                    <button class="text-secondary mr-2 border-0 bg-transparent selected" id="3">
                         <i class="bi bi-circle-fill mr-1" style="color:pink;"></i>
                         <span>Business</span>
                     </button>
-                    <button class="text-secondary  mr-2 border-0 bg-transparent concierge">
+                    <button class="text-secondary  mr-2 border-0 bg-transparent selected" id="4">
                         <i class="bi bi-circle-fill text-primary mr-1"></i>
                         <span>Concierge</span>
                     </button>
@@ -153,7 +153,90 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+@* <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> *@
 <script>
+    // console.log("hello");
+
+    // $(document).ready(function () {
+
+    //     console.log("hello2");
+    //     var url;
+    //     $('.status').on('click', function (e) {
+    //         console.log("two");
+    //         e.preventDefault();
+    //         var target = $(this).attr('id');
+    //         console.log(target);
+    //         var status;
+
+    //         switch (target) {
+    //             case '1':
+    //                 status = '1';
+    //                 url = '/Admin/NewState'
+    //                 break;
+    //             case '2':
+    //                 status = '2';
+    //                 url = '/Admin/PendingState'
+    //                 break;
+    //             case '3':
+    //                 status = '3';
+    //                 url = '/Admin/ActiveState'
+    //                 break;
+    //             case '4':
+    //                 status = '4';
+    //                 url = '/Admin/ConcludeState'
+    //                 break;
+    //             case '5':
+    //                 status = '5';
+    //                 url = '/Admin/ToCLoseState'
+    //                 break;
+    //             case '6':
+    //                 status = '6';
+    //                 url = '/Admin/UnpaidState'
+    //                 break;
+    //             default:
+    //         }
+    //         console.log(url);
+
+    //     });
+
+    //     $('.selected').on('click', function (e) {
+    //         console.log("two");
+    //         e.preventDefault();
+    //         var target = $(this).attr('id');
+    //         console.log(target);
+    //         var requesttype;
+    //         switch (target) {
+    //             case '1':
+    //                 requesttype = '1';
+    //                 break;
+    //             case '2':
+    //                 requesttype = '2';
+    //                 break;
+    //             case '3':
+    //                 requesttype = '3';
+    //                 break;
+    //             case '4':
+    //                 requesttype = '4';
+    //                 break;
+    //             default:
+    //         }
+    //         $.ajax({
+    //             url: url,
+    //             data: { "status": status, "requesttype": requesttype },
+    //             success: function (response) {
+    //                 $('#tableContent').html(response);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.error(error);
+    //             }
+    //         });
+
+    //     });
+    // });
+
+
+
+
 
     $(document).ready(function () {
         $.ajax({
@@ -255,7 +338,7 @@
             });
         });
     });
-    
+
 
     function newState() {
         document.getElementById("pills-new-tab").classList.add("newActive");

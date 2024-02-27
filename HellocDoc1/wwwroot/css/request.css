@@ -1,22 +1,24 @@
-body{
+body {
     /* min-height: 100vh; */
 }
 
-.container-fluid{
+.container-fluid {
     /* background: #fafafa; */
 }
 
-.main-content{
+.main-content {
     border-radius: 1%;
 }
 
-.back-btn{
+.back-btn {
     width: 80px;
 }
-.submit-btn{
+
+.submit-btn {
     width: 80px;
 }
-.cancel-btn{
+
+.cancel-btn {
     width: 80px;
 }
 
@@ -25,76 +27,80 @@ body{
 .dark-mode {
     background-color: black;
     color: white;
-  }
-
-  /*.footer-content{*/
-    /* position: absolute; */
-    /* bottom: 0px; */
-  /*}*/
-
-  .iti{
-    display: inline-block;
-    width: 100%;
-  }
-
-  .iti__country-list {
-  max-width: 360px;
-  /* background: transparent; */
 }
 
-.form-floating > .form-control{
+/*.footer-content{*/
+/* position: absolute; */
+/* bottom: 0px; */
+/*}*/
+
+.iti {
+    display: inline-block;
+    width: 100%;
+}
+
+.iti__country-list {
+    max-width: 360px;
+    /* background: transparent; */
+}
+
+.form-floating > .form-control {
     background: transparent;
 }
 
-#phone{
+#phone {
     /* background: transparent; */
 }
 
 .form-control {
     /* border-width: 2px; */
     /* border-color: gray; */
-  } 
-  .form-control:focus {
-    border-color: #01bce9;
-    box-shadow: none;
-  }
-  label {
+}
+
+    .form-control:focus {
+        border-color: #01bce9;
+        box-shadow: none;
+    }
+
+label {
     color: gray;
-  }
-  .form-floating > .form-control:focus ~ label {
+}
+
+.form-floating > .form-control:focus ~ label {
     color: #01bce9;
-    
-  }
+}
 
-  .custom-file-button input[type=file]::-webkit-file-upload-button {
+.custom-file-button input[type=file]::-webkit-file-upload-button {
     display: none;
-  }
-  .input-group input[type=file]::-webkit-file-upload-button {
-    display: none;
-  }
+}
 
-.Logout{
-    display:none;
+.input-group input[type=file]::-webkit-file-upload-button {
+    display: none;
+}
+
+.Logout {
+    display: none;
 }
 
 @media only screen and (max-width:425px) {
     .logout {
         display: none;
     }
-    .Logout{
-        display:block;
+
+    .Logout {
+        display: block;
     }
 }
 
-.dashboard-content{
-    border:0px solid black;
-    border-radius:10px;
+.dashboard-content {
+    border: 0px solid black;
+    border-radius: 10px;
 }
 
 .dashboard-content-aco {
     border: 0px solid black;
     border-radius: 10px;
-    display:none;
+    display: none;
 }
 
 @media only screen and (max-width:425px) {
@@ -103,29 +109,32 @@ body{
     }
 }
 
-@media only screen and (max-width:425px){
+@media only screen and (max-width:425px) {
     .dashboard-content-aco {
         border: 0px solid black;
         border-radius: 10px;
         display: block;
     }
 }
-.canvas{
-    display:none;
+
+.canvas {
+    display: none;
 }
 
 @media only screen and (max-width:505px) {
     .canvas {
-        display:block;
-        position:absolute;
-        top:8px;
-        left:2px;
+        display: block;
+        position: absolute;
+        top: 8px;
+        left: 2px;
     }
-    .canvas-content{
-        display:none;
+
+    .canvas-content {
+        display: none;
     }
-    .doc-img{
-        margin-left:14%;
+
+    .doc-img {
+        margin-left: 14%;
     }
 }
 
@@ -139,17 +148,22 @@ body{
     border-radius: 10px;
 }
 
-.passDisplay{
-    display:none;
+.passDisplay {
+    display: none;
 }
 
 .eye-icon {
     position: relative;
     bottom: 42px;
-    left: 94%;  
+    left: 94%;
 }
 
 .form-control:disabled, .form-control[readonly] {
     background-color: #e9ecef;
     opacity: 1;
 }
+
+
+
+
+

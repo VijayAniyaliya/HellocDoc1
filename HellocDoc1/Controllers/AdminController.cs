@@ -61,7 +61,13 @@ namespace HellocDoc1.Controllers
             return View(model);
         }
 
-        public IActionResult ViewCase()
+        public IActionResult ViewCase(int request_id)
+        {
+            ViewCaseViewModel data= _adminServices.ViewCase(request_id);
+            return View(data);
+        }
+
+        public IActionResult ViewNotes()
         {
             return View();
         }

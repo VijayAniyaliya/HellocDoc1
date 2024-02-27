@@ -241,3 +241,7 @@ label {
 .form-floating > .form-control:focus ~ label {
     color: #01bce9;
 }
+
+.dropdown-toggle::after {
+    display: none;
+}

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Context;
 using Data.Entity;
 using HellocDoc1.Services.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
@@ -84,6 +87,27 @@ namespace Services.Implementation
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToList();
             return clients;
+
+        }
+
+        public ViewCaseViewModel ViewCase(int request_id)
+        {
+            var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestClientId == request_id).FirstOrDefault();
+            ViewCaseViewModel model= new ViewCaseViewModel();
+            model.PatientNotes = data.Notes;
+            model.FirstName=data.FirstName;
+            model.LastName = data.LastName;
+            model.DOB = DateTime.Parse((data.IntDate).ToString() + "-" + data.StrMonth + "-" + (data.IntYear).ToString());
+            model.PhoneNumber = data.PhoneNumber;
+            model.Email = data.Email;
+            model.Region = data.City;
+            model.Address=data.City+ " " +data.State+ " " +data.ZipCode;
+            model.RequestTypeId = data.Request.RequestTypeId;
+            model.Status = data.Request.Status;
+       
+            return model;
+
+
 
         }
     }

@@ -13,5 +13,6 @@ namespace Services.Contracts
         List<RequestClient> ConcludeState();
         List<RequestClient> ToCloseState();
         List<RequestClient> UnpaidState();
+        ViewCaseViewModel  ViewCase(int request_id);
     }
 }

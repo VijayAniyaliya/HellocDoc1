@@ -1,21 +1,39 @@
-﻿@{
+﻿@model Services.Models.ViewCaseViewModel
+@{
     ViewData["Title"] = "ViewCase";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+
+
 
 <div class="container pt-3">
 
     <div class="d-flex justify-content-between pt-1">
         <div class="d-flex flex-row">
-        <h4 class="mr-3 fw-bold">New Request</h4>
-        <span class="border rounded-pill bg-success text-white px-3 pt-1 pb-2 h5">Patient</span>
+            <h4 class="mr-3 fw-bold">New Request</h4>            
+            @switch (Model.RequestTypeId)
+            {
+                case 1:
+                    <span class="border rounded-pill bg-success text-white px-3 pt-1 pb-2 h5">Patient</span>
+                    break;
+                case 2:
+                    <span class="border rounded-pill bg-warning text-white px-3 pt-1 pb-2 h5">Family/Friend</span>
+                    break;
+                case 3:
+                    <span class="border rounded-pill  text-white px-3 pt-1 pb-2 h5" style="background:pink;">Concierge</span>
+                    break;
+                case 4:
+                    <span class="border rounded-pill bg-primary text-white px-3 pt-1 pb-2 h5">Business</span>
+                    break;
+
+            }
         </div>
-        <a   class="btn back-btn border-2 border-info text-info px-2 pt-2 fw-bold">
+        <a asp-action="AdminDashboard" class="btn back-btn border-2 border-info text-info px-2 pt-2 fw-bold">
             &lt; Back
         </a>
 
     </div>
-    <div class="px-3 pt-4 mt-4 mb-5 pb-4 shadow rounded-3" >
+    <div class="px-3 pt-4 mt-4 mb-5 pb-4 shadow rounded-3">
 
         <div class="patient-info">
             <div class="h5 mb-4 fw-bold">Patient Information</div>
@@ -27,48 +45,52 @@
 
                 <div class="col-12">
                     <div class="form-floating mb-3">
-                        <textarea  class="form-control" placeholder="patient notes"
+                        <textarea class="form-control" asp-for="PatientNotes" placeholder="patient notes"
                                   id="floatingTextarea2" style="height: 100px" disabled></textarea>
                         <label for="floatingTextarea2" class="">
                             Patient Notes
                         </label>
                     </div>
+                    <hr />
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text"  class="form-control" id="floatingInput"
-                               placeholder="your first name" disabled/>
+                        <input type="text" class="form-control" asp-for="FirstName" id="floatingInput"
+                               placeholder="your first name" disabled />
                         <label for="floatingInput" class="">Your First Name</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text"  class="form-control" id="floatingInput" placeholder="last name" disabled />
+                        <input type="text" class="form-control" asp-for="LastName" id="floatingInput" placeholder="last name" disabled />
                         <label for="floatingInput" class="">Last Name</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date"  class="form-control" id="floatingInput" placeholder="date of birth" disabled />
+                        <input type="date" class="form-control" asp-for="DOB" id="floatingInput" placeholder="date of birth" disabled />
                         <label for="floatingInput" class="">Date of Birth</label>
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-10 col-9">
                     <div class="form-floating  mb-3">
-                        <input type="tel" class="form-control pt-3 pb-3" id="phone" disabled />
+                        <input type="tel" class="form-control pt-3 pb-3" asp-for="PhoneNumber" id="phone" disabled />
                     </div>
                 </div>
-                <div class="col-md-1 col-sm-2 col-3 p-0 "> 
+                <div class="col-md-1 col-sm-2 col-3 p-0 ">
 
                     <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-telephone h3 fw-bolder"></i></button>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput"
-                               placeholder="abc@gmail.com" disabled/>
+                        <input type="email" class="form-control" asp-for="Email" id="floatingInput"
+                               placeholder="abc@gmail.com" disabled />
                         <label for="floatingInput" class="">Email</label>
                     </div>
                 </div>
+                @*  <div class="col-md-3">
+                <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
+                </div> *@
             </div>
         </div>
 
@@ -78,13 +100,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="region" disabled />
+                        <input type="text" class="form-control" asp-for="Region" id="floatingInput" placeholder="region" disabled />
                         <label for="floatingInput" class="">Region</label>
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-10 col-9">
                     <div class="form-floating mb-3">
-                        <input type="text"  class="form-control" id="floatingInput"
+                        <input type="text" class="form-control" asp-for="Address" id="floatingInput"
                                placeholder="address" disabled />
                         <label for="floatingInput" class="">Business Name/Address</label>
                     </div>
@@ -94,7 +116,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="room" disabled/>
+                        <input type="text" class="form-control" asp-for="Room" id="floatingInput" placeholder="room" disabled />
                         <label for="floatingInput" class="">Room # / Suite (Optional)</label>
                     </div>
                 </div>
