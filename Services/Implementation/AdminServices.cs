@@ -107,8 +107,29 @@ namespace Services.Implementation
        
             return model;
 
+        }
+            
+        public ViewNotesViewModel ViewNotes(int request_id)
+        {
+            var data = _context.RequestStatusLogs.Where(a=> a.RequestId == request_id).FirstOrDefault();
+            var data1=_context.RequestNotes.Where(a=> a.RequestId == request_id).FirstOrDefault();
+            ViewNotesViewModel model= new ViewNotesViewModel();
+            model.TransferNotes = data.Notes;
+            model.PhysicianNotes = data1.PhysicianNotes;
+            model.AdminNotes = data1.AdminNotes;
+            model.RequestId= request_id;
 
+            return model;
 
+        }
+
+        public void AddNotes(ViewNotesViewModel model, int request_id)
+        {
+            var data = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
+            data!.AdminNotes = model.AdditionalNotes;
+
+            _context.Update(data);
+            _context.SaveChanges();
         }
     }
 }

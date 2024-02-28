@@ -14,5 +14,7 @@ namespace Services.Contracts
         List<RequestClient> ToCloseState();
         List<RequestClient> UnpaidState();
         ViewCaseViewModel  ViewCase(int request_id);
+        ViewNotesViewModel ViewNotes(int request_id);
+        void AddNotes(ViewNotesViewModel model, int request_id);
     }
 }

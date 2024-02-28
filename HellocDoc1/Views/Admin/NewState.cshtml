@@ -25,7 +25,7 @@
         @foreach (var item in Model.requestClients)
         {
 
-            <tr class="style_@item.Request.RequestTypeId " >
+            <tr class="style_@item.Request.RequestTypeId ">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
                 <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
@@ -60,19 +60,58 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-x-circle mr-1"></i> Cancel Case</a></li>
+                            <li><button class="dropdown-item ps-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.RequestClientId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Block Patient</a></li>
                         </ul>
                     </div>
                 </td>
+
 
             </tr>
         }
 
     </tbody>
 </table>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Confirm Cancellation</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row">
+
+                <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold">Test test</p>
+                </div>
+                <div class=" gap-2">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected>Reason for Cancellation</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                        <label for="floatingSelect"></label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="additional notes"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Provide Additonal Notes
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-info text-white">Continue</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">

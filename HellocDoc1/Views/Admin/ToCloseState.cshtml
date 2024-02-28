@@ -34,7 +34,18 @@
                 <td>@item.Street @item.City @item.State</td>
                 <td>@item.Notes</td>
                 <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
-                <td><button type="button" class="btn border rounded-3 text-white">Actions</button></td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.RequestClientId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                        </ul>
+                    </div>
+                </td>
             </tr>
         }
 

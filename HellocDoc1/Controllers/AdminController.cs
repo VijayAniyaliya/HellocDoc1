@@ -4,6 +4,7 @@ using Services.Models;
 
 namespace HellocDoc1.Controllers
 {
+    [Route("[controller]/[action]")]
     public class AdminController : Controller
     {
         private readonly IAdminServices _adminServices;
@@ -67,9 +68,17 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
-        public IActionResult ViewNotes()
+        public IActionResult ViewNotes(int request_id)
         {
-            return View();
+            ViewNotesViewModel data= _adminServices.ViewNotes(request_id);
+            return View(data);
+        }
+
+        [Route("{request_id}")]
+        public IActionResult AddNotes(ViewNotesViewModel model, int request_id)
+        {
+            _adminServices.AddNotes(model, request_id);
+            return RedirectToAction("ViewNotes",new {request_id=request_id});
         }
     }
 }

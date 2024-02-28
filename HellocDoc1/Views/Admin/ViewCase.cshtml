@@ -10,7 +10,7 @@
 
     <div class="d-flex justify-content-between pt-1">
         <div class="d-flex flex-row">
-            <h4 class="mr-3 fw-bold">New Request</h4>            
+            <h4 class="mr-3 fw-bold">New Request</h4>
             @switch (Model.RequestTypeId)
             {
                 case 1:
@@ -88,9 +88,9 @@
                         <label for="floatingInput" class="">Email</label>
                     </div>
                 </div>
-                @*  <div class="col-md-3">
-                <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
-                </div> *@
+                <div class="col-md-3">
+                    <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
+                </div>
             </div>
         </div>
 
@@ -104,7 +104,7 @@
                         <label for="floatingInput" class="">Region</label>
                     </div>
                 </div>
-                <div class="col-md-5 col-sm-10 col-9">
+                <div class="col-md-5 col-sm-9 col-9">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" asp-for="Address" id="floatingInput"
                                placeholder="address" disabled />
