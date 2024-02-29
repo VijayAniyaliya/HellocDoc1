@@ -21,7 +21,7 @@ namespace Services.Implementation
         public AdminServices(ApplicationDbContext context)
         {
             _context = context;
-            
+
         }
 
         public AdminDashboardViewModel AdminDashboard()
@@ -48,7 +48,7 @@ namespace Services.Implementation
         public AdminDashboardViewModel NewState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
-            
+
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
             return model;
@@ -93,31 +93,31 @@ namespace Services.Implementation
         public ViewCaseViewModel ViewCase(int request_id)
         {
             var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestClientId == request_id).FirstOrDefault();
-            ViewCaseViewModel model= new ViewCaseViewModel();
+            ViewCaseViewModel model = new ViewCaseViewModel();
             model.PatientNotes = data.Notes;
-            model.FirstName=data.FirstName;
+            model.FirstName = data.FirstName;
             model.LastName = data.LastName;
             model.DOB = DateTime.Parse((data.IntDate).ToString() + "-" + data.StrMonth + "-" + (data.IntYear).ToString());
             model.PhoneNumber = data.PhoneNumber;
             model.Email = data.Email;
             model.Region = data.City;
-            model.Address=data.City+ " " +data.State+ " " +data.ZipCode;
+            model.Address = data.City + " " + data.State + " " + data.ZipCode;
             model.RequestTypeId = data.Request.RequestTypeId;
             model.Status = data.Request.Status;
-       
+
             return model;
 
         }
-            
+
         public ViewNotesViewModel ViewNotes(int request_id)
         {
-            var data = _context.RequestStatusLogs.Where(a=> a.RequestId == request_id).FirstOrDefault();
-            var data1=_context.RequestNotes.Where(a=> a.RequestId == request_id).FirstOrDefault();
-            ViewNotesViewModel model= new ViewNotesViewModel();
+            var data = _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data1 = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
+            ViewNotesViewModel model = new ViewNotesViewModel();
             model.TransferNotes = data.Notes;
             model.PhysicianNotes = data1.PhysicianNotes;
             model.AdminNotes = data1.AdminNotes;
-            model.RequestId= request_id;
+            model.RequestId = request_id;
 
             return model;
 
@@ -130,6 +130,34 @@ namespace Services.Implementation
 
             _context.Update(data);
             _context.SaveChanges();
+        }
+
+        //public CancelCaseViewModel cancelCase(CancelCaseViewModel model)
+        //{
+        //    CancelCaseViewModel model1 = new CancelCaseViewModel();
+        //    List<CaseTag> data = _context.CaseTags.ToList();
+        //    model1.ReasonForCancel = data;
+
+        //    return model1;
+        //}
+
+        public async Task CancelCase(CancelCaseViewModel model, int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            data.Status = 5;
+
+            RequestStatusLog requestStatusLog = new RequestStatusLog()
+            {
+                RequestId = request_id,
+                Status = 5,
+                Notes = model.AdditionalNotes,
+                CreatedDate = DateTime.Now,
+
+            };
+
+            _context.Requests.Update(data);
+            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            await _context.SaveChangesAsync();
         }
     }
 }

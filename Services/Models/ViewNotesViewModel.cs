@@ -12,7 +12,7 @@ namespace Services.Models
         public string? PhysicianNotes { get; set; }
 
         public string? AdminNotes { get; set; }
-        public string AdditionalNotes { get; set; }
+        public string? AdditionalNotes { get; set; }
 
         public int RequestId { get; set; }
     }

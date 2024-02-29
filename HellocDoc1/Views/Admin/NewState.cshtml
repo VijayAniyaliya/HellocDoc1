@@ -59,11 +59,11 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
-                            <li><button class="dropdown-item ps-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
+                            <li><a class="dropdown-item ps-3" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop1"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            <li><button class="dropdown-item ps-3" id="cancelcase" onclick="SetCancelInfo(@item.RequestId, '@item.Request.FirstName')"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.RequestClientId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Block Patient</a></li>
+                            <li><a class="dropdown-item ps-3" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><i class="bi bi-slash-circle mr-1"></i> Block Patient</a></li>
                         </ul>
                     </div>
                 </td>
@@ -74,44 +74,84 @@
 
     </tbody>
 </table>
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+@* <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="staticBackdropLabel">Confirm Cancellation</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Assign Request</h5>
                 <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="d-flex flex-row">
 
-                <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold">Test test</p>
+                    <p class="text-secondary mr-1">To assign this request, search and select another physician.</p>
                 </div>
                 <div class=" gap-2">
                     <div class="form-floating mb-3">
                         <select class="form-select text-secondary" id="floatingSelect" aria-label="Floating label select example">
-                            <option selected>Reason for Cancellation</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option selected>Narrow Search by Region</option>
+                            <option value="1">abc</option>
+                            <option value="2">xyz</option>
+                            <option value="3">test</option>
                         </select>
                         <label for="floatingSelect"></label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" placeholder="additional notes"
+                        <select class="form-select text-secondary" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected>Select Physician</option>
+                            <option value="1">test1</option>
+                            <option value="2">test2</option>
+                            <option value="3">test3</option>
+                        </select>
+                        <label for="floatingSelect"></label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="description"
                                   id="floatingTextarea2" style="height: 100px"></textarea>
                         <label for="floatingTextarea2" class="">
-                            Provide Additonal Notes
+                            Description
                         </label>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-info text-white">Continue</button>
+                <button type="button" class="btn bg-info text-white">Submit</button>
                 <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Confirm Block</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row">
+
+                    <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold">Test test</p>
+                </div>
+                <div >
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" placeholder="reason"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Reason for Block Request
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-info text-white">Confirm</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+@* <div id="modal">
+</div> *@
 
 
 <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
@@ -162,6 +202,11 @@
             </h2>
 
             <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+@*                 <div class="d-flex justify-content-end d-inline">
+                    <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase">
+                        View Case
+                    </div>
+                </div> *@
                 <div class="accordion-body d-flex flex-column gap-1">
                     <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
@@ -192,3 +237,16 @@
         }
     </div>
 </div>
+<partial name="_CancelCase.cshtml" model=null />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function SetCancelInfo(id, name) {
+
+         $("#Name").append(name);
+
+        const myModal = new bootstrap.Modal("#staticBackdrop", {});
+        myModal.show();
+         $("#ConfirmCancel").attr("action", "/Admin/CancelCase/" + id);
+    }
+</script>

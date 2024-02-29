@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Entity;
+using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Models;
 
@@ -79,6 +80,19 @@ namespace HellocDoc1.Controllers
         {
             _adminServices.AddNotes(model, request_id);
             return RedirectToAction("ViewNotes",new {request_id=request_id});
+        }
+
+        //public IActionResult _CancelCase(CancelCaseViewModel model)
+        //{
+        //    CancelCaseViewModel data = _adminServices.cancelCase(model);
+        //    return PartialView(data);
+        //}
+
+        [HttpPost("{request_id}")]
+        public async Task<IActionResult> CancelCase(CancelCaseViewModel model, int request_id)
+        {
+            await _adminServices.CancelCase(model, request_id);   
+            return RedirectToAction("AdminDashboard");
         }
     }
 }

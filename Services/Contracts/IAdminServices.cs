@@ -16,5 +16,7 @@ namespace Services.Contracts
         ViewCaseViewModel  ViewCase(int request_id);
         ViewNotesViewModel ViewNotes(int request_id);
         void AddNotes(ViewNotesViewModel model, int request_id);
+        Task CancelCase(CancelCaseViewModel model, int request_id);
+        //CancelCaseViewModel cancelCase(CancelCaseViewModel model);
     }
 }
