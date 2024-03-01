@@ -9,7 +9,12 @@ namespace Services.Models
 {
     public class CancelCaseViewModel
     {
-        public  List<CaseTag>? ReasonForCancel { get; set; }
+        public  List<CaseTagViewModel>? ReasonForCancel { get; set; }
+
+        public string? Name { get; set; }
+
+        public int? RequestId { get; set; }
+        public string? CaseTag { get; set; }
         public string? AdditionalNotes { get; set; }
     }
 }

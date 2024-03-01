@@ -81,17 +81,51 @@ namespace HellocDoc1.Controllers
             _adminServices.AddNotes(model, request_id);
             return RedirectToAction("ViewNotes",new {request_id=request_id});
         }
-
-        //public IActionResult _CancelCase(CancelCaseViewModel model)
-        //{
-        //    CancelCaseViewModel data = _adminServices.cancelCase(model);
-        //    return PartialView(data);
-        //}
-
         [HttpPost("{request_id}")]
-        public async Task<IActionResult> CancelCase(CancelCaseViewModel model, int request_id)
+        public IActionResult CancelDetails(int request_id)
+        {
+            CancelCaseViewModel data = _adminServices.CancelDetails(request_id);
+            return PartialView("_CancelCase",data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelCase(CancelCaseViewModel model, [FromForm]int request_id)
         {
             await _adminServices.CancelCase(model, request_id);   
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost("{request_id}")]
+        public IActionResult AssignDetails(int request_id)
+        {
+            AssignCaseViewModel data = _adminServices.AssignDetails(request_id);
+            return PartialView("_AssignCase", data);
+        }
+
+        public List<PhysicianSelectlViewModel> FilterData(int regionid)
+        {
+           List<PhysicianSelectlViewModel> data= _adminServices.FilterData(regionid);
+            return data; 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignCase(AssignCaseViewModel model, [FromForm] int request_id)
+        {
+            await _adminServices.AssignCase(model, request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost("{request_id}")]
+        public IActionResult BlockDetails(int request_id)
+        {
+            BlockCaseViewModel data = _adminServices.BlockDetails(request_id);
+            return PartialView("_BlockCase", data);
+        }
+
+        [HttpPost]  
+        public async Task<IActionResult> BlockCase(BlockCaseViewModel model, [FromForm] int request_id)
+        {
+            await _adminServices.BlockCase(model, request_id);
             return RedirectToAction("AdminDashboard");
         }
     }

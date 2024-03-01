@@ -94,7 +94,7 @@ namespace Services.Implementation
         {
             var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestClientId == request_id).FirstOrDefault();
             ViewCaseViewModel model = new ViewCaseViewModel();
-            model.PatientNotes = data.Notes;
+            model.PatientNotes = data?.Notes!;
             model.FirstName = data.FirstName;
             model.LastName = data.LastName;
             model.DOB = DateTime.Parse((data.IntDate).ToString() + "-" + data.StrMonth + "-" + (data.IntYear).ToString());
@@ -114,9 +114,9 @@ namespace Services.Implementation
             var data = _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefault();
             var data1 = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
             ViewNotesViewModel model = new ViewNotesViewModel();
-            model.TransferNotes = data.Notes;
-            model.PhysicianNotes = data1.PhysicianNotes;
-            model.AdminNotes = data1.AdminNotes;
+            model.TransferNotes = data?.Notes;
+            model.PhysicianNotes = data1?.PhysicianNotes;
+            model.AdminNotes = data1?.AdminNotes;
             model.RequestId = request_id;
 
             return model;
@@ -132,20 +132,27 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        //public CancelCaseViewModel cancelCase(CancelCaseViewModel model)
-        //{
-        //    CancelCaseViewModel model1 = new CancelCaseViewModel();
-        //    List<CaseTag> data = _context.CaseTags.ToList();
-        //    model1.ReasonForCancel = data;
+        public CancelCaseViewModel CancelDetails(int request_id)
+        {
+            List<CaseTag> data = _context.CaseTags.ToList();
+            List<CaseTagViewModel> obj = data.Select(a => new CaseTagViewModel() { CaseId = a.CaseTagId, CaseName = a.Name }).ToList();
+            var data1 = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
 
-        //    return model1;
-        //}
+            CancelCaseViewModel model = new CancelCaseViewModel()
+            {
+                RequestId = request_id,
+                Name = data1.FirstName + " " + data1.LastName,
+                ReasonForCancel = obj,
+
+            };
+            return model;
+        }
 
         public async Task CancelCase(CancelCaseViewModel model, int request_id)
         {
             var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
             data.Status = 5;
-
+            data.CaseTag = model.CaseTag;
             RequestStatusLog requestStatusLog = new RequestStatusLog()
             {
                 RequestId = request_id,
@@ -157,6 +164,84 @@ namespace Services.Implementation
 
             _context.Requests.Update(data);
             await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            await _context.SaveChangesAsync();
+        }
+
+        public AssignCaseViewModel AssignDetails(int request_id)
+        {
+            List<Region> data = _context.Regions.ToList();
+            AssignCaseViewModel model = new AssignCaseViewModel()
+            {
+                RequestId=request_id,
+                Regions = data,
+            };
+            return model;
+        }
+
+        public List<PhysicianSelectlViewModel> FilterData(int regionid) 
+        {
+            List<Physician> data=_context.Physicians.Where(a=> a.RegionId == regionid).ToList();
+            List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel() { Name = a.FirstName, PhysicianId = a.PhysicianId }).ToList();
+
+            return data1;
+        }
+
+        public async Task AssignCase(AssignCaseViewModel model, int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            data.Status = 2;
+            RequestStatusLog requestStatusLog = new RequestStatusLog()
+            {
+                RequestId = request_id,
+                Status = 2,
+                TransToPhysicianId=model.PhysicianId,
+                Notes = model.Description,
+                CreatedDate = DateTime.Now,
+
+            };
+
+            _context.Requests.Update(data);
+            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            await _context.SaveChangesAsync();
+        }
+
+        public BlockCaseViewModel BlockDetails(int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            BlockCaseViewModel model = new BlockCaseViewModel()
+            {
+                RequestId = request_id,
+                Name = data.FirstName + " " + data.LastName,
+            };
+            return model;
+        }
+
+        public async Task BlockCase(BlockCaseViewModel model, int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            data.Status = 10;
+            RequestStatusLog requestStatusLog = new RequestStatusLog()
+            {
+                RequestId = request_id,
+                Status = 10,
+                Notes = model.ReasonForBlock,
+                CreatedDate = DateTime.Now,
+
+            };
+
+            BlockRequest blockRequest = new BlockRequest()
+            {
+                PhoneNumber = data.PhoneNumber,
+                Email = data.Email,
+                Reason = model.ReasonForBlock,
+                RequestId = request_id.ToString(),
+                CreatedDate= DateTime.Now,
+            };
+
+            _context.Requests.Update(data);
+            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            await _context.BlockRequests.AddAsync(blockRequest);
             await _context.SaveChangesAsync();
         }
     }

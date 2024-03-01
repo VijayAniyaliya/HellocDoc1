@@ -18,7 +18,7 @@ namespace Common.Enum
         MdOnSite=6,
         FollowUp=7,
         Closed =8,
-        Locked=9,
+        Locked=9, 
         Declined=10,
         Consult=11,
         Clear =12,
