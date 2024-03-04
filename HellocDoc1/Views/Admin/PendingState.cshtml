@@ -46,7 +46,36 @@
                 <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
                 <td>@item.Request.CreatedDate</td>
 
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button></td>
+                <td>
+                    @switch (item.Request.RequestTypeId)
+                    {
+                        case 1:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            break;
+                        case 2:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Family/Friend</div>
+
+                            break;
+                        case 3:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Business</div>
+
+                            break;
+                        case 4:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Concierge</div>
+
+                            break;
+                    }
+                </td>
 
                 <td>@item.Street @item.City @item.State</td>
                 <td>@item.Notes</td>
@@ -57,8 +86,8 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.RequestClientId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-controller="Admin" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Clear Case</a></li>

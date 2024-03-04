@@ -9,6 +9,8 @@ using Data.Context;
 using Data.Entity;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
@@ -18,9 +20,19 @@ namespace Services.Implementation
     public class AdminServices : IAdminServices
     {
         private ApplicationDbContext _context;
-        public AdminServices(ApplicationDbContext context)
+        private IHostingEnvironment _environment;
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _environment = hostingEnvironment;
 
         }
 
@@ -92,12 +104,12 @@ namespace Services.Implementation
 
         public ViewCaseViewModel ViewCase(int request_id)
         {
-            var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestClientId == request_id).FirstOrDefault();
+            var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefault();
             ViewCaseViewModel model = new ViewCaseViewModel();
             model.PatientNotes = data?.Notes!;
-            model.FirstName = data.FirstName;
+            model.FirstName = data?.FirstName!;
             model.LastName = data.LastName;
-            model.DOB = DateTime.Parse((data.IntDate).ToString() + "-" + data.StrMonth + "-" + (data.IntYear).ToString());
+            model.DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString());
             model.PhoneNumber = data.PhoneNumber;
             model.Email = data.Email;
             model.Region = data.City;
@@ -172,15 +184,15 @@ namespace Services.Implementation
             List<Region> data = _context.Regions.ToList();
             AssignCaseViewModel model = new AssignCaseViewModel()
             {
-                RequestId=request_id,
+                RequestId = request_id,
                 Regions = data,
             };
             return model;
         }
 
-        public List<PhysicianSelectlViewModel> FilterData(int regionid) 
+        public List<PhysicianSelectlViewModel> FilterData(int regionid)
         {
-            List<Physician> data=_context.Physicians.Where(a=> a.RegionId == regionid).ToList();
+            List<Physician> data = _context.Physicians.Where(a => a.RegionId == regionid).ToList();
             List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel() { Name = a.FirstName, PhysicianId = a.PhysicianId }).ToList();
 
             return data1;
@@ -190,11 +202,12 @@ namespace Services.Implementation
         {
             var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
             data.Status = 2;
+            data.PhysicianId = model.PhysicianId;
             RequestStatusLog requestStatusLog = new RequestStatusLog()
             {
                 RequestId = request_id,
                 Status = 2,
-                TransToPhysicianId=model.PhysicianId,
+                TransToPhysicianId = model.PhysicianId,
                 Notes = model.Description,
                 CreatedDate = DateTime.Now,
 
@@ -236,7 +249,7 @@ namespace Services.Implementation
                 Email = data.Email,
                 Reason = model.ReasonForBlock,
                 RequestId = request_id.ToString(),
-                CreatedDate= DateTime.Now,
+                CreatedDate = DateTime.Now,
             };
 
             _context.Requests.Update(data);
@@ -244,5 +257,71 @@ namespace Services.Implementation
             await _context.BlockRequests.AddAsync(blockRequest);
             await _context.SaveChangesAsync();
         }
+
+        public ViewUploadsViewModel ViewUploads(int request_id)
+        {
+            Request data = _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            ViewUploadsViewModel viewUploads = new ViewUploadsViewModel()
+            {
+                RequestId = request_id,
+                Name = data.FirstName + " " + data.LastName,
+            };
+
+            foreach (var item in data.RequestWiseFiles)
+            {
+                DocumentDetail documentDetail = new DocumentDetail()
+                {
+                    DocumentId = item.RequestWiseFileId,
+                    Document = item.FileName,
+                    UploadDate = item.CreatedDate.ToString()
+                };
+                viewUploads.Documents.Add(documentDetail);
+            }
+            return viewUploads;
+        }
+
+        public void UploadDocuments(ViewUploadsViewModel model, int request_id)
+        {
+            IEnumerable<IFormFile> upload = model.Upload;
+            foreach (var item in upload)
+            {
+
+                var file = item.FileName;
+                var uniqueFileName = GetUniqueFileName(file);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                item.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                {
+                    FileName = item.FileName,
+                    CreatedDate = DateTime.Now,
+
+                };
+                _context.RequestWiseFiles.Add(requestWiseFile);
+                requestWiseFile.RequestId = request_id;
+
+            }
+            _context.SaveChanges();
+        }
+
+        public void Delete(int DocumentId)
+        {
+            RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == DocumentId).FirstOrDefault();
+            _context.RequestWiseFiles.Remove(data);
+            _context.SaveChanges();
+        }
+
+        public void DeleteAll(int RequestId)
+        {
+            List<RequestWiseFile> data = _context.RequestWiseFiles.Where(a => a.RequestId == RequestId).ToList();
+            foreach (var item in data)
+            {
+                _context.RequestWiseFiles.Remove(item);
+            }
+            _context.SaveChanges();
+        }
+
     }
 }

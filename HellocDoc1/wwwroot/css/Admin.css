@@ -38,13 +38,24 @@
     }
 
     .new:hover {
-        background-color: #4f68e2;
+        background-color: #203f9a;
     }
 
 .newActive {
-    background-color: #4f68e2;
+    background-color: #203f9a;
     color: white;
 }
+
+    .newActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #203f9a transparent transparent transparent;
+        transform: translateX(-50%);
+    }
 
 
 .pending {
@@ -69,6 +80,17 @@
     color: white;
 }
 
+    .pendingActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #47cde7 transparent transparent transparent;
+        transform: translateX(-50%);
+    }
+
 .active {
     background-color: #E9F0E8;
     border: 1px solid #628D61;
@@ -91,6 +113,17 @@
     color: white;
 }
 
+    .activeStateActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #628D61 transparent transparent transparent;
+        transform: translateX(-50%);
+    }
+
 .conclude {
     background-color: #F7E6EC;
     border: 1px solid #C184AE;
@@ -111,6 +144,17 @@
 .concludeActive {
     background-color: #e465bc;
     color: white;
+}
+
+.concludeActive::after {
+    content: "";
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    border-width: 12px;
+    border-style: solid;
+    border-color: #e465bc transparent transparent transparent;
+    transform: translateX(-50%);
 }
 
 .toclose {
@@ -135,6 +179,17 @@
     color: white;
 }
 
+    .tocloseActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #477fe7 transparent transparent transparent;
+        transform: translateX(-50%);
+    }
+
 
 .unpaid {
     background-color: #E9EAEF;
@@ -158,15 +213,50 @@
     color: white;
 }
 
+    .unpaidActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #ab40dd transparent transparent transparent;
+        transform: translateX(-50%);
+    }
+
 @media only screen and (max-width:915px) {
     .link-text {
         display: none;
     }
 }
 
-@media only screen and (max-width:480px) {
+.icons {
+    font-size: 20px;
+}
+
+@media only screen and (max-width:930px) {
+    .icons {
+        font-size: 15px;
+    }
+
+    .Txt {
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width:866px) {
+    .Txt {
+        font-size: 13px;
+    }
+}
+
+@media only screen and (max-width:812px) {
     .icons {
         display: none;
+    }
+
+    .Txt {
+        font-size: 15px;
     }
 }
 

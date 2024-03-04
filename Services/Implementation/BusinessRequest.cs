@@ -43,7 +43,7 @@ namespace HellocDoc1.Services
                         Request request = new Request()
                         {
                             UserId = 6,
-                            RequestTypeId = 2,
+                            RequestTypeId = 4,
                             FirstName = model.FirstName,
                             LastName = model.LastName,
                             PhoneNumber = model.PhoneNumber,

@@ -171,7 +171,7 @@ namespace HellocDoc1.Controllers
             if (ModelState.IsValid)
             {
                 await concirgeRequest.Concierge_request(model);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Submit_request", "Patient");
             }
             return View();
         }

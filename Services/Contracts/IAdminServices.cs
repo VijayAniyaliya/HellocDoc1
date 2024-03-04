@@ -23,5 +23,9 @@ namespace Services.Contracts
         AssignCaseViewModel AssignDetails(int request_id);
         List<PhysicianSelectlViewModel> FilterData(int regionid);
         Task AssignCase(AssignCaseViewModel model, int request_id);
+        ViewUploadsViewModel ViewUploads(int request_id);
+        void UploadDocuments(ViewUploadsViewModel model, int request_id);
+        void Delete(int DocumentId);
+        void DeleteAll(int RequestId);
     }
 }

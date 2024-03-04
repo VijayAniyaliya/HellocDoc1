@@ -1,4 +1,6 @@
 ﻿using Data.Entity;
+using HellocDoc1.Services.Models;
+using HellocDoc1.Services;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Models;
@@ -128,5 +130,31 @@ namespace HellocDoc1.Controllers
             await _adminServices.BlockCase(model, request_id);
             return RedirectToAction("AdminDashboard");
         }
+
+        public IActionResult ViewUploads(int request_id)
+       {
+            var model=_adminServices.ViewUploads(request_id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult UploadDocuments(ViewUploadsViewModel model, int request_id)
+        {
+            _adminServices.UploadDocuments(model, request_id);
+            return RedirectToAction("ViewUploads", new { request_id = request_id });
+        }
+
+        public IActionResult Delete(int DocumentId, int RequestId)
+       {
+            _adminServices.Delete(DocumentId);
+            return RedirectToAction("ViewUploads", new { request_id = RequestId });
+        }
+
+        public IActionResult DeleteAll(int RequestId)
+        {
+            _adminServices.DeleteAll(RequestId);
+            return RedirectToAction("ViewUploads", new { request_id = RequestId });
+        }
+
     }
 }

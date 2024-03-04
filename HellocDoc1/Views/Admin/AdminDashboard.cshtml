@@ -11,62 +11,59 @@
         <div class="row  mt-3 mb-4 mx-auto">
 
             <div class="col-md-2 col-4 px-2 pb-2 status" id="1">
-                <div class="px-2 new newActive rounded-3 pt-1  " id="pills-new-tab" onclick="newState()">
+                <div class="px-2 py-1 new newActive rounded-3 pt-1 text-md-left text-center" id="pills-new-tab" onclick="newState()">
 
-                    <i class="bi bi-patch-plus icons h6"></i>
+                    <i class="bi bi-patch-plus icons "></i>
 
-                    <span class="ms-1 small fw-bold newTxt">NEW</span>
+                    <span class="ms-1 Txt fw-bold newTxt">NEW</span>
 
                     <span class="mt-2 h4 newTxt d-block">@Model.newCount</span>
                 </div>
-
             </div>
             <div class="col-md-2 col-4 px-2 pb-2 status" id="2">
-                <div class="px-2 rounded-3 pending pt-1" id="pills-pending-tab" onclick="pendingState()">
+                <div class="px-2 py-1 rounded-3 pending pt-1 text-md-left text-center" id="pills-pending-tab" onclick="pendingState()">
 
-                    <i class="bi bi-clock-history icons h6"></i>
+                    <i class="bi bi-clock-history icons "></i>
 
-                    <span class="ms-1 small fw-bold">PENDING</span>
+                    <span class="ms-1 Txt fw-bold">PENDING</span>
 
                     <span class="mt-2 h4 d-block">@Model.pendingCount</span>
                 </div>
             </div>
             <div class="col-md-2 col-4 px-2 pb-2 status" id="3">
-                <div class="px-2 rounded-3 active pt-1" id="pills-active-tab" onclick="activeState()">
+                <div class="px-2 py-1 rounded-3 active pt-1 text-md-left text-center" id="pills-active-tab" onclick="activeState()">
 
-                    <i class="bi bi-check2-circle icons h6"></i>
+                    <i class="bi bi-check2-circle icons "></i>
 
-                    <span class="ms-1 small fw-bold">ACTIVE</span>
+                    <span class="ms-1 Txt fw-bold">ACTIVE</span>
 
                     <span class="mt-2 h4 d-block">@Model.activeCount</span>
                 </div>
             </div>
             <div class="col-md-2 col-4 px-2 status" id="4">
-                <div class="px-2 rounded-3 conclude pt-1" id="pills-conclude-tab" onclick="concludeState()">
+                <div class="px-2 py-1 rounded-3 conclude pt-1 text-md-left text-center" id="pills-conclude-tab" onclick="concludeState()">
 
-                    <i class="bi bi-arrow-counterclockwise icons h6"></i>
+                    <i class="bi bi-arrow-counterclockwise icons "></i>
 
-                    <span class="ms-1 small fw-bold">CONCLUDE</span>
+                    <span class="ms-1 Txt fw-bold">CONCLUDE</span>
 
                     <span class="mt-2 h4 d-block">@Model.concludeCount</span>
                 </div>
             </div>
             <div class="col-md-2 col-4 px-2 status" id="5">
-                <div class="px-2 rounded-3 toclose pt-1" id="pills-close-tab" onclick="closeState()">
+                <div class="px-2 py-1 rounded-3 toclose pt-1 text-md-left text-center" id="pills-close-tab" onclick="closeState()">
 
-                    <i class="bi bi-x-circle icons h6"></i>
+                    <i class="bi bi-x-circle icons"></i>
 
-                    <span class="ms-1 small fw-bold">TO CLOSE</span>
+                    <span class="ms-1 Txt fw-bold">TO CLOSE</span>
 
                     <span class="mt-2 h4 d-block">@Model.tocloseCount</span>
                 </div>
             </div>
             <div class="col-md-2 col-4 px-2 status" id="6">
-                <div class="px-2 rounded-3 unpaid pt-1" id="pills-unpaid-tab" onclick="unpaidState()">
-
-                    <i class="bi bi-ban icons h6"></i>
-
-                    <span class="ms-1 small fw-bold">UNPAID</span>
+                <div class="px-2 py-1 rounded-3 unpaid pt-1 text-md-left text-center" id="pills-unpaid-tab" onclick="unpaidState()">
+                    <span class=" fw-bold mt-2 icons">$</span>
+                    <span class="ms-1 Txt fw-bold">UNPAID</span>
 
                     <span class="mt-2 h4 d-block">@Model.unpaidCount</span>
                 </div>
@@ -75,7 +72,7 @@
         <div class="d-flex flex-row justify-content-between mt-5 mb-3">
             <div>
                 <span class="h4">Patient </span>
-                <span>(Conclude)</span>
+                <span class="text-primary fw-bold" id="status"></span>
             </div>
             <div class="d-flex gap-1">
                 <a class="bg-info text-white rounded-3 p-2">
@@ -246,6 +243,8 @@
             success: function (data) {
                 console.log("hello");   
                 $("#tableContent").html(data);
+                $("#status").html("(New)");
+
             },
             error: function (error) {
                 console.log(error)
@@ -260,6 +259,7 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
+                    $("#status").html("(New)");
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -274,6 +274,7 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
+                    $("#status").html("(Pending)");
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -288,6 +289,8 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
+                    $("#status").html("(Active)");
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -302,6 +305,8 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
+                    $("#status").html("(Conclude)");
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -316,6 +321,8 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
+                    $("#status").html("(To Close)");
+
                 },
                 error: function () {
                     alert("No Projects Found");

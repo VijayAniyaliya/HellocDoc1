@@ -74,7 +74,7 @@ namespace HellocDoc1.Services
                     Request request = new Request()
                     {
                         UserId = 6,
-                        RequestTypeId = 3,
+                        RequestTypeId = 1,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Email,

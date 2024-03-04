@@ -74,7 +74,7 @@ namespace HellocDoc1.Services
                             //Request= request,
                         };
 
-                        var file = model.Doc;
+                        var file = model?.Doc!;
                         var uniqueFileName = GetUniqueFileName(file.FileName);
                         var uploads = Path.Combine(environment.WebRootPath, "uploads");
                         var filePath = Path.Combine(uploads, uniqueFileName);

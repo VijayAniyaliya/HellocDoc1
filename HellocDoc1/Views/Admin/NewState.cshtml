@@ -48,7 +48,39 @@
 
                 <td>@item.Request.CreatedDate</td>
 
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button></td>
+                <td>
+
+                    @switch (item.Request.RequestTypeId)
+                    {
+                        case 1:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            break;
+                        case 2:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Family/Friend</div>
+
+                            break;
+                        case 3:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Business</div>
+
+                            break;
+                        case 4:
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Concierge</div>
+
+                            break;
+                    }
+
+                </td>
+
 
                 <td>@item.Street @item.City @item.State</td>
                 <td>@item.Notes</td>
@@ -61,7 +93,7 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
                             <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.RequestClientId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Block Patient</a></li>
                         </ul>
@@ -125,11 +157,11 @@
             </h2>
 
             <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                @*                 <div class="d-flex justify-content-end d-inline">
-            <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase">
-            View Case
-            </div>
-            </div> *@
+                <div class="d-flex justify-content-end d-inline">
+                    <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase">
+                        View Case
+                    </div>
+                </div>
                 <div class="accordion-body d-flex flex-column gap-1">
                     <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
