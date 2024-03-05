@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Services.Implementation
 {
@@ -114,6 +115,7 @@ namespace Services.Implementation
             model.Email = data.Email;
             model.Region = data.City;
             model.Address = data.City + " " + data.State + " " + data.ZipCode;
+            model.RequestId = request_id;
             model.RequestTypeId = data.Request.RequestTypeId;
             model.Status = data.Request.Status;
 
@@ -270,9 +272,11 @@ namespace Services.Implementation
 
             foreach (var item in data.RequestWiseFiles)
             {
+                var piece = item.FileName.Split(new[] { '.' }, 2);
+
                 DocumentDetail documentDetail = new DocumentDetail()
                 {
-                    DocumentId = item.RequestWiseFileId,
+                DocumentId = item.RequestWiseFileId,
                     Document = item.FileName,
                     UploadDate = item.CreatedDate.ToString()
                 };
@@ -295,7 +299,7 @@ namespace Services.Implementation
 
                 RequestWiseFile requestWiseFile = new RequestWiseFile()
                 {
-                    FileName = item.FileName,
+                    FileName = uniqueFileName,
                     CreatedDate = DateTime.Now,
 
                 };
@@ -313,12 +317,13 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public void DeleteAll(int RequestId)
+        public void DeleteAll(List<int> DocumentId)
         {
-            List<RequestWiseFile> data = _context.RequestWiseFiles.Where(a => a.RequestId == RequestId).ToList();
-            foreach (var item in data)
+            foreach(var item in DocumentId)
             {
-                _context.RequestWiseFiles.Remove(item);
+            RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId== item).FirstOrDefault();
+                _context.RequestWiseFiles.Remove(data);
+
             }
             _context.SaveChanges();
         }

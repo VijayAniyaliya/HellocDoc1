@@ -120,6 +120,10 @@ body {
     background-color: rgb(8, 8, 129);
 }
 
+.btn-3 {
+    width: 40%;
+    background-color: #0640fb;
+}
 
 
 @media only screen and (max-width:995px) {
@@ -128,6 +132,9 @@ body {
     }
 
     .btn-2 {
+        width: 50%;
+    }
+    .btn-3 {
         width: 50%;
     }
 }
@@ -140,6 +147,9 @@ body {
     .btn-2 {
         width: 60%;
     }
+    .btn-3 {
+        width: 60%;
+    }
 }
 
 @media only screen and (max-width:571px) {
@@ -148,6 +158,9 @@ body {
     }
 
     .btn-2 {
+        width: 80%;
+    }
+    .btn-3 {
         width: 80%;
     }
 }

@@ -77,7 +77,7 @@ namespace HellocDoc1.Services
 
                 RequestWiseFile requestWiseFile = new RequestWiseFile()
                 {
-                    FileName = item.FileName,
+                    FileName = uniqueFileName,
                     CreatedDate= DateTime.Now,
                     
                 };

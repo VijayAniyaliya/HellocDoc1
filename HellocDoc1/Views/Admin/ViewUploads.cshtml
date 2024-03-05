@@ -23,7 +23,7 @@
         <form asp-action="UploadDocuments" asp-route-request_id="@Model.RequestId" method="post" enctype="multipart/form-data">
             <div class="input-group mb-3 mt-4 border rounded-3 d-flex justify-content-between flex-row">
                 <input type="file" asp-for="Upload" class="form-control" id="inputGroupFile02" hidden multiple>
-                <label class="my-auto ms-2 " for="inputGroupFile02" id="fileselect">Select file</label>
+                <label class="my-auto ms-2 col-md-10 col-sm-9 col-8" for="inputGroupFile02" id="fileselect">Select file</label>
                 <button type="submit" class=" btn bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3 upload" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ffffff"
                          class="bi bi-cloud-upload my-auto mx-1" viewBox="0 0 16 16">
@@ -40,13 +40,13 @@
         <div class="d-flex justify-content-between pt-3">
             <h5>Documents</h5>
             <div class="d-flex gap-2">
-                <a class="btn d-md-block d-none text-info border-2 border-info fw-bold">
+                <a onclick="downloadSelectedFiles()" class="btn d-md-block d-none text-info border-2 border-info fw-bold">
                     Download All
                 </a>
-                <a href="" class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                <a class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
                     <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
                 </a>
-                <a onclick="DeleteAll(@Model.RequestId)" class="btn d-md-block d-none text-info border-2 border-info fw-bold">
+                <a id="delete-button" class="btn d-md-block d-none text-info border-2 border-info fw-bold">
                     Delete All
                 </a>
                 <a onclick="DeleteAll(@Model.RequestId)" class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
@@ -65,53 +65,55 @@
             <table class="table">
                 <thead>
                     <tr class="table-secondary">
-                        <th class="" style="width:5%"><input type="checkbox" /> &nbsp; </th>
+                        <th class="" style="width:5%"><input type="checkbox" id="All" /></th>
                         <th class="" scope="col" style="width:50%">Documents</th>
                         <th class=" " scope="col">Upload Date <i class="bi bi-arrow-up-short h5 arro"></i></th>
                         <th class="text-center" scope="col" style="width:20%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     @foreach (var item in Model.Documents)
                     {
-                    <tr>
-                        <th><input type="checkbox" />&nbsp;</th>
-                        <td>@item.Document</td>
-                        <td>@item.UploadDate</td>
-                        <td class="text-center">
-                                <button  class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
-                                <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
-                            </button>
-                            <a onclick="Deletefile(@item.DocumentId,@Model.RequestId)" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2">
-                                <i class="bi bi-trash text-info h4 fw-bolder"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    } 
+                        <tr>
+                            <td><input type="checkbox" data-id="@item.DocumentId" class="ChildCheck" name="checkdoc" /></td>
+                            <td>@item.Document</td>
+                            <td>@item.UploadDate</td>
+                            <td class="text-center">
+                                <a href="~/uploads/@item.Document" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                                    <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                                </a>
+                                <a onclick="Deletefile(@item.DocumentId,@Model.RequestId)" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2">
+                                    <i class="bi bi-trash text-info h4 fw-bolder"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
-        <div class="d-md-none d-block">
-            <hr />
-            <div>
-                <input type="checkbox" /> &nbsp;
-                <span>File Name</span>
+        @foreach (var item in Model.Documents)
+        {
+            <div class="d-md-none d-block">
+                <hr />
+                <div>
+                    <input type="checkbox" />
+                    <span class="ms-1">@item.Document</span>
+                </div>
+                <div class="my-3">
+                    @item.UploadDate
+                </div>
+                <div class="">
+                    <a class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                        <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                    </a>
+                    <a class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2">
+                        <i class="bi bi-trash text-info h4 fw-bolder"></i>
+                    </a>
+                </div>
+                <hr />
             </div>
-            <div class="my-3">
-                Upload Date
-            </div>
-            <div class="">
-                <a href="" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
-                    <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
-                </a>
-                <a  class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2">
-                    <i class="bi bi-trash text-info h4 fw-bolder"></i>
-                </a>
-            </div>
-            <hr />
-        </div>
-
+        }
         <br />
         <br />
         <br />
@@ -121,7 +123,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function Deletefile(DocumentId,RequestId) {
+    function Deletefile(DocumentId, RequestId) {
         console.log("hello")
         $.ajax({
             url: "/Admin/Delete",
@@ -137,20 +139,62 @@
             }
         });
     };
-    function DeleteAll(RequestId) {
-        console.log("hello")
-        $.ajax({
-            url: "/Admin/DeleteAll",
-            data: {RequestId: RequestId },
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                window.location.reload();
-                console.log("success")
-            },
-            error: function () {
-                alert("No Projects Found");
-            }
+    $("#delete-button").click(function () {
+        var selectedFiles = [];
+        $("input[type='checkbox']:checked").each(function () {
+            var id = $(this).data('id');
+            selectedFiles.push(id);
         });
-    };
+        if (selectedFiles.length > 0) {
+            console.log(JSON.stringify(selectedFiles))
+            console.log(selectedFiles)
+            $.ajax({
+                url: "/Admin/DeleteAll",
+                type: "POST",
+                data: JSON.stringify(selectedFiles),
+                datatype: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    window.location.reload();
+
+                }
+            });
+        }
+    });
+    $(document).ready(function () {
+        $('#All').click(function () {
+            $('.ChildCheck').prop('checked', this.checked);
+        });
+
+        // Handle individual checkbox clicks to update the leader checkbox state
+        $('.ChildCheck').click(function () {
+            $('#All').prop('checked', $('.ChildCheck:checked').length === $('.ChildCheck').length);
+        });
+    });
+
+
+    // Function to handle download of selected files
+    function downloadSelectedFiles() {
+
+        var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+        var fileUrls = [];
+
+
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
+
+        fileUrls.forEach(function (url) {
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+
+    }
 </script>

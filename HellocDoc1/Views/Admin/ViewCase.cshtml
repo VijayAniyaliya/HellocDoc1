@@ -20,7 +20,7 @@
                     <span class="border rounded-pill bg-warning text-white px-3 pt-1 pb-2 h5">Family/Friend</span>
                     break;
                 case 3:
-                    <span class="border rounded-pill  text-white px-3 pt-1 pb-2 h5" style="background:pink;">Concierge</span>
+                    <span class="border rounded-pill  text-white px-3 pt-1 pb-2 h5" style="background:#fd82bb;">Concierge</span>
                     break;
                 case 4:
                     <span class="border rounded-pill bg-primary text-white px-3 pt-1 pb-2 h5">Business</span>
@@ -123,19 +123,54 @@
             </div>
         </div>
         <div class="text-end mb-4">
-            <button type="button" class="btn bg-info text-white h5">Assign</button>
-            <a class="btn bg-info text-white h5">View Notes</a>
-            <button type="button" class="btn bg-danger text-white h5" >Cancel</button>
+            <button type="button" onclick="assign(@Model.RequestId)" class="btn bg-info text-white h5">Assign</button>
+            <a class="btn bg-info text-white h5" asp-action="ViewNotes" asp-route-request_id="@Model.RequestId">View Notes</a>
+            <button type="button" onclick="cancel(@Model.RequestId)" class="btn bg-danger text-white h5">Cancel</button>
         </div>
     </div>
 </div>
-
+<div id="cancelCase"></div>
+<div id="assignCase"></div>
 <br>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
+
+    function cancel(request_id) {
+        $.ajax({
+            url: "/Admin/CancelDetails/" + request_id,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#cancelCase").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#cancelCase").html('An error has occurred');
+            }
+        });
+    };
+    function assign(request_id) {
+        $.ajax({
+            url: "/Admin/assignDetails/" + request_id,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#assignCase").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#assignCase").html('An error has occurred');
+            }
+        });
+    };
 </script>

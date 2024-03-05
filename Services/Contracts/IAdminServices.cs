@@ -26,6 +26,6 @@ namespace Services.Contracts
         ViewUploadsViewModel ViewUploads(int request_id);
         void UploadDocuments(ViewUploadsViewModel model, int request_id);
         void Delete(int DocumentId);
-        void DeleteAll(int RequestId);
+        void DeleteAll(List<int> DocumentId);
     }
 }

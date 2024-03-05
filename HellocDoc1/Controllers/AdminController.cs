@@ -149,12 +149,19 @@ namespace HellocDoc1.Controllers
             _adminServices.Delete(DocumentId);
             return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
-
-        public IActionResult DeleteAll(int RequestId)
+        [HttpPost]
+        public IActionResult DeleteAll([FromBody]List<int> DocumentId)
         {
-            _adminServices.DeleteAll(RequestId);
-            return RedirectToAction("ViewUploads", new { request_id = RequestId });
+            _adminServices.DeleteAll(DocumentId);
+            return RedirectToAction("AdminDashboard");
+            //return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
+
+        public IActionResult SendOrders()
+        {
+            return View();
+        }
+
 
     }
 }
