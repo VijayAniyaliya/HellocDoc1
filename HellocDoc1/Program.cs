@@ -1,3 +1,4 @@
+using BusinessLogic.Services;
 using Data.Context;
 using HalloDoc.Utility;
 using HellocDoc1.Services;
@@ -12,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddTransient<IHashing, Hashing>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
+builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IPatientRequest, PatientRequest>();
 builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
@@ -19,12 +21,14 @@ builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IAdminServices, AdminServices>();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,7 +41,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseAuthentication();
 
+app.UseAuthorization();
 app.UseRouting();
 
 app.UseSession();

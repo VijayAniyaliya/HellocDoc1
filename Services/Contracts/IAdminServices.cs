@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using HellocDoc1.Services.Models;
 using Services.Models;
 
 namespace Services.Contracts
@@ -27,5 +28,7 @@ namespace Services.Contracts
         void UploadDocuments(ViewUploadsViewModel model, int request_id);
         void Delete(int DocumentId);
         void DeleteAll(List<int> DocumentId);
+        void SendMail(List<int> DocumentId);
+        LoginResponseViewModel AdminLogin(AdminLoginViewModel model);
     }
 }

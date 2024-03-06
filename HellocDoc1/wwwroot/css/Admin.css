@@ -348,3 +348,26 @@ label {
 .accordion-button {
     z-index: 0 !important;
 }
+
+/*Login*/
+
+@media only screen and (max-width:1000px) {
+
+    .mainImage {
+        z-index: -1;
+        height: 100vh;
+        opacity: 0.5;
+        filter: blur(2px);
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    #subDiv2 {
+        position: absolute;
+    }
+}
+
+.adminSubDivs {
+    height: 100vh;
+}

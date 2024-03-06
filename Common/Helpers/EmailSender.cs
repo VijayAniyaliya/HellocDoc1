@@ -11,6 +11,7 @@ namespace HalloDoc.Utility
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;
             emailToSend.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message };
+            //emailToSend.Attachments
 
 
             using (var emailClient = new MailKit.Net.Smtp.SmtpClient())

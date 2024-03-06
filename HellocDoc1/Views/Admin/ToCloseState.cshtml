@@ -27,8 +27,8 @@
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
                 <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
-                <td>@item.Request.Physician.FirstName</td>
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
+                <td>@item.Request.Physician?.FirstName</td>
+                <td>@item.Request.Physician?.FirstName,  @item.Request.Physician?.LastName</td>
                 <td>@item.Request.CreatedDate</td>
 
                 <td>@item.Street @item.City @item.State</td>
@@ -110,7 +110,7 @@
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div><i class="bi bi-card-text mr-1 icn"></i>Transfer Notes: abc</div>
                     <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service: @item.Request.CreatedDate</div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician?.FirstName,  @item.Request.Physician?.LastName</div>
                     <div><i class="bi bi-person mr-1 icn"></i>Region: @item.Request.FirstName</div>
                 </div>
                 <div class="row mx-3">

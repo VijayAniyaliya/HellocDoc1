@@ -91,11 +91,11 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
                             <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Block Patient</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1" style="cursor:pointer;"></i> Block Patient</a></li>
                         </ul>
                     </div>
                 </td>

@@ -10,6 +10,8 @@ namespace Services.Models
     public  class LoginResponseViewModel
     {
         public ResponseStatus Status { get; set; }
-        public string Message { get; internal set; }
+        public string Message { get; set; }
+
+        public string Token { get;  set; }
     }
 }

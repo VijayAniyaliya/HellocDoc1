@@ -5,13 +5,17 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLogic.Services;
+using Common.Enum;
 using Data.Context;
 using Data.Entity;
+using HalloDoc.Utility;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Cryptography;
 using Services.Contracts;
 using Services.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,6 +26,8 @@ namespace Services.Implementation
     {
         private ApplicationDbContext _context;
         private IHostingEnvironment _environment;
+        private readonly IJwtService _jwtService;
+
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
@@ -30,11 +36,11 @@ namespace Services.Implementation
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
-        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
+        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment, IJwtService jwtService)
         {
             _context = context;
             _environment = hostingEnvironment;
-
+            this._jwtService = jwtService;
         }
 
         public AdminDashboardViewModel AdminDashboard()
@@ -202,22 +208,34 @@ namespace Services.Implementation
 
         public async Task AssignCase(AssignCaseViewModel model, int request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-            data.Status = 2;
-            data.PhysicianId = model.PhysicianId;
-            RequestStatusLog requestStatusLog = new RequestStatusLog()
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                RequestId = request_id,
-                Status = 2,
-                TransToPhysicianId = model.PhysicianId,
-                Notes = model.Description,
-                CreatedDate = DateTime.Now,
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 2;
+                    data.PhysicianId = model.PhysicianId;
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 2,
+                        TransToPhysicianId = model.PhysicianId,
+                        Notes = model.Description,
+                        CreatedDate = DateTime.Now,
 
-            };
+                    };
 
-            _context.Requests.Update(data);
-            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-            await _context.SaveChangesAsync();
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
         }
 
         public BlockCaseViewModel BlockDetails(int request_id)
@@ -276,7 +294,7 @@ namespace Services.Implementation
 
                 DocumentDetail documentDetail = new DocumentDetail()
                 {
-                DocumentId = item.RequestWiseFileId,
+                    DocumentId = item.RequestWiseFileId,
                     Document = item.FileName,
                     UploadDate = item.CreatedDate.ToString()
                 };
@@ -319,14 +337,47 @@ namespace Services.Implementation
 
         public void DeleteAll(List<int> DocumentId)
         {
-            foreach(var item in DocumentId)
+            foreach (var item in DocumentId)
             {
-            RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId== item).FirstOrDefault();
+                RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
                 _context.RequestWiseFiles.Remove(data);
 
             }
             _context.SaveChanges();
         }
+
+        public void SendMail(List<int> DocumentId)
+        {
+            string name = "";
+            foreach (var item in DocumentId)
+            {
+                RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
+                var file = data.FileName;
+                name += $"Please {file}<br>";
+
+
+            }
+            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $"{name}");
+        }
+
+        public LoginResponseViewModel AdminLogin(AdminLoginViewModel model)
+        {
+            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a=>a.Roles).FirstOrDefault();
+
+            if (user == null)
+                return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
+            if (user.PasswordHash == null)
+                return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "There is no Password with this Account" };
+            if (user.PasswordHash == model.Password)
+            {
+                var jwtToken = _jwtService.GetJwtToken(user);
+
+                return new LoginResponseViewModel() { Status = ResponseStatus.Success, Token=jwtToken };
+            }
+
+            return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Password does not match" };
+        }
+
 
     }
 }

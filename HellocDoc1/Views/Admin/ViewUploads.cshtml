@@ -52,7 +52,7 @@
                 <a onclick="DeleteAll(@Model.RequestId)" class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
                     <i class="bi bi-trash text-info h4 fw-bolder"></i>
                 </a>
-                <a class="btn d-md-block d-none text-info border-2 border-info fw-bold">
+                <a id="send-mail" class="btn d-md-block d-none text-info border-2 border-info fw-bold">
                     Send Mail
                 </a>
                 <a href="" class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2">
@@ -161,6 +161,30 @@
             });
         }
     });
+
+    $("#send-mail").click(function () {
+        var selectedFiles = [];
+        $("input[type='checkbox']:checked").each(function () {
+            var id = $(this).data('id');
+            selectedFiles.push(id);
+        });
+        if (selectedFiles.length > 0) {
+            console.log(JSON.stringify(selectedFiles))
+            console.log(selectedFiles)
+            $.ajax({
+                url: "/Admin/SendMail",
+                type: "POST",
+                data: JSON.stringify(selectedFiles),
+                datatype: "json",
+                contentType: "application/json",
+                success: function (result) {
+                    window.location.reload();
+
+                }
+            });
+        }
+    });
+
     $(document).ready(function () {
         $('#All').click(function () {
             $('.ChildCheck').prop('checked', this.checked);
