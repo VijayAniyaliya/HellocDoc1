@@ -6,7 +6,7 @@ namespace Services.Contracts
 {
     public interface IAdminServices
     {
-        AdminDashboardViewModel NewState();
+        AdminDashboardViewModel NewState(int CurrentPage, int PageSize = 10);
 
         AdminDashboardViewModel AdminDashboard();
         List<RequestClient> PendingState();
@@ -30,5 +30,7 @@ namespace Services.Contracts
         void DeleteAll(List<int> DocumentId);
         void SendMail(List<int> DocumentId);
         LoginResponseViewModel AdminLogin(AdminLoginViewModel model);
+        SendOrdersViewModel SendOders(int request_id);
+        SendOrdersViewModel FilterDataByProfession(int ProfessionId);
     }
 }

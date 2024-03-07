@@ -12,6 +12,9 @@ namespace Services.Models
 
         public List<RequestClient> requestClients {  get; set; }
 
+        public int CurrentPage { get; set; }
+
+        public int TotalPage { get; set; }
         public int newCount { get; set; }
 
         public int pendingCount { get; set; }

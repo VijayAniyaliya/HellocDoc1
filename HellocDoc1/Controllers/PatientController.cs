@@ -1,13 +1,10 @@
 ﻿using Common.Enum;
+using Common.Helpers;
 using Data.Context;
 using Data.Entity;
-using HellocDoc1.Services;
 using HellocDoc1.Services.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MimeKit;
 using Services.Contracts;
 using Services.Models;
 
@@ -49,6 +46,7 @@ namespace HellocDoc1.Controllers
                 LoginResponseViewModel? result = loginHandler.Login(user);
                 if (result.Status == ResponseStatus.Success)
                 {
+                    Response.Cookies.Append("jwt", result.Token);
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
                     return RedirectToAction("Patient_Dashboard", "Patient");
@@ -107,10 +105,12 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+
         public IActionResult Submit_request()
         {
             return View();
         }
+
 
         public IActionResult Submit_request_screen()
         {
@@ -193,6 +193,8 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        [CustomAuthorize("User")]
+
         public IActionResult SubmitInformationMe()
         {
             return View();
@@ -208,6 +210,7 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        [CustomAuthorize("User")]
 
         public IActionResult Patient_Dashboard()
         {
@@ -217,12 +220,14 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
+        [CustomAuthorize("User")]
         public IActionResult Patient_Document(int request_id)
         {
             var data = patientServices.DocumentService(request_id);
             return View(data);
         }
 
+        [CustomAuthorize("User")]
         [HttpPost]
         public IActionResult UploadDocument(PatientServiceModel model,int request_id)
         {
@@ -230,6 +235,7 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Patient_Document", new {request_id=request_id});
         }
 
+        [CustomAuthorize("User")]
 
         public async Task<IActionResult> DownloadAll(int request_id)
         {
@@ -238,6 +244,7 @@ namespace HellocDoc1.Controllers
         }
 
 
+        [CustomAuthorize("User")]
 
         public IActionResult Patient_Profile()
         {
@@ -246,6 +253,7 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
+        [CustomAuthorize("User")]
         public IActionResult Editing(User model)
         {
             var email = HttpContext.Session.GetString("Email");

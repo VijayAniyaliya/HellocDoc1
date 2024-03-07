@@ -231,17 +231,40 @@
     //     });
     // });
 
+    var Page;
 
+    function changepage(CurrentPage) {
+        console.log("pagination");
+        Page = CurrentPage;
+        console.log(Page);
+        $.ajax({
+            url: "/Admin/NewState",
+            type: "POST",
+            data: { CurrentPage: Page },
+            dataType: "html",
+            success: function (data) {
+                console.log("hello");
+                $("#tableContent").html(data);
+                $("#status").html("(New)");
 
+            },
+            error: function (error) {
+                console.log(error)
+                // alert("No Projects Found");
+                $("#tableContent").html('An error has occurred');
+            }
+        });
+    }
 
 
     $(document).ready(function () {
         $.ajax({
             url: "/Admin/NewState",
             type: "POST",
+            data: { CurrentPage: 1 },
             dataType: "html",
             success: function (data) {
-                console.log("hello");   
+                console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
 
@@ -256,6 +279,7 @@
             $.ajax({
                 url: "/Admin/NewState",
                 type: "POST",
+                data: { CurrentPage: 1 },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);

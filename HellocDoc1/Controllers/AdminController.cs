@@ -6,22 +6,21 @@ using Services.Contracts;
 using Services.Models;
 using Common.Enum;
 using HelloDoc1.Services;
-using BusinessLogic.Services;
 using Common.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HellocDoc1.Controllers
 {
     [Route("[controller]/[action]")]
+    [CustomAuthorize("Admin")]
+
     public class AdminController : Controller
     {
-        private readonly IJwtService _jwtService;
         private readonly IAdminServices _adminServices;
 
-        public AdminController(IAdminServices adminServices, IJwtService jwtService)
+        public AdminController(IAdminServices adminServices)
         {
             _adminServices = adminServices;
-
-            _jwtService = jwtService;
 
         }
 
@@ -33,10 +32,9 @@ namespace HellocDoc1.Controllers
         }
 
 
-        public IActionResult NewState()
+        public IActionResult NewState(int CurrentPage, int PageSize = 10)
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.NewState().requestClients;
+            AdminDashboardViewModel model = _adminServices.NewState(CurrentPage, PageSize);
 
             return View(model);
         }
@@ -171,12 +169,20 @@ namespace HellocDoc1.Controllers
             //return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
 
-        public IActionResult SendOrders()
+        public IActionResult SendOrders(int request_id)
         {
-            return View();
+            var data=_adminServices.SendOders(request_id);
+            return View(data);
+        }
+
+        public SendOrdersViewModel FilterDataByProfession(int ProfessionId)
+        {
+            SendOrdersViewModel data = _adminServices.FilterDataByProfession(ProfessionId);
+            return data;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AdminLogin()
         {
             return View();
@@ -185,6 +191,7 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public IActionResult AdminLogin(AdminLoginViewModel user)
         {
             if (ModelState.IsValid)

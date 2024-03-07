@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using BusinessLogic.Services;
-using Common.Enum;
+﻿using Common.Enum;
+using Common.Helpers;
 using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
-using HellocDoc1.Services.Models;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using MimeKit.Cryptography;
 using Services.Contracts;
 using Services.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Net.Mail;
 
 namespace Services.Implementation
 {
@@ -26,7 +16,6 @@ namespace Services.Implementation
     {
         private ApplicationDbContext _context;
         private IHostingEnvironment _environment;
-        private readonly IJwtService _jwtService;
 
         private string GetUniqueFileName(string fileName)
         {
@@ -36,11 +25,10 @@ namespace Services.Implementation
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
-        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment, IJwtService jwtService)
+        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
             _environment = hostingEnvironment;
-            this._jwtService = jwtService;
         }
 
         public AdminDashboardViewModel AdminDashboard()
@@ -64,12 +52,18 @@ namespace Services.Implementation
             return model;
 
         }
-        public AdminDashboardViewModel NewState()
+        public AdminDashboardViewModel NewState(int CurrentPage, int PageSize = 10)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
+
+            int count = model.requestClients.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
+            model.requestClients = clients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+            model.CurrentPage = CurrentPage;
+            model.TotalPage = TotalPage;
             return model;
 
         }
@@ -353,16 +347,25 @@ namespace Services.Implementation
             {
                 RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
                 var file = data.FileName;
-                name += $"Please {file}<br>";
+                name += file;
 
 
             }
+            //foreach (var attachmentPath in name)
+            //{
+            //    string path = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads" + attachmentPath;
+            //    if (!string.IsNullOrEmpty(path))
+            //    {
+            //        var attachment = new Attachment(path);
+            //        mailMessage.Attachments.Add(attachment);
+            //    }
+            //}
             EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $"{name}");
         }
 
         public LoginResponseViewModel AdminLogin(AdminLoginViewModel model)
         {
-            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a=>a.Roles).FirstOrDefault();
+            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).FirstOrDefault();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
@@ -370,14 +373,41 @@ namespace Services.Implementation
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "There is no Password with this Account" };
             if (user.PasswordHash == model.Password)
             {
-                var jwtToken = _jwtService.GetJwtToken(user);
+                var jwtToken = JwtService.GetJwtToken(user);
 
-                return new LoginResponseViewModel() { Status = ResponseStatus.Success, Token=jwtToken };
+                return new LoginResponseViewModel() { Status = ResponseStatus.Success, Token = jwtToken };
             }
 
             return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Password does not match" };
         }
 
+        public SendOrdersViewModel SendOders(int request_id)
+        {
+            List<HealthProfessionalType> data = _context.HealthProfessionalTypes.ToList();
+            List<HealthProfession> obj = data.Select(a => new HealthProfession() { ProfessionId = a.HealthProfessionalId, ProfessionName = a.ProfessionName }).ToList();
+
+
+            SendOrdersViewModel model = new SendOrdersViewModel()
+            {
+                RequestId = request_id,
+                HealthProfessions = obj,
+
+            };
+            return model;
+        }
+
+        public SendOrdersViewModel FilterDataByProfession(int ProfessionId)
+        {
+            List<HealthProfessional> data = _context.HealthProfessionals.Where(a => a.Profession == ProfessionId).ToList();
+            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
+
+            SendOrdersViewModel model = new SendOrdersViewModel()
+            {
+                Business=obj,
+            };
+
+            return model;
+        }
 
     }
 }

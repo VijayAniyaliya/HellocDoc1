@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "";
+    ViewData["Title"] = "SendOrders";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+@model Services.Models.SendOrdersViewModel
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
@@ -15,41 +16,43 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <select class="form-select text-secondary py-0" id="floatingSelect" aria-label="Floating label select example">
+                    <select class="form-select text-secondary py-0 profession" id="floatingSelect" aria-label="Floating label select example">
                         <option selected disabled>Select Profession</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        @foreach (var item in Model.HealthProfessions)
+                        {
+                            <option value="@item.ProfessionId">@item.ProfessionName</option>
+                        }
                     </select>
                     <label for="floatingSelect"></label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="business" />
-                    <label for="floatingInput" class="">Business</label>
+                    <select class="form-select text-secondary py-0" id="business" aria-label="Floating label select example">
+                        <option selected disabled>Business</option>
+                    </select>
+                    <label for="business"></label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
+                    <input type="text" class="form-control" id="contact"
                            placeholder="business contact" />
-                    <label for="floatingInput" class="">Business Contact</label>
+                    <label for="contact" class="">Business Contact</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                           mailto:placeholder="abc@gmail.com" />
-                    <label for="floatingInput" class="">Email</label>
+                    <input type="email" class="form-control" id="email"
+                           placeholder="abc@gmail.com" />
+                    <label for="email" class="">Email</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
+                    <input type="text" class="form-control" id="faxnumber"
                            placeholder="fax number" />
-                    <label for="floatingInput" class="">Fax Number</label>
+                    <label for="faxnumber" class="">Fax Number</label>
                 </div>
             </div>
             <div class="col-12">
@@ -83,3 +86,46 @@
     <br />
 
 </div>
+@section Scripts{
+    <script>
+        $('.profession').on('change', function (e) {
+            var ProfessionId = $(this).val();
+            console.log(ProfessionId);
+
+            $.ajax({
+                url: '/Admin/FilterDataByProfession',
+                data: { "ProfessionId": ProfessionId },
+                success: function (response) {
+                    var business = $('#business');
+                    var contact = document.getElementById("contact");
+                    var email = document.getElementById("email");
+                    var faxnumber = document.getElementById("faxnumber");
+
+                    business.empty();
+                    business.append($('<option>', {
+                        value: "",
+                        // text: "Select Physician"
+                    }))
+                    console.log(response);
+
+                    response.business.forEach(function (item) {
+                        console.log(item);
+                        contact.value = item.contact;
+                        email.value = item.email;
+                        faxnumber.value = item.faxNumber;
+
+                        business.append(
+                            $('<option>', {
+                                value: item.businessId,
+                                text: item.businessName
+                            }));
+                        console.log("fetch success");
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+}

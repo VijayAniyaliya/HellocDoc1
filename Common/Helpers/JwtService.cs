@@ -1,26 +1,15 @@
 ﻿using Data.Entity;
-using Microsoft.AspNet.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Services.Contracts;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace BusinessLogic.Services
+namespace Common.Helpers
 {
-    public class JwtService : IJwtService
+    public class JwtService
     {
-        private readonly IConfiguration _configuration;
-        public JwtService(IConfiguration configuration)
-        {
-            this._configuration = configuration;
-        }
-        public string GetJwtToken(AspNetUser aspnetuser)
+        public static string GetJwtToken(AspNetUser aspnetuser)
         {
             var claims = new List<Claim>
             {
@@ -29,19 +18,19 @@ namespace BusinessLogic.Services
                 new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
                 new Claim("firstname", aspnetuser.Users.FirstOrDefault()?.FirstName??""),
                 new Claim("lastname", aspnetuser.Users.FirstOrDefault()?.LastName??""),
-                
+
             };
             foreach (var role in aspnetuser.Roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UHJHSANIVA787FVGHMJYAERvlkuytnbf"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddMinutes(20);
 
             var token = new JwtSecurityToken(
 
-                _configuration["Jwt: Issuer"], _configuration["Jwt: Audience"],
+                "Issuer", "Audience",
                 claims,
                 expires: expires,
                 signingCredentials: creds
@@ -49,7 +38,7 @@ namespace BusinessLogic.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken)
+        public static bool ValidateToken(string token, out JwtSecurityToken jwtSecurityToken)
         {
             jwtSecurityToken = null;
 
@@ -58,7 +47,7 @@ namespace BusinessLogic.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+            var key = Encoding.UTF8.GetBytes("UHJHSANIVA787FVGHMJYAERvlkuytnbf");
 
             try
             {

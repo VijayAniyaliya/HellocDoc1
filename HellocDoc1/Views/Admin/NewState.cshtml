@@ -192,6 +192,15 @@
         }
     </div>
 </div>
+<div class="page-container">
+    <ul class="pagination justify-content-center d-flex page-list">
+        @for(int CurrentPage=1; CurrentPage<=Model.TotalPage; CurrentPage++)
+        {
+            <li class="m-2 btn @(CurrentPage == Model.CurrentPage ? "page-active" : "")" onclick="changepage(@CurrentPage)"><a class="text-decoration-none text-black curent-page-index" data-page="@CurrentPage">@CurrentPage</a></li>
+        }
+    </ul>
+
+</div>
 <div id="cancelCase"></div>
 <div id="assignCase"></div>
 <div id="blockCase"></div>

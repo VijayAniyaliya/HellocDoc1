@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Common.Helpers
 {
@@ -13,27 +11,54 @@ namespace Common.Helpers
     {
         private readonly string _role;
 
-        public CustomAuthorize(string role = "")
+        public CustomAuthorize(string role = "") 
         {
             _role = role;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext filterContext)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            //var user = SessionUtils.Getlogininfo(filterContext.HttpContext.Session);
+            if (context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any())
+                return;
+
+            //Fetch Request from the Header
+            var request = context.HttpContext.Request;
+
+            //Fetch tokens
+            var token = request.Cookies["jwt"];
 
 
-            var test = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
-
-
-            if (!(string.IsNullOrEmpty(_role)))
+            //Code for Authentication
+            if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-
-
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
-
-
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
+                return;
             }
+
+
+            //Code for Authorization
+            var roleClaim = jwtSecurityToken.Claims.Where(claims => claims.Type == ClaimTypes.Role).Select(a => a.Value).ToList();
+
+            //Logged in but no roles found
+            if (roleClaim is null)
+            {
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "Submit_request" }));
+                return;
+            }
+
+            if (!roleClaim.Contains(_role))
+            {
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AccessDenied" }));
+                return;
+            }
+
+
+            var claims = jwtSecurityToken.Claims;
+
+            context.HttpContext.User.AddIdentity(new ClaimsIdentity(claims));
+            //var email = HttpContext.User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
+
+            return;
         }
     }
 }

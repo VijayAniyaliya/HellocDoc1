@@ -371,3 +371,13 @@ label {
 .adminSubDivs {
     height: 100vh;
 }
+
+.page-active {
+    border-radius:50%;
+    background: #17a2b8;
+    color:white;
+}
+.page-active:hover {
+    color: white;
+}
+

@@ -1,6 +1,4 @@
-using BusinessLogic.Services;
 using Data.Context;
-using HalloDoc.Utility;
 using HellocDoc1.Services;
 using HelloDoc1.Services;
 using Services.Contracts;
@@ -13,7 +11,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddTransient<IHashing, Hashing>();
 builder.Services.AddTransient<ILoginHandler, LoginHandler>();
-builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddTransient<IPatientRequest, PatientRequest>();
 builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();

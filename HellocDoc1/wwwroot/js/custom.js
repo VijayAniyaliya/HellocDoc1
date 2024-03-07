@@ -16,7 +16,7 @@ try {
             elements.removeAttribute('disabled');
         }
         else {
-            file.textContent = this.files.length + "File Selected";
+            file.textContent = this.files.length + " File Selected";
             elements.removeAttribute('disabled');
         }
         //file.textContent = this.files[0].name;
