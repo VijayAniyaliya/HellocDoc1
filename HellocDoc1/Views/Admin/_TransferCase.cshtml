@@ -1,0 +1,86 @@
+﻿@model Services.Models.TransferCaseViewModel
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border border-0 rounded-3">
+            <form asp-action="TransferCase" method="post">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="staticBackdropLabel">Transfer Request</h5>
+                    <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row">
+
+                        <p class="text-secondary mr-1">To transfer this request, search and select another Physician</p>
+                        <input type="text" name="request_id" value="@Model.RequestId" hidden />
+
+                    </div>
+                    <div class=" gap-2">
+                        <div class="form-floating mb-3">
+                            <select class="form-select text-secondary regionData" id="floatingSelect" aria-label="Floating label select example">
+                                <option value="" selected disabled>Select Region</option>
+                                @foreach (var item in Model.Regions)
+                                {
+                                    <option value="@item.RegionId">@item.Name</option>
+                                }
+                            </select>
+                            <label for="floatingSelect">Narrow Search By Region</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select class="form-select text-secondary" asp-for="PhysicianId" id="physelect" aria-label="Floating label select example">
+                            </select>
+                            <label for="physelect">Select Physician</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" asp-for="Description"  placeholder="description"
+                                      id="floatingTextarea2" style="height: 100px"></textarea>
+                            <label for="floatingTextarea2" class="">
+                                Description
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn bg-info text-white">Submit</button>
+                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('.regionData').on('change', function (e) {
+            var regionid = $(this).val();
+            console.log(regionid);
+
+            $.ajax({
+                url: '/Admin/FilterData',
+                data: { "regionid": regionid },
+                success: function (response) {
+                    var physelect = $('#physelect');
+                    physelect.empty();
+                    physelect.append($('<option>', {
+                        value: "",
+                        // text: "Select Physician"
+                    }))
+                    response.forEach(function (item) {
+                        console.log(item);
+                        physelect.append(
+                            $('<option>', {
+                                value: item.physicianId,
+                                text: item.name
+                            }));
+                        console.log("fetch success");
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

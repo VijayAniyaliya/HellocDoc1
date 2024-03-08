@@ -5,9 +5,11 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
+using System.Collections;
 using System.Net.Mail;
 
 namespace Services.Implementation
@@ -275,7 +277,7 @@ namespace Services.Implementation
         public ViewUploadsViewModel ViewUploads(int request_id)
         {
             Request data = _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefault();
-
+            data.RequestWiseFiles= data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             ViewUploadsViewModel viewUploads = new ViewUploadsViewModel()
             {
                 RequestId = request_id,
@@ -284,7 +286,6 @@ namespace Services.Implementation
 
             foreach (var item in data.RequestWiseFiles)
             {
-                var piece = item.FileName.Split(new[] { '.' }, 2);
 
                 DocumentDetail documentDetail = new DocumentDetail()
                 {
@@ -293,6 +294,8 @@ namespace Services.Implementation
                     UploadDate = item.CreatedDate.ToString()
                 };
                 viewUploads.Documents.Add(documentDetail);
+
+
             }
             return viewUploads;
         }
@@ -325,7 +328,8 @@ namespace Services.Implementation
         public void Delete(int DocumentId)
         {
             RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == DocumentId).FirstOrDefault();
-            _context.RequestWiseFiles.Remove(data);
+            data.IsDeleted = new BitArray(new[] { true });
+            _context.RequestWiseFiles.Update(data);
             _context.SaveChanges();
         }
 
@@ -334,7 +338,8 @@ namespace Services.Implementation
             foreach (var item in DocumentId)
             {
                 RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
-                _context.RequestWiseFiles.Remove(data);
+                data.IsDeleted = new BitArray(new[] { true });
+                _context.RequestWiseFiles.Update(data);
 
             }
             _context.SaveChanges();
@@ -342,25 +347,18 @@ namespace Services.Implementation
 
         public void SendMail(List<int> DocumentId)
         {
-            string name = "";
+            List<string> name = new List<string>();
             foreach (var item in DocumentId)
             {
                 RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
                 var file = data.FileName;
-                name += file;
+                name.Add(file);
 
 
             }
-            //foreach (var attachmentPath in name)
-            //{
-            //    string path = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads" + attachmentPath;
-            //    if (!string.IsNullOrEmpty(path))
-            //    {
-            //        var attachment = new Attachment(path);
-            //        mailMessage.Attachments.Add(attachment);
-            //    }
-            //}
-            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $"{name}");
+            var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
+
+            EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
         }
 
         public LoginResponseViewModel AdminLogin(AdminLoginViewModel model)
@@ -399,15 +397,122 @@ namespace Services.Implementation
         public SendOrdersViewModel FilterDataByProfession(int ProfessionId)
         {
             List<HealthProfessional> data = _context.HealthProfessionals.Where(a => a.Profession == ProfessionId).ToList();
-            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
+            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName }).ToList();
 
             SendOrdersViewModel model = new SendOrdersViewModel()
             {
-                Business=obj,
+                Business = obj,
             };
 
             return model;
         }
 
+
+        public SendOrdersViewModel FilterDataByBusiness(int BusinessId)
+        {
+            List<HealthProfessional> data = _context.HealthProfessionals.Where(a => a.VendorId == BusinessId).ToList();
+            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
+
+            SendOrdersViewModel model = new SendOrdersViewModel()
+            {
+                Business = obj,
+            };
+
+            return model;
+        }
+
+        public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        {
+            OrderDetail orderDetail = new OrderDetail()
+            {
+                VendorId = vendorid,
+                RequestId = request_id,
+                FaxNumber = faxnumber,
+                Email = email,
+                BusinessContact = contact,
+                Prescription = model.Prescription,
+                NoOfRefill = model.Refills,
+                CreatedDate = DateTime.Now,
+            };
+            await _context.OrderDetails.AddAsync(orderDetail);
+            await _context.SaveChangesAsync();
+        }
+
+        public TransferCaseViewModel TransferDetails(int request_id)
+        {
+            List<Region> data = _context.Regions.ToList();
+            TransferCaseViewModel model = new TransferCaseViewModel()
+            {
+                RequestId = request_id,
+                Regions = data,
+            };
+            return model;
+        }
+
+        public async Task TransferCase(TransferCaseViewModel model, int request_id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.PhysicianId = model.PhysicianId;
+
+                    var data1 = _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data1.TransToPhysicianId = model.PhysicianId;
+                    data1.Notes = model.Description;
+
+                    _context.Requests.Update(data);
+                    _context.RequestStatusLogs.Update(data1);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
+
+        public ClearCaseViewModel ClearDetails(int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            ClearCaseViewModel model = new ClearCaseViewModel()
+            {
+                RequestId = request_id,
+            };
+            return model;
+        }
+
+        public async Task ClearCase(ClearCaseViewModel model, int request_id)
+        {
+            using(var transaction= _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 10;
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 10,
+                        CreatedDate = DateTime.Now,
+
+                    };
+
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
     }
 }

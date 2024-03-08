@@ -181,6 +181,45 @@ namespace HellocDoc1.Controllers
             return data;
         }
 
+        public SendOrdersViewModel FilterDataByBusiness(int BusinessId)
+        {
+            SendOrdersViewModel data = _adminServices.FilterDataByBusiness(BusinessId);
+            return data;
+        }
+
+        [HttpPost]
+        public IActionResult SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        {
+            var data = _adminServices.SendOrderDetails(model, request_id, vendorid, contact, email, faxnumber);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public IActionResult TransferDetails(int request_id)
+        {
+            var data = _adminServices.TransferDetails(request_id);
+            return PartialView("_TransferCase", data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TransferCase(TransferCaseViewModel model, [FromForm] int request_id)
+        {
+            await _adminServices.TransferCase(model, request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public IActionResult ClearDetails(int request_id)
+        {
+            var data = _adminServices.ClearDetails(request_id);
+            return PartialView("_ClearCase", data);
+        }
+
+        [HttpPost]
+        public IActionResult ClearCase(ClearCaseViewModel model, int request_id)
+        {
+            _adminServices.ClearCase(model, request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AdminLogin()

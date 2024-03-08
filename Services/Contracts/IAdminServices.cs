@@ -32,5 +32,11 @@ namespace Services.Contracts
         LoginResponseViewModel AdminLogin(AdminLoginViewModel model);
         SendOrdersViewModel SendOders(int request_id);
         SendOrdersViewModel FilterDataByProfession(int ProfessionId);
+        SendOrdersViewModel FilterDataByBusiness(int BusinessId);
+        Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber);
+        TransferCaseViewModel TransferDetails(int request_id);
+        Task TransferCase(TransferCaseViewModel model, int request_id);
+        ClearCaseViewModel ClearDetails(int request_id);
+        Task ClearCase(ClearCaseViewModel model, int request_id);
     }
 }

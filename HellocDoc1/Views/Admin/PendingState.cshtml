@@ -22,8 +22,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model.requestClients)
-        {     
+        @foreach (var item in Model.requestClients)
+        {
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
@@ -89,13 +89,13 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-controller="Admin" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Clear Case</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="transfer(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="clearcase(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Clear Case</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
                         </ul>
                     </div>
                 </td>
-        </tr>
+            </tr>
         }
 
     </tbody>
@@ -161,7 +161,7 @@
                 </div>
                 <div class="row mx-3">
                     <div class="col-6 ps-0 pr-3 pb-2">
-                        <a class="btn w-100 bg-warning  text-white rounded-pill p-1 btn-sm" >Send Agreement</a>
+                        <a class="btn w-100 bg-warning  text-white rounded-pill p-1 btn-sm">Send Agreement</a>
                     </div>
                     <div class="col-6 p-0 pb-2">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
@@ -183,3 +183,44 @@
         }
     </div>
 </div>
+<div id="transfer"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function transfer(request_id) {
+        console.log("hello");
+        $.ajax({
+            url: "/Admin/TransferDetails/",
+            data: {"request_id":request_id},
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#transfer").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#transfer").html('An error has occurred');
+            }
+        });
+    };
+    function clearcase(request_id) {
+        console.log("hello");
+        $.ajax({
+            url: "/Admin/ClearDetails/",
+            data: { "request_id": request_id },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#transfer").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#transfer").html('An error has occurred');
+            }
+        });
+    };
+</script>
+

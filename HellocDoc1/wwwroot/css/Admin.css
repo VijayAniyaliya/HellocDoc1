@@ -324,11 +324,20 @@
     box-shadow: none;
 }
 
+.form-floating > .form-select:focus {
+    border-color: #01bce9;
+    box-shadow: none;
+}
+
 label {
     color: gray;
 }
 
 .form-floating > .form-control:focus ~ label {
+    color: #01bce9;
+}
+
+.form-floating > .form-select:focus ~ label {
     color: #01bce9;
 }
 
@@ -381,3 +390,9 @@ label {
     color: white;
 }
 
+
+.warn-icon::before {
+    border: 3px solid #ffc107;
+    padding:10px;
+    border-radius: 50%;
+}

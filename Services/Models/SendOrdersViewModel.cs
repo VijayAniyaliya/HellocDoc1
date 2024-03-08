@@ -16,7 +16,7 @@ namespace Services.Models
 
         public string Prescription { get; set; }
 
-        public string? Refills { get; set; }
+        public int? Refills { get; set; }
 
         public int RequestId { get; set; }
 
