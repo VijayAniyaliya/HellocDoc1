@@ -5,12 +5,10 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
-using System.Net.Mail;
 
 namespace Services.Implementation
 {
@@ -54,55 +52,67 @@ namespace Services.Implementation
             return model;
 
         }
-        public AdminDashboardViewModel NewState(int CurrentPage, int PageSize = 10)
+        public AdminDashboardViewModel NewState(int CurrentPage,string patientname,int requesttype, int PageSize = 10)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
+           if (!string.IsNullOrWhiteSpace(patientname))
+            {
+                model.requestClients=model.requestClients.Where(a=> a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+            }
+           if(requesttype == 1 || requesttype == 2 || requesttype == 3|| requesttype == 4)
+            {
+                model.requestClients=model.requestClients.Where(a=>a.Request.RequestTypeId== requesttype).ToList();
+            }
             int count = model.requestClients.Count();
             int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = clients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
             model.CurrentPage = CurrentPage;
             model.TotalPage = TotalPage;
             return model;
-
         }
 
-        public List<RequestClient> PendingState()
+        public AdminDashboardViewModel PendingState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 2).ToList();
-            return clients;
-
+            AdminDashboardViewModel model= new AdminDashboardViewModel();
+            model.requestClients= clients;
+            return model;
         }
 
-        public List<RequestClient> ActiveState()
+        public AdminDashboardViewModel ActiveState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 3).ToList();
-            return clients;
-
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients= clients;
+            return model;
         }
 
-        public List<RequestClient> ConcludeState()
+        public AdminDashboardViewModel ConcludeState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 4).ToList();
-            return clients;
-
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients= clients;
+            return model;
         }
 
-        public List<RequestClient> ToCloseState()
+        public AdminDashboardViewModel ToCloseState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 5).ToList();
-            return clients;
-
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = clients;
+            return model;
         }
 
-        public List<RequestClient> UnpaidState()
+        public AdminDashboardViewModel UnpaidState()
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToList();
-            return clients;
-
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
+            model.requestClients = clients;
+            return model;
         }
 
         public ViewCaseViewModel ViewCase(int request_id)
@@ -458,12 +468,17 @@ namespace Services.Implementation
                     var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
                     data.PhysicianId = model.PhysicianId;
 
-                    var data1 = _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    data1.TransToPhysicianId = model.PhysicianId;
-                    data1.Notes = model.Description;
-
+                    RequestStatusLog requeststatuslog = new RequestStatusLog
+                    {
+                        RequestId = request_id,
+                        Status = 2,
+                        PhysicianId = model.PhysicianId,
+                        Notes = model.Description,
+                        CreatedDate = DateTime.Now,
+                        TransToPhysicianId = model.PhysicianId
+                    };
                     _context.Requests.Update(data);
-                    _context.RequestStatusLogs.Update(data1);
+                    await  _context.RequestStatusLogs.AddAsync(requeststatuslog);
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -492,8 +507,8 @@ namespace Services.Implementation
             {
                 try
                 {
-                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    data.Status = 10;
+                    var obj=_context.Requests.Where(a=> a.RequestId == request_id).FirstOrDefault();
+                    obj.Status = 10;
                     RequestStatusLog requestStatusLog = new RequestStatusLog()
                     {
                         RequestId = request_id,
@@ -502,12 +517,101 @@ namespace Services.Implementation
 
                     };
 
-                    _context.Requests.Update(data);
+                    _context.Requests.Update(obj);
                     await _context.RequestStatusLogs.AddAsync(requestStatusLog);
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch(Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
+
+        public SendAgreementViewModel SendAgreementDetails(int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            SendAgreementViewModel model = new SendAgreementViewModel()
+            {
+                RequestId= request_id,
+                RequestTypeId= data.RequestTypeId,
+                Email= data.Email,
+                PhoneNumber= data.PhoneNumber,
+            };
+            return model;
+        }
+
+        public void SendAgreement(SendAgreementViewModel model, int request_id)
+        {
+            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $" <a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+        }
+
+        public SendAgreementViewModel ReviewAgreement(int request_id)
+        {
+            var data=_context.Requests.Where(a=> a.RequestId== request_id).FirstOrDefault();
+
+            SendAgreementViewModel model = new SendAgreementViewModel()
+            {
+                RequestId=request_id,
+                PatientName=data.FirstName+ " "+data.LastName,
+            };
+
+            return model;
+        }
+
+        public async Task AcceptAgreement(int request_id)
+        {
+           using(var transaction= _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 3;
+
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 3,
+                        PhysicianId = data.PhysicianId,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
+
+        public async Task CancelAgreement(SendAgreementViewModel model, int request_id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 5;
+
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 5,
+                        Notes=model.ReasonForCancel,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }

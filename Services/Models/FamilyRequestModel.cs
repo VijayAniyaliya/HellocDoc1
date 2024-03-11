@@ -20,7 +20,7 @@ namespace HellocDoc1.Services.Models
         [Required(ErrorMessage = "Relation With Patient is required")]
         public string RelationWithPatient { get; set; }
 
-        public string Symptoms { get; set; }
+        public string? Symptoms { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
         public string PatientFirstName { get; set; }
@@ -51,8 +51,8 @@ namespace HellocDoc1.Services.Models
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string PatientZipCode { get; set; }
 
-        public int PatientRoom { get; set; }
+        public int? PatientRoom { get; set; }
 
-        public IFormFile Doc { get; set; }
+        public IFormFile? Doc { get; set; }
     }
 }

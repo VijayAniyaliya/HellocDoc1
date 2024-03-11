@@ -6,14 +6,14 @@ namespace Services.Contracts
 {
     public interface IAdminServices
     {
-        AdminDashboardViewModel NewState(int CurrentPage, int PageSize = 10);
+        AdminDashboardViewModel NewState(int CurrentPage, string patientname = "", int requesttype = 5 , int PageSize = 10);
 
         AdminDashboardViewModel AdminDashboard();
-        List<RequestClient> PendingState();
-        List<RequestClient> ActiveState();
-        List<RequestClient> ConcludeState();
-        List<RequestClient> ToCloseState();
-        List<RequestClient> UnpaidState();
+        AdminDashboardViewModel PendingState();
+        AdminDashboardViewModel ActiveState();
+        AdminDashboardViewModel ConcludeState();
+        AdminDashboardViewModel ToCloseState();
+        AdminDashboardViewModel UnpaidState();
         ViewCaseViewModel  ViewCase(int request_id);
         ViewNotesViewModel ViewNotes(int request_id);
         void AddNotes(ViewNotesViewModel model, int request_id);
@@ -38,5 +38,10 @@ namespace Services.Contracts
         Task TransferCase(TransferCaseViewModel model, int request_id);
         ClearCaseViewModel ClearDetails(int request_id);
         Task ClearCase(ClearCaseViewModel model, int request_id);
+        SendAgreementViewModel SendAgreementDetails(int request_id);
+        void SendAgreement(SendAgreementViewModel model, int request_id);
+        SendAgreementViewModel ReviewAgreement(int request_id);
+        Task AcceptAgreement(int request_id);
+        Task CancelAgreement(SendAgreementViewModel model, int request_id);
     }
 }

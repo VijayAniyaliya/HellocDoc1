@@ -91,7 +91,7 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="transfer(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="clearcase(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Clear Case</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="sendagreement(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
                         </ul>
                     </div>
                 </td>
@@ -222,5 +222,24 @@
             }
         });
     };
+    function sendagreement(request_id) {
+        console.log("hello");
+        $.ajax({
+            url: "/Admin/SendAgreementDetails/",
+            data: { "request_id": request_id },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#transfer").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#transfer").html('An error has occurred');
+            }
+        });
+    };
+
 </script>
 

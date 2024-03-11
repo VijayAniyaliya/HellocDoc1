@@ -32,42 +32,36 @@ namespace HellocDoc1.Controllers
         }
 
 
-        public IActionResult NewState(int CurrentPage, int PageSize = 10)
+        public IActionResult NewState(int CurrentPage=1,string patientname ="", int requesttype = 5, int PageSize = 10 )
         {
-            AdminDashboardViewModel model = _adminServices.NewState(CurrentPage, PageSize);
-
+            AdminDashboardViewModel model = _adminServices.NewState(CurrentPage, patientname, requesttype, PageSize );
             return View(model);
         }
         public IActionResult PendingState()
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.PendingState();
+            AdminDashboardViewModel model=_adminServices.PendingState();
             return View(model);
         }
         public IActionResult ActiveState()
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.ActiveState();
+            AdminDashboardViewModel model = _adminServices.ActiveState();
             return View(model);
         }
         public IActionResult ConcludeState()
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.ConcludeState();
+            AdminDashboardViewModel model = _adminServices.ConcludeState();
             return View(model);
         }
 
         public IActionResult ToCloseState()
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.ToCloseState();
+            AdminDashboardViewModel model = _adminServices.ToCloseState();
             return View(model);
         }
 
         public IActionResult UnpaidState()
         {
-            AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = _adminServices.UnpaidState();
+            AdminDashboardViewModel model = _adminServices.UnpaidState();
             return View(model);
         }
 
@@ -159,7 +153,6 @@ namespace HellocDoc1.Controllers
         {
             _adminServices.DeleteAll(DocumentId);
             return RedirectToAction("AdminDashboard");
-            //return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
 
         public IActionResult SendMail([FromBody] List<int> DocumentId)
@@ -214,9 +207,36 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public IActionResult ClearCase(ClearCaseViewModel model, int request_id)
+        public async Task<IActionResult> ClearCase(ClearCaseViewModel model, int request_id)
         {
-            _adminServices.ClearCase(model, request_id);
+            await _adminServices.ClearCase(model, request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+
+        public IActionResult SendAgreementDetails(int request_id)
+        {
+            var data = _adminServices.SendAgreementDetails(request_id);
+            return PartialView("_SendAgreement", data);
+        }
+
+        [HttpPost]
+        public IActionResult SendAgreement(SendAgreementViewModel model, int request_id)
+        {
+            _adminServices.SendAgreement(model, request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AcceptAgreement(int request_id)
+        {
+            await _adminServices.AcceptAgreement(request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public async Task<IActionResult> CancelAgreement(SendAgreementViewModel model, int request_id)
+        {
+            await _adminServices.CancelAgreement(model, request_id);
             return RedirectToAction("AdminDashboard");
         }
 

@@ -38,21 +38,21 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text"  class="form-control" name="contact" id="contact"
+                        <input type="text" class="form-control" name="contact" id="contact"
                                placeholder="business contact" />
                         <label for="contact" class="">Business Contact</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email"  class="form-control" name="email" id="email"
+                        <input type="email" class="form-control" name="email" id="email"
                                placeholder="abc@gmail.com" />
                         <label for="email" class="">Email</label>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text"  class="form-control" name="faxnumber" id="faxnumber"
+                        <input type="text" class="form-control" name="faxnumber" id="faxnumber"
                                placeholder="fax number" />
                         <label for="faxnumber" class="">Fax Number</label>
                     </div>
@@ -138,13 +138,9 @@
                     var faxnumber = document.getElementById("faxnumber");
 
                     console.log(response.business);
-                    response.business.forEach(function (item) {
-                        console.log(item);
-                        contact.value = item.contact;
-                        email.value = item.email;
-                        faxnumber.value = item.faxNumber;
-
-                    });
+                    contact.value = response.business[0].contact;
+                    email.value = response.business[0].email;
+                    faxnumber.value = response.business[0].faxNumber;
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

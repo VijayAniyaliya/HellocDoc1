@@ -18,9 +18,10 @@ namespace HellocDoc1.Controllers
         private readonly IConcirgeRequest concirgeRequest;
         private readonly IBusinessRequest businessRequest;
         private readonly IPatientServices patientServices;
+        private readonly IAdminServices adminServices;
         private readonly ApplicationDbContext _context;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, ApplicationDbContext context)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, IAdminServices adminServices, ApplicationDbContext context)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
@@ -28,6 +29,7 @@ namespace HellocDoc1.Controllers
             this.concirgeRequest = concirgeRequest;
             this.businessRequest = businessRequest;
             this.patientServices = patientServices;
+            this.adminServices = adminServices;
             _context = context;
         }
 
@@ -261,9 +263,11 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Patient_Profile", "Patient");
         }
 
-        public IActionResult ReviewAgreement()
+        [HttpGet("[controller]/[action]/{request_id}")]
+        public IActionResult ReviewAgreement(int request_id)
         {
-            return View();
+            var data = adminServices.ReviewAgreement(request_id);
+            return View(data);
         }
     }
 }

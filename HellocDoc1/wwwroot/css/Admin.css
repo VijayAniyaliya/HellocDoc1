@@ -324,6 +324,11 @@
     box-shadow: none;
 }
 
+.select-region:focus {
+    border-color: #01bce9;
+    box-shadow: none;
+}
+
 .form-floating > .form-select:focus {
     border-color: #01bce9;
     box-shadow: none;

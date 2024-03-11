@@ -5,7 +5,7 @@ namespace HellocDoc1.Services.Models
 {
     public class PatientRequestModel
     {
-        public string Symptoms { get; set; }
+        public string? Symptoms { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
@@ -37,9 +37,9 @@ namespace HellocDoc1.Services.Models
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string ZipCode { get; set; }
 
-        public int Room { get; set; }
+        public int? Room { get; set; }
 
-        public IEnumerable<IFormFile> Doc { get; set; }
+        public IEnumerable<IFormFile>? Doc { get; set; }
 
 
     }
