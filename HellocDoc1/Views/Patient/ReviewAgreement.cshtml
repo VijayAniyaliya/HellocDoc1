@@ -15,7 +15,7 @@
     </p>
     <div class="d-flex justify-content-around mt-5">
         <button onclick="AcceptAgreement(@Model.RequestId)" type="button"
-                class="btn bg-success text-white border-1  float-end my-2" >
+                class="btn bg-success text-white border-1  float-end my-2">
             I Agree
         </button>
         <button type="button"
@@ -26,7 +26,6 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form asp-action="CancelAgreement" asp-route-request_id="@Model.RequestId" asp-controller="Admin">
 
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title" id="staticBackdropLabel">Cancel Confirmation</h5>
@@ -37,20 +36,20 @@
                     <div class="d-flex justify-content-center gap-2">
                         <div class="col-12">
                             <div class="form-floating mb-3">
-                                <textarea class="form-control" asp-for="ReasonForCancel" placeholder="reason"
+                                <textarea class="form-control reason" asp-for="ReasonForCancel" placeholder="reason"
                                           id="floatingTextarea2" style="height: 100px"></textarea>
                                 <label for="floatingTextarea2" class="">
                                     Please Provide a brief explanation for your cancelation
                                 </label>
+                                <span id="error" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn bg-info text-white">Continue</button>
+                    <button type="submit" class="btn bg-info text-white cancel">Continue</button>
                     <button type="submit" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
-                </form>
 
             </div>
         </div>
@@ -64,8 +63,8 @@
     function AcceptAgreement(request_id) {
         console.log("agreement")
         $.ajax({
-            url: "/Admin/AcceptAgreement/",
-            data: {"request_id": request_id},
+            url: "/Patient/AcceptAgreement/",
+            data: { "request_id": request_id },
             type: "POST",
             dataType: "html",
             success: function (data) {
@@ -77,4 +76,33 @@
             }
         });
     };
+
+    $(document).ready(function () {
+
+        $('.reason').on('focus', function () {
+            $('.reason').css('border', '');
+            $('#error').html('');
+        });
+
+        $('.cancel').on('click', function (e) {
+            var reason = $('.reason').val();
+            console.log(reason);
+            if (reason == "") {
+                $('.reason').css('border', '1px solid red');
+                $('#error').html('Please enter reason');
+            }
+            else {
+                $.ajax({
+                    url: '/Patient/CancelAgreement',
+                    data: { "request_id": @Model.RequestId, "reason": reason },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
 </script>

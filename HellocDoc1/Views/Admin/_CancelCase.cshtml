@@ -6,41 +6,76 @@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-action="CancelCase" asp-controller="Admin" method="post">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title" id="staticBackdropLabel">Confirm Cancellation</h5>
-                    <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex flex-row">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Confirm Cancellation</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row">
 
-                        <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold" id="Name">@Model.Name</p>
-                        <input type="text" name="request_id" value="@Model.RequestId" hidden/>
+                    <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold" id="Name">@Model.Name</p>
+                </div>
+                <div class=" gap-2">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary reason py-1" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected disabled value="">Reason for Cancellation</option>
+                            @foreach (var item in Model.ReasonForCancel)
+                            {
+                                <option value="@item.CaseId">@item.CaseName</option>
+                            }
+                        </select>
+                        <label for="floatingSelect"></label>
+                        <span id="error" class="text-danger"></span>
                     </div>
-                    <div class=" gap-2">
-                        <div class="form-floating mb-3">
-                            <select class="form-select text-secondary" asp-for="CaseTag"  id="floatingSelect" aria-label="Floating label select example">
-                                @foreach (var item in Model.ReasonForCancel)
-                                {
-                                    <option value="@item.CaseId">@item.CaseName</option>
-                                }
-                            </select>
-                                <label for="floatingSelect">Reason for Cancellation</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control" asp-for="AdditionalNotes" placeholder="additional notes"
-                                      id="floatingTextarea2" style="height: 100px"></textarea>
-                            <label for="floatingTextarea2" class="">
-                                Provide Additonal Notes
-                            </label>
-                        </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control cancelNote" placeholder="additional notes"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Provide Additonal Notes
+                        </label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit"  class="btn bg-info text-white">Confirm</button>
-                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn bg-info text-white cancel">Confirm</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.reason').on('change', function () {
+            $('.reason').css('border', '1px solid #ced4da');
+            $('#error').html('');
+        });
+
+        $('.cancel').on('click', function (e) {
+            var caseId = $('.reason').val();
+            console.log(caseId);
+            if (caseId == null) {
+                $('.reason').css('border', '1px solid red');
+                $('#error').html('Please select reason');
+            }
+            else {
+                var cancelNote = $('.cancelNote').val();
+                $.ajax({
+                    url: '/Admin/CancelCase',
+                    data: { "request_id": @Model.RequestId, "caseId": caseId, "cancelNote": cancelNote },
+                    success: function (response) {
+                        // $('#status-tabContent').html(response);
+                        // $("body").removeAttr("style");
+                        // $(".modal-backdrop").remove();
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "CloseCase";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        <h4>Close Case</h4>
+        <a asp-area="" asp-action="AdminDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <div class="px-3 pt-4 shadow Document-content mt-3" style="">
+
+        <div class="row pr-3">  
+            <div class="col-lg-8  col-12">
+                <div class="h6 text-secondary">Patient Name</div>
+                <div class="h5 text-info d-inline-block">FirstName </div>
+                <div class="h5 d-inline-block">(ConfirmationNumber)</div>
+            </div>
+            <div class="col-lg-4 col-12 mt-2">
+                <button class="btn text-info border-2 border-info fw-bold mr-5">
+                    Create Invoice Through QuickBooks
+                </button>
+            </div>
+        </div>
+
+
+        <div class="py-3 h5 fw-bold">Documents</div>
+        <div class="table-responsive mt-2 d-md-block d-none">
+            <table class="table">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col" style="width:60%">Documents</th>
+                        <th scope="col" style="width:20%">Upload Date <i class="bi bi-arrow-up-short h5"></i></th>
+                        <th class="text-center" scope="col" style="width:20%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FileName</td>
+                        <td>CreatedDate</td>
+                        <td class="text-center">
+                            <a href="" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
+                                <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-md-none d-block">
+            <hr />
+            <div>
+                <input type="checkbox" /> &nbsp;
+                <span>File Name</span>
+            </div>
+            <div class="my-3">
+                Upload Date
+            </div>
+            <div class="">
+                <a href="" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                    <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                </a>
+            </div>
+            <hr />
+        </div>
+
+        <div class="patient-info mt-3">
+            <div class="h5 mb-4 fw-bold">Patient Information</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                               placeholder="your first name" disabled />
+                        <label for="floatingInput" class="">First Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="last name" disabled />
+                        <label for="floatingInput" class="">Last Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="floatingInput" placeholder="date of birth" disabled />
+                        <label for="floatingInput" class="">Date of Birth</label>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-10 col-9">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" class="form-control pt-3 pb-3" id="floatingInput" placeholder="phone number" disabled />
+                        <label for="floatingInput" class="">Phone Number</label>
+                        @* <i class="bi bi-phone" style="position: relative; bottom: 42px; left: 95%;"></i>  *@
+                    </div>
+                </div>
+                <div class="col-md-1 col-sm-2 col-3 p-0 ">  
+
+                    <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-telephone h3 fw-bolder"></i></button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="floatingInput" class="">Email</label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="text-end mb-4">
+            <button type="button" class="btn bg-info text-white rounded-3 fw-bold px-4 h5">Edit</button>
+            <button type="button" class="btn bg-white text-info border-2 border-info rounded-3 fw-bold h5">Close Case</button>
+        </div>
+
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />

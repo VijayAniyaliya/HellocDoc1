@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
@@ -31,7 +32,7 @@ namespace Common.Helpers
             //Code for Authentication
             if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "Login" }));
                 return;
             }
 
@@ -56,8 +57,7 @@ namespace Common.Helpers
             var claims = jwtSecurityToken.Claims;
 
             context.HttpContext.User.AddIdentity(new ClaimsIdentity(claims));
-            //var email = HttpContext.User.Identities.ElementAt(1).Claims.FirstOrDefault(a => a.Type == ClaimTypes.Email).Value;
-
+            //var email = User.FindFirstValue(ClaimTypes.Email);
             return;
         }
     }

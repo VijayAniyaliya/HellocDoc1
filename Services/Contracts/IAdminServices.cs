@@ -9,21 +9,21 @@ namespace Services.Contracts
         AdminDashboardViewModel NewState(int CurrentPage, string patientname = "", int requesttype = 5 , int PageSize = 10);
 
         AdminDashboardViewModel AdminDashboard();
-        AdminDashboardViewModel PendingState();
-        AdminDashboardViewModel ActiveState();
-        AdminDashboardViewModel ConcludeState();
-        AdminDashboardViewModel ToCloseState();
-        AdminDashboardViewModel UnpaidState();
+        AdminDashboardViewModel PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel ToCloseState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
         ViewCaseViewModel  ViewCase(int request_id);
         ViewNotesViewModel ViewNotes(int request_id);
         void AddNotes(ViewNotesViewModel model, int request_id);
         CancelCaseViewModel CancelDetails(int request_id);
-        Task CancelCase(CancelCaseViewModel model, int request_id);
+        Task CancelCase(int request_id, int caseId, string cancelNote);
         BlockCaseViewModel BlockDetails(int request_id);
-        Task BlockCase(BlockCaseViewModel model, int request_id);
+        Task BlockCase(int request_id, string reason);
         AssignCaseViewModel AssignDetails(int request_id);
         List<PhysicianSelectlViewModel> FilterData(int regionid);
-        Task AssignCase(AssignCaseViewModel model, int request_id);
+        Task AssignCase(int request_id, int physicianid, string description);
         ViewUploadsViewModel ViewUploads(int request_id);
         void UploadDocuments(ViewUploadsViewModel model, int request_id);
         void Delete(int DocumentId);
@@ -35,13 +35,11 @@ namespace Services.Contracts
         SendOrdersViewModel FilterDataByBusiness(int BusinessId);
         Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber);
         TransferCaseViewModel TransferDetails(int request_id);
-        Task TransferCase(TransferCaseViewModel model, int request_id);
+        Task TransferCase(int request_id, int physicianid, string description);
         ClearCaseViewModel ClearDetails(int request_id);
         Task ClearCase(ClearCaseViewModel model, int request_id);
         SendAgreementViewModel SendAgreementDetails(int request_id);
         void SendAgreement(SendAgreementViewModel model, int request_id);
-        SendAgreementViewModel ReviewAgreement(int request_id);
-        Task AcceptAgreement(int request_id);
-        Task CancelAgreement(SendAgreementViewModel model, int request_id);
+
     }
 }

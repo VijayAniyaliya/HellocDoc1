@@ -9,7 +9,6 @@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-action="BlockCase" method="post">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title" id="staticBackdropLabel">Confirm Block</h5>
                     <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -18,24 +17,58 @@
                     <div class="d-flex flex-row">
 
                         <p class="text-secondary mr-1">Patient Name :</p><p class="text-info fw-bold">@Model.Name</p>
-                        <input type="text" name="request_id" value="@Model.RequestId" hidden />
                     </div>
                     <div>
                         <div class="form-floating mb-3">
-                            <textarea class="form-control" asp-for="ReasonForBlock" placeholder="reason"
+                            <textarea class="form-control reason" placeholder="reason"
                                       id="floatingTextarea2" style="height: 100px"></textarea>
                             <label for="floatingTextarea2" class="">
                                 Reason for Block Request
                             </label>
+                        <span id="error" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn bg-info text-white">Confirm</button>
+                    <button type="submit" class="btn bg-info text-white block">Confirm</button>
                     <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
-            </form>
 
         </div>
     </div>
-</div> 
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.reason').on('focus', function () {
+            $('.reason').css('border', '');
+            $('#error').html('');
+        });
+
+        $('.block').on('click', function (e) {
+            var reason = $('.reason').val();
+            console.log(reason);
+            if (reason == "") {
+                $('.reason').css('border', '1px solid red');
+                $('#error').html('Please enter reason');
+            }
+            else {
+                $.ajax({
+                    url: '/Admin/BlockCase',
+                    data: { "request_id": @Model.RequestId, "reason": reason },
+                    success: function (response) {
+                        // $('#status-tabContent').html(response);
+                        // $("body").removeAttr("style");
+                        // $(".modal-backdrop").remove();
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
+</script>

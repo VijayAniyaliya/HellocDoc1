@@ -258,5 +258,74 @@ namespace HellocDoc1.Services
             
         }
 
+        public SendAgreementViewModel ReviewAgreement(int request_id)
+        {
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            SendAgreementViewModel model = new SendAgreementViewModel()
+            {
+                RequestId = request_id,
+                PatientName = data.FirstName + " " + data.LastName,
+            };
+
+            return model;
+        }
+
+        public async Task AcceptAgreement(int request_id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 3;
+
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 3,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
+
+        public async Task CancelAgreement(int request_id, string reason)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    data.Status = 5;
+
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 5,
+                        Notes = reason,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.Requests.Update(data);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
+
     }
 }

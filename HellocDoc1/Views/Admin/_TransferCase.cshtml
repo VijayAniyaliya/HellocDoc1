@@ -3,48 +3,47 @@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border border-0 rounded-3">
-            <form asp-action="TransferCase" method="post">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title" id="staticBackdropLabel">Transfer Request</h5>
-                    <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex flex-row">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Transfer Request</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row">
 
-                        <p class="text-secondary mr-1">To transfer this request, search and select another Physician</p>
-                        <input type="text" name="request_id" value="@Model.RequestId" hidden />
+                    <p class="text-secondary mr-1">To transfer this request, search and select another Physician</p>
 
+                </div>
+                <div class=" gap-2">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary regionData" id="floatingSelect" aria-label="Floating label select example">
+                            <option value="" selected disabled>Select Region</option>
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.RegionId">@item.Name</option>
+                            }
+                        </select>
+                        <label for="floatingSelect">Narrow Search By Region</label>
                     </div>
-                    <div class=" gap-2">
-                        <div class="form-floating mb-3">
-                            <select class="form-select text-secondary regionData" id="floatingSelect" aria-label="Floating label select example">
-                                <option value="" selected disabled>Select Region</option>
-                                @foreach (var item in Model.Regions)
-                                {
-                                    <option value="@item.RegionId">@item.Name</option>
-                                }
-                            </select>
-                            <label for="floatingSelect">Narrow Search By Region</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <select class="form-select text-secondary" asp-for="PhysicianId" id="physelect" aria-label="Floating label select example">
-                            </select>
-                            <label for="physelect">Select Physician</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control" asp-for="Description"  placeholder="description"
-                                      id="floatingTextarea2" style="height: 100px"></textarea>
-                            <label for="floatingTextarea2" class="">
-                                Description
-                            </label>
-                        </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary physician py-1" id="physelect" aria-label="Floating label select example">
+                        <option value="" selected disabled>Select Physician</option>
+                        </select>
+                        <label for="physelect"></label>
+                        <span id="error" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control description" placeholder="description"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Description
+                        </label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn bg-info text-white">Submit</button>
-                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn bg-info text-white assign">Submit</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
 
         </div>
     </div>
@@ -65,7 +64,7 @@
                     physelect.empty();
                     physelect.append($('<option>', {
                         value: "",
-                        // text: "Select Physician"
+                        text: "Select Physician"
                     }))
                     response.forEach(function (item) {
                         console.log(item);
@@ -81,6 +80,39 @@
                     console.error(error);
                 }
             });
+        });
+    });
+
+    $(document).ready(function () {
+
+        $('.physician').on('change', function () {
+            $('.physician').css('border', '1px solid #ced4da');
+            $('#error').html('');
+        });
+
+        $('.assign').on('click', function (e) {
+            var physicianid = $('.physician').val();
+            console.log(physicianid);
+            if (physicianid == null) {
+                $('.physician').css('border', '1px solid red');
+                $('#error').html('Please select physician');
+            }
+            else {
+                var description = $('.description').val();
+                $.ajax({
+                    url: '/Admin/TransferCase',
+                    data: { "request_id": @Model.RequestId, "physicianid": physicianid, "description": description },
+                    success: function (response) {
+                        // $('#status-tabContent').html(response);
+                        // $("body").removeAttr("style");
+                        // $(".modal-backdrop").remove();
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
         });
     });
 </script>

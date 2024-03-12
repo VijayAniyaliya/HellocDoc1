@@ -6,6 +6,7 @@ using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Implementation;
 using Services.Models;
 
 namespace HellocDoc1.Controllers
@@ -18,10 +19,9 @@ namespace HellocDoc1.Controllers
         private readonly IConcirgeRequest concirgeRequest;
         private readonly IBusinessRequest businessRequest;
         private readonly IPatientServices patientServices;
-        private readonly IAdminServices adminServices;
         private readonly ApplicationDbContext _context;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, IAdminServices adminServices, ApplicationDbContext context)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, ApplicationDbContext context)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
@@ -29,7 +29,6 @@ namespace HellocDoc1.Controllers
             this.concirgeRequest = concirgeRequest;
             this.businessRequest = businessRequest;
             this.patientServices = patientServices;
-            this.adminServices = adminServices;
             _context = context;
         }
 
@@ -263,11 +262,24 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Patient_Profile", "Patient");
         }
 
+        [CustomAuthorize("User")]
         [HttpGet("[controller]/[action]/{request_id}")]
         public IActionResult ReviewAgreement(int request_id)
         {
-            var data = adminServices.ReviewAgreement(request_id);
+            var data = patientServices.ReviewAgreement(request_id);
             return View(data);
+        }
+
+        public async Task<IActionResult> AcceptAgreement(int request_id)
+        {
+            await patientServices.AcceptAgreement(request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public async Task<IActionResult> CancelAgreement(int request_id, string reason)
+        {
+            await patientServices.CancelAgreement(request_id, reason);
+            return RedirectToAction("AdminDashboard");
         }
     }
 }

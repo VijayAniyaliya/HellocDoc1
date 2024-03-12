@@ -22,5 +22,10 @@ namespace Services.Contracts
 
         void SubmitInformationSomeone(SubmitInfoViewModel model);
         void UploadDocument(PatientServiceModel model, int request_id);
+
+        SendAgreementViewModel ReviewAgreement(int request_id);
+
+        Task AcceptAgreement(int request_id);
+        Task CancelAgreement(int request_id, string reason);
     }
 }

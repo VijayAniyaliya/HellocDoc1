@@ -33,35 +33,35 @@ namespace HellocDoc1.Controllers
 
 
         public IActionResult NewState(int CurrentPage=1,string patientname ="", int requesttype = 5, int PageSize = 10 )
-        {
+       {
             AdminDashboardViewModel model = _adminServices.NewState(CurrentPage, patientname, requesttype, PageSize );
             return View(model);
         }
-        public IActionResult PendingState()
+        public IActionResult PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
         {
-            AdminDashboardViewModel model=_adminServices.PendingState();
+            AdminDashboardViewModel model=_adminServices.PendingState(CurrentPage, patientname, requesttype, PageSize);
             return View(model);
         }
-        public IActionResult ActiveState()
+        public IActionResult ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
         {
-            AdminDashboardViewModel model = _adminServices.ActiveState();
+            AdminDashboardViewModel model = _adminServices.ActiveState(CurrentPage, patientname, requesttype, PageSize);
             return View(model);
         }
-        public IActionResult ConcludeState()
+        public IActionResult ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
         {
-            AdminDashboardViewModel model = _adminServices.ConcludeState();
-            return View(model);
-        }
-
-        public IActionResult ToCloseState()
-        {
-            AdminDashboardViewModel model = _adminServices.ToCloseState();
+            AdminDashboardViewModel model = _adminServices.ConcludeState(CurrentPage, patientname, requesttype, PageSize);
             return View(model);
         }
 
-        public IActionResult UnpaidState()
+        public IActionResult ToCloseState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
         {
-            AdminDashboardViewModel model = _adminServices.UnpaidState();
+            AdminDashboardViewModel model = _adminServices.ToCloseState(CurrentPage, patientname, requesttype, PageSize);
+            return View(model);
+        }
+
+        public IActionResult UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        {
+            AdminDashboardViewModel model = _adminServices.UnpaidState(CurrentPage, patientname, requesttype, PageSize);
             return View(model);
         }
 
@@ -90,10 +90,9 @@ namespace HellocDoc1.Controllers
             return PartialView("_CancelCase", data);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CancelCase(CancelCaseViewModel model, [FromForm] int request_id)
+        public async Task<IActionResult> CancelCase(int request_id, int caseId, string cancelNote)
         {
-            await _adminServices.CancelCase(model, request_id);
+            await _adminServices.CancelCase(request_id, caseId,  cancelNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -110,10 +109,9 @@ namespace HellocDoc1.Controllers
             return data;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AssignCase(AssignCaseViewModel model, [FromForm] int request_id)
+        public async Task<IActionResult> AssignCase(int request_id, int physicianid, string description)
         {
-            await _adminServices.AssignCase(model, request_id);
+            await _adminServices.AssignCase(request_id, physicianid, description);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -124,10 +122,9 @@ namespace HellocDoc1.Controllers
             return PartialView("_BlockCase", data);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> BlockCase(BlockCaseViewModel model, [FromForm] int request_id)
+        public async Task<IActionResult> BlockCase(int request_id, string reason)
         {
-            await _adminServices.BlockCase(model, request_id);
+            await _adminServices.BlockCase(request_id, reason);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -193,10 +190,9 @@ namespace HellocDoc1.Controllers
             return PartialView("_TransferCase", data);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> TransferCase(TransferCaseViewModel model, [FromForm] int request_id)
+        public async Task<IActionResult> TransferCase(int request_id, int physicianid, string description)
         {
-            await _adminServices.TransferCase(model, request_id);
+            await _adminServices.TransferCase(request_id,  physicianid, description);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -227,17 +223,9 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AcceptAgreement(int request_id)
+        public IActionResult CloseCase()
         {
-            await _adminServices.AcceptAgreement(request_id);
-            return RedirectToAction("AdminDashboard");
-        }
-
-        public async Task<IActionResult> CancelAgreement(SendAgreementViewModel model, int request_id)
-        {
-            await _adminServices.CancelAgreement(model, request_id);
-            return RedirectToAction("AdminDashboard");
+            return View();
         }
 
         [HttpGet]
@@ -272,7 +260,8 @@ namespace HellocDoc1.Controllers
                 }
             }
             return View();
-
         }
+
+
     }
 }

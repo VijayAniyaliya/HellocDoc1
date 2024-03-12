@@ -101,7 +101,7 @@
 
             <div class="px-2 row" style="">
                 <div class="form col-xl-3 col-md-6">
-                    <input type="text" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
+                    <input type="search" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
                 </div>
                 <div class="form col-xl-3 col-md-6 mt-3 m-md-0">
                     <select class="form-select select-region" id="floatingSelect">
@@ -240,15 +240,16 @@
 
     function AjaxAll() {
         $.ajax({
-            url: "/Admin/NewState",
+            url: url,
             type: "POST",
             data: { CurrentPage: Page, patientname: patientname, requesttype: requesttype },
             dataType: "html",
             success: function (data) {
-                console.log(data);
+                // console.log(data);
                 console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
+                // console.log(url);
 
             },
             error: function (error) {
@@ -305,9 +306,8 @@
                 console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
-                // status = "new";
-                // url = "/Admin/NewState";
-
+                status = "new";
+                url = "/Admin/NewState";
             },
             error: function (error) {
                 console.log(error)
@@ -324,6 +324,8 @@
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(New)");
+                    status = "new";
+                    url = "/Admin/NewState";
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -335,10 +337,12 @@
             $.ajax({
                 url: "/Admin/PendingState",
                 type: "POST",
+                data: { CurrentPage: 1, patientname: patientname, requesttype: requesttype },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(Pending)");
+                    url = "/Admin/PendingState";
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -350,11 +354,12 @@
             $.ajax({
                 url: "/Admin/ActiveState",
                 type: "POST",
+                data: { CurrentPage: 1, patientname: patientname, requesttype: requesttype },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(Active)");
-
+                    url = "/Admin/ActiveState";
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -366,11 +371,12 @@
             $.ajax({
                 url: "/Admin/ConcludeState",
                 type: "POST",
+                data: { CurrentPage: 1, patientname: patientname, requesttype: requesttype },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(Conclude)");
-
+                    url = "/Admin/ConcludeState";
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -382,11 +388,12 @@
             $.ajax({
                 url: "/Admin/ToCloseState",
                 type: "POST",
+                data: { CurrentPage: 1, patientname: patientname, requesttype: requesttype },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(To Close)");
-
+                    url = "/Admin/ToCloseState";
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -398,11 +405,12 @@
             $.ajax({
                 url: "/Admin/UnpaidState",
                 type: "POST",
+                data: { CurrentPage: 1, patientname: patientname, requesttype: requesttype },
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(Unpaid)");
-
+                    url = "/Admin/UnpaidState";
                 },
                 error: function () {
                     alert("No Projects Found");
