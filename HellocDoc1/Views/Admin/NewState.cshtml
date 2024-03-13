@@ -28,7 +28,7 @@
             <tr class="style_@item.Request.RequestTypeId ">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
-                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
+                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>    
                 @* @DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(Int32.Parse(@item.StrMonth)) *@
                 @switch (item.Request.RequestTypeId)
                 {

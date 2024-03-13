@@ -40,6 +40,8 @@ namespace Services.Contracts
         Task ClearCase(ClearCaseViewModel model, int request_id);
         SendAgreementViewModel SendAgreementDetails(int request_id);
         void SendAgreement(SendAgreementViewModel model, int request_id);
-
+        CloseCaseViewModel CloseCase(int request_id);
+        Task SaveCloseCase(CloseCaseViewModel model, int request_id);
+        Task CloseCaseRequest(int request_id);
     }
 }

@@ -223,7 +223,32 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult CloseCase()
+
+        public IActionResult CloseCase(int request_id)
+        {
+            var data=_adminServices.CloseCase(request_id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task <IActionResult> SaveCloseCase(CloseCaseViewModel model, int request_id)
+        {
+            await _adminServices.SaveCloseCase(model, request_id);
+            return RedirectToAction("CloseCase", new { request_id });
+        }
+
+        public IActionResult CancelChanges(int request_id)
+        {
+            return RedirectToAction("CloseCase", new { request_id });
+        }
+
+        public async Task <IActionResult> CloseCaseRequest(int request_id)
+        {
+            await _adminServices.CloseCaseRequest(request_id);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public IActionResult EncounterForm()
         {
             return View();
         }

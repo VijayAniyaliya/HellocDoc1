@@ -620,8 +620,75 @@ namespace Services.Implementation
             EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $" <a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
         }
 
+        public CloseCaseViewModel CloseCase(int request_id)
+        {
+            RequestClient data = _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefault();
+            data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
+            CloseCaseViewModel model = new CloseCaseViewModel()
+            {
+                RequestId = request_id,
+                PatientName = data.FirstName + " " + data.LastName,
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
+                PhoneNumber = data.PhoneNumber,
+                Email = data.Email
+            };
+
+            foreach (var item in data.Request.RequestWiseFiles)
+            {   
+
+                DocumentDetails documentDetail = new DocumentDetails()
+                {
+                    DocumentId = item.RequestWiseFileId,
+                    Document = item.FileName,
+                    UploadDate = item.CreatedDate.ToString()
+                };
+                model.Documents.Add(documentDetail);
+
+            }
+            return model;
+        }
 
 
+        public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
+        {
+            RequestClient requestClient= _context.RequestClients.Where(a=> a.RequestId == request_id).FirstOrDefault();
+            requestClient.Email = model.Email;
+            requestClient.PhoneNumber = model.PhoneNumber;
 
+            _context.RequestClients.Update(requestClient);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CloseCaseRequest(int request_id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var obj = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    obj.Status = 6;
+                    RequestStatusLog requestStatusLog = new RequestStatusLog()
+                    {
+                        RequestId = request_id,
+                        Status = 6,
+                        CreatedDate = DateTime.Now,
+
+                    };
+
+                    _context.Requests.Update(obj);
+                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
     }
 }
