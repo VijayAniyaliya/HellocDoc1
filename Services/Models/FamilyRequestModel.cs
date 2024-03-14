@@ -53,6 +53,6 @@ namespace HellocDoc1.Services.Models
 
         public int? PatientRoom { get; set; }
 
-        public IFormFile? Doc { get; set; }
+        public IEnumerable<IFormFile>? Doc { get; set; }
     }
 }

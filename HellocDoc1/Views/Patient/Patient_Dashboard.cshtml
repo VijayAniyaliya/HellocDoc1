@@ -65,17 +65,9 @@
                                             break;
                                     }
                                 </td>
-                                @if (item.RequestWiseFiles.Count > 0)
-                                {
-                                    <td>
-                                        <a asp-controller="Patient" asp-route-request_id="@item.RequestId" asp-action="Patient_Document" class="btn text-info border-1 border-info">(@item.RequestWiseFiles.Count) Document</a>
-                                    </td>
-
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
+                                <td>
+                                    <a asp-controller="Patient" asp-route-request_id="@item.RequestId" asp-action="Patient_Document" class="btn text-info border-1 border-info">(@item.RequestWiseFiles.Count) Document</a>
+                                </td>
                             </tr>
 
                         }

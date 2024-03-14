@@ -75,23 +75,23 @@
                 <span class="text-primary fw-bold" id="status"></span>
             </div>
             <div class="d-flex gap-1">
-                <a class="bg-info text-white rounded-3 p-2">
+                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-reply h5 mr-1"></i>
                     <span class="link-text">Send Link</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2">
+                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-pencil-square  mr-1"></i>
                     <span class="link-text">Create Requests</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2">
+                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-reply-all  mr-1"></i>
                     <span class="link-text">Export</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2">
+                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-reply-all  mr-1"></i>
                     <span class="link-text">Export All</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2">
+                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-person-square  mr-1"></i>
                     <span class="link-text">Request DTY Support</span>
                 </a>
@@ -103,17 +103,17 @@
                 <div class="form col-xl-3 col-md-6">
                     <input type="search" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
                 </div>
-                <div class="form col-xl-3 col-md-6 mt-3 m-md-0">
+                <div class="form col-xl-2 col-md-6 mt-3 m-md-0">
                     <select class="form-select select-region" id="floatingSelect">
                         <option selected>All Regions</option>
                         <option value="1">One</option>
                         <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="3">Three</option>    
                     </select>
                 </div>
 
 
-                <div class="col-xl-6 col-md-12 mt-2 ms-1 m-xl-0 text-xl-end">
+                <div class="col-xl-7 col-md-12 mt-2 ms-1 m-xl-0 text-xl-end">
                     <button class="text-secondary mr-2 border-info rounded-2 bg-transparent selected">
 
                         <span>ALL</span>
@@ -280,6 +280,7 @@
             default:
         }
         requesttype = requestType;
+        Page = 1;
         AjaxAll();
     })
 
@@ -293,6 +294,7 @@
     function searchpatient() {
         patientname = $("#searchpatient")[0].value;
         console.log(patientname);
+        Page = 1;
         AjaxAll();
     }
 

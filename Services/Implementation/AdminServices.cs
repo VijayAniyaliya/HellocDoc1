@@ -141,7 +141,7 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel ToCloseState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public AdminDashboardViewModel ToCloseState(int CurrentPage, string patientname, int requesttype, int PageSize)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 5).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();

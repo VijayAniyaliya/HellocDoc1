@@ -64,7 +64,7 @@ namespace HellocDoc1.Services
                             Street = model.Street,
                             IntDate = model.DOB.Day,
                             IntYear = model.DOB.Year,
-                            StrMonth = (model.DOB.Month).ToString(),
+                            StrMonth = model.DOB.ToString("MMM"),
                             CreatedDate = DateTime.Now,
                             CreatedBy = "Patient",
                         };
@@ -92,6 +92,9 @@ namespace HellocDoc1.Services
                         LastName = model.LastName,
                         Email = model.Email,
                         PhoneNumber = model.PhoneNumber,
+                        IntDate = model.DOB.Day,
+                        IntYear = model.DOB.Year,
+                        StrMonth = model.DOB.ToString("MMM"),
                         State = model.State,
                         Street = model.Street,
                         City = model.City,
@@ -99,23 +102,27 @@ namespace HellocDoc1.Services
                         Notes = model.Symptoms
                     };
 
-                    foreach (var item in model.Doc)
+                    if (model.Doc != null)
                     {
-                        var file = item.FileName;
-                        var uniqueFileName = GetUniqueFileName(file);
-                        var uploads = Path.Combine(environment.WebRootPath, "uploads");
-                        var filePath = Path.Combine(uploads, uniqueFileName);
-                        item.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                        RequestWiseFile requestWiseFile = new RequestWiseFile()
+                        foreach (var item in model.Doc)
                         {
-                            Request = request,
-                            FileName = uniqueFileName,
-                            CreatedDate = DateTime.Now,
+                            var file = item.FileName;
+                            var uniqueFileName = GetUniqueFileName(file);
+                            var uploads = Path.Combine(environment.WebRootPath, "uploads");
+                            var filePath = Path.Combine(uploads, uniqueFileName);
+                            item.CopyTo(new FileStream(filePath, FileMode.Create));
 
-                        };
-                        await _context.RequestWiseFiles.AddAsync(requestWiseFile);
+                            RequestWiseFile requestWiseFile = new RequestWiseFile()
+                            {
+                                Request = request,
+                                FileName = uniqueFileName,
+                                CreatedDate = DateTime.Now,
+
+                            };
+                            await _context.RequestWiseFiles.AddAsync(requestWiseFile);
+                        }
                     }
+
                     request.RequestClients.Add(requestclient);
                     await _context.RequestClients.AddAsync(requestclient);
                     await _context.SaveChangesAsync();
@@ -125,7 +132,7 @@ namespace HellocDoc1.Services
                 {
                     transaction.Rollback();
                 }
-            
+
 
             }
         }

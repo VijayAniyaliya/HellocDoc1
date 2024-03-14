@@ -65,7 +65,7 @@ namespace HellocDoc1.Services
                             LastName = model.PatientLastName,
                             IntDate = model.PatientDOB.Day,
                             IntYear = model.PatientDOB.Year,
-                            StrMonth = (model.PatientDOB.Month).ToString(),
+                            StrMonth = model.PatientDOB.ToString("MMM"),
                             Email = model.PatientEmail,
                             PhoneNumber = model.PatientPhoneNumber,
                             Notes = model.Symptoms

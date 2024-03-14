@@ -63,7 +63,7 @@ namespace HellocDoc1.Services
                             LastName = model.PatientLastName,
                             IntDate = model.PatientDOB.Day,
                             IntYear = model.PatientDOB.Year,
-                            StrMonth = (model.PatientDOB.Month).ToString(),
+                            StrMonth = model.PatientDOB.ToString("MMM"),
                             Email = model.PatientEmail,
                             PhoneNumber = model.PatientPhoneNumber,
                             Street = model.PatientStreet,
@@ -74,22 +74,27 @@ namespace HellocDoc1.Services
                             //Request= request,
                         };
 
-                        var file = model?.Doc!;
-                        var uniqueFileName = GetUniqueFileName(file.FileName);
-                        var uploads = Path.Combine(environment.WebRootPath, "uploads");
-                        var filePath = Path.Combine(uploads, uniqueFileName);
-                        file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                        RequestWiseFile requestWiseFile = new RequestWiseFile()
+                        if (model.Doc != null)
                         {
-                            Request = request,
-                            FileName = uniqueFileName,
-                            CreatedDate = DateTime.Now,
+                            foreach (var item in model.Doc)
+                            {
+                                var file = item.FileName;
+                                var uniqueFileName = GetUniqueFileName(file);
+                                var uploads = Path.Combine(environment.WebRootPath, "uploads");
+                                var filePath = Path.Combine(uploads, uniqueFileName);
+                                item.CopyTo(new FileStream(filePath, FileMode.Create));
 
-                        };
+                                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                                {
+                                    Request = request,
+                                    FileName = uniqueFileName,
+                                    CreatedDate = DateTime.Now,
 
-                        await _context.RequestWiseFiles.AddAsync(requestWiseFile);
+                                };
+                                await _context.RequestWiseFiles.AddAsync(requestWiseFile);
 
+                            }
+                        }
 
                         request.RequestClients.Add(requestclient);
                         await _context.RequestClients.AddAsync(requestclient);

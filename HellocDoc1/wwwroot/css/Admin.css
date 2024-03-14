@@ -401,3 +401,9 @@ label {
     padding:10px;
     border-radius: 50%;
 }
+
+.page::before{
+    font-size:20px;
+    font-weight:900 !important;
+    margin-top:2px;
+}

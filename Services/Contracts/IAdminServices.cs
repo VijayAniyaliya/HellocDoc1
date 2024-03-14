@@ -12,7 +12,7 @@ namespace Services.Contracts
         AdminDashboardViewModel PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
         AdminDashboardViewModel ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
         AdminDashboardViewModel ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
-        AdminDashboardViewModel ToCloseState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel ToCloseState(int CurrentPage , string patientname , int requesttype , int PageSize);
         AdminDashboardViewModel UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
         ViewCaseViewModel  ViewCase(int request_id);
         ViewNotesViewModel ViewNotes(int request_id);
