@@ -43,5 +43,7 @@ namespace Services.Contracts
         CloseCaseViewModel CloseCase(int request_id);
         Task SaveCloseCase(CloseCaseViewModel model, int request_id);
         Task CloseCaseRequest(int request_id);
+        EncounterFormViewModel EncounterForm(int request_id);
+        Task SubmitEncounterForm(EncounterFormViewModel model, int request_id);
     }
 }

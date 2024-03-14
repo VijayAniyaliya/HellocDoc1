@@ -248,8 +248,17 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult EncounterForm()
+        [HttpGet]
+        public IActionResult EncounterForm(int request_id)
         {
+            var data = _adminServices.EncounterForm(request_id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitEncounterForm(EncounterFormViewModel model, int request_id)
+        {
+            await _adminServices.SubmitEncounterForm(model, request_id);
             return View();
         }
 

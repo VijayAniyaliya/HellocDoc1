@@ -1,4 +1,7 @@
-﻿@{
+﻿@model Services.Models.EncounterFormViewModel
+
+
+@{
     ViewData["Title"] = "EncounterForm";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
@@ -13,267 +16,271 @@
     </div>
     <div class="px-3 pt-4 shadow Document-content mt-3" style="">
         <div class="text-center h2 text-info fw-bold mb-4">Medical Report-Confidential</div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="first name"  />
-                    <label for="floatingInput" class="">First Name</label>
+        <form asp-action="SubmitEncounterForm" asp-route-request_id="@Model.RequestId" method="post">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="FirstName" class="form-control" id="floatingInput"
+                               placeholder="first name" disabled />
+                        <label for="floatingInput" class="">First Name</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="last name"  />
-                    <label for="floatingInput" class="">Last Name</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="LastName" class="form-control" id="floatingInput"
+                               placeholder="last name" disabled />
+                        <label for="floatingInput" class="">Last Name</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="location"  />
-                    <label for="floatingInput" class="">Location</label>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Location" class="form-control" id="floatingInput"
+                               placeholder="location" disabled />
+                        <label for="floatingInput" class="">Location</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="date of birth"  />
-                    <label for="floatingInput" class="">Date of Birth</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" asp-for="DOB" class="form-control" id="floatingInput" placeholder="date of birth" disabled />
+                        <label for="floatingInput" class="">Date of Birth</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="date"  />
-                    <label for="floatingInput" class="">Date</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" asp-for="Date" class="form-control" id="floatingInput" placeholder="date" disabled />
+                        <label for="floatingInput" class="">Date</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating  mb-3">
-                    <input type="tel" class="form-control pt-3 pb-3" id="phone" >
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone" disabled />
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                           placeholder="abc@gmail.com"  />
-                    <label for="floatingInput" class="">Email</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="Email" class="form-control" id="floatingInput"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="floatingInput" class="">Email</label>
+                    </div>
                 </div>
-            </div>
 
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="history of patient"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        History of Present
-                        Illness or Injury
-                    </label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="HistoryOfPatient" class="form-control" placeholder="history of patient"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            History of Present
+                            Illness or Injury
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="MedicalHistory" class="form-control" placeholder="medical history"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Medical History
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Medications" class="form-control" placeholder="medications"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Medications
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Allergies" class="form-control" placeholder="allergies"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Allergies
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Temp" type="text" class="form-control" id="floatingInput"
+                               placeholder="Temperature " />
+                        <label for="floatingInput" class="">Temperature </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="HeartRate" type="text" class="form-control" id="floatingInput"
+                               placeholder="HR (Heart Rate)" />
+                        <label for="floatingInput" class="">HR (Heart Rate)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="RespiratoryRate" type="text" class="form-control" id="floatingInput"
+                               placeholder="RR (RespiratoryRate)" />
+                        <label for="floatingInput" class="">
+                            RR (Respiratory
+                            Rate)
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="BloodPressure" type="text" class="form-control" id="floatingInput"
+                               placeholder="Blood pressure" />
+                        <label for="floatingInput" class="">Blood pressure</label>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="BloodPressure1" type="text" class="form-control" id="floatingInput"
+                               placeholder="Blood pressure" />
+                        <label for="floatingInput" class="">Blood pressure (ex)</label>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="O2" type="text" class="form-control" id="floatingInput"
+                               placeholder="O2" />
+                        <label for="floatingInput" class="">O2</label>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Pain" type="text" class="form-control" id="floatingInput"
+                               placeholder="Pain " />
+                        <label for="floatingInput" class="">Pain</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Heent" class="form-control" placeholder="heent"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Heent
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="CV" class="form-control" placeholder="CV"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            CV
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Chest" class="form-control" placeholder="patient notes"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Chest
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="ABD" class="form-control" placeholder="patient notes"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            ABD
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Extr" class="form-control" placeholder="Extr"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Extr
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Skin" class="form-control" placeholder="Skin "
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Skin
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Neuro" class="form-control" placeholder="Neuro"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Neuro
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Other" class="form-control" placeholder="Other"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Other
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Disgnosis" class="form-control" placeholder="Diagnosis"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Diagnosis
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="TreatmentPlan" class="form-control" placeholder="Treatment plan"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Treatment plan
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="MedicationDispnsed" class="form-control" placeholder="Medicationdispensed"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Medication
+                            dispensed
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="Procedure" class="form-control" placeholder="Procedures"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Procedures
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="FollowUp" class="form-control" placeholder="Follow-up"
+                                  id="floatingTextarea2" style="height: 80px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Follow-up
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="medical history"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Medical History
-                    </label>
-                </div>
+            <div class="text-end mt-2">
+                <button type="submit" class="btn bg-info text-white h5">Save Changes</button>
+                <button type="button" class="btn text-white h5" style="background:#6a09ff">Finalize</button>
+                <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
             </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="medications"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Medications
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="allergies"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Allergies
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="Temperature "  />
-                    <label for="floatingInput" class="">Temperature </label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="HR (Heart Rate)"  />
-                    <label for="floatingInput" class="">HR (Heart Rate)</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="RR (RespiratoryRate)"  />
-                    <label for="floatingInput" class="">
-                        RR (Respiratory
-                        Rate)
-                    </label>
-                </div>
-            </div>
-            <div class="col-xl-2 col-md-3 col-sm-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="Blood pressure"  />
-                    <label for="floatingInput" class="">Blood pressure</label>
-                </div>
-            </div>    
-            <div class="col-xl-2 col-md-3 col-sm-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="Blood pressure"  />
-                    <label for="floatingInput" class="">Blood pressure</label>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-3 col-sm-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="O2"  />
-                    <label for="floatingInput" class="">O2</label>
-                </div>
-            </div>
-            <div class="col-xl-4 col-md-3 col-sm-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="Pain "  />
-                    <label for="floatingInput" class="">Pain</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="heent"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Heent
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="CV"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        CV
-                    </label>
-                </div>
-            </div>     
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="patient notes"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Chest
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="patient notes"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        ABD
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Extr"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Extr
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Skin "
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Skin
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Neuro"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Neuro
-                    </label>
-                </div>
-            </div>          
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Other"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Other
-                    </label>
-                </div>
-            </div>         
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Diagnosis"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Diagnosis
-                    </label>
-                </div>
-            </div>         
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Treatment plan"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Treatment plan
-                    </label>
-                </div>
-            </div>          
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Medicationdispensed"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Medication
-                        dispensed
-                    </label>
-                </div>
-            </div>          
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Procedures"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Procedures
-                    </label>
-                </div>
-            </div>          
-            <div class="col-12">
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" placeholder="Follow-up"
-                              id="floatingTextarea2" style="height: 80px" ></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Follow-up
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="text-end mt-2">
-            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
-            <button type="button" class="btn text-white h5" style="background:#6a09ff">Finalize</button>
-            <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
-        </div>
+        </form>
+
 
 
     </div>

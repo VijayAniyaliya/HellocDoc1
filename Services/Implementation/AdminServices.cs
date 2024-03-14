@@ -5,6 +5,7 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
@@ -637,7 +638,7 @@ namespace Services.Implementation
             };
 
             foreach (var item in data.Request.RequestWiseFiles)
-            {   
+            {
 
                 DocumentDetails documentDetail = new DocumentDetails()
                 {
@@ -654,7 +655,7 @@ namespace Services.Implementation
 
         public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
         {
-            RequestClient requestClient= _context.RequestClients.Where(a=> a.RequestId == request_id).FirstOrDefault();
+            RequestClient requestClient = _context.RequestClients.Where(a => a.RequestId == request_id).FirstOrDefault();
             requestClient.Email = model.Email;
             requestClient.PhoneNumber = model.PhoneNumber;
 
@@ -688,6 +689,122 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
+
+        }
+
+        public EncounterFormViewModel EncounterForm(int request_id)
+        {
+            RequestClient data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefault();
+            EncounterForm obj = _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            EncounterFormViewModel model = new EncounterFormViewModel()
+            {
+                RequestId = request_id,
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                Location = data.Street + " " + data.City + " " + data.State + " " + data.ZipCode,
+                DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
+                Date = data.Request.CreatedDate,
+                PhoneNumber = data.PhoneNumber,
+                Email = data.Email,
+            };
+
+            if (obj != null)
+            {
+                model.HistoryOfPatient = obj.HistoryOfPresentIllnessOrInjury;
+                model.MedicalHistory = obj.MedicalHistory;
+                model.Medications = obj.Medications;
+                model.Allergies = obj.Allergies;
+                model.Temp = obj.Temp;
+                model.HeartRate = obj.Hr;
+                model.RespiratoryRate = obj.Rr;
+                model.BloodPressure = obj.BloodPressureSystolic;
+                model.BloodPressure1 = obj.BloodPressureDiastolic;
+                model.O2 = obj.O2;
+                model.Pain = obj.Pain;
+                model.Heent = obj.Heent;
+                model.CV = obj.Cv;
+                model.Chest = obj.Chest;
+                model.ABD = obj.Abd;
+                model.Extr = obj.Extremeties;
+                model.Skin = obj.Skin;
+                model.Neuro = obj.Neuro;
+                model.Other = obj.Other;
+                model.Disgnosis = obj.Diagnosis;
+                model.TreatmentPlan = obj.TreatmentPlan;
+                model.MedicationDispnsed = obj.MedicationsDispensed;
+                model.Procedure = obj.Procedures;
+                model.FollowUp = obj.FollowUp;
+            }
+            return model;
+        }
+
+        public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id)
+        {
+            EncounterForm encounter = _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+            if(encounter == null)
+            {
+                EncounterForm encounterForm = new EncounterForm()
+                {
+                    RequestId = request_id,
+                    HistoryOfPresentIllnessOrInjury = model.HistoryOfPatient,
+                    MedicalHistory = model.MedicalHistory,
+                    Medications = model.Medications,
+                    Allergies = model.Allergies,
+                    Temp = model.Temp,
+                    Hr = model.HeartRate,
+                    Rr = model.RespiratoryRate,
+                    BloodPressureSystolic = model.BloodPressure,
+                    BloodPressureDiastolic = model.BloodPressure1,
+                    O2 = model.O2,
+                    Pain = model.Pain,
+                    Heent = model.Heent,
+                    Cv = model.CV,
+                    Chest = model.Chest,
+                    Abd = model.ABD,
+                    Extremeties = model.Extr,
+                    Skin = model.Skin,
+                    Neuro = model.Neuro,
+                    Other = model.Other,
+                    Diagnosis = model.Disgnosis,
+                    TreatmentPlan = model.TreatmentPlan,
+                    MedicationsDispensed = model.MedicationDispnsed,
+                    Procedures = model.Procedure,
+                    FollowUp = model.FollowUp,
+                };
+                await _context.EncounterForms.AddAsync(encounterForm);
+            }
+
+            else
+            {
+                encounter.HistoryOfPresentIllnessOrInjury = model.HistoryOfPatient;
+                encounter.MedicalHistory = model.MedicalHistory;
+                encounter.Medications = model.Medications;
+                encounter.Allergies = model.Allergies;
+                encounter.Temp = model.Temp;
+                encounter.Hr = model.HeartRate;
+                encounter.Rr = model.RespiratoryRate;
+                encounter.BloodPressureSystolic = model.BloodPressure;
+                encounter.BloodPressureDiastolic = model.BloodPressure1;
+                encounter.O2 = model.O2;
+                encounter.Pain = model.Pain;
+                encounter.Heent = model.Heent;
+                encounter.Cv = model.CV;
+                encounter.Chest = model.Chest;
+                encounter.Abd = model.ABD;
+                encounter.Extremeties = model.Extr;
+                encounter.Skin = model.Skin;
+                encounter.Neuro = model.Neuro;
+                encounter.Other = model.Other;
+                encounter.Diagnosis = model.Disgnosis;
+                encounter.TreatmentPlan = model.TreatmentPlan;
+                encounter.MedicationsDispensed = model.MedicationDispnsed;
+                encounter.Procedures = model.Procedure;
+                encounter.FollowUp = model.FollowUp;
+                _context.EncounterForms.Update(encounter);
+            }
+            await _context.SaveChangesAsync();
 
         }
     }
