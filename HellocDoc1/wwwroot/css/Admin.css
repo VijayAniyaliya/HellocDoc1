@@ -46,6 +46,7 @@
     color: white;
 }
 
+@media only screen and (min-width:768px) {
     .newActive::after {
         content: "";
         position: absolute;
@@ -56,6 +57,7 @@
         border-color: #203f9a transparent transparent transparent;
         transform: translateX(-50%);
     }
+}
 
 
 .pending {
@@ -80,6 +82,8 @@
     color: white;
 }
 
+@media only screen and (min-width:768px) {
+
     .pendingActive::after {
         content: "";
         position: absolute;
@@ -90,6 +94,7 @@
         border-color: #47cde7 transparent transparent transparent;
         transform: translateX(-50%);
     }
+}
 
 .active {
     background-color: #E9F0E8;
@@ -113,6 +118,8 @@
     color: white;
 }
 
+@media only screen and (min-width:768px) {
+
     .activeStateActive::after {
         content: "";
         position: absolute;
@@ -123,6 +130,7 @@
         border-color: #628D61 transparent transparent transparent;
         transform: translateX(-50%);
     }
+}
 
 .conclude {
     background-color: #F7E6EC;
@@ -146,15 +154,18 @@
     color: white;
 }
 
-.concludeActive::after {
-    content: "";
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    border-width: 12px;
-    border-style: solid;
-    border-color: #e465bc transparent transparent transparent;
-    transform: translateX(-50%);
+@media only screen and (min-width:768px) {
+
+    .concludeActive::after {
+        content: "";
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        border-width: 12px;
+        border-style: solid;
+        border-color: #e465bc transparent transparent transparent;
+        transform: translateX(-50%);
+    }
 }
 
 .toclose {
@@ -179,6 +190,8 @@
     color: white;
 }
 
+@media only screen and (min-width:768px) {
+
     .tocloseActive::after {
         content: "";
         position: absolute;
@@ -189,7 +202,7 @@
         border-color: #477fe7 transparent transparent transparent;
         transform: translateX(-50%);
     }
-
+}
 
 .unpaid {
     background-color: #E9EAEF;
@@ -213,6 +226,8 @@
     color: white;
 }
 
+@media only screen and (min-width:768px) {
+
     .unpaidActive::after {
         content: "";
         position: absolute;
@@ -223,6 +238,7 @@
         border-color: #ab40dd transparent transparent transparent;
         transform: translateX(-50%);
     }
+}
 
 @media only screen and (max-width:915px) {
     .link-text {
@@ -387,23 +403,26 @@ label {
 }
 
 .page-active {
-    border-radius:50%;
+    border-radius: 50%;
     background: #17a2b8;
-    color:white;
-}
-.page-active:hover {
     color: white;
 }
+
+    .page-active:hover {
+        color: white;
+    }
 
 
 .warn-icon::before {
     border: 3px solid #ffc107;
-    padding:10px;
+    padding: 10px;
     border-radius: 50%;
 }
 
-.page::before{
-    font-size:20px;
-    font-weight:900 !important;
-    margin-top:2px;
+.page::before {
+    font-size: 20px;
+    font-weight: 900 !important;
+    margin-top: 2px;
 }
+
+

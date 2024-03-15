@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using System.Collections;
+using System.Drawing;
 
 namespace HellocDoc1.Services
 {
@@ -35,7 +36,7 @@ namespace HellocDoc1.Services
                 try
                 {
                     AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-
+                    User user = new User();
                     if (aspnetuser == null)
                     {
                         AspNetUser aspnetuser1 = new AspNetUser()
@@ -50,27 +51,32 @@ namespace HellocDoc1.Services
                         };
 
                         await _context.AspNetUsers.AddAsync(aspnetuser1);
-                        User user = new User()
-                        {
-                            AspNetUserId = aspnetuser1.Id,
-                            UserId = 9,
-                            FirstName = model.FirstName,
-                            LastName = model.LastName,
-                            Email = model.Email,
-                            Mobile = model.PhoneNumber,
-                            ZipCode = model.ZipCode,
-                            State = model.State,
-                            City = model.City,
-                            Street = model.Street,
-                            IntDate = model.DOB.Day,
-                            IntYear = model.DOB.Year,
-                            StrMonth = model.DOB.ToString("MMM"),
-                            CreatedDate = DateTime.Now,
-                            CreatedBy = "Patient",
-                        };
+
+                        user.AspNetUserId = aspnetuser1.Id;
+                        user.UserId = 9;
+                        user.FirstName = model.FirstName;
+                        user.LastName = model.LastName;
+                        user.Email = model.Email;
+                        user.Mobile = model.PhoneNumber;
+                        user.ZipCode = model.ZipCode;
+                        user.State = model.State;
+                        user.City = model.City;
+                        user.Street = model.Street;
+                        user.IntDate = model.DOB.Day;
+                        user.IntYear = model.DOB.Year;
+                        user.StrMonth = model.DOB.ToString("MMM");
+                        user.CreatedDate = DateTime.Now;
+                        user.CreatedBy = "Patient";
+
                         await _context.Users.AddAsync(user);
                     }
+                    else
+                    {
+                        user = _context.Users.Where(a => a.Email == model.Email).FirstOrDefault();
+                    }
 
+                    var regiondata = _context.Regions.Where(x => x.RegionId == user.RegionId).FirstOrDefault();
+                    var requestcount = _context.Requests.Where( a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToList();
                     Request request = new Request()
                     {
                         UserId = 6,
@@ -81,7 +87,10 @@ namespace HellocDoc1.Services
                         PhoneNumber = model.PhoneNumber,
                         Status = (int)Common.Enum.RequestStatus.Unassigned,
                         CreatedDate = DateTime.Now,
-                        IsUrgentEmailSent = new BitArray(1)
+                        IsUrgentEmailSent = new BitArray(1),
+                        ConfirmationNumber = regiondata.Abbreviation + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') 
+                                             +DateTime.Now.Year.ToString().Substring(2)+ model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) +
+                                             ( requestcount.Count()+1).ToString().PadLeft(4, '0'),  
                     };
                     await _context.Requests.AddAsync(request);
 
@@ -99,7 +108,8 @@ namespace HellocDoc1.Services
                         Street = model.Street,
                         City = model.City,
                         ZipCode = model.ZipCode,
-                        Notes = model.Symptoms
+                        Notes = model.Symptoms,
+                        RegionId=regiondata.RegionId,
                     };
 
                     if (model.Doc != null)

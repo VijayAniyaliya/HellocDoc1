@@ -134,7 +134,7 @@ namespace HellocDoc1.Services
 
         public void Editing(string email, User model)
         {
-            var userdata = _context.Users.Where(x => x.Email == email).FirstOrDefault();
+            User userdata = _context.Users.Where(x => x.Email == email).FirstOrDefault();
 
             if (userdata.Email == model.Email)
             {
@@ -153,22 +153,19 @@ namespace HellocDoc1.Services
 
                 _context.SaveChanges();
             }
-            else
-            {
-                AspNetUser aspnetuser = new AspNetUser()
-                {
-                    UserName = model.FirstName + " " + model.LastName,
-                    Email = model.Email,
-                    PhoneNumber = model.Mobile,
-                    ModifiedDate = DateTime.Now,
+            //else
+            //{
+            //    AspNetUser aspnetuser = new AspNetUser()
+            //    {
+            //        UserName = model.FirstName + " " + model.LastName,
+            //        Email = model.Email,
+            //        PhoneNumber = model.Mobile,
+            //        ModifiedDate = DateTime.Now,
 
-                };
+            //    };
 
-                _context.AspNetUsers.Add(aspnetuser);
-            }
-
-
-
+            //    _context.AspNetUsers.Add(aspnetuser);
+            //}
         }
 
         public void SubmitInformationSomeone(SubmitInfoViewModel model)

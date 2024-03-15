@@ -61,7 +61,7 @@
 
             <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
 
-                <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none text-info  mr-3 dashaboard" id="">Dashboard</a>
+                <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 dashaboard" id="">Dashboard</a>
 
                 <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info profile" >Profile</a>
 
@@ -113,7 +113,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    @RenderSection("Script",false);
+    @* @await RenderSectionAsync("Scripts", required: false) *@
 
 </body>
 </html>

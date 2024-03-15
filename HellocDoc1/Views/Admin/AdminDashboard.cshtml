@@ -72,7 +72,7 @@
         <div class="d-flex flex-row justify-content-between mt-5 mb-3">
             <div>
                 <span class="h4">Patient </span>
-                <span class="text-primary fw-bold" id="status"></span>
+                <span class=" fw-bold" id="status" style="color:#203f9a;"></span>
             </div>
             <div class="d-flex gap-1">
                 <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
@@ -394,7 +394,7 @@
                 dataType: "html",
                 success: function (data) {
                     $("#tableContent").html(data);
-                    $("#status").html("(To Close)");
+                    $("#status").html("(Close)");
                     url = "/Admin/ToCloseState";
                 },
                 error: function () {

@@ -237,10 +237,6 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("CloseCase", new { request_id });
         }
 
-        public IActionResult CancelChanges(int request_id)
-        {
-            return RedirectToAction("CloseCase", new { request_id });
-        }
 
         public async Task <IActionResult> CloseCaseRequest(int request_id)
         {
@@ -265,6 +261,11 @@ namespace HellocDoc1.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        public IActionResult AdminProfile()
         {
             return View();
         }

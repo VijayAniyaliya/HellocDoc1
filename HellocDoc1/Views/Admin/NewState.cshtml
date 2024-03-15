@@ -46,7 +46,12 @@
                         break;
                 }
 
-                <td>@item.Request.CreatedDate</td>
+                <td>
+                    @item.Request.CreatedDate.ToShortDateString()
+                    @((int)Math.Floor((DateTime.Now - item.Request.CreatedDate).TotalDays))d
+                    @((int)Math.Floor(((DateTime.Now - item.Request.CreatedDate).TotalDays - (int)Math.Floor((DateTime.Now - item.Request.CreatedDate).TotalDays)) * 24))h
+                    @((int)Math.Floor(((DateTime.Now - item.Request.CreatedDate).TotalHours - (int)Math.Floor((DateTime.Now - item.Request.CreatedDate).TotalHours)) * 60))m
+                </td>
 
                 <td>
 
@@ -212,11 +217,10 @@
 }
 else if(Model.TotalPage==1)
 {
-
 }
 else
 {
-    <div class="text-center text-danger">No record found</div>
+    <div class="text-center text-danger fw-bold h5">No record found</div>
 }
 
 <div id="cancelCase"></div>

@@ -199,9 +199,13 @@ namespace HellocDoc1.Controllers
         public IActionResult SubmitInformationMe()
         {
             return View();
-        }   
+        }
 
-        public IActionResult SubmitInformationSomeone(SubmitInfoViewModel model)
+        public IActionResult SubmitInformationSomeone()
+        {
+            return View();
+        }
+        public IActionResult SubmitInformationSomeoneelse(SubmitInfoViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -252,6 +256,12 @@ namespace HellocDoc1.Controllers
             var email = HttpContext.Session.GetString("Email");
             var data = patientServices.ProfileService(email);
             return View(data);
+        }
+
+        [CustomAuthorize("User")]
+        public IActionResult CancelChanges()
+        {
+            return RedirectToAction("Patient_Profile"); 
         }
 
         [CustomAuthorize("User")]

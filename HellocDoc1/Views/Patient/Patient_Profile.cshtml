@@ -11,7 +11,7 @@
 
         <div class="d-flex justify-content-between pt-3">
             <h4 class="">User Profile</h4>
-            <a asp-area=""  asp-action="Patient_Dashboard" class="btn back-btn border border-info text-info p-2">
+            <a asp-area="" asp-action="Patient_Dashboard" class="btn back-btn border border-info text-info p-2">
                 &lt; Back
             </a>
 
@@ -26,20 +26,20 @@
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" disabled />
+                                <input type="text" asp-for="FirstName" class="form-control update" id="floatingInput" placeholder="first name" disabled />
                                 <label for="floatingInput" class="">First Name</label>
                             </div>
 
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="last name" disabled />
+                                <input type="text" asp-for="LastName" class="form-control update" id="floatingInput" placeholder="last name" disabled />
                                 <label for="floatingInput" class="">Last Name</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="date" asp-for="ModifiedDate" class="form-control" id="floatingInput" placeholder="last name" disabled />
+                                <input type="date" asp-for="ModifiedDate" class="form-control update" id="floatingInput" placeholder="last name" disabled />
                                 <label for="floatingInput" class="">Date of Birth</label>
                             </div>
                         </div>
@@ -52,24 +52,22 @@
                     <div class="row">
                         <div class="col-md-2">
                             <div class="form-floating mb-3">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example" disabled>
-                                    <option selected>Mobile</option>
-                                    <option value="1">Telephone</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                <select class="form-select update" id="floatingSelect" aria-label="Floating label select example" disabled>
+                                    <option selected value="1">Mobile</option>
+                                    <option value="2">Telephone</option>
                                 </select>
                                 <label for="floatingSelect">Type</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating  mb-3">
-                                <input type="tel" asp-for="Mobile" class="form-control pt-3 pb-3" id="phone" disabled>
+                                <input type="tel" asp-for="Mobile" class="form-control pt-3 pb-3 update" id="phone" disabled>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                                       placeholder="abc@gmail.com" disabled />
+                                       placeholder="abc@gmail.com" readonly />
                                 <label for="floatingInput" class="">Email</label>
                             </div>
                         </div>
@@ -82,26 +80,26 @@
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="Street" class="form-control" id="floatingInput"
+                                <input type="text" asp-for="Street" class="form-control update" id="floatingInput"
                                        placeholder="street address" disabled />
                                 <label for="floatingInput" class="">Street</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="City" class="form-control" id="floatingInput" placeholder="city" disabled />
+                                <input type="text" asp-for="City" class="form-control update" id="floatingInput" placeholder="city" disabled />
                                 <label for="floatingInput" class="">City</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" disabled />
+                                <input type="text" asp-for="State" class="form-control update" id="floatingInput" placeholder="state" disabled />
                                 <label for="floatingInput" class="">State</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating mb-3">
-                                <input type="text" asp-for="ZipCode" class="form-control" id="floatingInput" placeholder="zip codes" disabled />
+                                <input type="text" asp-for="ZipCode" class="form-control update" id="floatingInput" placeholder="zip codes" disabled />
                                 <label for="floatingInput" class="">Zip Code</label>
                             </div>
                         </div>
@@ -119,9 +117,9 @@
                 </div>
                 <div class="d-flex justify-content-end pt-3 pb-4 mb-5">
 
-                    <button type="button" id="editButton" class="btn bg-info text-white border-1 border-info  px-4 py-2 mr-1">Edit</button>
-                    <button type="submit" id="saveButton" class="btn bg-info text-white border-1 border-info px-3 py-1 mr-2">Submit</button>
-                    @* <button type="button" id="cancelButton" class="btn  text-info border-1 border-info px-3 py-1">Cancel</button> *@
+                    <button type="button" id="Editbtn" class="btn bg-info text-white border-1 border-info  px-4 py-2 mr-1 edit">Edit</button>
+                    <button type="submit" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify mr-2">Save</button>
+                    <button type="button" onclick="cancel()" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
                 </div>
             </form>
         </div>
@@ -129,6 +127,38 @@
 </div>
 
 
-
-
+<script>
+    document.getElementById('Editbtn').addEventListener('click', function () {
+        console.log("edit");
+        var elements = document.getElementsByClassName('modify');
+        var element = document.getElementsByClassName('edit');
+        var update = document.getElementsByClassName('update');
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].classList.remove('d-none');
+            elements[i].classList.add('d-inline-block');
+        }
+        for (var i = 0; i < element.length; i++) {
+            element[i].classList.remove('d-inline-block');
+            element[i].classList.add('d-none');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].removeAttribute('disabled');
+        }
+    });
+    function cancel() {
+        console.log("cancel");
+        $.ajax({
+            url: "/Patient/CancelChanges/",
+            type: "POST",
+            dataType: "html",
+            success: function () {
+                window.location.reload();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#cancelCase").html('An error has occurred');
+            }
+        });
+    };
+</script>
 

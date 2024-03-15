@@ -1,0 +1,136 @@
+﻿@model Services.Models.EncounterFormViewModel
+
+
+@{
+    ViewData["Title"] = "EncounterForm";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        <h4>My Profile</h4>
+        <a asp-area="" asp-action="AdminDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <div class="px-3 pt-4 shadow Document-content mt-3" style="">
+        <div class="text-center h2 text-info fw-bold mb-4">Medical Report-Confidential</div>
+
+        <div class="h4">Account Information</div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput"
+                           placeholder="username" disabled />
+                    <label for="floatingInput" class="">Username</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="password" id="floatingInput"
+                           placeholder="password" disabled />
+                    <label for="floatingInput" class="">Password</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Not Required</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <label for="floatingSelect">Number Of Refil</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Not Required</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <label for="floatingSelect">Number Of Refil</label>
+                </div>
+            </div>
+            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
+            <div class="h4">Administrator Information</div>
+            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput"
+                           placeholder="first name" disabled />
+                    <label for="floatingInput" class="">First Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput"
+                           placeholder="last name" disabled />
+                    <label for="floatingInput" class="">Last Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput"
+                           placeholder="abc@gmail.com" disabled />
+                    <label for="floatingInput" class="">Email</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput"
+                           placeholder="abc@gmail.com" disabled />
+                    <label for="floatingInput" class="">Email</label>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-10 col-9">
+                <div class="form-floating  mb-3">
+                    <input type="tel" class="form-control update" id="floatingInput" placeholder="phone number" disabled />
+                    <label for="floatingInput" class="">Phone Number</label>
+                </div>
+            </div>
+            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="floatingInput" placeholder="date" disabled />
+                    <label for="floatingInput" class="">Date</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating  mb-3">
+                    <input type="tel" class="form-control pt-3 pb-3" id="phone" disabled />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput"
+                           placeholder="abc@gmail.com" disabled />
+                    <label for="floatingInput" class="">Email</label>
+                </div>
+            </div>
+        </div>
+        <div class="text-end mt-2">
+            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
+            <button type="button" class="btn text-white h5" style="background:#6a09ff">Finalize</button>
+            <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
+        </div>
+
+
+
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
+<script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+</script>
