@@ -45,5 +45,9 @@ namespace Services.Contracts
         Task CloseCaseRequest(int request_id);
         EncounterFormViewModel EncounterForm(int request_id);
         Task SubmitEncounterForm(EncounterFormViewModel model, int request_id);
+        AdminProfileViewModel ProfileData(string email);
+        Task ResetPassword(string email, string password);
+        Task UpdateAdminstrator(ProfileData model, string email);
+        Task UpdateBillInfo(BillingData model, string email);
     }
 }

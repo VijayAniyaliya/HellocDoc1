@@ -1,8 +1,7 @@
-﻿@model Services.Models.EncounterFormViewModel
-
+﻿@model Services.Models.AdminProfileViewModel
 
 @{
-    ViewData["Title"] = "EncounterForm";
+    ViewData["Title"] = "AdminProfile";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
@@ -14,112 +13,158 @@
         </a>
 
     </div>
-    <div class="px-3 pt-4 shadow Document-content mt-3" style="">
-        <div class="text-center h2 text-info fw-bold mb-4">Medical Report-Confidential</div>
-
-        <div class="h4">Account Information</div>
+    <div class="px-3 pt-4 shadow rounded-3 Document-content mt-3" style="">
+        <div class="h4 mb-4">Account Information</div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
+                    <input type="text" asp-for="Username" class="form-control account" id="floatingInput"
                            placeholder="username" disabled />
                     <label for="floatingInput" class="">Username</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="password" id="floatingInput"
-                           placeholder="password" disabled />
-                    <label for="floatingInput" class="">Password</label>
+                    <input type="text" asp-for="Password" class="form-control account" id="password"
+                           placeholder="password" />
+                    <label for="password" class="">Password</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Not Required</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                    <select class="form-select account" asp-for="Status" id="floatingSelect" aria-label="Floating label select example" disabled>
+                        <option selected>Active</option>
+                        <option value="1">UnActive</option>
+                        <option value="2">UnAvailable</option>
                     </select>
-                    <label for="floatingSelect">Number Of Refil</label>
+                    <label for="floatingSelect">Status</label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Not Required</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
+                    <select class="form-select account" asp-for="Role" id="floatingSelect" aria-label="Floating label select example" disabled>
+                        <option selected>Master Admin</option>
+                        <option value="1">Admin</option>
                     </select>
-                    <label for="floatingSelect">Number Of Refil</label>
+                    <label for="floatingSelect">Role</label>
                 </div>
             </div>
-            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
-            <div class="h4">Administrator Information</div>
-            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="first name" disabled />
-                    <label for="floatingInput" class="">First Name</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput"
-                           placeholder="last name" disabled />
-                    <label for="floatingInput" class="">Last Name</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                           placeholder="abc@gmail.com" disabled />
-                    <label for="floatingInput" class="">Email</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                           placeholder="abc@gmail.com" disabled />
-                    <label for="floatingInput" class="">Email</label>
-                </div>
-            </div>
-            <div class="col-md-5 col-sm-10 col-9">
-                <div class="form-floating  mb-3">
-                    <input type="tel" class="form-control update" id="floatingInput" placeholder="phone number" disabled />
-                    <label for="floatingInput" class="">Phone Number</label>
-                </div>
-            </div>
-            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
+            <div class="text-end mt-4">
+                <button type="button" id="reset" onclick="resetpass()" class="btn border-info text-info h5">Reset Password</button>
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="date" disabled />
-                    <label for="floatingInput" class="">Date</label>
-                </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-floating  mb-3">
-                    <input type="tel" class="form-control pt-3 pb-3" id="phone" disabled />
+
+            <div class="h4 mb-4">Administrator Information</div>
+            <form class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="FirstName" class="form-control administrator" id="firstname"
+                               placeholder="first name" disabled />
+                        <label for="firstname" class="">First Name</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput"
-                           placeholder="abc@gmail.com" disabled />
-                    <label for="floatingInput" class="">Email</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="LastName" class="form-control administrator" id="lastname"
+                               placeholder="last name" disabled />
+                        <label for="lastname" class="">Last Name</label>
+                    </div>
                 </div>
-            </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="Email" class="form-control administrator" id="email"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="email" class="">Email</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="ConfirmEmail" class="form-control administrator" id="confirmemail"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="confirmemail" class="">Confirm Email</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3 administrator" id="phone" disabled>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <input type="checkbox" class="checks" id="All" />
+                    <span class="h6 text-secondary">District Of Columbia</span>
+                    <input type="checkbox" class="checks" id="newyork" />
+                    <span class="h6 text-secondary">New York</span>
+                    <input type="checkbox" class="checks" id="virginia" />
+                    <span class="h6 text-secondary">Virginia</span>
+                    <div>
+
+                    <input type="checkbox" class="checks" id="maryland" />
+                    <span class="h6 text-secondary">MaryLand</span>
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <button type="button" id="edit" class="btn bg-info text-white d-inline-block h5">Edit</button>
+                    <button type="button" id="savedata" onclick="updatedata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify">Save Changes</button>
+                    <button type="reset" id="cancel" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
+
+                </div>
+            </form>
+            <form class="row">
+                <div class="h4 mb-4">Mailing & Billing information</div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Address1" class="form-control billing" id="address1"
+                               placeholder="address 1" disabled />
+                        <label for="address1" class="">Address 1</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Address2" class="form-control billing" id="address2"
+                               placeholder="address 2" disabled />
+                        <label for="address2" class="">Address 2</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="City" class="form-control billing" id="city"
+                               placeholder="city" disabled />
+                        <label for="city" class="">City</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="State" class="form-control billing" id="state"
+                               placeholder="state" disabled />
+                        <label for="state" class="">State</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Zip" class="form-control billing" id="zip"
+                               placeholder="zipcode" disabled />
+                        <label for="zip" class="">Zip</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" asp-for="AltPhoneNumber" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block">Edit</button>
+                    <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
+                    <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+
+                </div>
+            </form>
+
+
         </div>
-        <div class="text-end mt-2">
-            <button type="button" class="btn bg-info text-white h5">Save Changes</button>
-            <button type="button" class="btn text-white h5" style="background:#6a09ff">Finalize</button>
-            <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
-        </div>
-
-
+        <br />
+        <br />
 
     </div>
 </div>
@@ -127,9 +172,161 @@
 <br />
 <br />
 <br />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
+
+    function resetpass() {
+        var password = $('#password').val();
+        $.ajax({
+            url: "/Admin/ResetPassword/",
+            type: "POST",
+            async: false,
+            data: { "password": password },
+            dataType: "html",
+            success: function (data) {
+                console.log("reset password")
+            },
+            error: function () {
+                alert("No Projects Found");
+                console.log('error');
+            }
+        });
+    };
+
+    function updatedata() {
+        var formdata = {
+            firstname: $('#firstname').val(),
+            lastname: $('#lastname').val(),
+            email: $('#email').val(),
+            phonenumber: $('#phone').val(),
+
+        }
+        console.log(formdata);
+        $.ajax({
+            url: "/Admin/UpdateAdminstrator/",
+            type: "POST",
+            data: formdata,
+            async: false,
+            dataType: "html",
+            success: function (data) {
+                console.log("form data")
+            },
+            error: function (error) {
+                alert("No Projects Found");
+                console.log(error);
+            }
+        });
+    };
+    function billingdata() {
+        var billdata = {
+            address1: $('#address1').val(),
+            address2: $('#address2').val(),
+            city: $('#city').val(),
+            zip: $('#zip').val(),
+            altphonenumber: $('#phone1').val(),
+
+        }
+        console.log(billdata);
+        $.ajax({
+            url: "/Admin/UpdateBillInfo/",
+            type: "POST",
+            data: billdata,
+            async: false,
+            dataType: "html",
+            success: function (data) {
+                console.log("billing info");
+            },
+            error: function (error) {
+                alert("No Projects Found");
+                console.log(error);
+            }
+        });
+    };
+
+    document.getElementById('edit').addEventListener('click', function () {
+        console.log("edit");
+        var element = document.getElementById('edit');
+        var modify = document.getElementsByClassName('modify');
+        var update = document.getElementsByClassName('administrator');
+        element.classList.replace('d-inline-block', 'd-none');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-none', 'd-inline-block');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].removeAttribute('disabled');
+        }
+    });
+    document.getElementById('editbill').addEventListener('click', function () {
+        console.log("editbill");
+        var editbill = document.getElementById('editbill');
+        var modifybill = document.getElementsByClassName('modifybill');
+        var updatebill = document.getElementsByClassName('billing');
+        editbill.classList.replace('d-inline-block', 'd-none');
+        for (var i = 0; i < modifybill.length; i++) {
+            modifybill[i].classList.replace('d-none', 'd-inline-block');
+        }
+        for (var i = 0; i < updatebill.length; i++) {
+            updatebill[i].removeAttribute('disabled');
+        }
+    });
+    document.getElementById('cancel').addEventListener('click', function () {
+        var element = document.getElementById('edit');
+        var modify = document.getElementsByClassName('modify');
+        var update = document.getElementsByClassName('administrator');
+        element.classList.replace('d-none', 'd-inline-block');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-inline-block', 'd-none');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].setAttribute('disabled', 'disabled');
+        }
+    });
+    document.getElementById('cancelbill').addEventListener('click', function () {
+        var element = document.getElementById('editbill');
+        var modify = document.getElementsByClassName('modifybill');
+        var update = document.getElementsByClassName('billing');
+        element.classList.replace('d-none', 'd-inline-block');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-inline-block', 'd-none');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].setAttribute('disabled', 'disabled');
+        }
+    });
+    document.getElementById('savedata').addEventListener('click', function () {
+        var element = document.getElementById('edit');
+        var modify = document.getElementsByClassName('modify');
+        var update = document.getElementsByClassName('administrator');
+        element.classList.replace('d-none', 'd-inline-block');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-inline-block', 'd-none');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].setAttribute('disabled', 'disabled');
+        }
+    });
+    document.getElementById('Billingdata').addEventListener('click', function () {
+        var element = document.getElementById('editbill');
+        var modify = document.getElementsByClassName('modifybill');
+        var update = document.getElementsByClassName('billing');
+        element.classList.replace('d-none', 'd-inline-block');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-inline-block', 'd-none');
+        }
+        for (var i = 0; i < update.length; i++) {
+            update[i].setAttribute('disabled', 'disabled');
+        }
+    });
+
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+    const phone1InputField = document.querySelector("#phone1");
+    const phone1Input = window.intlTelInput(phone1InputField, {
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });

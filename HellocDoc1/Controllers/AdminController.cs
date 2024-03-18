@@ -8,6 +8,7 @@ using Common.Enum;
 using HelloDoc1.Services;
 using Common.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNet.Identity;
 
 namespace HellocDoc1.Controllers
 {
@@ -265,10 +266,6 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult AdminProfile()
-        {
-            return View();
-        }
 
 
         [HttpPost]
@@ -297,6 +294,40 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        public IActionResult AdminProfile()
+        {
+            //var email = User.FindFirstValue(ClaimTypes.Email);
+            var email = HttpContext.Session.GetString("Email");
+            var data = _adminServices.ProfileData(email);
+            return View(data);
+        }
 
+        public async Task <IActionResult> ResetPassword(string password)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            await _adminServices.ResetPassword(email, password);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAdminstrator(ProfileData model)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            await _adminServices.UpdateAdminstrator(model,email);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBillInfo(BillingData model)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            await _adminServices.UpdateBillInfo(model,email);
+            return NoContent();
+        }
+
+        public IActionResult Provider()
+        {
+            return View();
+        }
     }
 }

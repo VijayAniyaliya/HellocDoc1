@@ -743,7 +743,7 @@ namespace Services.Implementation
         {
             EncounterForm encounter = _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefault();
 
-            if(encounter == null)
+            if (encounter == null)
             {
                 EncounterForm encounterForm = new EncounterForm()
                 {
@@ -805,6 +805,69 @@ namespace Services.Implementation
                 _context.EncounterForms.Update(encounter);
             }
             await _context.SaveChangesAsync();
+
+        }
+
+        public AdminProfileViewModel ProfileData(string email)
+        {
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
+            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            AdminProfileViewModel model = new AdminProfileViewModel()
+            {
+                AdminID = admin.AdminId,
+                Username = admin.FirstName + " " + admin.LastName,
+                Password = aspNetUser.PasswordHash,
+                FirstName = admin.FirstName,
+                LastName = admin.LastName,
+                Email = admin.Email,
+                PhoneNumber = admin.Mobile,
+                Address1 = admin.Address1,
+                Address2 = admin.Address2,
+                City = admin.City,
+                State = admin.City,
+                Zip = admin.Zip,
+                AltPhoneNumber = admin.AltPhone,
+
+            };
+            return model;
+        }
+
+        public async Task ResetPassword(string email, string password)
+        {
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
+            aspNetUser.PasswordHash = password;
+            aspNetUser.ModifiedDate = DateTime.Now;
+
+            _context.AspNetUsers.Update(aspNetUser);
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateAdminstrator(ProfileData model, string email)
+        {
+            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            AspNetUser aspNetUser=_context.AspNetUsers.Where(a=> a.Email == email).FirstOrDefault();
+            admin.FirstName = model.firstname;
+            admin.LastName = model.lastname;
+            admin.Email = model.email;
+            admin.Mobile = model.phonenumber;
+            admin.ModifiedBy = aspNetUser.Id;
+            admin.ModifiedDate = DateTime.Now;
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+
+
+        }     
+        public async Task UpdateBillInfo(BillingData model, string email)
+        {
+            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            admin.Address1 = model.address1;
+            admin.Address2 = model.address2;
+            admin.City = model.city;
+            admin.Zip = model.zip;
+            admin.AltPhone = model.altphonenumber;
+            admin.ModifiedDate = DateTime.Now;
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+
 
         }
     }

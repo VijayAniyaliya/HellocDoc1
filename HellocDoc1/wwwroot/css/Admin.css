@@ -425,4 +425,7 @@ label {
     margin-top: 2px;
 }
 
-
+.checks {
+    height: 20px;
+    width: 20px;
+}

@@ -1,0 +1,71 @@
+﻿@model Services.Models.CloseCaseViewModel
+
+@{
+    ViewData["Title"] = "CloseCase";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class=" pt-3">
+        <h4>Provider Information</h4>
+
+    </div>
+    <div class="px-3 pt-4 shadow Document-content mt-3" style="">
+
+        <div class="row pr-3 mb-4">
+            <div class="col-lg-8  col-12">
+                <div class="h6 text-secondary">Patient Name</div>
+            </div>
+            <div class="col-lg-4 col-12 mt-2 text-lg-end pr-0">
+                <button class="btn bg-info text-white  rounded-3 fw-bold">
+                    Create Provider Account
+                </button>
+            </div>
+        </div>
+
+
+        <div class="table-responsive mt-2 d-md-block d-none">
+            <table class="table">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col">Stop Notification</th>
+                        <th scope="col">Provider Name <i class="bi bi-arrow-up-short h5"></i></th>
+                        <th scope="col">Role</th>
+                        <th scope="col">On Call Status</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>test</td>
+                        <td>Physician</td>
+                        <td>Un Available</td>
+                        <td>Active</td>
+                        <td>
+                            <button type="button"   class="btn text-info border-1 border-info rounded-3   px-4 h5 ">Save Changes</button>
+                            <button type="button" class="btn text-info border-1 border-info  rounded-3   px-4 h5 ">Save Changes</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-md-none d-block">
+            <hr />
+            <div>
+                <span>Document</span>
+            </div>
+            <div class="my-3">
+                UploadDate
+            </div>
+        </div>
+
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
