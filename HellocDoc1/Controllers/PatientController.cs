@@ -272,11 +272,12 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Patient_Profile", "Patient");
         }
 
-        [CustomAuthorize("User")]
+        //[CustomAuthorize("User")]
         [HttpGet("[controller]/[action]/{request_id}")]
-        public IActionResult ReviewAgreement(int request_id)
+        public IActionResult ReviewAgreement(string request_id)
         {
-            var data = patientServices.ReviewAgreement(request_id);
+            string RequestId = HashingServices.Decrypt(request_id);
+            var data = patientServices.ReviewAgreement(RequestId);
             return View(data);
         }
 

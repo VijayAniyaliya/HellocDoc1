@@ -1,0 +1,110 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border border-0 rounded-3">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Send Mail to patient for submitting request</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="firstname"
+                           placeholder="first name" />
+                    <label for="firstname" class="">First Name</label>
+                    <span class="text-danger first"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="lastname"
+                           placeholder="last name" />
+                    <label for="lastname" class="">Last Name</label>
+                    <span class="text-danger last"></span>
+                </div>
+                <div class="form-floating  mb-3">
+                    <input type="tel" class="form-control pt-3 pb-3" id="phone" />
+                    <span class="text-danger phone"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email"
+                           placeholder="abc@gmail.com" />
+                    <label for="email" class="">Email</label>
+                    <span class="text-danger email"></span>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-info text-white px-4 sendmail">Send</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal" id="cancel">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+
+
+    $('#email').on('focus', function () {
+        $('#email').css('border', '');
+        $('.email').html('');
+    });
+
+    $('.sendmail').on('click', function (e) {
+        console.log("send mail");
+        var linkdata = {
+            Firstname: $('#firstname').val(),
+            Lastname: $('#lastname').val(),
+            Email: $('#email').val(),
+            Phonenumber: $('#phone').val(),
+        }
+        console.log("email"+ linkdata)
+        // if (linkdata.Firstname == "") {
+        //     $('#firstname').css('border', '1px solid red');
+        //     $('.first').html('Please enter first name');
+        // }
+        // else if (linkdata.Lastname == "") {
+        //     $('#lastname').css('border', '1px solid red');
+        //     $('.last').html('Please enter last name');
+        // }
+        // else if (linkdata.Phonenumber == "") {
+        //     $('#phonenumber').css('border', '1px solid red');
+        //     $('.phone').html('Please enter phone number');
+        // }
+        if (linkdata.Email == "") { 
+            console.log("email");
+            $('#email').css('border', '1px solid red');
+            $('.email').html('Please enter email');
+        }
+        else {
+            $.ajax({
+                url: '/Admin/SendLink',
+                type: "post",
+                data: linkdata,
+                success: function (data) {
+                    console.log("link data");
+                    $("#cancel").click();
+                },
+                error: function (error) {
+                    
+                    console.error(error);
+                }
+            });
+        }
+    });
+    try {
+        const phoneInputFields = document.querySelector("#phone");
+        const phoneInput = window.intlTelInput(phoneInputFields, {
+            utilsScript:
+                "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+    }
+    catch {
+
+    }
+</script>

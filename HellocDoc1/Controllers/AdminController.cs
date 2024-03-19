@@ -218,12 +218,13 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendAgreement(SendAgreementViewModel model, int request_id)
+        public IActionResult SendAgreement(int request_id)
         {
-            _adminServices.SendAgreement(model, request_id);
+            string RequestId = HashingServices.Encrypt(request_id.ToString());
+            _adminServices.SendAgreement( RequestId);
             return RedirectToAction("AdminDashboard");
         }
-
+            
 
         public IActionResult CloseCase(int request_id)
         {
@@ -328,6 +329,35 @@ namespace HellocDoc1.Controllers
         public IActionResult Provider()
         {
             return View();
+        }
+
+        public IActionResult ContactProvider()
+        {
+            return PartialView("_ContactProvider");
+        }     
+
+        public IActionResult SendMailDetails()
+        {
+            return PartialView("_SendMail");
+        }
+
+        [HttpPost]
+        public IActionResult SendLink(SendLinkViewModel model)
+        {
+            _adminServices.SendLink(model);
+            return Json("success");
+        }
+
+        public IActionResult CreateRequest()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)
+        {
+            await _adminServices.SubmitRequest(model);
+            return RedirectToAction("AdminDashboard");
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Services.Contracts
         ClearCaseViewModel ClearDetails(int request_id);
         Task ClearCase(ClearCaseViewModel model, int request_id);
         SendAgreementViewModel SendAgreementDetails(int request_id);
-        void SendAgreement(SendAgreementViewModel model, int request_id);
+        void SendAgreement(string request_id);
         CloseCaseViewModel CloseCase(int request_id);
         Task SaveCloseCase(CloseCaseViewModel model, int request_id);
         Task CloseCaseRequest(int request_id);
@@ -49,5 +49,7 @@ namespace Services.Contracts
         Task ResetPassword(string email, string password);
         Task UpdateAdminstrator(ProfileData model, string email);
         Task UpdateBillInfo(BillingData model, string email);
+        void SendLink(SendLinkViewModel model);
+        Task SubmitRequest(CreateRequestViewModel model);
     }
 }

@@ -75,11 +75,11 @@
                 <span class=" fw-bold" id="status" style="color:#203f9a;"></span>
             </div>
             <div class="d-flex gap-1">
-                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                <a onclick="sendmail()" class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-reply h5 mr-1"></i>
                     <span class="link-text">Send Link</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                <a asp-action="CreateRequest" class="bg-info text-white rounded-3 p-2 text-decoration-none" style="cursor:pointer;">
                     <i class="bi bi-pencil-square  mr-1"></i>
                     <span class="link-text">Create Requests</span>
                 </a>
@@ -148,7 +148,7 @@
         </div>
     </div>
 </div>
-
+<div id="mail"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 @* <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> *@
 <script>
@@ -422,6 +422,23 @@
         });
     });
 
+    function sendmail() {
+        $.ajax({
+            url: "/Admin/SendMailDetails",
+            type: "POST",
+            data: {},
+            dataType: "html",
+            success: function (data) {
+                $("#mail").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+            }
+        });
+    };
+
 
     function newState() {
         document.getElementById("pills-new-tab").classList.add("newActive");
@@ -472,6 +489,7 @@
         document.getElementById("pills-close-tab").classList.remove("tocloseActive");
         document.getElementById("pills-unpaid-tab").classList.add("unpaidActive");
     }
+
 </script>
 @if (TempData["Success"] != null)
 {

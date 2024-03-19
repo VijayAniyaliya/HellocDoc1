@@ -255,13 +255,13 @@ namespace HellocDoc1.Services
             
         }
 
-        public SendAgreementViewModel ReviewAgreement(int request_id)
+        public SendAgreementViewModel ReviewAgreement(string request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = _context.Requests.Where(a => a.RequestId == int.Parse(request_id)).FirstOrDefault();
 
             SendAgreementViewModel model = new SendAgreementViewModel()
             {
-                RequestId = request_id,
+                RequestId = int.Parse(request_id),
                 PatientName = data.FirstName + " " + data.LastName,
             };
 
