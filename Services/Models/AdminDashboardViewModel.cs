@@ -7,6 +7,7 @@ namespace Services.Models
 
         public List<RequestClient> requestClients {  get; set; }
 
+        public string TransferNotes { get; set; }
         public int CurrentPage { get; set; }
 
         public int TotalPage { get; set; }

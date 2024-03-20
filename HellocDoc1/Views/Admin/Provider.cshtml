@@ -1,4 +1,6 @@
-﻿
+﻿@model Services.Models.ProviderViewModel
+
+
 @{
     ViewData["Title"] = "Provider";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
@@ -12,8 +14,8 @@
     <div class="px-3 pt-4 shadow Document-content mt-3" style="">
 
         <div class="row pr-3 mb-4">
-            <div class="col-md-8  col-12">
-                <div class="h6 ">Patient Name</div>
+            <div class="col-md-8  col-12">          
+                <div class="h6 ">Search bar</div>
             </div>
             <div class="col-md-4 col-12 mt-2 text-lg-end pr-0">
                 <button class="btn bg-info text-white  rounded-3 fw-bold">
@@ -36,17 +38,21 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach(var item in Model.Physicians)
+                    {
+                        
                     <tr>
                         <td><input type="checkbox" /></td>
-                        <td>test</td>
+                        <td>@item.ProviderName</td>
                         <td>Physician</td>
                         <td>Un Available</td>
                         <td>Active</td>
                         <td>
-                            <button type="button" onclick="provider()" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
+                            <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
                             <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
                         </td>
                     </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -94,19 +100,22 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function provider() {
+    function provider(PhysicianId) {
+        console.log("provider");
         $.ajax({
-            url: "/Admin/ContactProvider",
+            url: "/Admin/ContactProvider/",
             type: "POST",
-            data: {},
+            data: { "PhysicianId": PhysicianId},
             dataType: "html",
             success: function (data) {
+                console.log("success");
                 $("#provider").html(data);
                 const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
+                myModal.show(); 
             },
             error: function () {
                 alert("No Projects Found");
+                $("#provider").html('An error has occurred');
             }
         });
     };

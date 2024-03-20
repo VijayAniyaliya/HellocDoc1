@@ -60,10 +60,23 @@
         <div class="shadow">
 
             <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
+                @if (Context.Request.Path.Equals("/Patient/Patient_Dashboard"))
+                {
+                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 dashaboard px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
+                }
+                else
+                {
+                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none mr-3 dashaboard px-2" style="color:black;">Dashboard</a>
+                }       
+                @if (Context.Request.Path.Equals("/Patient/Patient_Profile"))
+                {
+                    <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info profile px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Profile</a>
+                }
+                else
+                {
+                    <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none profile px-2" style="color:black;">Profile</a>
+                }
 
-                <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 dashaboard" id="">Dashboard</a>
-
-                <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info profile" >Profile</a>
 
             </div>
         </div>

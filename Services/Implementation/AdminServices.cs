@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Cryptography;
 using Services.Contracts;
 using Services.Models;
 using System;
@@ -853,7 +854,12 @@ namespace Services.Implementation
             admin.Mobile = model.phonenumber;
             admin.ModifiedBy = aspNetUser.Id;
             admin.ModifiedDate = DateTime.Now;
+            aspNetUser.UserName = model.firstname + " " + model.lastname;
+            aspNetUser.Email= model.email;
+            aspNetUser.PhoneNumber= model.phonenumber;
+            aspNetUser.ModifiedDate= DateTime.Now;
             _context.Admins.Update(admin);
+            _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
 
 
@@ -981,6 +987,26 @@ namespace Services.Implementation
 
 
             }
+        }
+
+        public ProviderViewModel PhysicianData()
+        {
+            List<Physician> data= _context.Physicians.ToList();
+            List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + a.LastName }).ToList();
+
+            ProviderViewModel model = new ProviderViewModel()
+            {
+                Physicians = obj,
+            };
+            return model;
+        }
+
+        public void SendMessage(int PhysicianId, string message)
+        {
+            Physician data = _context.Physicians.Where(a=> a.PhysicianId == PhysicianId).FirstOrDefault();
+            var email = data.Email;
+            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Message send by admin", $"{message}");
+
         }
     }
 }

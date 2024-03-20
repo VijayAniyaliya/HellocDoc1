@@ -250,29 +250,9 @@
     font-size: 20px;
 }
 
-@media only screen and (max-width:930px) {
-    .icons {
-        font-size: 15px;
-    }
-
-    .Txt {
-        font-size: 15px;
-    }
-}
-
-@media only screen and (max-width:866px) {
-    .Txt {
-        font-size: 13px;
-    }
-}
-
 @media only screen and (max-width:812px) {
     .icons {
         display: none;
-    }
-
-    .Txt {
-        font-size: 15px;
     }
 }
 
@@ -442,4 +422,13 @@ input[type=radio].radios {
 
 .input-validation-error {
     border: 1px solid red;
+}
+
+.provider-menu{
+    font-weight:600;  
+}
+.provider-menu:hover {
+    background-color: rgb(0 229 234 / 15%);
+    color: #17a2b8;
+    font-weight:600;  
 }

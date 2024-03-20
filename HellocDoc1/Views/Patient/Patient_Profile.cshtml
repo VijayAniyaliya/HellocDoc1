@@ -117,9 +117,9 @@
                 </div>
                 <div class="d-flex justify-content-end pt-3 pb-4 mb-5">
 
-                    <button type="button" id="Editbtn" class="btn bg-info text-white border-1 border-info  px-4 py-2 mr-1 edit">Edit</button>
+                    <button type="button" id="Editbtn" class="btn bg-info text-white d-inline-block border-1 border-info  px-4 py-2 mr-1 edit">Edit</button>
                     <button type="submit" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify mr-2">Save</button>
-                    <button type="button" onclick="cancel()" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
+                    <button type="reset" id="cancel" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
                 </div>
             </form>
         </div>
@@ -145,20 +145,17 @@
             update[i].removeAttribute('disabled');
         }
     });
-    function cancel() {
-        console.log("cancel");
-        $.ajax({
-            url: "/Patient/CancelChanges/",
-            type: "POST",
-            dataType: "html",
-            success: function () {
-                window.location.reload();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#cancelCase").html('An error has occurred');
-            }
-        });
-    };
+    document.getElementById('cancel').addEventListener('click', function () {
+        var element = document.getElementById('Editbtn');
+        var modify = document.getElementsByClassName('modify');
+        var update = document.getElementsByClassName('update');
+        element.classList.replace('d-none', 'd-inline-block');
+        for (var i = 0; i < modify.length; i++) {
+            modify[i].classList.replace('d-inline-block', 'd-none');
+        }   
+        for (var i = 0; i < update.length; i++) {
+            update[i].setAttribute('disabled', 'disabled');
+        }
+    });
 </script>
 

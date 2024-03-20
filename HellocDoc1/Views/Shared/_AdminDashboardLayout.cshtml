@@ -48,37 +48,43 @@
         </div>
     </header>
     <hr class="my-0 d-none d-md-block" />
-    <div class="shadow ">
-        <div class="mb-3 pt-2 pb-3 mx-auto h6 d-none d-md-block" style="width:93%">
+    <div class="shadow px-lg-5 px-2 my-2">
+        <div class=" h6 d-none d-md-flex gap-4 ">
             @if (Context.Request.Path.Equals("/Admin/AdminDashboard"))
             {
-                <a asp-action="AdminDashboard" class="text-decoration-none text-info pr-4" style="border-radius: 4px;padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
+                <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
             }
             else
             {
-                <a asp-action="AdminDashboard" class="text-decoration-none  pr-4" style="color:black;">Dashboard</a>
-            }   
-            <a class="text-decoration-none pr-4" style="color:black;">Providers Location</a>
+                <a asp-action="AdminDashboard" class="text-decoration-none px-2" style="color:black;">Dashboard</a>
+            }
+            <a class="text-decoration-none" style="color:black;">Providers Location</a>
             @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
             {
-                <a asp-action="AdminProfile" class="text-decoration-none text-info pr-4" style="border-radius: 4px;padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">My Profile</a>
+                <a asp-action="AdminProfile" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">My Profile</a>
             }
             else
             {
-                <a asp-action="AdminProfile" class="text-decoration-none  pr-4" style="color:black;">My Profile</a>
+                <a asp-action="AdminProfile" class="text-decoration-none px-2" style="color:black;">My Profile</a>
 
             }
             @if (Context.Request.Path.Equals("/Admin/Provider"))
             {
-                <a asp-action="Provider" class="text-decoration-none text-info  pr-4" style="border-radius: 4px;padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Provider</a>
+                <a asp-action="Provider" class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Providers</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                    <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2" >Providers</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
+                </ul>
+
             }
             else
             {
-                <a asp-action="Provider" class="text-decoration-none  pr-4" style="color:black;">Provider</a>
+                <a asp-action="Provider" class="text-decoration-none px-2" style="color:black;">Providers</a>
             }
-            <a class="text-decoration-none  pr-4" style="color:black;">Partners</a>
-            <a class="text-decoration-none  pr-4" style="color:black;">Access</a>
-            <a class="text-decoration-none " style="color:black;">Records</a>
+            <a class="text-decoration-none  px-2" style="color:black;">Partners</a>
+            <a class="text-decoration-none px-2" style="color:black;">Access</a>
+            <a class="text-decoration-none px-2" style="color:black;">Records</a>
         </div>
     </div>
     @RenderBody()

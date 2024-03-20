@@ -35,7 +35,7 @@ namespace HellocDoc1.Services
                             Name = model.FirstName + " " + model.LastName,
                             PhoneNumber = model.PhoneNumber,
                             CreatedDate = DateTime.Now,
-                            RegionId = 1
+                            RegionId = 1,
                         };
 
                         await _context.Businesses.AddAsync(business);

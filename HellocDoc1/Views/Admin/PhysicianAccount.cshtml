@@ -1,0 +1,271 @@
+﻿@{
+    ViewData["Title"] = "PhysicianAccount";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        <h4>Edit Physician Account</h4>
+        <a asp-area="" asp-action="AdminDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <div class="px-3 pt-4 shadow rounded-3 Document-content mt-3" style="">
+        <div class="h4 mb-4">Account Information</div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control account" id="floatingInput"
+                           placeholder="username" disabled />
+                    <label for="floatingInput" class="">Username</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control account" id="password"
+                           placeholder="password" />
+                    <label for="password" class="">Password</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select account mb-3" id="floatingSelect" aria-label="Floating label select example" disabled>
+                        <option selected>Active</option>
+                        <option value="1">UnActive</option>
+                        <option value="2">UnAvailable</option>
+                    </select>
+                    <label for="floatingSelect">Status</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select account" id="floatingSelect" aria-label="Floating label select example" disabled>
+                        <option selected>Physician</option>
+                        <option value="1">Provider</option>
+                    </select>
+                    <label for="floatingSelect">Role</label>
+                </div>
+            </div>
+            <div class="text-end mt-4">
+                <button type="button" id="reset" onclick="resetpass()" class="btn border-info text-info h5">Reset Password</button>
+
+            </div>
+
+            <div class="h4 mb-4">Physician Information</div>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="firstname"
+                           placeholder="first name" disabled />
+                    <label for="firstname" class="">First Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="lastname"
+                           placeholder="last name" disabled />
+                    <label for="lastname" class="">Last Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control administrator" id="email"
+                           placeholder="abc@gmail.com" disabled />
+                    <label for="email" class="">Email</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating  mb-3">
+                    <input type="tel" class="form-control pt-3 pb-3 administrator" id="phone" disabled>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="medical"
+                           placeholder="medical liencense" disabled />
+                    <label for="lastname" class="">Medical Lieanse #</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="npi"
+                           placeholder="NPI Number" disabled />
+                    <label for="lastname" class="">NPI Number</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control administrator" id="syncroemail"
+                           placeholder="abc@gmail.com" disabled />
+                    <label for="email" class="">Synchronization Email Address</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <input type="checkbox" class="checks" id="All" />
+                <span class="h6 text-secondary">District Of Columbia</span>
+                <input type="checkbox" class="checks" id="newyork" />
+                <span class="h6 text-secondary">New York</span>
+                <input type="checkbox" class="checks" id="virginia" />
+                <span class="h6 text-secondary">Virginia</span>
+                <div>
+
+                    <input type="checkbox" class="checks" id="maryland" />
+                    <span class="h6 text-secondary">MaryLand</span>
+                </div>
+            </div>
+            <div class="text-end mt-2">
+                <button type="button" id="edit" class="btn bg-info text-white d-inline-block h5">Edit</button>
+                <button type="button" id="savedata" onclick="updatedata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify">Save Changes</button>
+                <button type="reset" id="cancel" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
+
+            </div>
+            <div class="h4 mb-4">Mailing & Billing information</div>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control billing" id="address1"
+                           placeholder="address 1" disabled />
+                    <label for="address1" class="">Address 1</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control billing" id="address2"
+                           placeholder="address 2" disabled />
+                    <label for="address2" class="">Address 2</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control billing" id="city"
+                           placeholder="city" disabled />
+                    <label for="city" class="">City</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control billing" id="state"
+                           placeholder="state" disabled />
+                    <label for="state" class="">State</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control billing" id="zip"
+                           placeholder="zipcode" disabled />
+                    <label for="zip" class="">Zip</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating  mb-3">
+                    <input type="tel" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
+                </div>
+            </div>
+            <div class="text-end mt-2">
+                <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block">Edit</button>
+                <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
+                <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+
+            </div>
+            <div class="h4 mb-4">Provider Profile</div>
+
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="businessname"
+                           placeholder="business name" disabled />
+                    <label for="businessname" class="">Business Name</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control administrator" id="businesswebsite"
+                           placeholder="business website" disabled />
+                    <label for="businesswebsite" class="">Business Website</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group mb-3 border d-flex justify-content-between flex-row">
+                    <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
+                    <label class="my-auto ms-2" id="fileselect">Select file</label>
+                    <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <span class="ms-1 mt-0">Upload</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group mb-3 border d-flex justify-content-between flex-row">
+                    <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
+                    <label class="my-auto ms-2" id="fileselect">Select file</label>
+                    <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <span class="ms-1 mt-0">Upload</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-floating mb-3">
+                    <textarea class="form-control reason" placeholder="admin notes"
+                              id="floatingTextarea2" style="height: 100px" disabled></textarea>
+                    <label for="floatingTextarea2" class="">
+                        Admin Notes
+                    </label>
+                </div>
+            </div>
+            <div class="text-end mt-2">
+                <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block">Edit</button>
+                <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
+                <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+
+            </div>
+
+
+        </div>
+        <hr />
+        <div class="h5">Onboarding</div>
+        <div class="d-flex align-items-center mb-3">
+            <input type="checkbox" class="checks mr-4" />
+            <span class="" style="width:30%;">Independent Contractor Agreement</span>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Upload</button>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0">View</button>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <input type="checkbox" class="checks mr-4" />
+            <span class="" style="width:30%;">Background Check</span>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Upload</button>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0">View</button>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <input type="checkbox" class="checks mr-4" />
+            <span class="" style="width:30%;">HIPAA Compliance</span>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Upload</button>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0">View</button>
+        </div>
+        <div class="d-flex align-items-center mb-3">
+            <input type="checkbox" class="checks mr-4" />
+            <span class="" style="width:30%;">Non-disclosure Agreement</span>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Upload</button>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0">View</button>
+        </div>
+        <div class="d-flex align-items-center">
+            <input type="checkbox" class="checks mr-4" />
+            <span class="" style="width:30%;">Liencense Agreement</span>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Upload</button>
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0">View</button>
+        </div>
+        <hr />
+        <div class="text-end">
+
+            <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block mb-0 mr-3">Save</button>
+            <button type="button" id="editbill" class="btn bg-danger text-white h5 d-inline-block mb-0">Delete Account</button>
+        </div>
+        <br />
+        <br />
+
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />

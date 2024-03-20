@@ -28,6 +28,8 @@
                     <input type="text" asp-for="Password" class="form-control account" id="password"
                            placeholder="password" />
                     <label for="password" class="">Password</label>
+                    <span id="passwarn" class="text-danger"></span>
+
                 </div>
             </div>
             <div class="col-md-6">
@@ -62,6 +64,7 @@
                         <input type="text" asp-for="FirstName" class="form-control administrator" id="firstname"
                                placeholder="first name" disabled />
                         <label for="firstname" class="">First Name</label>
+                        <span id="firstwarning" class="text-danger common"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -69,6 +72,7 @@
                         <input type="text" asp-for="LastName" class="form-control administrator" id="lastname"
                                placeholder="last name" disabled />
                         <label for="lastname" class="">Last Name</label>
+                        <span id="lastwarning" class="text-danger common"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -76,6 +80,8 @@
                         <input type="email" asp-for="Email" class="form-control administrator" id="email"
                                placeholder="abc@gmail.com" disabled />
                         <label for="email" class="">Email</label>
+                        <span id="emailwarning" class="text-danger common"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -83,11 +89,15 @@
                         <input type="email" asp-for="ConfirmEmail" class="form-control administrator" id="confirmemail"
                                placeholder="abc@gmail.com" disabled />
                         <label for="confirmemail" class="">Confirm Email</label>
+                        <span id="confirmemailwarning" class="text-danger common"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
                         <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3 administrator" id="phone" disabled>
+                        <span id="phonewarning" class="text-danger common"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -99,14 +109,14 @@
                     <span class="h6 text-secondary">Virginia</span>
                     <div>
 
-                    <input type="checkbox" class="checks" id="maryland" />
-                    <span class="h6 text-secondary">MaryLand</span>
+                        <input type="checkbox" class="checks" id="maryland" />
+                        <span class="h6 text-secondary">MaryLand</span>
                     </div>
                 </div>
-                <div class="text-end mt-2">
-                    <button type="button" id="edit" class="btn bg-info text-white d-inline-block h5">Edit</button>
-                    <button type="button" id="savedata" onclick="updatedata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify">Save Changes</button>
-                    <button type="reset" id="cancel" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
+                <div class="d-flex justify-content-end gap-3 mt-2">
+                    <button type="button" id="edit" class="btn bg-info text-white px-4 h5">Edit</button>
+                    <button type="button" id="savedata" onclick="updatedata()" class="btn bg-info text-white rounded-3 fw-bold px-4 h5 modify">Save Changes</button>
+                    <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modify">Cancel</button>
 
                 </div>
             </form>
@@ -118,6 +128,8 @@
                         <input type="text" asp-for="Address1" class="form-control billing" id="address1"
                                placeholder="address 1" disabled />
                         <label for="address1" class="">Address 1</label>
+                        <span id="address1warning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -125,6 +137,8 @@
                         <input type="text" asp-for="Address2" class="form-control billing" id="address2"
                                placeholder="address 2" disabled />
                         <label for="address2" class="">Address 2</label>
+                        <span id="address2warning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -132,6 +146,8 @@
                         <input type="text" asp-for="City" class="form-control billing" id="city"
                                placeholder="city" disabled />
                         <label for="city" class="">City</label>
+                        <span id="citywarning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -139,6 +155,8 @@
                         <input type="text" asp-for="State" class="form-control billing" id="state"
                                placeholder="state" disabled />
                         <label for="state" class="">State</label>
+                        <span id="statewarning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -146,17 +164,21 @@
                         <input type="text" asp-for="Zip" class="form-control billing" id="zip"
                                placeholder="zipcode" disabled />
                         <label for="zip" class="">Zip</label>
+                        <span id="zipwarning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
                         <input type="tel" asp-for="AltPhoneNumber" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
+                        <span id="phone1warning" class="text-danger billwarning"></span>
+
                     </div>
                 </div>
-                <div class="text-end mt-2">
-                    <button type="button" id="editbill" class="btn bg-info text-white h5 d-inline-block">Edit</button>
-                    <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
-                    <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+                <div class="d-flex justify-content-end gap-3 mt-2">
+                    <button type="button" id="editbill" class="btn bg-info text-white px-4 h5">Edit</button>
+                    <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifybill">Save Changes</button>
+                    <button type="reset" id="cancelbill" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
 
                 </div>
             </form>
@@ -195,6 +217,51 @@
         });
     };
 
+    $('.modify').each(function () {
+        $(this).css('display', 'none');
+    })  
+    $('.modifybill').each(function () {
+        $(this).css('display', 'none');
+    })
+    $('#edit').on('click', function () {
+        $('.administrator').each(function () {
+            $(this).prop('disabled', false);
+        })  
+        $('.modify').each(function () {
+            $(this).css('display', 'flex');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancel').on('click', function () {
+        $('.administrator').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modify').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#edit').css('display', 'flex')
+        $('.common').html('');
+    })  
+    $('#editbill').on('click', function () {
+        $('.billing').each(function () {
+            $(this).prop('disabled', false);
+        })  
+        $('.modifybill').each(function () {
+            $(this).css('display', 'flex');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancelbill').on('click', function () {
+        $('.billing').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modifybill').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#editbill').css('display', 'flex');
+        $('.billwarning').html('');
+
+    })
     function updatedata() {
         var formdata = {
             firstname: $('#firstname').val(),
@@ -204,20 +271,40 @@
 
         }
         console.log(formdata);
-        $.ajax({
-            url: "/Admin/UpdateAdminstrator/",
-            type: "POST",
-            data: formdata,
-            async: false,
-            dataType: "html",
-            success: function (data) {
-                console.log("form data")
-            },
-            error: function (error) {
-                alert("No Projects Found");
-                console.log(error);
-            }
-        });
+        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "")) {
+
+            $.ajax({
+                url: "/Admin/UpdateAdminstrator/",
+                type: "POST",
+                data: formdata,
+                async: false,
+                dataType: "html",
+                success: function (data) {
+                    console.log("form data")
+
+                    $('#edit').css('display', 'flex');
+                    $('.modify').each(function () {
+                        $(this).css('display', 'none');
+                    })
+                    $('.administrator').each(function () {
+                        $(this).prop('disabled', true);
+                    })
+                    window.location.reload();
+
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('#firstwarning').html("");
+            $('#lastwarning').html("");
+            $('#emailwarning').html("");
+            $('#phonewarning').html("");
+        }
+        else {
+            console.log("denied")
+        }
     };
     function billingdata() {
         var billdata = {
@@ -229,96 +316,139 @@
 
         }
         console.log(billdata);
-        $.ajax({
-            url: "/Admin/UpdateBillInfo/",
-            type: "POST",
-            data: billdata,
-            async: false,
-            dataType: "html",
-            success: function (data) {
-                console.log("billing info");
-            },
-            error: function (error) {
-                alert("No Projects Found");
-                console.log(error);
-            }
-        });
+        if ((billdata.address1 != "") && (billdata.address2 != "") && (billdata.city != "") && (billdata.zip != "") && (billdata.altphonenumber != "")) {
+
+            $.ajax({
+                url: "/Admin/UpdateBillInfo/",
+                type: "POST",
+                data: billdata,
+                async: false,
+                dataType: "html",
+                success: function (data) {
+                    console.log("billing info");
+
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('#Billingdata').css('display', 'flex');
+            $('.modifybill').css('display', 'none');
+            $('.billing').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#address1warning').html("");
+            $('#address2warning').html("");
+            $('#citywarning').html("");
+            $('#zipwarning').html("");
+            $('#altphonenumberwarning').html("");
+        }
+        else {
+            console.log("denied")
+        }
+
     };
 
-    document.getElementById('edit').addEventListener('click', function () {
-        console.log("edit");
-        var element = document.getElementById('edit');
-        var modify = document.getElementsByClassName('modify');
-        var update = document.getElementsByClassName('administrator');
-        element.classList.replace('d-inline-block', 'd-none');
-        for (var i = 0; i < modify.length; i++) {
-            modify[i].classList.replace('d-none', 'd-inline-block');
+    $('#password').on('input', function () {
+        if ($('#password').val() == "") {
+            $('#passwarn').html("Please enter password")
         }
-        for (var i = 0; i < update.length; i++) {
-            update[i].removeAttribute('disabled');
+        else {
+            $('#passwarn').html("")
         }
-    });
-    document.getElementById('editbill').addEventListener('click', function () {
-        console.log("editbill");
-        var editbill = document.getElementById('editbill');
-        var modifybill = document.getElementsByClassName('modifybill');
-        var updatebill = document.getElementsByClassName('billing');
-        editbill.classList.replace('d-inline-block', 'd-none');
-        for (var i = 0; i < modifybill.length; i++) {
-            modifybill[i].classList.replace('d-none', 'd-inline-block');
+    })
+    $('#firstname').on('input', function () {
+        if ($('#firstname').val() == "") {
+            $('#firstwarning').html("Please enter First name")
         }
-        for (var i = 0; i < updatebill.length; i++) {
-            updatebill[i].removeAttribute('disabled');
+        else {
+            $('#firstwarning').html("")
         }
-    });
-    document.getElementById('cancel').addEventListener('click', function () {
-        var element = document.getElementById('edit');
-        var modify = document.getElementsByClassName('modify');
-        var update = document.getElementsByClassName('administrator');
-        element.classList.replace('d-none', 'd-inline-block');
-        for (var i = 0; i < modify.length; i++) {
-            modify[i].classList.replace('d-inline-block', 'd-none');
+    })  
+    $('#lastname').on('input', function () {
+        if ($('#lastname').val() == "") {
+            $('#lastwarning').html("Please enter Last name")
         }
-        for (var i = 0; i < update.length; i++) {
-            update[i].setAttribute('disabled', 'disabled');
+        else {
+            $('#lastwarning').html("")
         }
-    });
-    document.getElementById('cancelbill').addEventListener('click', function () {
-        var element = document.getElementById('editbill');
-        var modify = document.getElementsByClassName('modifybill');
-        var update = document.getElementsByClassName('billing');
-        element.classList.replace('d-none', 'd-inline-block');
-        for (var i = 0; i < modify.length; i++) {
-            modify[i].classList.replace('d-inline-block', 'd-none');
+    })
+    $('#email').on('input', function () {
+        if ($('#email').val() == "") {
+            $('#emailwarning').html("Please enter Email")
         }
-        for (var i = 0; i < update.length; i++) {
-            update[i].setAttribute('disabled', 'disabled');
+        else {
+            $('#emailwarning').html("")
         }
-    });
-    document.getElementById('savedata').addEventListener('click', function () {
-        var element = document.getElementById('edit');
-        var modify = document.getElementsByClassName('modify');
-        var update = document.getElementsByClassName('administrator');
-        element.classList.replace('d-none', 'd-inline-block');
-        for (var i = 0; i < modify.length; i++) {
-            modify[i].classList.replace('d-inline-block', 'd-none');
+    })
+    $('#confirmemail').on('input', function () {
+        if ($('#confirmemail').val() == "") {
+            $('#confirmemailwarning').html("Please enter Confirm Email")
         }
-        for (var i = 0; i < update.length; i++) {
-            update[i].setAttribute('disabled', 'disabled');
+        else if ($('#confirmemail').val() != $('#email').val()) {
+            $('#confirmemailwarning').html("Email and Confirm Email must be match")
         }
-    });
-    document.getElementById('Billingdata').addEventListener('click', function () {
-        var element = document.getElementById('editbill');
-        var modify = document.getElementsByClassName('modifybill');
-        var update = document.getElementsByClassName('billing');
-        element.classList.replace('d-none', 'd-inline-block');
-        for (var i = 0; i < modify.length; i++) {
-            modify[i].classList.replace('d-inline-block', 'd-none');
+        else {
+            $('#confirmemailwarning').html("")
         }
-        for (var i = 0; i < update.length; i++) {
-            update[i].setAttribute('disabled', 'disabled');
+    })
+    $('#phone').on('input', function () {
+        if ($('#phone').val() == "") {
+            $('#phonewarning').html("Please enter Phone Number")
         }
-    });
+        else {
+            $('#phonewarning').html("")
+        }
+    })
+    $('#address1').on('input', function () {
+        if ($('#address1').val() == "") {
+            $('#address1warning').html("Please enter Address1")
+        }
+        else {
+            $('#address1warning').html("")
+        }
+    })
+    $('#address2').on('input', function () {
+        if ($('#address2').val() == "") {
+            $('#address2warning').html("Please enter Address2")
+        }
+        else {
+            $('#address2warning').html("")
+        }
+    })
+    $('#city').on('input', function () {
+        if ($('#city').val() == "") {
+            $('#citywarning').html("Please enter City")
+        }
+        else {
+            $('#citywarning').html("")
+        }
+    })
+    // $('#state').on('input', function () {
+    //     if ($('#state').val() == "") {
+    //         $('#statewarning').html("Please enter First name")
+    //     }
+    //     else {
+    //         $('#statewarning').html("")
+    //     }
+    // })
+    $('#zip').on('input', function () {
+        if ($('#zip').val() == "") {
+            $('#zipwarning').html("Please enter Zip Code")
+        }
+        else {
+            $('#zipwarning').html("")
+        }
+    })
+    $('#phone1').on('input', function () {
+        if ($('#phone1').val() == "") {
+            $('#phone1warning').html("Please enter Alternative Phone Number")
+        }
+        else {
+            $('#phone1warning').html("")
+        }
+    })
 
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {

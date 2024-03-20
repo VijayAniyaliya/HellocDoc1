@@ -10,60 +10,60 @@
 
         <div class="row  mt-3 mb-4 mx-auto">
 
-            <div class="col-md-2 col-4 px-2 pb-2 status" id="1">
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="1">
                 <div class="px-2 py-1 new newActive rounded-3 pt-1 text-md-left text-center" id="pills-new-tab" onclick="newState()">
 
-                    <i class="bi bi-patch-plus icons "></i>
+                    <i class="bi bi-patch-plus icons"></i>
 
-                    <span class="ms-1 Txt fw-bold newTxt">NEW</span>
+                    <span class="ms-1 fw-bold newTxt">NEW</span>
 
                     <span class="mt-2 h4 newTxt d-block">@Model.newCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 pb-2 status" id="2">
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="2">
                 <div class="px-2 py-1 rounded-3 pending pt-1 text-md-left text-center" id="pills-pending-tab" onclick="pendingState()">
 
-                    <i class="bi bi-clock-history icons "></i>
+                    <i class="bi bi-clock-history icons"></i>
 
-                    <span class="ms-1 Txt fw-bold">PENDING</span>
+                    <span class="ms-1 fw-bold">PENDING</span>
 
                     <span class="mt-2 h4 d-block">@Model.pendingCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 pb-2 status" id="3">
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="3">
                 <div class="px-2 py-1 rounded-3 active pt-1 text-md-left text-center" id="pills-active-tab" onclick="activeState()">
 
-                    <i class="bi bi-check2-circle icons "></i>
+                    <i class="bi bi-check2-circle icons"></i>
 
-                    <span class="ms-1 Txt fw-bold">ACTIVE</span>
+                    <span class="ms-1 fw-bold">ACTIVE</span>
 
                     <span class="mt-2 h4 d-block">@Model.activeCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 status" id="4">
+            <div class="col-lg-2 col-4 px-2 status" id="4">
                 <div class="px-2 py-1 rounded-3 conclude pt-1 text-md-left text-center" id="pills-conclude-tab" onclick="concludeState()">
 
-                    <i class="bi bi-arrow-counterclockwise icons "></i>
+                    <i class="bi bi-arrow-counterclockwise icons"></i>
 
-                    <span class="ms-1 Txt fw-bold">CONCLUDE</span>
+                    <span class="ms-1 fw-bold">CONCLUDE</span>
 
                     <span class="mt-2 h4 d-block">@Model.concludeCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 status" id="5">
+            <div class="col-lg-2 col-4 px-2 status" id="5">
                 <div class="px-2 py-1 rounded-3 toclose pt-1 text-md-left text-center" id="pills-close-tab" onclick="closeState()">
 
                     <i class="bi bi-x-circle icons"></i>
 
-                    <span class="ms-1 Txt fw-bold">TO CLOSE</span>
+                    <span class="ms-1 fw-bold">TO CLOSE</span>
 
                     <span class="mt-2 h4 d-block">@Model.tocloseCount</span>
                 </div>
             </div>
-            <div class="col-md-2 col-4 px-2 status" id="6">
+            <div class="col-lg-2 col-4 px-2 status" id="6">
                 <div class="px-2 py-1 rounded-3 unpaid pt-1 text-md-left text-center" id="pills-unpaid-tab" onclick="unpaidState()">
                     <span class=" fw-bold mt-2 icons">$</span>
-                    <span class="ms-1 Txt fw-bold">UNPAID</span>
+                    <span class="ms-1 fw-bold">UNPAID</span>    
 
                     <span class="mt-2 h4 d-block">@Model.unpaidCount</span>
                 </div>
@@ -83,7 +83,7 @@
                     <i class="bi bi-pencil-square  mr-1"></i>
                     <span class="link-text">Create Requests</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                <a class="bg-info text-white rounded-3 p-2" id="exportbtn" style="cursor:pointer;">
                     <i class="bi bi-reply-all  mr-1"></i>
                     <span class="link-text">Export</span>
                 </a>
@@ -308,7 +308,7 @@
                 console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
-                status = "new";
+                status = "1";
                 url = "/Admin/NewState";
             },
             error: function (error) {
@@ -326,7 +326,7 @@
                 success: function (data) {
                     $("#tableContent").html(data);
                     $("#status").html("(New)");
-                    status = "new";
+                    status = "1";
                     url = "/Admin/NewState";
                 },
                 error: function () {
@@ -345,6 +345,8 @@
                     $("#tableContent").html(data);
                     $("#status").html("(Pending)");
                     url = "/Admin/PendingState";
+                    status = "2";
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -362,6 +364,8 @@
                     $("#tableContent").html(data);
                     $("#status").html("(Active)");
                     url = "/Admin/ActiveState";
+                    status = "3";
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -379,6 +383,8 @@
                     $("#tableContent").html(data);
                     $("#status").html("(Conclude)");
                     url = "/Admin/ConcludeState";
+                    status = "4";
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -396,6 +402,8 @@
                     $("#tableContent").html(data);
                     $("#status").html("(Close)");
                     url = "/Admin/ToCloseState";
+                    status = "5";
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -413,6 +421,8 @@
                     $("#tableContent").html(data);
                     $("#status").html("(Unpaid)");
                     url = "/Admin/UnpaidState";
+                    status = "6";
+
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -439,6 +449,14 @@
         });
     };
 
+    // $('#exportbtn').click(function () {
+    //     var link = document.createElement('a');
+    //     link.href = '/Admin/ExportData? requesttype=' + requesttype + "&patientname=" + patientname;
+    //     link.style.display = 'none';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // });
 
     function newState() {
         document.getElementById("pills-new-tab").classList.add("newActive");

@@ -259,12 +259,6 @@ namespace HellocDoc1.Controllers
         }
 
         [CustomAuthorize("User")]
-        public IActionResult CancelChanges()
-        {
-            return RedirectToAction("Patient_Profile"); 
-        }
-
-        [CustomAuthorize("User")]
         public IActionResult Editing(User model)
         {
             var email = HttpContext.Session.GetString("Email");
