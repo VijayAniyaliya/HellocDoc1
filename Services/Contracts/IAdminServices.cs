@@ -6,14 +6,14 @@ namespace Services.Contracts
 {
     public interface IAdminServices
     {
-        AdminDashboardViewModel NewState(int CurrentPage, string patientname = "", int requesttype = 5 , int PageSize = 10);
+        AdminDashboardViewModel NewState(AdminDashboardViewModel obj);
 
         AdminDashboardViewModel AdminDashboard();
-        AdminDashboardViewModel PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
-        AdminDashboardViewModel ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
-        AdminDashboardViewModel ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
-        AdminDashboardViewModel ToCloseState(int CurrentPage , string patientname , int requesttype , int PageSize);
-        AdminDashboardViewModel UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10);
+        AdminDashboardViewModel PendingState(AdminDashboardViewModel obj);
+        AdminDashboardViewModel ActiveState(AdminDashboardViewModel obj);
+        AdminDashboardViewModel ConcludeState(AdminDashboardViewModel obj);
+        AdminDashboardViewModel ToCloseState(AdminDashboardViewModel obj);
+        AdminDashboardViewModel UnpaidState(AdminDashboardViewModel obj);
         ViewCaseViewModel  ViewCase(int request_id);
         ViewNotesViewModel ViewNotes(int request_id);
         void AddNotes(ViewNotesViewModel model, int request_id);
@@ -53,5 +53,7 @@ namespace Services.Contracts
         Task SubmitRequest(CreateRequestViewModel model);
         ProviderViewModel PhysicianData();
         void SendMessage(int PhysicianId, string message);
+        void StopNotification(int PhysicianId);
+        byte[] DownloadExcle(AdminDashboardViewModel model);
     }
 }

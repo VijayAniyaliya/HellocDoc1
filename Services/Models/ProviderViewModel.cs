@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Services.Models
     }  
     public class PhysicianData
     {
+        public List<PhysicianNotification> PhysicianNotifications { get; set; }
 
         public int physicianId { get; set; }
 
@@ -21,6 +23,6 @@ namespace Services.Models
 
         public string OnCallStatus { get; set; }
 
-        public string Status { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model Services.Models.ProviderViewModel
+﻿@using System.Collections;
+@model Services.Models.ProviderViewModel
 
 
 @{
@@ -14,7 +15,7 @@
     <div class="px-3 pt-4 shadow Document-content mt-3" style="">
 
         <div class="row pr-3 mb-4">
-            <div class="col-md-8  col-12">          
+            <div class="col-md-8  col-12">
                 <div class="h6 ">Search bar</div>
             </div>
             <div class="col-md-4 col-12 mt-2 text-lg-end pr-0">
@@ -29,7 +30,7 @@
             <table class="table">
                 <thead>
                     <tr class="table-secondary">
-                        <th scope="col">Stop Notification</th>
+                        <th scope="col" style="width:15%;">Stop Notification</th>
                         <th scope="col">Provider Name <i class="bi bi-arrow-up-short h5"></i></th>
                         <th scope="col">Role</th>
                         <th scope="col">On Call Status</th>
@@ -38,20 +39,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var item in Model.Physicians)
+                    @foreach (var item in Model.Physicians)
                     {
-                        
-                    <tr>
-                        <td><input type="checkbox" /></td>
-                        <td>@item.ProviderName</td>
-                        <td>Physician</td>
-                        <td>Un Available</td>
-                        <td>Active</td>
-                        <td>
-                            <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
-                            <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-                        </td>
-                    </tr>
+
+                        <tr>
+                            <td class="text-center">
+                                <input class="form-check-input checks" type="checkbox"
+                                @if (item.PhysicianNotifications.Any(a=>a.PhysicianId== item.physicianId))
+                                {
+                                    @:checked
+                                } value="@item.physicianId">
+                            </td>
+                            <td>@item.ProviderName</td>
+                            <td>Physician</td>
+                            <td>@Enum.Parse( typeof(Common.Enum.PhysicianOnCallStatus), item.Status.ToString())</td>
+                            <td>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.Status.ToString())</td>
+                            <td>
+                                <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
+                                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -81,7 +88,7 @@
 
                     </div>
                     <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pb-2">
-                        <button type="button"  class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
+                        <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
                         <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
                     </div>
                 </div>
@@ -105,17 +112,44 @@
         $.ajax({
             url: "/Admin/ContactProvider/",
             type: "POST",
-            data: { "PhysicianId": PhysicianId},
+            data: { "PhysicianId": PhysicianId },
             dataType: "html",
             success: function (data) {
                 console.log("success");
                 $("#provider").html(data);
                 const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show(); 
+                myModal.show();
             },
             error: function () {
                 alert("No Projects Found");
                 $("#provider").html('An error has occurred');
+            }
+        });
+    };
+    var Physician_ID;
+
+    $('input[type="checkbox"]').change(function () {
+        if ($('.checks:checked')) {
+            Physician_ID = $(this).val();
+            console.log(Physician_ID);01
+            stopnotification(Physician_ID);
+        }
+        else {
+            stopnotification(Physician_ID);
+        }
+    });
+    function stopnotification(Physician_ID) {
+        console.log("notication");
+        $.ajax({
+            url: "/Admin/StopNotification/",
+            type: "POST",
+            data: { "PhysicianId": Physician_ID },
+            dataType: "html",
+            success: function (data) {
+                console.log("success");
+            },
+            error: function () {
+                console.log("No Projects Found");
             }
         });
     };

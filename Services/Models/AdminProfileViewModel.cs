@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Entity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace Services.Models
         public string? Email { get; set; }
         public string? ConfirmEmail { get; set; }
         public string? PhoneNumber { get; set; }
+
+        public List<AdminRegion> AdminRegionList { get; set; }
+        public List<Region> RegionList { get; set; }
         public string? Address1 { get; set; }
         public string? Address2 { get; set; }
         public string? City { get; set; }
@@ -34,6 +38,8 @@ namespace Services.Models
         public string lastname { get; set; }
         public string email { get; set; }
         public string phonenumber { get; set; }
+
+        public int[] RegionSelected { get; set; }
     }  
     public class BillingData
     {

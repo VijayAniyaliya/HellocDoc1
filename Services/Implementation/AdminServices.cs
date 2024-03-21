@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using MimeKit.Cryptography;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System;
@@ -43,6 +45,7 @@ namespace Services.Implementation
             var requestCount4 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 4).Count();
             var requestCount5 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 5).Count();
             var requestCount6 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6).Count();
+            List<Region> regions = _context.Regions.ToList();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel()
             {
@@ -51,140 +54,164 @@ namespace Services.Implementation
                 activeCount = requestCount3,
                 concludeCount = requestCount4,
                 tocloseCount = requestCount5,
-                unpaidCount = requestCount6
+                unpaidCount = requestCount6,
+                regions = regions,
             };
             return model;
 
         }
-        public AdminDashboardViewModel NewState(int CurrentPage, string patientname, int requesttype, int PageSize = 10)
-        {
+        public AdminDashboardViewModel NewState(AdminDashboardViewModel obj)
+       {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if(obj.region != 0) {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
 
-        public AdminDashboardViewModel PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public AdminDashboardViewModel PendingState(AdminDashboardViewModel obj)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 2).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if (obj.region != 0)
+            {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
 
-        public AdminDashboardViewModel ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public AdminDashboardViewModel ActiveState(AdminDashboardViewModel obj)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 3).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if (obj.region != 0)
+            {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
 
-        public AdminDashboardViewModel ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public AdminDashboardViewModel ConcludeState(AdminDashboardViewModel obj)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 4).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if (obj.region != 0)
+            {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
 
-        public AdminDashboardViewModel ToCloseState(int CurrentPage, string patientname, int requesttype, int PageSize)
+        public AdminDashboardViewModel ToCloseState(AdminDashboardViewModel obj)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Where(a => a.Request.Status == 5).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if (obj.region != 0)
+            {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
 
-        public AdminDashboardViewModel UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public AdminDashboardViewModel UnpaidState(AdminDashboardViewModel obj)
         {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToList();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(patientname))
+            if (!string.IsNullOrWhiteSpace(obj.patientname))
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(patientname.ToLower()) || a.LastName.ToLower().Contains(patientname.ToLower())).ToList();
+                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
             }
-            if (requesttype == 1 || requesttype == 2 || requesttype == 3 || requesttype == 4)
+            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
             {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == requesttype).ToList();
+                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+            }
+            if (obj.region != 0)
+            {
+                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)PageSize);
-            model.requestClients = model.requestClients.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            model.CurrentPage = CurrentPage;
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = obj.requestedPage;
             model.TotalPage = TotalPage;
             return model;
         }
@@ -815,6 +842,8 @@ namespace Services.Implementation
         {
             AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
             Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            List<Region> regions = _context.Regions.ToList();
+            List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
             AdminProfileViewModel model = new AdminProfileViewModel()
             {
                 AdminID = admin.AdminId,
@@ -824,6 +853,8 @@ namespace Services.Implementation
                 LastName = admin.LastName,
                 Email = admin.Email,
                 PhoneNumber = admin.Mobile,
+                RegionList = regions,
+                AdminRegionList = adminRegions,
                 Address1 = admin.Address1,
                 Address2 = admin.Address2,
                 City = admin.City,
@@ -832,6 +863,7 @@ namespace Services.Implementation
                 AltPhoneNumber = admin.AltPhone,
 
             };
+
             return model;
         }
 
@@ -847,7 +879,19 @@ namespace Services.Implementation
         public async Task UpdateAdminstrator(ProfileData model, string email)
         {
             Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
-            AspNetUser aspNetUser=_context.AspNetUsers.Where(a=> a.Email == email).FirstOrDefault();
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
+            List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
+            foreach (var item in adminRegions)
+            {
+                _context.AdminRegions.Remove(item);
+            }
+            AdminRegion adminRegion = new AdminRegion();
+            foreach (var item in model.RegionSelected)
+            {
+                adminRegion.AdminId = admin.AdminId;
+                adminRegion.RegionId = item;
+                await _context.AdminRegions.AddAsync(adminRegion);
+            }
             admin.FirstName = model.firstname;
             admin.LastName = model.lastname;
             admin.Email = model.email;
@@ -855,15 +899,15 @@ namespace Services.Implementation
             admin.ModifiedBy = aspNetUser.Id;
             admin.ModifiedDate = DateTime.Now;
             aspNetUser.UserName = model.firstname + " " + model.lastname;
-            aspNetUser.Email= model.email;
-            aspNetUser.PhoneNumber= model.phonenumber;
-            aspNetUser.ModifiedDate= DateTime.Now;
+            aspNetUser.Email = model.email;
+            aspNetUser.PhoneNumber = model.phonenumber;
+            aspNetUser.ModifiedDate = DateTime.Now;
             _context.Admins.Update(admin);
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
 
 
-        }     
+        }
         public async Task UpdateBillInfo(BillingData model, string email)
         {
             Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
@@ -969,9 +1013,9 @@ namespace Services.Implementation
                     RequestNote requestNote = new RequestNote()
                     {
                         RequestId = request.RequestId,
-                        AdminNotes=model.Notes,
-                        CreatedBy="Admin",
-                        CreatedDate=DateTime.Now,
+                        AdminNotes = model.Notes,
+                        CreatedBy = "Admin",
+                        CreatedDate = DateTime.Now,
                     };
 
                     await _context.RequestNotes.AddAsync(requestNote);
@@ -991,8 +1035,10 @@ namespace Services.Implementation
 
         public ProviderViewModel PhysicianData()
         {
-            List<Physician> data= _context.Physicians.ToList();
-            List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + a.LastName }).ToList();
+            List<Physician> data = _context.Physicians.ToList();
+            List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
+            List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + 
+                a.LastName,Status =(int)a.Status, PhysicianNotifications = notifications }).ToList();
 
             ProviderViewModel model = new ProviderViewModel()
             {
@@ -1003,10 +1049,127 @@ namespace Services.Implementation
 
         public void SendMessage(int PhysicianId, string message)
         {
-            Physician data = _context.Physicians.Where(a=> a.PhysicianId == PhysicianId).FirstOrDefault();
+            Physician data = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
             var email = data.Email;
-            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Message send by admin", $"{message}");
+            EmailSender.SendEmailAsync("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
 
+        }
+
+        public void StopNotification(int PhysicianId)
+        {
+            PhysicianNotification? notification = _context.PhysicianNotifications.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            PhysicianNotification physicianNotification = new PhysicianNotification();
+
+            if (notification.IsNotificationStopped[0] == false)
+            {
+                notification.IsNotificationStopped[0] = true;
+                _context.PhysicianNotifications.Update(notification);
+            }
+            else
+            {
+                notification.IsNotificationStopped[0] = false;
+
+                _context.PhysicianNotifications.Update(notification);
+            }
+            _context.SaveChanges();
+
+        }
+
+        public byte[] DownloadExcle(AdminDashboardViewModel model)
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                ISheet sheet = workbook.CreateSheet("FilteredRecord");
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue("Sr No.");
+                headerRow.CreateCell(1).SetCellValue("Request Id");
+                headerRow.CreateCell(2).SetCellValue("Patient Name");
+                headerRow.CreateCell(3).SetCellValue("Patient DOB");
+                headerRow.CreateCell(4).SetCellValue("RequestorName");
+                headerRow.CreateCell(5).SetCellValue("RequestedDate");
+                headerRow.CreateCell(6).SetCellValue("PatientPhone");
+                headerRow.CreateCell(7).SetCellValue("TransferNotes");
+                headerRow.CreateCell(8).SetCellValue("RequestorPhone");
+                headerRow.CreateCell(9).SetCellValue("RequestorEmail");
+                headerRow.CreateCell(10).SetCellValue("Address");
+                headerRow.CreateCell(11).SetCellValue("Notes");
+                headerRow.CreateCell(12).SetCellValue("ProviderEmail");
+                headerRow.CreateCell(13).SetCellValue("PatientEmail");
+                headerRow.CreateCell(14).SetCellValue("RequestType");
+                //headerRow.CreateCell(15).SetCellValue("Region");
+                headerRow.CreateCell(16).SetCellValue("PhysicainName");
+                headerRow.CreateCell(17).SetCellValue("Status");
+
+                for (int i = 0; i < model.requestClients.Count; i++)
+                {
+                    var reqclient = model.requestClients.ElementAt(i);
+                    var type = "";
+                    if (reqclient.Request.RequestTypeId == 1)
+                    {
+                        type = "Patient";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 2)
+                    {
+                        type = "Family";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 3)
+                    {
+                        type = "Business";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 4)
+                    {
+                        type = "Concierge";
+                    }
+                    IRow row = sheet.CreateRow(i + 1);
+                    row.CreateCell(0).SetCellValue(i + 1);
+                    row.CreateCell(1).SetCellValue(reqclient.Request.RequestId);
+                    row.CreateCell(2).SetCellValue(reqclient.FirstName);
+                    row.CreateCell(3).SetCellValue(reqclient.IntDate + "/" + reqclient.StrMonth + "/" + reqclient.IntYear);
+                    row.CreateCell(4).SetCellValue(reqclient.Request.FirstName);
+                    row.CreateCell(5).SetCellValue(reqclient.Request.CreatedDate);
+                    row.CreateCell(6).SetCellValue(reqclient.PhoneNumber);
+                    if (reqclient.Request.RequestStatusLogs.Count() == 0)
+                    {
+                        row.CreateCell(7).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(7).SetCellValue(reqclient.Request.RequestStatusLogs.ElementAt(0).Notes);
+                    }
+                    row.CreateCell(8).SetCellValue(reqclient.Request.PhoneNumber);
+                    row.CreateCell(9).SetCellValue(reqclient.Request.Email);
+                    row.CreateCell(10).SetCellValue(reqclient.Request.RequestClients.ElementAt(0).Address);
+                    row.CreateCell(11).SetCellValue(reqclient.Notes);
+                    if (reqclient.Request.Physician == null)
+                    {
+                        row.CreateCell(12).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(12).SetCellValue(reqclient.Request.Physician.Email);
+                    }
+                    row.CreateCell(13).SetCellValue(reqclient.Email);
+                    row.CreateCell(14).SetCellValue(type);
+                    //row.CreateCell(15).SetCellValue(reqclient.Region.Name);
+                    if (reqclient.Request.Physician == null)
+                    {
+                        row.CreateCell(16).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(16).SetCellValue(reqclient.Request.Physician.FirstName);
+                    }
+                    row.CreateCell(17).SetCellValue(reqclient.Request.Status);
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream)
+;
+                    var content = stream.ToArray();
+                    return content;
+                }
+            }
         }
     }
 }

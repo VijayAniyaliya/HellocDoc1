@@ -415,6 +415,15 @@ input[type=radio].radios {
     accent-color: #17a2b8;
 }
 
+
+.data:checked {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.checks:checked {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
 .radios {
     height: 20px;
     width: 20px;

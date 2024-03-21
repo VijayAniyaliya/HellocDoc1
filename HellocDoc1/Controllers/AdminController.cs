@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using NPOI.XSSF.UserModel;
+using System.Drawing;
 
 namespace HellocDoc1.Controllers
 {
@@ -36,36 +37,36 @@ namespace HellocDoc1.Controllers
         }
 
 
-        public IActionResult NewState(int CurrentPage=1,string patientname ="", int requesttype = 5, int PageSize = 10 )
+        public IActionResult NewState(AdminDashboardViewModel obj)
        {
-            AdminDashboardViewModel model = _adminServices.NewState(CurrentPage, patientname, requesttype, PageSize );
+            AdminDashboardViewModel model = _adminServices.NewState(obj);
             return View(model);
         }
-        public IActionResult PendingState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public IActionResult PendingState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model=_adminServices.PendingState(CurrentPage, patientname, requesttype, PageSize);
+            AdminDashboardViewModel model=_adminServices.PendingState(obj);
             return View(model);
         }
-        public IActionResult ActiveState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public IActionResult ActiveState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.ActiveState(CurrentPage, patientname, requesttype, PageSize);
+            AdminDashboardViewModel model = _adminServices.ActiveState(obj);
             return View(model);
         }
-        public IActionResult ConcludeState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public IActionResult ConcludeState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.ConcludeState(CurrentPage, patientname, requesttype, PageSize);
-            return View(model);
-        }
-
-        public IActionResult ToCloseState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
-        {
-            AdminDashboardViewModel model = _adminServices.ToCloseState(CurrentPage, patientname, requesttype, PageSize);
+            AdminDashboardViewModel model = _adminServices.ConcludeState(obj);
             return View(model);
         }
 
-        public IActionResult UnpaidState(int CurrentPage = 1, string patientname = "", int requesttype = 5, int PageSize = 10)
+        public IActionResult ToCloseState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.UnpaidState(CurrentPage, patientname, requesttype, PageSize);
+            AdminDashboardViewModel model = _adminServices.ToCloseState(obj);
+            return View(model);
+        }
+
+        public IActionResult UnpaidState(AdminDashboardViewModel obj)
+        {
+            AdminDashboardViewModel model = _adminServices.UnpaidState(obj);
             return View(model);
         }
 
@@ -335,6 +336,12 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
+        public IActionResult StopNotification(int PhysicianId)
+        {
+            _adminServices.StopNotification(PhysicianId);
+            return NoContent();
+        }
+
         public IActionResult ContactProvider(int PhysicianId)
         {
             PhysicianData physicianData =new PhysicianData();
@@ -365,112 +372,41 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-//        public IActionResult ExportData(string requesttype, string patientname)
-//        {
-//                AdminDashboard data = dashboardData.AllStateData(requesttype, patientname);
-//                var record = dashboardData.DownloadExcle(data);
-//                string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-//                var strDate = DateTime.Now.ToString("yyyyMMdd");
-//                string filename = $"{status}_{strDate}.xlsx";
-//                return File(record, contentType, filename);
-//        }
+        public IActionResult ExportData(AdminDashboardViewModel obj)
+        {
+            int CurrentPage = 0;
+            int PageSize = 10;
+            
+            AdminDashboardViewModel  model= new AdminDashboardViewModel();
+            switch (obj.status)
+            {
+                case 1:
+                    model= _adminServices.NewState(obj);
+                    break;
+                case 2:
+                    model = _adminServices.PendingState(obj);
+                    break;
+                case 3:
+                    model = _adminServices.ActiveState(obj);
+                    break;
+                case 4:
+                    model = _adminServices.ConcludeState(obj);
+                    break;
+                case 5:
+                    model = _adminServices.ToCloseState(obj);
+                    break;
+                case 6:
+                    model = _adminServices.UnpaidState(obj);
+                    break;
+            }
+            var record = _adminServices.DownloadExcle(model);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{obj.status}_{strDate}.xlsx";
+            return File(record, contentType, filename);
+        }
 
-//        public byte[] DownloadExcle(AdminDashboard model)
-//        {
-//            using (var workbook = new XSSFWorkbook())
-//            {
-//                ISheet sheet = workbook.CreateSheet("FilteredRecord");
-//                IRow headerRow = sheet.CreateRow(0);
-//                headerRow.CreateCell(0).SetCellValue("Sr No.");
-//                headerRow.CreateCell(1).SetCellValue("Request Id");
-//                headerRow.CreateCell(2).SetCellValue("Patient Name");
-//                headerRow.CreateCell(3).SetCellValue("Patient DOB");
-//                headerRow.CreateCell(4).SetCellValue("RequestorName");
-//                headerRow.CreateCell(5).SetCellValue("RequestedDate");
-//                headerRow.CreateCell(6).SetCellValue("PatientPhone");
-//                headerRow.CreateCell(7).SetCellValue("TransferNotes");
-//                headerRow.CreateCell(8).SetCellValue("RequestorPhone");
-//                headerRow.CreateCell(9).SetCellValue("RequestorEmail");
-//                headerRow.CreateCell(10).SetCellValue("Address");
-//                headerRow.CreateCell(11).SetCellValue("Notes");
-//                headerRow.CreateCell(12).SetCellValue("ProviderEmail");
-//                headerRow.CreateCell(13).SetCellValue("PatientEmail");
-//                headerRow.CreateCell(14).SetCellValue("RequestType");
-//                //headerRow.CreateCell(15).SetCellValue("Region");
-//                headerRow.CreateCell(16).SetCellValue("PhysicainName");
-//                headerRow.CreateCell(17).SetCellValue("Status");
 
-//                for (int i = 0; i < model.requestclients.Count; i++)
-//                {
-//                    var reqclient = model.requestclients.ElementAt(i);
-//                    var type = "";
-//                    if (reqclient.Request.Requesttypeid == 1)
-//                    {
-//                        type = "Patient";
-//                    }
-//                    else if (reqclient.Request.Requesttypeid == 2)
-//                    {
-//                        type = "Family";
-//                    }
-//                    else if (reqclient.Request.Requesttypeid == 4)
-//                    {
-//                        type = "Business";
-//                    }
-//                    else if (reqclient.Request.Requesttypeid == 3)
-//                    {
-//                        type = "Concierge";
-//                    }
-//                    IRow row = sheet.CreateRow(i + 1);
-//                    row.CreateCell(0).SetCellValue(i + 1);
-//                    row.CreateCell(1).SetCellValue(reqclient.Request.Requestid);
-//                    row.CreateCell(2).SetCellValue(reqclient.Firstname);
-//                    row.CreateCell(3).SetCellValue(reqclient.Intdate + "/" + reqclient.Strmonth + "/" + reqclient.Intyear);
-//                    row.CreateCell(4).SetCellValue(reqclient.Request.Firstname);
-//                    row.CreateCell(5).SetCellValue(reqclient.Request.Createddate);
-//                    row.CreateCell(6).SetCellValue(reqclient.Phonenumber);
-//                    if (reqclient.Request.Requeststatuslogs.Count() == 0)
-//                    {
-//                        row.CreateCell(7).SetCellValue("");
-//                    }
-//                    else
-//                    {
-//                        row.CreateCell(7).SetCellValue(reqclient.Request.Requeststatuslogs.ElementAt(0).Notes);
-//                    }
-//                    row.CreateCell(8).SetCellValue(reqclient.Request.Phonenumber);
-//                    row.CreateCell(9).SetCellValue(reqclient.Request.Email);
-//                    row.CreateCell(10).SetCellValue(reqclient.Request.Requestclients.ElementAt(0).Address);
-//                    row.CreateCell(11).SetCellValue(reqclient.Notes);
-//                    if (reqclient.Request.Physician == null)
-//                    {
-//                        row.CreateCell(12).SetCellValue("");
-//                    }
-//                    else
-//                    {
-//                        row.CreateCell(12).SetCellValue(reqclient.Request.Physician.Email);
-//                    }
-//                    row.CreateCell(13).SetCellValue(reqclient.Email);
-//                    row.CreateCell(14).SetCellValue(type);
-//                    //row.CreateCell(15).SetCellValue(reqclient.Region.Name);
-//                    if (reqclient.Request.Physician == null)
-//                    {
-//                        row.CreateCell(16).SetCellValue("");
-//                    }
-//                    else
-//                    {
-//                        row.CreateCell(16).SetCellValue(reqclient.Request.Physician.Firstname);
-//                    }
-//                    row.CreateCell(17).SetCellValue(reqclient.Request.Status);
-//                }
-
-//                using (var stream = new MemoryStream())
-//                {
-//                    workbook.Write(stream)
-//;
-//                    var content = stream.ToArray();
-//                    return content;
-//                }
-//            }
-//        }
 
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)

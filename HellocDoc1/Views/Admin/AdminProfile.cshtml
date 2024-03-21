@@ -100,18 +100,18 @@
 
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <input type="checkbox" class="checks" id="All" />
-                    <span class="h6 text-secondary">District Of Columbia</span>
-                    <input type="checkbox" class="checks" id="newyork" />
-                    <span class="h6 text-secondary">New York</span>
-                    <input type="checkbox" class="checks" id="virginia" />
-                    <span class="h6 text-secondary">Virginia</span>
-                    <div>
-
-                        <input type="checkbox" class="checks" id="maryland" />
-                        <span class="h6 text-secondary">MaryLand</span>
-                    </div>
+                <div class="col-12 col-md-6 mt-3">
+                    @foreach (var item in Model.RegionList)
+                    {
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input adisabled adminselectedregion-adminprofile data" type="checkbox"
+                            @if (Model.AdminRegionList.Any(adminRegion => adminRegion.RegionId == item.RegionId))
+                            {
+                                @:checked
+                            } value="@item.RegionId" disabled>
+                            <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                        </div>
+                    }
                 </div>
                 <div class="d-flex justify-content-end gap-3 mt-2">
                     <button type="button" id="edit" class="btn bg-info text-white px-4 h5">Edit</button>
@@ -199,6 +199,7 @@
 
 <script>
 
+
     function resetpass() {
         var password = $('#password').val();
         $.ajax({
@@ -219,14 +220,17 @@
 
     $('.modify').each(function () {
         $(this).css('display', 'none');
-    })  
+    })
     $('.modifybill').each(function () {
         $(this).css('display', 'none');
     })
     $('#edit').on('click', function () {
         $('.administrator').each(function () {
             $(this).prop('disabled', false);
-        })  
+        })
+        $('.data').each(function () {
+            $(this).prop('disabled', false);
+        })
         $('.modify').each(function () {
             $(this).css('display', 'flex');
         })
@@ -236,16 +240,19 @@
         $('.administrator').each(function () {
             $(this).prop('disabled', true);
         })
+        $('.data').each(function () {
+            $(this).prop('disabled', true);
+        })
         $('.modify').each(function () {
             $(this).css('display', 'none');
         })
         $('#edit').css('display', 'flex')
         $('.common').html('');
-    })  
+    })
     $('#editbill').on('click', function () {
         $('.billing').each(function () {
             $(this).prop('disabled', false);
-        })  
+        })
         $('.modifybill').each(function () {
             $(this).css('display', 'flex');
         })
@@ -262,27 +269,39 @@
         $('.billwarning').html('');
 
     })
+
+    var RegionSelected = [];
+
     function updatedata() {
+        $('.data:checked').each(function () {
+            RegionSelected.push($(this).val());
+        });
+        console.log(RegionSelected);
         var formdata = {
             firstname: $('#firstname').val(),
             lastname: $('#lastname').val(),
             email: $('#email').val(),
             phonenumber: $('#phone').val(),
-
+            RegionSelected: RegionSelected,
         }
         console.log(formdata);
+        console.log(formdata.RegionSelected);
         if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "")) {
 
             $.ajax({
                 url: "/Admin/UpdateAdminstrator/",
                 type: "POST",
                 data: formdata,
+                dataType: "json",
                 async: false,
-                dataType: "html",
+
                 success: function (data) {
                     console.log("form data")
 
                     $('#edit').css('display', 'flex');
+                    $('.data').each(function () {
+                        $(this).prop('disabled', false);
+                    })
                     $('.modify').each(function () {
                         $(this).css('display', 'none');
                     })
@@ -290,7 +309,6 @@
                         $(this).prop('disabled', true);
                     })
                     window.location.reload();
-
                 },
                 error: function (error) {
                     alert("No Projects Found");
@@ -350,6 +368,7 @@
 
     };
 
+
     $('#password').on('input', function () {
         if ($('#password').val() == "") {
             $('#passwarn').html("Please enter password")
@@ -365,7 +384,7 @@
         else {
             $('#firstwarning').html("")
         }
-    })  
+    })
     $('#lastname').on('input', function () {
         if ($('#lastname').val() == "") {
             $('#lastwarning').html("Please enter Last name")
