@@ -1,0 +1,130 @@
+﻿@using System.Collections;
+@model Services.Models.ProviderViewModel
+
+
+<table class="table  d-md-block d-none">
+    <thead>
+        <tr class="table-secondary">
+            <th scope="col" style="width:15%;">Stop Notification</th>
+            <th scope="col">Provider Name <i class="bi bi-arrow-up-short h5"></i></th>
+            <th scope="col">Role</th>
+            <th scope="col">On Call Status</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Physicians)
+        {
+
+            <tr>
+                <td class="text-center">
+                    <input class="form-check-input checks" type="checkbox"
+                    @if (item.PhysicianNotifications.Any(a => a.PhysicianId == item.physicianId))
+                    {
+                        @:checked
+                    } value="@item.physicianId">
+                </td>
+                <td>@item.ProviderName</td>
+                <td>@item.role</td>
+                <td>@Enum.Parse( typeof(Common.Enum.PhysicianOnCallStatus), item.Status.ToString())</td>
+                <td>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.Status.ToString())</td>
+                <td>
+                    <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
+                    <a type="button" asp-action="EditPhysician" asp-route-PhysicianId="@item.physicianId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+    <div class="accordion-item">
+        @foreach (var item in Model.Physicians)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+                    <div class="">
+                        <div class="ps-3 d-flex align-items-center">
+                            <input class="form-check-input checks" type="checkbox"
+                            @if (item.PhysicianNotifications.Any(a => a.PhysicianId == item.physicianId))
+                            {
+                                @:checked
+                            } value="@item.physicianId">
+                            <span class="ms-2">Physician Name: @item.ProviderName</span>
+                        </div>
+                        <div class="ps-1 pt-4 pb-3">
+                            <span>On Call Status:</span>
+                            <span>@Enum.Parse( typeof(Common.Enum.PhysicianOnCallStatus), item.Status.ToString())</span>
+                        </div>
+
+                    </div>
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+
+                <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-person text-info fw-bold mr-2 icn"></i>Role: <span class="fw-bold">@item.role</span></div>
+                    <div><i class="bi bi-check text-info fw-bold mr-2 icn"></i>Status:  <span class="fw-bold">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.Status.ToString())</span></div>
+
+                </div>
+                <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pb-2">
+                    <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
+                    <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div id="provider"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function provider(PhysicianId) {
+        console.log("provider");
+        $.ajax({
+            url: "/Admin/ContactProvider/",
+            type: "POST",
+            data: { "PhysicianId": PhysicianId },
+            dataType: "html",
+            success: function (data) {
+                console.log("success");
+                $("#provider").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#provider").html('An error has occurred');
+            }
+        });
+    };
+    var Physician_ID;
+
+    $('input[type="checkbox"]').change(function () {
+        if ($('.checks:checked')) {
+            Physician_ID = $(this).val();
+            console.log(Physician_ID);01
+            stopnotification(Physician_ID);
+        }
+        else {
+            stopnotification(Physician_ID);
+        }
+    });
+    function stopnotification(Physician_ID) {
+        console.log("notication");
+        $.ajax({
+            url: "/Admin/StopNotification/",
+            type: "POST",
+            data: { "PhysicianId": Physician_ID },
+            dataType: "html",
+            success: function (data) {
+                console.log("success");
+            },
+            error: function () {
+                console.log("No Projects Found");
+            }
+        });
+    };
+</script>

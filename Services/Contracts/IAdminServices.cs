@@ -51,9 +51,11 @@ namespace Services.Contracts
         Task UpdateBillInfo(BillingData model, string email);
         void SendLink(SendLinkViewModel model);
         Task SubmitRequest(CreateRequestViewModel model);
-        ProviderViewModel PhysicianData();
+        ProviderViewModel PhysicianData(int region);
         void SendMessage(int PhysicianId, string message);
         void StopNotification(int PhysicianId);
         byte[] DownloadExcle(AdminDashboardViewModel model);
+        ProviderViewModel provider();
+        PhysicianAccountViewModel EditPhysician(int PhysicianId);
     }
 }

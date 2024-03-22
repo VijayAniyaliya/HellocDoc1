@@ -151,7 +151,6 @@
 </div>
 <div id="mail"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-@* <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> *@
 <script>
     // console.log("hello");
 
@@ -240,7 +239,6 @@
         requestedPage: 1,
         region : 0,
     }
-    console.log(filterdata);
 
     function AjaxAll() {
         $.ajax({
@@ -249,16 +247,12 @@
             data:  filterdata ,
             dataType: "html",
             success: function (data) {
-                // console.log(data);
-                console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
-                // console.log(url);
 
             },
             error: function (error) {
                 console.log(error)
-                // alert("No Projects Found");
                 $("#tableContent").html('An error has occurred');
             }
         });
@@ -266,7 +260,6 @@
 
     $(".selected").click(function () {
         var requestType = $(this).attr('id');
-        console.log(requestType);
 
         switch (requestType) {
             case '1':
@@ -314,7 +307,6 @@
             data:  filterdata ,
             dataType: "html",
             success: function (data) {
-                console.log("hello");
                 $("#tableContent").html(data);
                 $("#status").html("(New)");
                  filterdata.url = "/Admin/NewState";
@@ -461,7 +453,6 @@
         if (typeof (filterdata.patientname == "undefined")) {
            filterdata.patientname = ""
         }
-        console.log(requesttype);
         var link = document.createElement('a');
         link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
         link.style.display = 'none';

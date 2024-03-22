@@ -274,7 +274,6 @@ namespace HellocDoc1.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public IActionResult AdminLogin(AdminLoginViewModel user)
         {
@@ -332,9 +331,14 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Provider()
         {
-            var data = _adminServices.PhysicianData();
+            var data = _adminServices.provider();
             return View(data);
         }
+        public IActionResult ProviderMenu(int region)
+        {
+            var data = _adminServices.PhysicianData(region);
+            return PartialView("_ProviderMenu",data);
+        }  
 
         public IActionResult StopNotification(int PhysicianId)
         {
@@ -415,9 +419,10 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult PhysicianAccount()
+        public IActionResult EditPhysician(int PhysicianId)
         {
-            return View();
+            var data = _adminServices.EditPhysician(PhysicianId);
+            return View(data);
         }
     }
 }

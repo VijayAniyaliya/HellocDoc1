@@ -1033,18 +1033,29 @@ namespace Services.Implementation
             }
         }
 
-        public ProviderViewModel PhysicianData()
+        public ProviderViewModel PhysicianData(int region)
         {
-            List<Physician> data = _context.Physicians.ToList();
-            Role role= _context.Roles.Where(x=>x.RoleId==data.Select(a=>a.RoleId).FirstOrDefault()).FirstOrDefault();
+            List<Physician> data = _context.Physicians.Include(x=>x.Role).ToList();
             List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
             List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + 
-                a.LastName,Status =(int)a.Status, PhysicianNotifications = notifications, role=role.Name}).ToList();
+                a.LastName,Status =(int)a.Status, role=a.Role.Name, PhysicianNotifications = notifications, region=a.RegionId}).ToList();
 
+            if (region != 0)
+            {
+               obj = obj.Where(x=> x.region == region).ToList();
+            }
             ProviderViewModel model = new ProviderViewModel()
             {
                 Physicians = obj,
             };
+            return model;
+        }
+
+        public ProviderViewModel provider()
+        {
+            ProviderViewModel model = new ProviderViewModel();
+            List<Region> regions = _context.Regions.ToList();
+            model.Regions = regions;
             return model;
         }
 
@@ -1061,18 +1072,23 @@ namespace Services.Implementation
             PhysicianNotification? notification = _context.PhysicianNotifications.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
             PhysicianNotification physicianNotification = new PhysicianNotification();
 
-            if (notification.IsNotificationStopped[0] == false)
+            if (notification == null)
             {
-                notification.IsNotificationStopped[0] = true;
-                _context.PhysicianNotifications.Update(notification);
+                physicianNotification.PhysicianId= PhysicianId;
+                physicianNotification.IsNotificationStopped = (new BitArray(new[] { true }));
+                _context.PhysicianNotifications.Add(physicianNotification);
             }
+            else if (notification.IsNotificationStopped[0] == false)
+            {
+                notification.IsNotificationStopped = (new BitArray(new[] { true }));
+                _context.PhysicianNotifications.Update(notification);
+            }      
             else
             {
-                notification.IsNotificationStopped[0] = false;
-
+                notification.IsNotificationStopped = (new BitArray(new[] { false }));
                 _context.PhysicianNotifications.Update(notification);
             }
-            _context.SaveChanges();
+            _context.SaveChanges();        
 
         }
 
@@ -1171,6 +1187,42 @@ namespace Services.Implementation
                     return content;
                 }
             }
+        }
+
+
+        public PhysicianAccountViewModel EditPhysician(int PhysicianId)
+        {
+            Physician physician=_context.Physicians.Where(a=> a.PhysicianId == PhysicianId).FirstOrDefault();
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id== physician.AspNetUserId).FirstOrDefault();
+            List<Role> role = _context.Roles.ToList();
+            List<Region> regions = _context.Regions.ToList();
+            List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
+            PhysicianAccountViewModel model = new PhysicianAccountViewModel()
+            {
+                PhysicianId = PhysicianId,
+                Username=physician.FirstName+ " " + physician.LastName,
+                Password=aspNetUser.PasswordHash,
+                StatusCode=(int)physician.Status,
+                Role= role,
+                FirstName=physician.FirstName,
+                LastName=physician.LastName,
+                Email=physician.Email,
+                PhoneNumber=physician.Mobile,
+                MediLiencense=physician.MedicalLicense,
+                SynchroEmail=physician.SyncEmailAddress,
+                RegionList = regions,
+                physicianRegions = physicianRegions,
+                address1 =physician.Address1,
+                address2=physician.Address2,
+                city=physician.City,
+                state=physician.City,
+                altphonenumber=physician.AltPhone,
+                BusinessName=physician.BusinessName,
+                BusinessWeb=physician.BusinessWebsite,
+                AdminNotes=physician.AdminNotes,
+            };
+
+            return model;
         }
     }
 }

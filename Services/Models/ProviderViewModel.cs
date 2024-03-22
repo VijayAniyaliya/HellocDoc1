@@ -11,9 +11,12 @@ namespace Services.Models
     {
         public List<PhysicianData>? Physicians { get; set; }
 
+        public List<Region> Regions { get; set; }
     }  
     public class PhysicianData
     {
+        public int? region { get; set; }
+
         public List<PhysicianNotification> PhysicianNotifications { get; set; }
         public string role { get; set; }
 
