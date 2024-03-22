@@ -51,7 +51,7 @@
                                 } value="@item.physicianId">
                             </td>
                             <td>@item.ProviderName</td>
-                            <td>Physician</td>
+                            <td>@item.role</td>
                             <td>@Enum.Parse( typeof(Common.Enum.PhysicianOnCallStatus), item.Status.ToString())</td>
                             <td>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.Status.ToString())</td>
                             <td>

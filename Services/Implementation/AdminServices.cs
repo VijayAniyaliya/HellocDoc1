@@ -1036,9 +1036,10 @@ namespace Services.Implementation
         public ProviderViewModel PhysicianData()
         {
             List<Physician> data = _context.Physicians.ToList();
+            Role role= _context.Roles.Where(x=>x.RoleId==data.Select(a=>a.RoleId).FirstOrDefault()).FirstOrDefault();
             List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
             List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + 
-                a.LastName,Status =(int)a.Status, PhysicianNotifications = notifications }).ToList();
+                a.LastName,Status =(int)a.Status, PhysicianNotifications = notifications, role=role.Name}).ToList();
 
             ProviderViewModel model = new ProviderViewModel()
             {

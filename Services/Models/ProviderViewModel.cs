@@ -10,10 +10,13 @@ namespace Services.Models
     public class ProviderViewModel
     {
         public List<PhysicianData>? Physicians { get; set; }
+
     }  
     public class PhysicianData
     {
         public List<PhysicianNotification> PhysicianNotifications { get; set; }
+        public string role { get; set; }
+
 
         public int physicianId { get; set; }
 
