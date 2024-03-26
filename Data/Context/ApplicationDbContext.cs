@@ -368,6 +368,8 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("Role_pkey");
+
+            entity.Property(e => e.AccountType).HasDefaultValueSql("1");
         });
 
         modelBuilder.Entity<RoleMenu>(entity =>

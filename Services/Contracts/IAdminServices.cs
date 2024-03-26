@@ -61,5 +61,9 @@ namespace Services.Contracts
         Task UpdatePhysicianInfo(UpdatePhycisianInfo model);
         Task ModifyBillInfo(ModifyBillingData model);
         Task ModifyProfileInfo(ModifyProfileData model);
+        AccessViewModel Access();
+        CreateAccessViewModel CreateAccess();
+        CreateAccessViewModel FilterByAccountType(int accounttype);
+        Task CreateRole(CreateAccessViewModel model, string Email);
     }
 }

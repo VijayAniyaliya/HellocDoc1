@@ -18,5 +18,5 @@ namespace Common.Enum
         UnAvailable = 1,
         Oncall = 2,
         Busy = 3,
-    }
+    }  
 }

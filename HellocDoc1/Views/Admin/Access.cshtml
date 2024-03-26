@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Services.Models.AccessViewModel
+
+@{
     ViewData["Title"] = "CreateAccess";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
@@ -24,14 +26,18 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach(var item in Model.roleData)
+                    {
+                        
                     <tr>
-                        <td>test</td>
-                        <td>Physician</td>
+                        <td>@item.Name</td>
+                            <td>@Enum.GetName( typeof(Common.Enum.AccountType), item.AccountType)</td>
                         <td class="text-lg-center">
                             <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
                             <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
                         </td>
                     </tr>
+                    }
                 </tbody>
             </table>
         </div>

@@ -1310,5 +1310,77 @@ namespace Services.Implementation
 
 
         }
+
+        public AccessViewModel Access()
+        {
+            List<Role> roles = _context.Roles.ToList();
+            List<RoleData> roleData = roles.Select(a => new RoleData() { RoleId = a.RoleId, Name = a.Name, AccountType = a.AccountType }).ToList();
+
+            AccessViewModel accessViewModel = new AccessViewModel()
+            {
+                roleData = roleData,
+            };
+
+            return accessViewModel;
+
+        }
+
+        public CreateAccessViewModel CreateAccess()
+        {
+            var menu = _context.Menus.ToList().DistinctBy(a => a.AccountType).Select(a => (int)a.AccountType).ToList();
+            CreateAccessViewModel model = new CreateAccessViewModel()
+            {
+                menus = menu,
+            };
+            return model;
+
+        }
+
+        public CreateAccessViewModel FilterByAccountType(int accounttype)
+        {
+            List<Menu> menus = _context.Menus.ToList();
+            CreateAccessViewModel model = new CreateAccessViewModel();
+            model.Menu = menus;
+            if (accounttype != 0)
+            {
+                model.Menu = menus.Where(a => a.AccountType == accounttype).ToList();
+            }
+            return model;
+        }
+
+        public async Task CreateRole(CreateAccessViewModel model, string Email)
+        {
+            var data = _context.AspNetUsers.Where(a => a.Email == Email);
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Role role = new Role()
+                    {
+                        Name = model.RoleName,
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = "21c57981-a679-4b62-8eee-57c1ce429643",
+                        AccountType = (short)model.AccountType,
+                        IsDeleted = new BitArray(new[] { false }),
+                    };
+                    await _context.Roles.AddAsync(role);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in model.MenuData)
+                    {
+                        RoleMenu roleMenu = new RoleMenu();
+                        roleMenu.RoleId = role.RoleId;
+                        roleMenu.MenuId = item;
+                        await _context.RoleMenus.AddAsync(roleMenu);
+                    }
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
     }
 }

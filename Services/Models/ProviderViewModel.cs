@@ -21,7 +21,7 @@ namespace Services.Models
         public string role { get; set; }
 
 
-        public int physicianId { get; set; }
+        public int physicianId { get; set; }            
 
         public string ProviderName { get; set; }
 

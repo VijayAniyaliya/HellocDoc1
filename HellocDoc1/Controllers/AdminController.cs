@@ -453,11 +453,27 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Access()
         {
-            return View();
+            var data = _adminServices.Access();
+            return View(data);
         }    
         public IActionResult CreateAccess()
         {
-            return View();
+            var data = _adminServices.CreateAccess();
+            return View(data);
+        }
+            
+        public IActionResult FilterByAccountType(int accounttype)
+        {
+            var data = _adminServices.FilterByAccountType(accounttype);
+            return PartialView("_MenuData", data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRole(CreateAccessViewModel model, string Email)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            await _adminServices.CreateRole(model, email);
+            return Ok();
         }
     }
 }
