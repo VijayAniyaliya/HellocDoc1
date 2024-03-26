@@ -57,5 +57,9 @@ namespace Services.Contracts
         byte[] DownloadExcle(AdminDashboardViewModel model);
         ProviderViewModel provider();
         PhysicianAccountViewModel EditPhysician(int PhysicianId);
+        Task ResetAccountPass(int PhysicianId, string password);
+        Task UpdatePhysicianInfo(UpdatePhycisianInfo model);
+        Task ModifyBillInfo(ModifyBillingData model);
+        Task ModifyProfileInfo(ModifyProfileData model);
     }
 }

@@ -16,218 +16,274 @@
     <div class="px-3 pt-4 shadow rounded-3 Document-content mt-3" style="">
         <div class="h4 mb-4">Account Information</div>
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="Username" class="form-control account" id="floatingInput"
-                           placeholder="username" disabled />
-                    <label for="floatingInput" class="">Username</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="Password" class="form-control account" id="password"
-                           placeholder="password" />
-                    <label for="password" class="">Password</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <select class="form-select account mb-3" id="floatingSelect" aria-label="Floating label select example" disabled>
-                        <option selected>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
-                        @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))
-                        {
-                            <option value="@i">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
-                        }
+            <form class="row">
 
-                    </select>
-                    <label for="floatingSelect">Status</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <select class="form-select account" id="role" aria-label="Floating label select example" disabled>
-                        <option selected>Physician</option>
-                    @foreach (var item in Model.Role)
-                    {
-                        <option value="@item.RoleId">@item.Name</option>
-                    }
-                    </select>
-                    <label for="floatingSelect">Role</label>
-                </div>
-            </div>
-            <div class="text-end mt-4">
-                <button type="button" id="edit" class="btn bg-info text-white px-4 mr-2 d-inline-block h5">Edit</button>
-                <button type="button" id="reset" onclick="resetpass()" class="btn border-info text-info h5">Reset Password</button>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Username" class="form-control account" id="floatingInput"
+                               placeholder="username" disabled />
+                        <label for="floatingInput" class="">Username</label>
+                        <span id="userwarn" class="text-danger user"></span>
 
-            </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Password" class="form-control account" id="password"
+                               placeholder="password" />
+                        <label for="password" class="">Password</label>
+                        <span id="passwarn" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select account mb-3" id="floatingSelect" aria-label="Floating label select example" disabled>
+                            <option selected>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
+                            @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))
+                            {
+                                <option value="@i">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
+                            }
+
+                        </select>
+                        <label for="floatingSelect">Status</label>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select account" id="role" aria-label="Floating label select example" disabled>
+                            <option selected>@Model.rolename</option>
+                            @foreach (var item in Model.Role)
+                            {
+                                <option value="@item.RoleId">@item.Name</option>
+                            }
+                        </select>
+                        <label for="floatingSelect">Role</label>
+                    </div>
+                </div>
+                <div class="text-end mt-4">
+                    <button type="button"  id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
+                    <button type="button" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyuser">Save Changes</button>
+                    <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifyuser">Cancel</button>
+                    <button type="button" onclick="resetpass()" id="reset" class="btn border-info text-info h5">Reset Password</button>
+
+                </div>
+            </form>
+
 
             <div class="h4 mb-4">Physician Information</div>
+            <form class="row">
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="FirstName" class="form-control administrator" id="firstname"
-                           placeholder="first name" disabled />
-                    <label for="firstname" class="">First Name</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="LastName" class="form-control administrator" id="lastname"
-                           placeholder="last name" disabled />
-                    <label for="lastname" class="">Last Name</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" asp-for="Email" class="form-control administrator" id="email"
-                           placeholder="abc@gmail.com" disabled />
-                    <label for="email" class="">Email</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating  mb-3">
-                    <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3 administrator" id="phone" disabled>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="MediLiencense" class="form-control administrator" id="medical"
-                           placeholder="medical liencense" disabled />
-                    <label for="lastname" class="">Medical Lieanse #</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control administrator" id="npi"
-                           placeholder="NPI Number" disabled />
-                    <label for="lastname" class="">NPI Number</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="email" asp-for="SynchroEmail" class="form-control administrator" id="syncroemail"
-                           placeholder="abc@gmail.com" disabled />
-                    <label for="email" class="">Synchronization Email Address</label>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 mt-3">
-                @foreach (var item in Model.RegionList)
-                {
-                    <div class="form-check form-check-inline ">
-                        <input class="form-check-input adisabled adminselectedregion-adminprofile data" type="checkbox"
-                        @if (Model.physicianRegions.Any(adminRegion => adminRegion.RegionId == item.RegionId))
-                        {
-                            @:checked
-                        } value="@item.RegionId" disabled>
-                        <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="FirstName" class="form-control physicianinfo" id="firstname"
+                               placeholder="first name" disabled />
+                        <label for="firstname" class="">First Name</label>
+                        <span id="firstwarning" class="text-danger comman"></span>
+
                     </div>
-                }
-            </div>
-            <div class="text-end mt-2">
-                <button type="button" id="edit" class="btn bg-info text-white px-4 d-inline-block h5">Edit</button>
-                <button type="button" id="savedata" onclick="updatedata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modify">Save Changes</button>
-                <button type="reset" id="cancel" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modify">Cancel</button>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="LastName" class="form-control physicianinfo" id="lastname"
+                               placeholder="last name" disabled />
+                        <label for="lastname" class="">Last Name</label>
+                        <span id="lastwarning" class="text-danger comman"></span>
 
-            </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="Email" class="form-control physicianinfo" id="email"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="email" class="">Email</label>
+                        <span id="emailwarning" class="text-danger comman"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3 physicianinfo" id="phone" disabled>
+                        <span id="phonewarning" class="text-danger comman"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="MediLiencense" class="form-control physicianinfo" id="medical"
+                               placeholder="medical liencense" disabled />
+                        <label for="lastname" class="">Medical Lieanse #</label>
+                        <span id="medicalwarning" class="text-danger comman"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="NPI" class="form-control physicianinfo" id="npi"
+                               placeholder="NPI Number" disabled />
+                        <label for="lastname" class="">NPI Number</label>
+                        <span id="npiwarning" class="text-danger comman"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="SynchroEmail" class="form-control physicianinfo" id="syncroemail"
+                               placeholder="abc@gmail.com" disabled />
+                        <label for="email" class="">Synchronization Email Address</label>
+                        <span id="syncroemailwarning" class="text-danger comman"></span>
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mt-3">
+                    @foreach (var item in Model.RegionList)
+                    {
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input adisabled physicianinfo adminselectedregion-adminprofile data" type="checkbox"
+                            @if (Model.physicianRegions.Any(adminRegion => adminRegion.RegionId == item.RegionId))
+                            {
+                                @:checked
+                            } value="@item.RegionId" disabled>
+                            <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+
+                        </div>
+                    }
+                </div>
+                <div class="text-end mt-2">
+                    <button type="button" id="editaccount" class="btn bg-info text-white px-4 h5">Edit</button>
+                    <button type="button" onclick="updatedata()" id="savedata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modify">Save Changes</button>
+                    <button type="reset" id="cancelaccount" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modify">Cancel</button>
+
+                </div>
+            </form>
+
             <div class="h4 mb-4">Mailing & Billing information</div>
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="address1" class="form-control billing" id="address1"
-                           placeholder="address 1" disabled />
-                    <label for="address1" class="">Address 1</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="address2" class="form-control billing" id="address2"
-                           placeholder="address 2" disabled />
-                    <label for="address2" class="">Address 2</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="city" class="form-control billing" id="city"
-                           placeholder="city" disabled />
-                    <label for="city" class="">City</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="state" class="form-control billing" id="state"
-                           placeholder="state" disabled />
-                    <label for="state" class="">State</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="zip" class="form-control billing" id="zip"
-                           placeholder="zipcode" disabled />
-                    <label for="zip" class="">Zip</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating  mb-3">
-                    <input type="tel" asp-for="altphonenumber" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
-                </div>
-            </div>
-            <div class="text-end mt-2">
-                <button type="button" id="edit" class="btn bg-info text-white h5 px-4 d-inline-block">Edit</button>
-                <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
-                <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+            <form class="row">
 
-            </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="address1" class="form-control billing" id="address1"
+                               placeholder="address 1" disabled />
+                        <label for="address1" class="">Address 1</label>
+                        <span id="address1warning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="address2" class="form-control billing" id="address2"
+                               placeholder="address 2" disabled />
+                        <label for="address2" class="">Address 2</label>
+                        <span id="address2warning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="city" class="form-control billing" id="city"
+                               placeholder="city" disabled />
+                        <label for="city" class="">City</label>
+                        <span id="citywarning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="state" class="form-control billing" id="state"
+                               placeholder="state" disabled />
+                        <label for="state" class="">State</label>
+                        <span id="statewarning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="zip" class="form-control billing" id="zip"
+                               placeholder="zipcode" disabled />
+                        <label for="zip" class="">Zip</label>
+                        <span id="zipwarning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating  mb-3">
+                        <input type="tel" asp-for="altphonenumber" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
+                        <span id="phone1warning" class="text-danger bill"></span>
+
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <button type="button" id="editbill" class="btn bg-info text-white h5 px-4">Edit</button>
+                    <button type="button" onclick="updatebill()" id="Billingdata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifybill">Save Changes</button>
+                    <button type="reset" id="cancelbill" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
+
+                </div>
+            </form>
+
             <div class="h4 mb-4">Provider Profile</div>
 
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="BusinessName" class="form-control administrator" id="businessname"
-                           placeholder="business name" disabled />
-                    <label for="businessname" class="">Business Name</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-3">
-                    <input type="text" asp-for="BusinessWeb" class="form-control administrator" id="businesswebsite"
-                           placeholder="business website" disabled />
-                    <label for="businesswebsite" class="">Business Website</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                    <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
-                    <label class="my-auto ms-2" id="fileselect">Select file</label>
-                    <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
-                        <i class="bi bi-cloud-arrow-up"></i>
-                        <span class="ms-1 mt-0">Upload</span>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                    <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
-                    <label class="my-auto ms-2" id="fileselect">Select file</label>
-                    <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
-                        <i class="bi bi-cloud-arrow-up"></i>
-                        <span class="ms-1 mt-0">Upload</span>
-                    </label>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="form-floating mb-3">
-                    <textarea asp-for="AdminNotes" class="form-control reason" placeholder="admin notes"
-                              id="floatingTextarea2" style="height: 100px" disabled></textarea>
-                    <label for="floatingTextarea2" class="">
-                        Admin Notes
-                    </label>
-                </div>
-            </div>
-            <div class="text-end mt-2">
-                <button type="button" id="edit" class="btn bg-info text-white h5 px-4 d-inline-block">Edit</button>
-                <button type="button" id="Billingdata" onclick="billingdata()" class="btn bg-info text-white rounded-3 d-none fw-bold px-4 h5 modifybill">Save Changes</button>
-                <button type="reset" id="cancelbill" class="btn bg-white text-info border-2 d-none border-info rounded-3 fw-bold h5 modifybill">Cancel</button>
 
-            </div>
+            <form class="row">
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="BusinessName" class="form-control profiledata" id="businessname"
+                               placeholder="business name" disabled />
+                        <label for="businessname" class="">Business Name</label>
+                        <span id="businesswarning" class="text-danger profile"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="BusinessWeb" class="form-control profiledata" id="businesswebsite"
+                               placeholder="business website" disabled />
+                        <label for="businesswebsite" class="">Business Website</label>
+                        <span id="businesswebwarning" class="text-danger profile"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3 border d-flex justify-content-between flex-row">
+                        <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
+                        <label class="my-auto ms-2" id="fileselect">Select file</label>
+                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <span class="ms-1 mt-0">Upload</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3 border d-flex justify-content-between flex-row">
+                        <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
+                        <label class="my-auto ms-2" id="fileselect">Select file</label>
+                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <span class="ms-1 mt-0">Upload</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea asp-for="AdminNotes" class="form-control profiledata" placeholder="admin notes"
+                                  id="adminnotes" style="height: 100px" disabled></textarea>
+                        <label for="adminnotes" class="">
+                            Admin Notes
+                        </label>
+                        <span id="adminwarning" class="text-danger profile"></span>
+
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <button type="button" id="editprofile" class="btn bg-info text-white h5 px-4">Edit</button>
+                    <button type="button" id="" onclick="profiledata()" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyprofile">Save Changes</button>
+                    <button type="reset" id="cancelprofile" class="btn bg-white text-info border-2 border-info rounded-3 fw-bold h5 modifyprofile">Cancel</button>
+
+                </div>
+            </form>
+
 
 
         </div>
@@ -277,4 +333,412 @@
 <br />
 <br />
 <br />
-<br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+
+
+    function resetpass() {
+        var password = $('#password').val();
+        var PhysicianId = @Model.PhysicianId;
+        $.ajax({
+            url: "/Admin/ResetAccountPass/",
+            type: "POST",
+            async: false,
+            data: {"PhysicianId": PhysicianId, "password": password },
+            dataType: "html",
+            success: function (data) {
+                console.log("reset password")
+            },
+            error: function () {
+                alert("No Projects Found");
+                console.log('error');
+            }
+        });
+    };
+
+    $('.modifyuser').each(function () {
+        $(this).css('display', 'none');
+    })  
+    $('.modify').each(function () {
+        $(this).css('display', 'none');
+    })
+    $('.modifybill').each(function () {
+        $(this).css('display', 'none');
+    })  
+    $('.modifyprofile').each(function () {
+        $(this).css('display', 'none');
+    })
+    $('#edit').on('click', function () {
+        $('.account').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.modifyuser').each(function () {
+            $(this).css('display', 'inline-block');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancel').on('click', function () {
+        $('.account').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modifyuser').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#edit').css('display', 'inline-block')
+        $('.user').html('');
+    })  
+    $('#editaccount').on('click', function () {
+        $('.physicianinfo').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.data').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.modify').each(function () {
+            $(this).css('display', 'inline-block');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancelaccount').on('click', function () {
+        $('.physicianinfo').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.data').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modify').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#editaccount').css('display', 'inline-block')
+        $('.comman').html('');
+    })
+    $('#editbill').on('click', function () {
+        $('.billing').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.modifybill').each(function () {
+            $(this).css('display', 'inline-block');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancelbill').on('click', function () {
+        $('.billing').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modifybill').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#editbill').css('display', 'inline-block');
+        $('.bill').html('');
+
+    })  
+    $('#editprofile').on('click', function () {
+        $('.profiledata').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.modifyprofile').each(function () {
+            $(this).css('display', 'inline-block');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancelprofile').on('click', function () {
+        $('.profiledata').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modifyprofile').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#editprofile').css('display', 'inline-block');
+        $('.profile').html('');
+
+    })
+
+    var RegionSelected = [];
+
+    function updatedata() {
+        $('.data:checked').each(function () {
+            RegionSelected.push($(this).val());
+        });
+        console.log(RegionSelected);
+        var formdata = {
+            PhysicianId : @Model.PhysicianId,
+            firstname: $('#firstname').val(),
+            lastname: $('#lastname').val(),
+            email: $('#email').val(),
+            phonenumber: $('#phone').val(),
+            mediliencense: $('#medical').val(),
+            npi: $('#npi').val(),
+            synchroemail: $('#syncroemail').val(),
+            RegionSelected: RegionSelected,
+        }
+        console.log(formdata);
+        console.log(formdata.RegionSelected);
+        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && (formdata.mediliencense != "") && (formdata.npi != "") && (formdata.synchroemail != "")) {
+
+            $.ajax({
+                url: "/Admin/UpdatePhysicianInfo/",
+                type: "POST",
+                data: formdata,
+                dataType: "json",
+                async: false,
+
+                success: function (data) {
+                    console.log("form data")
+
+                    $('#editaccount').css('display', 'inline-block');
+                    $('.data').each(function () {
+                        $(this).prop('disabled', false);
+                    })
+                    $('.modify').each(function () {
+                        $(this).css('display', 'none');
+                    })
+                    $('.physicianinfo').each(function () {
+                        $(this).prop('disabled', true);
+                    })
+                    window.location.reload();
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('.common').html('');
+
+        }
+        else {
+            console.log("denied")
+        }
+    };
+    function updatebill() {
+        var billdata = {
+            PhysicianId : @Model.PhysicianId,
+            address1: $('#address1').val(),
+            address2: $('#address2').val(),
+            city: $('#city').val(),
+            zip: $('#zip').val(),
+            altphonenumber: $('#phone1').val(),
+
+        }
+        console.log(billdata);
+        if ((billdata.address1 != "") && (billdata.address2 != "") && (billdata.city != "") && (billdata.zip != "") && (billdata.altphonenumber != "")) {
+
+            $.ajax({
+                url: "/Admin/ModifyBillInfo/",
+                type: "POST",
+                data: billdata,
+                async: false,
+                dataType: "html",
+                success: function (data) {
+                    console.log("billing info");
+
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('#editbill').css('display', 'inline-block');
+            $('.modifybill').css('display', 'none');
+            $('.billing').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('.bill').html('');
+
+        }
+        else {
+            console.log("denied")
+        }
+
+    };  
+    function profiledata() {
+        var profileinfo = {
+            PhysicianId : @Model.PhysicianId,
+            businessname: $('#businessname').val(),
+            businessweb: $('#businesswebsite').val(),
+            adminnotes: $('#adminnotes').val(),
+
+        }
+        console.log(profileinfo);
+        if ((profileinfo.businessname != "") && (profileinfo.businessweb != "") && (profileinfo.adminnotes != "")) {
+
+            $.ajax({
+                url: "/Admin/ModifyProfileInfo/",
+                type: "POST",
+                data: profileinfo,
+                async: false,
+                dataType: "html",
+                success: function (data) {
+                    console.log("profile info");
+
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('#editprofile').css('display', 'inline-block');
+            $('.modifyprofile').css('display', 'none');
+            $('.profiledata').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('.profile').html('');
+
+        }
+        else {
+            console.log("denied")
+        }
+
+    };
+
+
+    $('#password').on('input', function () {
+        if ($('#password').val() == "") {
+            $('#passwarn').html("Please enter password")
+        }
+        else {
+            $('#passwarn').html("")
+        }
+    })
+    $('#firstname').on('input', function () {
+        if ($('#firstname').val() == "") {
+            $('#firstwarning').html("Please enter First name")
+        }
+        else {
+            $('#firstwarning').html("")
+        }
+    })
+    $('#lastname').on('input', function () {
+        if ($('#lastname').val() == "") {
+            $('#lastwarning').html("Please enter Last name")
+        }
+        else {
+            $('#lastwarning').html("")
+        }
+    })
+    $('#email').on('input', function () {
+        if ($('#email').val() == "") {
+            $('#emailwarning').html("Please enter Email")
+        }
+        else {
+            $('#emailwarning').html("")
+        }
+    })
+    $('#phone').on('input', function () {
+        if ($('#phone').val() == "") {
+            $('#phonewarning').html("Please enter Phone Number")
+        }
+        else {
+            $('#phonewarning').html("")
+        }
+    })  
+    $('#medical').on('input', function () {
+        if ($('#medical').val() == "") {
+            $('#medicalwarning').html("Please enter medical license")
+        }
+        else {
+            $('#medicalwarning').html("")
+        }
+    })  
+    $('#npi').on('input', function () {
+        if ($('#npi').val() == "") {
+            $('#npiwarning').html("Please enter npi Number")
+        }
+        else {
+            $('#npiwarning').html("")
+        }
+    })  
+    $('#syncroemail').on('input', function () {
+        if ($('#syncroemail').val() == "") {
+            $('#syncroemailwarning').html("Please enter syncronization email")
+        }
+        else {
+            $('#syncroemailwarning').html("")
+        }
+    })
+    $('#address1').on('input', function () {
+        if ($('#address1').val() == "") {
+            $('#address1warning').html("Please enter Address1")
+        }
+        else {
+            $('#address1warning').html("")
+        }
+    })
+    $('#address2').on('input', function () {
+        if ($('#address2').val() == "") {
+            $('#address2warning').html("Please enter Address2")
+        }
+        else {
+            $('#address2warning').html("")
+        }
+    })
+    $('#city').on('input', function () {
+        if ($('#city').val() == "") {
+            $('#citywarning').html("Please enter City")
+        }
+        else {
+            $('#citywarning').html("")
+        }
+    })
+    // $('#state').on('input', function () {
+    //     if ($('#state').val() == "") {
+    //         $('#statewarning').html("Please enter First name")
+    //     }
+    //     else {
+    //         $('#statewarning').html("")
+    //     }
+    // })
+    $('#zip').on('input', function () {
+        if ($('#zip').val() == "") {
+            $('#zipwarning').html("Please enter Zip Code")
+        }
+        else {
+            $('#zipwarning').html("")
+        }
+    })
+    $('#phone1').on('input', function () {
+        if ($('#phone1').val() == "") {
+            $('#phone1warning').html("Please enter Alternative Phone Number")
+        }
+        else {
+            $('#phone1warning').html("")
+        }
+    })  
+    $('#businessname').on('input', function () {
+        if ($('#businessname').val() == "") {
+            $('#businesswarning').html("Please enter businessw name")
+        }
+        else {
+            $('#businesswarning').html("")
+        }
+    })  
+    $('#businesswebsite').on('input', function () {
+        if ($('#businesswebsite').val() == "") {
+            $('#businesswebwarning').html("Please enter business website")
+        }
+        else {
+            $('#businesswebwarning').html("")
+        }
+    })   
+    $('#adminnotes').on('input', function () {
+        if ($('#adminnotes').val() == "") {
+            $('#adminwarning').html("Please enter admin notes")
+        }
+        else {
+            $('#adminwarning').html("")
+        }
+    })
+
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+    const phone1InputField = document.querySelector("#phone1");
+    const phone1Input = window.intlTelInput(phone1InputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+</script>

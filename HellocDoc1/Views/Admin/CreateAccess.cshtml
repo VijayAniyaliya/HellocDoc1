@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Access";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        <h4>Create Access</h4>
+        <a asp-area="" asp-action="Access" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <div class="px-3 pt-4 shadow mt-3" style="">
+
+        <div class="h5 mb-4">Details</div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="floatingInput"
+                           placeholder="role" />
+                    <label for="floatingInput" class="">Role</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>All</option>
+                        <option value="1">Admin</option>
+                        <option value="2">Physician</option>
+                        <option value="3">Patient</option>
+                    </select>
+                    <label for="floatingSelect">Account Type</label>
+                </div>
+            </div>
+
+        </div>
+        <div>
+            <input type="checkbox" />
+            <label>Role1</label>
+            <input type="checkbox" />
+            <label>Role2</label>
+            <input type="checkbox" />
+            <label>Role3</label>
+        </div>
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />

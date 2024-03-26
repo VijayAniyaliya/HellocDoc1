@@ -61,7 +61,7 @@ namespace Services.Implementation
 
         }
         public AdminDashboardViewModel NewState(AdminDashboardViewModel obj)
-       {
+        {
             List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
@@ -75,7 +75,8 @@ namespace Services.Implementation
             {
                 model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
             }
-            if(obj.region != 0) {
+            if (obj.region != 0)
+            {
                 model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
             }
             int count = model.requestClients.Count();
@@ -1035,14 +1036,22 @@ namespace Services.Implementation
 
         public ProviderViewModel PhysicianData(int region)
         {
-            List<Physician> data = _context.Physicians.Include(x=>x.Role).ToList();
+            List<Physician> data = _context.Physicians.Include(x => x.Role).ToList();
             List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
-            List<PhysicianData> obj = data.Select(a => new PhysicianData() { physicianId = a.PhysicianId, ProviderName = a.FirstName + " " + 
-                a.LastName,Status =(int)a.Status, role=a.Role.Name, PhysicianNotifications = notifications, region=a.RegionId}).ToList();
+            List<PhysicianData> obj = data.Select(a => new PhysicianData()
+            {
+                physicianId = a.PhysicianId,
+                ProviderName = a.FirstName + " " +
+                a.LastName,
+                Status = (int)a.Status,
+                role = a.Role.Name,
+                PhysicianNotifications = notifications,
+                region = a.RegionId
+            }).ToList();
 
             if (region != 0)
             {
-               obj = obj.Where(x=> x.region == region).ToList();
+                obj = obj.Where(x => x.region == region).ToList();
             }
             ProviderViewModel model = new ProviderViewModel()
             {
@@ -1074,7 +1083,7 @@ namespace Services.Implementation
 
             if (notification == null)
             {
-                physicianNotification.PhysicianId= PhysicianId;
+                physicianNotification.PhysicianId = PhysicianId;
                 physicianNotification.IsNotificationStopped = (new BitArray(new[] { true }));
                 _context.PhysicianNotifications.Add(physicianNotification);
             }
@@ -1082,13 +1091,13 @@ namespace Services.Implementation
             {
                 notification.IsNotificationStopped = (new BitArray(new[] { true }));
                 _context.PhysicianNotifications.Update(notification);
-            }      
+            }
             else
             {
                 notification.IsNotificationStopped = (new BitArray(new[] { false }));
                 _context.PhysicianNotifications.Update(notification);
             }
-            _context.SaveChanges();        
+            _context.SaveChanges();
 
         }
 
@@ -1192,37 +1201,114 @@ namespace Services.Implementation
 
         public PhysicianAccountViewModel EditPhysician(int PhysicianId)
         {
-            Physician physician=_context.Physicians.Where(a=> a.PhysicianId == PhysicianId).FirstOrDefault();
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id== physician.AspNetUserId).FirstOrDefault();
+            Physician physician = _context.Physicians.Include(x => x.Role).FirstOrDefault(a => a.PhysicianId == PhysicianId);
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
             List<Role> role = _context.Roles.ToList();
             List<Region> regions = _context.Regions.ToList();
             List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
             PhysicianAccountViewModel model = new PhysicianAccountViewModel()
             {
                 PhysicianId = PhysicianId,
-                Username=physician.FirstName+ " " + physician.LastName,
-                Password=aspNetUser.PasswordHash,
-                StatusCode=(int)physician.Status,
-                Role= role,
-                FirstName=physician.FirstName,
-                LastName=physician.LastName,
-                Email=physician.Email,
-                PhoneNumber=physician.Mobile,
-                MediLiencense=physician.MedicalLicense,
-                SynchroEmail=physician.SyncEmailAddress,
+                Username = physician.FirstName + " " + physician.LastName,
+                Password = aspNetUser.PasswordHash,
+                rolename = physician.Role.Name,
+                StatusCode = (int)physician.Status,
+                Role = role,
+                FirstName = physician.FirstName,
+                LastName = physician.LastName,
+                Email = physician.Email,
+                PhoneNumber = physician.Mobile,
+                MediLiencense = physician.MedicalLicense,
+                NPI = physician.Npinumber,
+                SynchroEmail = physician.SyncEmailAddress,
                 RegionList = regions,
                 physicianRegions = physicianRegions,
-                address1 =physician.Address1,
-                address2=physician.Address2,
-                city=physician.City,
-                state=physician.City,
-                altphonenumber=physician.AltPhone,
-                BusinessName=physician.BusinessName,
-                BusinessWeb=physician.BusinessWebsite,
-                AdminNotes=physician.AdminNotes,
+                address1 = physician.Address1,
+                address2 = physician.Address2,
+                city = physician.City,
+                state = physician.City,
+                zip = physician.Zip,
+                altphonenumber = physician.AltPhone,
+                BusinessName = physician.BusinessName,
+                BusinessWeb = physician.BusinessWebsite,
+                AdminNotes = physician.AdminNotes,
             };
 
             return model;
+        }
+
+        public async Task ResetAccountPass(int PhysicianId, string password)
+        {
+            Physician physician = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
+            aspNetUser.PasswordHash = password;
+            aspNetUser.ModifiedDate = DateTime.Now;
+
+            _context.AspNetUsers.Update(aspNetUser);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePhysicianInfo(UpdatePhycisianInfo model)
+        {
+            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
+            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
+
+            foreach (var item in physicianRegions)
+            {
+                _context.PhysicianRegions.Remove(item);
+            }
+            foreach (var item in model.RegionSelected)
+            {
+                PhysicianRegion physicianRegion = new PhysicianRegion();
+                physicianRegion.PhysicianId = physician.PhysicianId;
+                physicianRegion.RegionId = item;
+                _context.PhysicianRegions.Add(physicianRegion);
+            }
+            physician.FirstName = model.firstname;
+            physician.LastName = model.lastname;
+            physician.Email = model.email;
+            physician.Mobile = model.phonenumber;
+            physician.MedicalLicense = model.mediliencense;
+            physician.SyncEmailAddress = model.synchroemail;
+            physician.ModifiedBy = aspNetUser.Id;
+            physician.ModifiedDate = DateTime.Now;
+            aspNetUser.UserName = model.firstname + " " + model.lastname;
+            aspNetUser.Email = model.email;
+            aspNetUser.PhoneNumber = model.phonenumber;
+            aspNetUser.ModifiedDate = DateTime.Now;
+            _context.Physicians.Update(physician);
+            _context.AspNetUsers.Update(aspNetUser);
+            await _context.SaveChangesAsync();
+
+
+        }
+
+        public async Task ModifyBillInfo(ModifyBillingData model)
+        {
+            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            physician.Address1 = model.address1;
+            physician.Address2 = model.address2;
+            physician.City = model.city;
+            physician.Zip = model.zip;
+            physician.AltPhone = model.altphonenumber;
+            physician.ModifiedDate = DateTime.Now;
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
+
+
+        }
+        public async Task ModifyProfileInfo(ModifyProfileData model)
+        {
+            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            physician.BusinessName = model.businessname;
+            physician.BusinessWebsite = model.businessweb;
+            physician.AdminNotes = model.adminnotes;
+            physician.ModifiedDate = DateTime.Now;
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
+
+
         }
     }
 }

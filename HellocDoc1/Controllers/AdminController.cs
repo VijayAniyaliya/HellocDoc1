@@ -424,5 +424,40 @@ namespace HellocDoc1.Controllers
             var data = _adminServices.EditPhysician(PhysicianId);
             return View(data);
         }
+
+        public async Task<IActionResult> ResetAccountPass(int PhysicianId, string password)
+        {
+            await _adminServices.ResetAccountPass(PhysicianId, password);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePhysicianInfo(UpdatePhycisianInfo model)
+        {
+            await _adminServices.UpdatePhysicianInfo(model);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifyBillInfo(ModifyBillingData model)
+        {
+            await _adminServices.ModifyBillInfo(model);
+            return NoContent();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ModifyProfileInfo(ModifyProfileData model)
+        {
+            await _adminServices.ModifyProfileInfo(model);
+            return NoContent();
+        }
+
+        public IActionResult Access()
+        {
+            return View();
+        }    
+        public IActionResult CreateAccess()
+        {
+            return View();
+        }
     }
 }

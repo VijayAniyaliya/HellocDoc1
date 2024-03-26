@@ -50,7 +50,7 @@
     <hr class="my-0 d-none d-md-block" />
     <div class="shadow px-lg-5 px-2 my-2">
         <div class=" h6 d-none d-md-flex gap-4 ">
-            @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewCase")))
+            @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Admin/CreateRequest")))
             {
                 <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
             }
@@ -72,9 +72,9 @@
             {
                 <a asp-action="Provider" class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Providers</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
-                    <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2" >Providers</a></li>
-                    <li><a  class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
-                    <li><a  class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
+                    <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
+                    <li><a class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                    <li><a class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                 </ul>
 
             }
@@ -83,12 +83,19 @@
                 <a class="text-decoration-none px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor:pointer;">Providers</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                     <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
-                    <li><a  class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
-                    <li><a  class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
+                    <li><a class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                    <li><a class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                 </ul>
             }
             <a class="text-decoration-none  px-2" style="color:black;">Partners</a>
-            <a class="text-decoration-none px-2" style="color:black;">Access</a>
+            @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")))
+            {
+                <a asp-action="Access" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Access</a>
+            }
+            else
+            {
+                <a asp-action="Access" class="text-decoration-none px-2" style="color:black;">Access</a>
+            }
             <a class="text-decoration-none px-2" style="color:black;">Records</a>
         </div>
     </div>
