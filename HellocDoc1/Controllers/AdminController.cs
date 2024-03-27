@@ -483,9 +483,9 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePhysicianAccount(CreateAccessViewModel model)
+        public async Task<IActionResult> CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected)
         {
-            await _adminServices.CreatePhysicianAccount(model);
+            await _adminServices.CreatePhysicianAccount(model, regionselected);
             return RedirectToAction("CreateAccess");
         }
     }

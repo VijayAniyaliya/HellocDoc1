@@ -3,12 +3,11 @@ using Common.Helpers;
 using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
-using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using MimeKit.Cryptography;
+using Microsoft.Extensions.Hosting;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Services.Contracts;
@@ -21,7 +20,8 @@ namespace Services.Implementation
     public class AdminServices : IAdminServices
     {
         private ApplicationDbContext _context;
-        private IHostingEnvironment _environment;
+        //private IHostingEnvironment _environment;
+        private IWebHostEnvironment _environment;
 
         private string GetUniqueFileName(string fileName)
         {
@@ -31,10 +31,10 @@ namespace Services.Implementation
                       + Guid.NewGuid().ToString().Substring(0, 6)
                       + Path.GetExtension(fileName);
         }
-        public AdminServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
+        public AdminServices(ApplicationDbContext context, IWebHostEnvironment hostEnvironment /*IHostingEnvironment hostingEnvironment*/)
         {
             _context = context;
-            _environment = hostingEnvironment;
+            _environment = hostEnvironment;
         }
 
         public AdminDashboardViewModel AdminDashboard()
@@ -1034,6 +1034,13 @@ namespace Services.Implementation
             }
         }
 
+        public ProviderViewModel provider()
+        {
+            ProviderViewModel model = new ProviderViewModel();
+            List<Region> regions = _context.Regions.ToList();
+            model.Regions = regions;
+            return model;
+        }
         public ProviderViewModel PhysicianData(int region)
         {
             List<Physician> data = _context.Physicians.Include(x => x.Role).ToList();
@@ -1060,13 +1067,6 @@ namespace Services.Implementation
             return model;
         }
 
-        public ProviderViewModel provider()
-        {
-            ProviderViewModel model = new ProviderViewModel();
-            List<Region> regions = _context.Regions.ToList();
-            model.Regions = regions;
-            return model;
-        }
 
         public void SendMessage(int PhysicianId, string message)
         {
@@ -1350,7 +1350,7 @@ namespace Services.Implementation
 
         public async Task CreateRole(CreateAccessViewModel model, string Email)
         {
-            AspNetUser? aspNetUser=_context.AspNetUsers.Where(a=> a.Email == Email).FirstOrDefault();
+            AspNetUser? aspNetUser = _context.AspNetUsers.Where(a => a.Email == Email).FirstOrDefault();
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -1359,7 +1359,7 @@ namespace Services.Implementation
                     {
                         Name = model.RoleName,
                         CreatedDate = DateTime.Now,
-                        CreatedBy=aspNetUser!.Id,
+                        CreatedBy = aspNetUser!.Id,
                         AccountType = (short)model.AccountType,
                         IsDeleted = new BitArray(new[] { false }),
                     };
@@ -1391,15 +1391,15 @@ namespace Services.Implementation
             CreatePhysicianViewModel model = new CreatePhysicianViewModel()
             {
                 Role = role,
-                RegionList= regions,
+                RegionList = regions,
             };
 
             return model;
         }
 
-        public async Task CreatePhysicianAccount(CreatePhysicianViewModel model)
+        public async Task CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected)
         {
-            using(var transaction= _context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
@@ -1413,39 +1413,51 @@ namespace Services.Implementation
                         CreatedDate = DateTime.Now,
                     };
                     _context.AspNetUsers.Add(aspNetUser);
+
+                    var role = _context.AspNetRoles.FirstOrDefault(a => a.Name == "Physician");
+                    aspNetUser.Roles.Add(role);
                     await _context.SaveChangesAsync();
 
-                    //AspNetUserRole aspNetUserRole = new AspNetUserRole()
-                    //{
-                    //    UserId= aspNetUser.Id,
-                    //    RoleId= "b9358139-9394-4a32-927d-87a2161880a0",
-                    //};
-                    //_context..Add(aspNetUser);
-                    await _context.SaveChangesAsync();
+
+                    var file = model.Photo.FileName;
+                    var uniqueFileName = GetUniqueFileName(file);
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+
+
+
 
                     Physician physician = new Physician()
                     {
-                        AspNetUserId= aspNetUser.Id,
-                        FirstName= model.FirstName,
-                        LastName= model.LastName,
-                        Email= model.Email,
-                        Mobile= model.PhoneNumber,
-                        MedicalLicense= model.MediLiencense,
-                        AdminNotes= model.AdminNotes,
-                        Address1= model.address1,
-                        Address2= model.address2,
-                        City= model.city,
-                        Zip= model.zip,
-                        AltPhone= model.altphonenumber,
-                        CreatedDate= DateTime.Now,
-                        BusinessName= model.BusinessName,
-                        BusinessWebsite= model.BusinessWeb,
-                        Npinumber= model.NPI,
+                        AspNetUserId = aspNetUser.Id,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.Email,
+                        Mobile = model.PhoneNumber,
+                        MedicalLicense = model.MediLiencense,
+                        AdminNotes = model.AdminNotes,
+                        Address1 = model.address1,
+                        Address2 = model.address2,
+                        City = model.city,
+                        Zip = model.zip,
+                        AltPhone = model.altphonenumber,
+                        CreatedBy = "21c57981-a679-4b62-8eee-57c1ce429643",
+                        CreatedDate = DateTime.Now,
+                        BusinessName = model.BusinessName,
+                        BusinessWebsite = model.BusinessWeb,
+                        Npinumber = model.NPI,
+                        Photo = uniqueFileName,
+                        Status= (int)Common.Enum.PhysicianStatus.NotActive,
+                        RoleId=model.role,
+                        IsAgreementDoc = new BitArray(new[] { false }),
+                        IsBackgroundDoc = new BitArray(new[] { false }),
+                        IsNonDisclosureDoc = new BitArray(new[] { false }),
                     };
                     _context.Physicians.Add(physician);
                     await _context.SaveChangesAsync();
 
-                    foreach (var item in model.regions)
+                    foreach (var item in regionselected)
                     {
                         PhysicianRegion physicianRegion = new PhysicianRegion();
                         physicianRegion.PhysicianId = physician.PhysicianId;
@@ -1456,8 +1468,8 @@ namespace Services.Implementation
 
                     PhysicianNotification physicianNotification = new PhysicianNotification()
                     {
-                        PhysicianId= physician.PhysicianId,
-                        IsNotificationStopped= new BitArray(new[] { false }),
+                        PhysicianId = physician.PhysicianId,
+                        IsNotificationStopped = new BitArray(new[] { false }),
                     };
 
                     _context.PhysicianNotifications.Add(physicianNotification);

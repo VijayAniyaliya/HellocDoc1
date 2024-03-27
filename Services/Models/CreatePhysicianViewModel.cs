@@ -44,9 +44,10 @@ namespace Services.Models
         [Required(ErrorMessage = "please select regions")]
 
 
-        public int[] regions { get; set; }
+        public string[] RegionSelected { get; set; }
 
         public List<Region> RegionList { get; set; }
+
         [Required(ErrorMessage = "address1 is required")]
 
         public string address1 { get; set; }

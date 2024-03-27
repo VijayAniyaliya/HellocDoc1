@@ -110,11 +110,11 @@
                     @foreach (var item in Model.RegionList)
                     {
                         <div class="form-check form-check-inline ">
-                            <input class="form-check-input   adminselectedregion-adminprofile" type="checkbox" asp-for="regions" value="@item.RegionId">
+                            <input class="form-check-input" name="regionselected" type="checkbox" value="@item.RegionId">
                             <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
 
                         </div>
-                        <span asp-validation-for="regions" class="text-danger"></span>
+                        @* <span asp-validation-for="RegionSelected" class="text-danger"></span> *@
 
                     }
                 </div>
@@ -195,13 +195,14 @@
                 </div>
                 <div class="col-md-6">
                     <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                        <input type="file" class="form-control" id="inputGroupFile02" style="display: none;">
+                        <input type="file" asp-for="Photo" class="form-control" id="inputGroupFile02" style="display: none;">
                         <label class="my-auto ms-2" id="fileselect">Select file</label>
                         <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
                             <i class="bi bi-cloud-arrow-up"></i>
                             <span class="ms-1 mt-0">Upload</span>
                         </label>
                     </div>
+
                         <span asp-validation-for="Photo" class="text-danger"></span>
                 </div>
                 <div class="col-12">
@@ -222,39 +223,39 @@
             <hr />
             <div class="h5">Onboarding</div>
             <div class="d-flex align-items-center mb-3">
-                <input asp-for="AggrementDoc" type="checkbox" class="checks mr-4" />
+                <input  type="checkbox" class="checks mr-4" />
                 <span class="" style="width:60%;">Independent Contractor Agreement</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" class="selectfile" name="file"/>
+                    <input type="file" asp-for="AggrementDoc" class="selectfile"/>
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input asp-for="BackgoundDoc" type="checkbox" class="checks mr-4" />
+                <input  type="checkbox" class="checks mr-4" />
                 <span class="" style="width:60%;">Background Check</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" class="selectfile" name="file" />
+                    <input type="file" asp-for="BackgoundDoc" class="selectfile" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input asp-for="HipaaDoc" type="checkbox" class="checks mr-4" />
+                <input  type="checkbox" class="checks mr-4" />
                 <span class="" style="width:60%;">HIPAA Compliance</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" class="selectfile" name="file" />
+                    <input type="file" asp-for="HipaaDoc" class="selectfile" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input asp-for="DisclosureDoc" type="checkbox" class="checks mr-4" />
+                <input  type="checkbox" class="checks mr-4" />
                 <span class="" style="width:60%;">Non-disclosure Agreement</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" class="selectfile" name="file" />
+                    <input type="file" asp-for="DisclosureDoc" class="selectfile" />
                 </div>
             </div>
             <hr />
