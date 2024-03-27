@@ -65,5 +65,6 @@ namespace Services.Contracts
         CreateAccessViewModel CreateAccess();
         CreateAccessViewModel FilterByAccountType(int accounttype);
         Task CreateRole(CreateAccessViewModel model, string Email);
+        CreatePhysicianViewModel CreatePhysician();
     }
 }

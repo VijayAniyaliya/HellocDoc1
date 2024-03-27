@@ -469,11 +469,24 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole(CreateAccessViewModel model, string Email)
+        public async Task<IActionResult> CreateRole(CreateAccessViewModel model)
         {
             var email = HttpContext.Session.GetString("Email");
             await _adminServices.CreateRole(model, email);
             return Ok();
+        }
+
+        public IActionResult CreatePhysician()
+        {
+            var data = _adminServices.CreatePhysician();
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePhysicianAccount(CreateAccessViewModel model)
+        {
+            await _adminServices.CreatePhysicianAccount(model);
+            return RedirectToAction("CreateAccess");
         }
     }
 }

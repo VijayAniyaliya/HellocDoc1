@@ -1341,7 +1341,7 @@ namespace Services.Implementation
             List<Menu> menus = _context.Menus.ToList();
             CreateAccessViewModel model = new CreateAccessViewModel();
             model.Menu = menus;
-            if (accounttype != 0)
+            if (accounttype != 4)
             {
                 model.Menu = menus.Where(a => a.AccountType == accounttype).ToList();
             }
@@ -1350,7 +1350,7 @@ namespace Services.Implementation
 
         public async Task CreateRole(CreateAccessViewModel model, string Email)
         {
-            var data = _context.AspNetUsers.Where(a => a.Email == Email);
+            AspNetUser? aspNetUser=_context.AspNetUsers.Where(a=> a.Email == Email).FirstOrDefault();
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -1359,7 +1359,7 @@ namespace Services.Implementation
                     {
                         Name = model.RoleName,
                         CreatedDate = DateTime.Now,
-                        CreatedBy = "21c57981-a679-4b62-8eee-57c1ce429643",
+                        CreatedBy=aspNetUser!.Id,
                         AccountType = (short)model.AccountType,
                         IsDeleted = new BitArray(new[] { false }),
                     };
@@ -1381,6 +1381,96 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
+        }
+
+        public CreatePhysicianViewModel CreatePhysician()
+        {
+            List<Role> role = _context.Roles.ToList();
+            List<Region> regions = _context.Regions.ToList();
+
+            CreatePhysicianViewModel model = new CreatePhysicianViewModel()
+            {
+                Role = role,
+                RegionList= regions,
+            };
+
+            return model;
+        }
+
+        public async Task CreatePhysicianAccount(CreatePhysicianViewModel model)
+        {
+            using(var transaction= _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    AspNetUser aspNetUser = new AspNetUser()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = model.Username,
+                        PasswordHash = model.Password,
+                        Email = model.Email,
+                        PhoneNumber = model.PhoneNumber,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.AspNetUsers.Add(aspNetUser);
+                    await _context.SaveChangesAsync();
+
+                    //AspNetUserRole aspNetUserRole = new AspNetUserRole()
+                    //{
+                    //    UserId= aspNetUser.Id,
+                    //    RoleId= "b9358139-9394-4a32-927d-87a2161880a0",
+                    //};
+                    //_context..Add(aspNetUser);
+                    await _context.SaveChangesAsync();
+
+                    Physician physician = new Physician()
+                    {
+                        AspNetUserId= aspNetUser.Id,
+                        FirstName= model.FirstName,
+                        LastName= model.LastName,
+                        Email= model.Email,
+                        Mobile= model.PhoneNumber,
+                        MedicalLicense= model.MediLiencense,
+                        AdminNotes= model.AdminNotes,
+                        Address1= model.address1,
+                        Address2= model.address2,
+                        City= model.city,
+                        Zip= model.zip,
+                        AltPhone= model.altphonenumber,
+                        CreatedDate= DateTime.Now,
+                        BusinessName= model.BusinessName,
+                        BusinessWebsite= model.BusinessWeb,
+                        Npinumber= model.NPI,
+                    };
+                    _context.Physicians.Add(physician);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in model.regions)
+                    {
+                        PhysicianRegion physicianRegion = new PhysicianRegion();
+                        physicianRegion.PhysicianId = physician.PhysicianId;
+                        physicianRegion.RegionId = item;
+                        _context.PhysicianRegions.Add(physicianRegion);
+                    }
+                    await _context.SaveChangesAsync();
+
+                    PhysicianNotification physicianNotification = new PhysicianNotification()
+                    {
+                        PhysicianId= physician.PhysicianId,
+                        IsNotificationStopped= new BitArray(new[] { false }),
+                    };
+
+                    _context.PhysicianNotifications.Add(physicianNotification);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
+            }
+
         }
     }
 }

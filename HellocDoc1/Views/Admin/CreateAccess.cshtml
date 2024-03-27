@@ -23,6 +23,7 @@
                     <input type="text" class="form-control" id="role"
                            placeholder="role" />
                     <label for="role" class="">Role</label>
+                    <span id="rolewarn" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
@@ -41,6 +42,7 @@
         </div>
         <div class="menudata d-flex flex-wrap gap-3">
         </div>
+        <span id="menuitem" class="text-danger mt-1"></span>
         <div class="mt-4 text-end">
             <button type="button" onclick="createrole()" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5">Save</button>
             <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5">Cancel</button>
@@ -54,7 +56,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    var accounttype = 0;
+    var accounttype = 4;
 
     $('#accounttype').on('change', function () {
         accounttype = $(this).val();
@@ -87,6 +89,20 @@
     });
 
     var MenuData = [];
+    $('#role').on('input', function () {
+        if ($('#role').val() != "") {
+            $('#rolewarn').html("")
+        }
+    })
+    function checkbox() {
+        console.log("asdgh");
+        if ($('input[name="checkboxs"]:checked').length > 0) {
+            $('#menuitem').html('');
+        }
+        else if ($('input[type="checkbox"]:checked').length < 1) {
+            $('#menuitem').html('Please select menu item');
+        }
+    }
 
     function createrole() {
         $('.data:checked').each(function () {
@@ -99,22 +115,30 @@
             MenuData: MenuData,
         }
         console.log(formdata);
-        $.ajax({
-            url: "/Admin/CreateRole/",
-            type: "POST",
-            data: formdata,
-            dataType: "json",
-            async: false,
-
-            success: function (data) {
-                console.log("form data")
-                window.location.href = "/Admin/Access"
-            },
-            error: function (error) {
-                window.location.href = "/Admin/Access"
-                console.log(error);
-            }
-        });
+        if (formdata.RoleName == "") {
+            $('#rolewarn').html("Please enter role name")
+        }
+        else if ($('input[type="checkbox"]:checked').length < 1) {
+            $('#menuitem').html('Please select menu item');
+        }
+        else {
+            $.ajax({
+                url: "/Admin/CreateRole/",
+                type: "POST",
+                data: formdata,
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    console.log("form data")
+                    window.location.href = "/Admin/Access"
+                },
+                error: function (error) {
+                    window.location.href = "/Admin/Access"
+                    console.log(error);
+                }
+            });
+            $('#rolewarn').html("");
+        }
     };
 
 </script>

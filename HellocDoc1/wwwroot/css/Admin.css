@@ -441,3 +441,16 @@ input[type=radio].radios {
     color: #17a2b8;
     font-weight:600;  
 }
+
+.file {
+    position: relative;
+    overflow: hidden;
+}
+
+.selectfile {
+    position: absolute;
+    font-size: 50px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
