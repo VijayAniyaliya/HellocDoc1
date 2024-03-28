@@ -1,21 +1,21 @@
-﻿@model Services.Models.CreatePhysicianViewModel
+﻿@model Services.Models.CreateAdminViewModel
 
 @{
-    ViewData["Title"] = "CreatePhysician";
+    ViewData["Title"] = "CreateAdmin";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
-        <h4>Edit Physician Account</h4>
-        <a asp-area="" asp-action="Provider" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+        <h4>Edit Admin Account</h4>
+        <a asp-area="" asp-action="Access" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
             &lt;  Back
         </a>
 
     </div>
     <div class="px-3 pt-4 shadow rounded-3 Document-content mt-3" style="">
         <div class="h4 mb-4">Account Information</div>
-        <form asp-action="CreatePhysicianAccount" enctype="multipart/form-data" method="post">
+        <form asp-action="CreateAdminAccount" enctype="multipart/form-data" method="post">
 
             <div class="row">
 
@@ -24,7 +24,7 @@
                         <input type="text" asp-for="Username" class="form-control" id="floatingInput"
                                placeholder="username" />
                         <label for="floatingInput" class="">Username</label>
-                        <span asp-validation-for="Username"  class="text-danger"></span>
+                        <span asp-validation-for="Username" class="text-danger"></span>
 
                     </div>
                 </div>
@@ -150,12 +150,13 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select py-2 text-secondary" asp-for="state" id="state" aria-label="Floating label select example">
-                            <option selected disabled>State</option>
-                            @foreach (var item in Model.RegionList)
+                           <option selected disabled>State</option>
+                           @foreach (var item in Model.RegionList)
                             {
                                 <option value="@item.RegionId">@item.Name</option>
                             }
                         </select>
+
                         <span asp-validation-for="state" class="text-danger"></span>
                     </div>
                 </div>
@@ -174,98 +175,13 @@
 
                     </div>
                 </div>
+                <div class="text-end">
 
-                <div class="h4 mt-4 mb-4">Provider Profile</div>
-
-
-
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" asp-for="BusinessName" class="form-control" id="businessname"
-                               placeholder="business name" />
-                        <label for="businessname" class="">Business Name</label>
-                        <span asp-validation-for="BusinessName" class="text-danger"></span>
-
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" asp-for="BusinessWeb" class="form-control" id="businesswebsite"
-                               placeholder="business website" />
-                        <label for="businesswebsite" class="">Business Website</label>
-                        <span asp-validation-for="BusinessWeb" class="text-danger"></span>
-
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                        <input type="file" asp-for="Photo" class="form-control" id="inputGroupFile02" style="display: none;">
-                        <label class="my-auto ms-2" id="fileselect">Select file</label>
-                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
-                            <i class="bi bi-cloud-arrow-up"></i>
-                            <span class="ms-1 mt-0">Upload</span>
-                        </label>
-                    </div>
-
-                        <span asp-validation-for="Photo" class="text-danger"></span>
-                </div>
-                <div class="col-12">
-                    <div class="form-floating mb-3">
-                        <textarea asp-for="AdminNotes" class="form-control" placeholder="admin notes"
-                                  id="adminnotes" style="height: 100px"></textarea>
-                        <label for="adminnotes" class="">
-                            Admin Notes
-                        </label>
-                        <span asp-validation-for="AdminNotes" class="text-danger"></span>
-
-                    </div>
+                    <button type="submit" id="edit" class="btn bg-success text-white h5 px-4 fw-bold  mb-0">Create Account</button>
                 </div>
 
 
 
-            </div>
-            <hr />
-            <div class="h5">Onboarding</div>
-            <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4"/>
-                <span class="" style="width:60%;">Independent Contractor Agreement</span>
-                <div class="file btn btn-info">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    Upload
-                    <input type="file" asp-for="AggrementDoc" class="selectfile"/>
-                </div>
-            </div>
-            <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
-                <span class="" style="width:60%;">Background Check</span>
-                <div class="file btn btn-info">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    Upload
-                    <input type="file" asp-for="BackgoundDoc" class="selectfile" />
-                </div>
-            </div>
-            <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
-                <span class="" style="width:60%;">HIPAA Compliance</span>
-                <div class="file btn btn-info">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    Upload
-                    <input type="file" asp-for="HipaaDoc" class="selectfile" />
-                </div>
-            </div>
-            <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
-                <span class="" style="width:60%;">Non-disclosure Agreement</span>
-                <div class="file btn btn-info">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    Upload
-                    <input type="file" asp-for="DisclosureDoc" class="selectfile" />
-                </div>
-            </div>
-            <hr />
-            <div class="text-end">
-
-                <button type="submit" id="edit" class="btn bg-success text-white h5 px-4 fw-bold  mb-0">Create Account</button>
             </div>
             <br />
             <br />

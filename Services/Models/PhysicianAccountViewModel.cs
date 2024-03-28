@@ -47,8 +47,7 @@ namespace Services.Models
 
         public string BusinessWeb { get; set; }
 
-        public IEnumerable<IFormFile>? Photo { get; set; }
-        public IEnumerable<IFormFile>? Sign { get; set; }
+        public string Photo { get; set; }
 
         public string AdminNotes { get; set; }
 
@@ -97,6 +96,9 @@ namespace Services.Models
 
         public string businessname { get; set; }
         public string businessweb { get; set; }
+
+        public IFormFile Photo { get; set; }
+        public IFormFile Signature { get; set; }
         public string adminnotes { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Services.Models
 {
-    public class CreatePhysicianViewModel
+    public class CreateAdminViewModel
     {
         public int PhysicianId { get; set; }
         [Required(ErrorMessage = "Username is required")]
@@ -25,6 +25,7 @@ namespace Services.Models
         [Required(ErrorMessage = "First name is required")]
         [RegularExpression(@"^([A-z][A-Za-z]*\s*[A-Za-z]*)$", ErrorMessage = "Please Enter Valid First Name")]
 
+
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Last Name is required")]
         [RegularExpression(@"^([A-z][A-Za-z]*\s*[A-Za-z]*)$", ErrorMessage = "Please Enter Valid Last Name")]
@@ -37,6 +38,7 @@ namespace Services.Models
         [Required(ErrorMessage = "Phone Number is required")]
         [StringLength(17, MinimumLength = 9, ErrorMessage = "Invalid Phonenumber")]
         [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
+
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Medical Liencense is required")]
@@ -68,25 +70,10 @@ namespace Services.Models
 
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string zip { get; set; }
+
         [StringLength(17, MinimumLength = 9, ErrorMessage = "Invalid Phonenumber")]
         [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
         public string? altphonenumber { get; set; }
-        [Required(ErrorMessage = "Business Name is required")]
-
-        public string BusinessName { get; set; }
-        [Required(ErrorMessage = "please enter your Business Website")]
-
-        public string BusinessWeb { get; set; }
-        [Required(ErrorMessage = "please upload Photo")]
-
-        public IFormFile Photo { get; set; }
-        [Required(ErrorMessage = "Admin Notes is required")]
-
-        public string AdminNotes { get; set; }
-        public IFormFile AggrementDoc { get; set; }
-        public IFormFile BackgoundDoc { get; set; }
-        public IFormFile HipaaDoc { get; set; }
-        public IFormFile DisclosureDoc { get; set; }
 
     }
 }

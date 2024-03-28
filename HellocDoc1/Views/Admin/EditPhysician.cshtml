@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" asp-for="Password" class="form-control account" id="password"
+                        <input type="text" asp-for="Password" class="form-control" id="password"
                                placeholder="password" />
                         <label for="password" class="">Password</label>
                         <span id="passwarn" class="text-danger"></span>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="text-end mt-4">
-                    <button type="button"  id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
+                    <button type="button" id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
                     <button type="button" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyuser">Save Changes</button>
                     <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifyuser">Cancel</button>
                     <button type="button" onclick="resetpass()" id="reset" class="btn border-info text-info h5">Reset Password</button>
@@ -245,27 +245,34 @@
 
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                        <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
-                        <label class="my-auto ms-2" id="fileselect">Select file</label>
-                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                        <input type="file" class="form-control profiledata" id="inputGroupFile04" style="display: none;" multiple disabled>
+                        <label class="my-auto ms-2" id="photoselect">Select Photo</label>
+                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile04">
                             <i class="bi bi-cloud-arrow-up"></i>
-                            <span class="ms-1 mt-0">Upload</span>
+                            <span class="ms-1 mt-0 d-md-block d-none">Upload</span>
                         </label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-4 col-md-10 col-8">
                     <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                        <input type="file" class="form-control" id="inputGroupFile02" style="display: none;" multiple>
-                        <label class="my-auto ms-2" id="fileselect">Select file</label>
-                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                        <input type="file" class="form-control profiledata" id="inputGroupFile05" style="display: none;" multiple disabled>
+                        <label class="my-auto ms-2" id="signselect">Select Signature</label>
+                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile05">
                             <i class="bi bi-cloud-arrow-up"></i>
-                            <span class="ms-1 mt-0">Upload</span>
+                            <span class="ms-1 mt-0 d-md-block d-none">Upload</span>
                         </label>
+                    </div>  
+                </div>
+                <div class="col-lg-1 col-md-2 col-3 ps-0">
+                    <div class="form-floating">
+                        <button type="button" id="create" class="btn bg-info text-white mb-0 border-2 border-info rounded-3  h5"><i class="bi bi-pencil"></i>Create</button>
                     </div>
                 </div>
-                <div class="col-12">
+                <img src="~/uploads/@Model.Photo" style="height:150px;"/>
+
+                <div class="col-12 mt-3">
                     <div class="form-floating mb-3">
                         <textarea asp-for="AdminNotes" class="form-control profiledata" placeholder="admin notes"
                                   id="adminnotes" style="height: 100px" disabled></textarea>
@@ -347,7 +354,7 @@
             url: "/Admin/ResetAccountPass/",
             type: "POST",
             async: false,
-            data: {"PhysicianId": PhysicianId, "password": password },
+            data: { "PhysicianId": PhysicianId, "password": password },
             dataType: "html",
             success: function (data) {
                 console.log("reset password")
@@ -361,13 +368,13 @@
 
     $('.modifyuser').each(function () {
         $(this).css('display', 'none');
-    })  
+    })
     $('.modify').each(function () {
         $(this).css('display', 'none');
     })
     $('.modifybill').each(function () {
         $(this).css('display', 'none');
-    })  
+    })
     $('.modifyprofile').each(function () {
         $(this).css('display', 'none');
     })
@@ -389,7 +396,7 @@
         })
         $('#edit').css('display', 'inline-block')
         $('.user').html('');
-    })  
+    })
     $('#editaccount').on('click', function () {
         $('.physicianinfo').each(function () {
             $(this).prop('disabled', false);
@@ -434,7 +441,7 @@
         $('#editbill').css('display', 'inline-block');
         $('.bill').html('');
 
-    })  
+    })
     $('#editprofile').on('click', function () {
         $('.profiledata').each(function () {
             $(this).prop('disabled', false);
@@ -464,7 +471,7 @@
         });
         console.log(RegionSelected);
         var formdata = {
-            PhysicianId : @Model.PhysicianId,
+            PhysicianId: @Model.PhysicianId,
             firstname: $('#firstname').val(),
             lastname: $('#lastname').val(),
             email: $('#email').val(),
@@ -476,7 +483,7 @@
         }
         console.log(formdata);
         console.log(formdata.RegionSelected);
-        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && (formdata.mediliencense != "") && (formdata.npi != "") && (formdata.synchroemail != "")) {
+        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && (formdata.mediliencense != "") && (formdata.npi != "")) {
 
             $.ajax({
                 url: "/Admin/UpdatePhysicianInfo/",
@@ -514,7 +521,7 @@
     };
     function updatebill() {
         var billdata = {
-            PhysicianId : @Model.PhysicianId,
+            PhysicianId: @Model.PhysicianId,
             address1: $('#address1').val(),
             address2: $('#address2').val(),
             city: $('#city').val(),
@@ -552,24 +559,35 @@
             console.log("denied")
         }
 
-    };  
+    };
     function profiledata() {
         var profileinfo = {
-            PhysicianId : @Model.PhysicianId,
+            PhysicianId: @Model.PhysicianId,
             businessname: $('#businessname').val(),
             businessweb: $('#businesswebsite').val(),
+            Photo: $('#inputGroupFile04')[0].files[0],
+            Signature: $('#inputGroupFile05')[0].files[0],
             adminnotes: $('#adminnotes').val(),
 
         }
         console.log(profileinfo);
+
+        var data = new FormData();
+
+        for (var key in profileinfo) {
+            data.append(key, profileinfo[key]);
+        }
+
+        console.log(data);
         if ((profileinfo.businessname != "") && (profileinfo.businessweb != "") && (profileinfo.adminnotes != "")) {
 
             $.ajax({
                 url: "/Admin/ModifyProfileInfo/",
                 type: "POST",
-                data: profileinfo,
+                data: data,
+                processData: false,
+                contentType: false,
                 async: false,
-                dataType: "html",
                 success: function (data) {
                     console.log("profile info");
 
@@ -633,7 +651,7 @@
         else {
             $('#phonewarning').html("")
         }
-    })  
+    })
     $('#medical').on('input', function () {
         if ($('#medical').val() == "") {
             $('#medicalwarning').html("Please enter medical license")
@@ -641,7 +659,7 @@
         else {
             $('#medicalwarning').html("")
         }
-    })  
+    })
     $('#npi').on('input', function () {
         if ($('#npi').val() == "") {
             $('#npiwarning').html("Please enter npi Number")
@@ -649,7 +667,7 @@
         else {
             $('#npiwarning').html("")
         }
-    })  
+    })
     $('#syncroemail').on('input', function () {
         if ($('#syncroemail').val() == "") {
             $('#syncroemailwarning').html("Please enter syncronization email")
@@ -705,7 +723,7 @@
         else {
             $('#phone1warning').html("")
         }
-    })  
+    })
     $('#businessname').on('input', function () {
         if ($('#businessname').val() == "") {
             $('#businesswarning').html("Please enter businessw name")
@@ -713,7 +731,7 @@
         else {
             $('#businesswarning').html("")
         }
-    })  
+    })
     $('#businesswebsite').on('input', function () {
         if ($('#businesswebsite').val() == "") {
             $('#businesswebwarning').html("Please enter business website")
@@ -721,7 +739,7 @@
         else {
             $('#businesswebwarning').html("")
         }
-    })   
+    })
     $('#adminnotes').on('input', function () {
         if ($('#adminnotes').val() == "") {
             $('#adminwarning').html("Please enter admin notes")
@@ -730,6 +748,44 @@
             $('#adminwarning').html("")
         }
     })
+
+
+    const uploadbtn = document.getElementById('inputGroupFile05');
+    const file = document.getElementById('signselect');
+
+    uploadbtn.addEventListener('change', function () {
+        console.log('hello');
+        if (this.files.length == 1) {
+            file.textContent = this.files[0].name
+        }
+        else {
+            file.textContent = this.files.length + " File Selected"
+        }
+        //file.textContent = this.files[0].name;
+        file.style.fontSize = "large";
+    })
+
+
+    try {
+        const uploadbtn = document.getElementById('inputGroupFile04');
+        const file = document.getElementById('photoselect');
+
+        uploadbtn.addEventListener('change', function () {
+            console.log('hello');
+            if (this.files.length == 1) {
+                file.textContent = this.files[0].name
+                elements.removeAttribute('disabled');
+            }
+            else {
+                file.textContent = this.files.length + " File Selected";
+                elements.removeAttribute('disabled');
+            }
+            //file.textContent = this.files[0].name;
+            file.style.fontSize = "large";
+        })
+    }
+    catch (err) {
+    }
 
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {

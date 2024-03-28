@@ -60,7 +60,7 @@
         <div class="shadow">
 
             <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
-                @if (Context.Request.Path.Equals("/Patient/Patient_Dashboard"))
+                @if (Context.Request.Path.Equals("/Patient/Patient_Dashboard") && (Context.Request.Path.StartsWithSegments("/Patient/Patient_Document")))
                 {
                     <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 dashaboard px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
                 }
@@ -112,11 +112,17 @@
     
     <script src="~/js/custom.js"></script>
     <script>
+        try{
         const phoneInputField = document.querySelector("#phone");
         const phoneInput = window.intlTelInput(phoneInputField, {
             utilsScript:
                 "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
         });
+
+        }
+        catch{
+
+        }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     @* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script> *@

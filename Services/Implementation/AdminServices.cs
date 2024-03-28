@@ -886,9 +886,9 @@ namespace Services.Implementation
             {
                 _context.AdminRegions.Remove(item);
             }
-            AdminRegion adminRegion = new AdminRegion();
             foreach (var item in model.RegionSelected)
             {
+                AdminRegion adminRegion = new AdminRegion();
                 adminRegion.AdminId = admin.AdminId;
                 adminRegion.RegionId = item;
                 await _context.AdminRegions.AddAsync(adminRegion);
@@ -1206,6 +1206,7 @@ namespace Services.Implementation
             List<Role> role = _context.Roles.ToList();
             List<Region> regions = _context.Regions.ToList();
             List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
+
             PhysicianAccountViewModel model = new PhysicianAccountViewModel()
             {
                 PhysicianId = PhysicianId,
@@ -1231,6 +1232,7 @@ namespace Services.Implementation
                 altphonenumber = physician.AltPhone,
                 BusinessName = physician.BusinessName,
                 BusinessWeb = physician.BusinessWebsite,
+                Photo = physician.Photo,
                 AdminNotes = physician.AdminNotes,
             };
 
@@ -1305,6 +1307,29 @@ namespace Services.Implementation
             physician.BusinessWebsite = model.businessweb;
             physician.AdminNotes = model.adminnotes;
             physician.ModifiedDate = DateTime.Now;
+
+            if (model.Photo != null)
+            {
+                var photo = model.Photo.FileName;
+                var uniquephotoName = GetUniqueFileName(photo);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var photoPath = Path.Combine(uploads, uniquephotoName);
+                model.Photo.CopyTo(new FileStream(photoPath, FileMode.Create));
+                physician.Photo = uniquephotoName;
+            }
+
+            if (model.Signature != null)
+            {
+                var sign = model.Signature.FileName;
+                var uniquesignName = GetUniqueFileName(sign);
+                var uploadssign = Path.Combine(_environment.WebRootPath, "uploads");
+                var signPath = Path.Combine(uploadssign, uniquesignName);
+                model.Photo.CopyTo(new FileStream(signPath, FileMode.Create));
+                physician.Signature = uniquesignName;
+            }
+
+
+
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
 
@@ -1448,8 +1473,9 @@ namespace Services.Implementation
                         BusinessWebsite = model.BusinessWeb,
                         Npinumber = model.NPI,
                         Photo = uniqueFileName,
-                        Status= (int)Common.Enum.PhysicianStatus.NotActive,
-                        RoleId=model.role,
+                        RegionId = model.state,
+                        Status = (int)Common.Enum.PhysicianStatus.NotActive,
+                        RoleId = model.role,
                         IsAgreementDoc = new BitArray(new[] { false }),
                         IsBackgroundDoc = new BitArray(new[] { false }),
                         IsNonDisclosureDoc = new BitArray(new[] { false }),
@@ -1471,8 +1497,93 @@ namespace Services.Implementation
                         PhysicianId = physician.PhysicianId,
                         IsNotificationStopped = new BitArray(new[] { false }),
                     };
-
                     _context.PhysicianNotifications.Add(physicianNotification);
+                    await _context.SaveChangesAsync();
+
+                    PhysicianLocation physicianLocation = new PhysicianLocation()
+                    {
+                        PhysicianId = physician.PhysicianId,
+                        PhysicianName = model.FirstName + " " + model.LastName,
+                        Address = model.address1,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.PhysicianLocations.Add(physicianLocation);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
+            }
+
+        }
+
+        public CreateAdminViewModel CreateAdmin()
+        {
+            List<Role> role = _context.Roles.ToList();
+            List<Region> regions = _context.Regions.ToList();
+
+            CreateAdminViewModel model = new CreateAdminViewModel()
+            {
+                Role = role,
+                RegionList = regions,
+            };
+
+            return model;
+        }
+
+        public async Task CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    AspNetUser aspNetUser = new AspNetUser()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        UserName = model.Username,
+                        PasswordHash = model.Password,
+                        Email = model.Email,
+                        PhoneNumber = model.PhoneNumber,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.AspNetUsers.Add(aspNetUser);
+
+                    var role = _context.AspNetRoles.FirstOrDefault(a => a.Name == "Admin");
+                    aspNetUser.Roles.Add(role);
+                    await _context.SaveChangesAsync();
+
+                    Admin admin = new Admin()
+                    {
+                        AspNetUserId = aspNetUser.Id,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.Email,
+                        Mobile = model.PhoneNumber,
+                        Address1 = model.address1,
+                        Address2 = model.address2,
+                        City = model.city,
+                        RegionId = model.state,
+                        Zip = model.zip,
+                        AltPhone = model.altphonenumber,
+                        CreatedBy = aspNetUser.Id,
+                        CreatedDate = DateTime.Now,
+                        Status = (int)Common.Enum.PhysicianStatus.NotActive,
+                        RoleId = model.role,
+                    };
+
+                    _context.Admins.Add(admin);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in regionselected)
+                    {
+                        AdminRegion adminRegion = new AdminRegion();
+                        adminRegion.AdminId = admin.AdminId;
+                        adminRegion.RegionId = item;
+                        _context.AdminRegions.Add(adminRegion);
+                    }
                     await _context.SaveChangesAsync();
 
                     transaction.Commit();

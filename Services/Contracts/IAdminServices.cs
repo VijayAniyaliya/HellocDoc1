@@ -67,5 +67,7 @@ namespace Services.Contracts
         Task CreateRole(CreateAccessViewModel model, string Email);
         CreatePhysicianViewModel CreatePhysician();
         Task CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected);
+        CreateAdminViewModel CreateAdmin();
+        Task CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected);
     }
 }

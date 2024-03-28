@@ -486,7 +486,25 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected)
         {
             await _adminServices.CreatePhysicianAccount(model, regionselected);
-            return RedirectToAction("CreateAccess");
+            return RedirectToAction("Provider");
+        }
+
+        public IActionResult CreateAdmin()
+        {
+            var data = _adminServices.CreateAdmin();
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected)
+        {
+            await _adminServices.CreateAdminAccount(model, regionselected);
+            return RedirectToAction("Access");
+        }
+
+        public IActionResult UserAccess()
+        {
+            return View();
         }
     }
 }
