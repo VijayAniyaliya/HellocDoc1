@@ -35,10 +35,10 @@
                 </span>
             </div>
             <div>
-                <a type="button" class="btn text-info border-1 border-info logout d-none d-md-block">
+                <a type="button" asp-action="Logout" class="btn text-info border-1 border-info logout d-none d-md-block">
                     Logout
                 </a>
-                <a type="button" class="btn text-info border-1 border-info Logout d-block d-md-none">
+                <a type="button" asp-action="Logout" class="btn text-info border-1 border-info Logout d-block d-md-none">
                     <i class="bi bi-box-arrow-left"></i>
                 </a>
             </div>
@@ -88,13 +88,22 @@
                 </ul>
             }
             <a class="text-decoration-none  px-2" style="color:black;">Partners</a>
-            @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")))
+            @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")) || (Context.Request.Path.Equals("/Admin/UserAccess")))
             {
-                <a asp-action="Access" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Access</a>
+                <a asp-action="Access" class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Access</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                    <li><a asp-action="Access" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
+                    <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                </ul>
+
             }
             else
             {
-                <a asp-action="Access" class="text-decoration-none px-2" style="color:black;">Access</a>
+                <a class="text-decoration-none px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor:pointer;">Access</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                    <li><a asp-action="Access" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
+                    <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User ACcess</a></li>
+                </ul>
             }
             <a class="text-decoration-none px-2" style="color:black;">Records</a>
         </div>

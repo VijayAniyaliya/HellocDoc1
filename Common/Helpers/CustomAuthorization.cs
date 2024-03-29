@@ -22,7 +22,7 @@ namespace Common.Helpers
             if (context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any())
                 return;
 
-            //Fetch Request from the Header
+            //Fetch Request from the Header 
             var request = context.HttpContext.Request;
 
             //Fetch tokens
@@ -32,7 +32,7 @@ namespace Common.Helpers
             //Code for Authentication
             if (token == null || !JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Patient", action = "Login" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
                 return;
             }
 

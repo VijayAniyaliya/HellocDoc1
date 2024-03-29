@@ -171,6 +171,8 @@
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
                         <input type="tel" asp-for="altphonenumber" class="form-control pt-3 pb-3" id="phone1">
+                        <span asp-validation-for="altphonenumber" class="text-danger"></span>
+
 
                     </div>
                 </div>
@@ -199,9 +201,9 @@
                 </div>
                 <div class="col-md-6">
                     <div class="input-group mb-3 border d-flex justify-content-between flex-row">
-                        <input type="file" asp-for="Photo" class="form-control" id="inputGroupFile02" style="display: none;">
-                        <label class="my-auto ms-2" id="fileselect">Select file</label>
-                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile02">
+                        <input type="file" asp-for="Photo" class="form-control" id="inputGroupFile04" accept="image/*" style="display: none;">
+                        <label class="my-auto ms-2" id="photoselect">Select Photo</label>
+                        <label class=" bg-info text-white d-flex flex-row mb-0 p-2 border rounded-3" for="inputGroupFile04">
                             <i class="bi bi-cloud-arrow-up"></i>
                             <span class="ms-1 mt-0">Upload</span>
                         </label>
@@ -227,39 +229,39 @@
             <hr />
             <div class="h5">Onboarding</div>
             <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4"/>
+                <input type="checkbox" id="checkagree" class="checks mr-4" disabled />
                 <span class="" style="width:60%;">Independent Contractor Agreement</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" asp-for="AggrementDoc" class="selectfile"/>
+                    <input type="file" id="AggrementDoc" asp-for="AggrementDoc" class="selectfile" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
+                <input type="checkbox" id="checkback" class="checks mr-4" disabled />
                 <span class="" style="width:60%;">Background Check</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" asp-for="BackgoundDoc" class="selectfile" />
+                    <input type="file" id="BackgoundDoc" asp-for="BackgoundDoc" class="selectfile" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
+                <input type="checkbox" id="checkhipaa" class="checks mr-4" disabled />
                 <span class="" style="width:60%;">HIPAA Compliance</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" asp-for="HipaaDoc" class="selectfile" />
+                    <input type="file" id="HipaaDoc" asp-for="HipaaDoc" class="selectfile" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input  type="checkbox" class="checks mr-4" />
+                <input type="checkbox" id="checkdisclosure" class="checks mr-4" disabled />
                 <span class="" style="width:60%;">Non-disclosure Agreement</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" asp-for="DisclosureDoc" class="selectfile" />
+                    <input type="file" id="DisclosureDoc" asp-for="DisclosureDoc" class="selectfile" />
                 </div>
             </div>
             <hr />
@@ -278,9 +280,53 @@
 <br />
 <br />
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 
 <script>
+    $('#AggrementDoc').on('change', function () {
+        if ($('#AggrementDoc')[0].files.length > 0) {
+            $('#checkagree').prop('checked', true);
+        }
+
+    })
+    $('#BackgoundDoc').on('change', function () {
+        if ($('#BackgoundDoc')[0].files.length > 0) {
+            $('#checkback').prop('checked', true);
+
+        }
+
+    })
+    $('#HipaaDoc').on('change', function () {
+        if ($('#HipaaDoc')[0].files.length > 0) {
+            $('#checkhipaa').prop('checked', true);
+
+        }
+
+    })
+    $('#DisclosureDoc').on('change', function () {
+        if ($('#DisclosureDoc')[0].files.length > 0) {
+            $('#checkdisclosure').prop('checked', true);
+
+        }
+
+    })
+
+    const uploadbtn = document.getElementById('inputGroupFile04');
+    const file = document.getElementById('photoselect');
+
+    uploadbtn.addEventListener('change', function () {
+        console.log('hello');
+        if (this.files.length == 1) {
+            file.textContent = this.files[0].name
+        }
+        else {
+            file.textContent = this.files.length + " File Selected";
+        }
+        //file.textContent = this.files[0].name;
+        file.style.fontSize = "large";
+    })
+
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
         utilsScript:

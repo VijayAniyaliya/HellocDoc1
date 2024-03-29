@@ -48,6 +48,7 @@ namespace Services.Models
         public string BusinessWeb { get; set; }
 
         public string Photo { get; set; }
+        public string Sign { get; set; }
 
         public string AdminNotes { get; set; }
 
@@ -55,8 +56,9 @@ namespace Services.Models
 
     public class AccountData
     {
+        public int PhysicianId { get; set; }
         public string Username { get; set; }
-        public int StatusCode { get; set; }
+        public int status { get; set; }
         public int Role { get; set; }
 
     }
@@ -101,4 +103,17 @@ namespace Services.Models
         public IFormFile Signature { get; set; }
         public string adminnotes { get; set; }
     }
+
+    public class DocumentDataModel
+    {
+        public int PhysicianId { get; set; }
+
+        public IFormFile AggrementDoc { get; set; }
+        public IFormFile BackgoundDoc { get; set; }
+        public IFormFile HipaaDoc { get; set; }
+        public IFormFile DisclosureDoc { get; set; }
+        public IFormFile LicenseDoc { get; set; }
+
+    }
+
 }

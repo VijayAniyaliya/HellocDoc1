@@ -2,7 +2,7 @@
 @model Services.Models.ProviderViewModel
 
 
-<table class="table  d-md-block d-none">
+<table class="table  d-md-table d-none">
     <thead>
         <tr class="table-secondary">
             <th scope="col" style="width:15%;">Stop Notification</th>
@@ -10,7 +10,7 @@
             <th scope="col">Role</th>
             <th scope="col">On Call Status</th>
             <th scope="col">Status</th>
-            <th scope="col">Actions</th>
+            <th class="text-center" scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -29,7 +29,7 @@
                 <td>@item.role</td>
                 <td>@Enum.Parse( typeof(Common.Enum.PhysicianOnCallStatus), item.Status.ToString())</td>
                 <td>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.Status.ToString())</td>
-                <td>
+                <td class="text-center">
                     <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
                     <a type="button" asp-action="EditPhysician" asp-route-PhysicianId="@item.physicianId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
                 </td>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pb-2">
                     <button type="button" onclick="provider(@item.physicianId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Contact</button>
-                    <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
+                    <a type="button" asp-action="EditPhysician" asp-route-PhysicianId="@item.physicianId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
                 </div>
             </div>
         }

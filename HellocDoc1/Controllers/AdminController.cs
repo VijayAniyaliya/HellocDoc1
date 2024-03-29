@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using NPOI.XSSF.UserModel;
 using System.Drawing;
+using System.Security.Claims;
 
 namespace HellocDoc1.Controllers
 {
@@ -283,6 +284,7 @@ namespace HellocDoc1.Controllers
                 if (result.Status == ResponseStatus.Success)
                 {
                     Response.Cookies.Append("jwt", result.Token);
+
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
                     return RedirectToAction("AdminDashboard", "Admin");
@@ -298,10 +300,16 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt"); 
+            return RedirectToAction("AdminLogin");
+        }
+
         public IActionResult AdminProfile()
         {
-            //var email = User.FindFirstValue(ClaimTypes.Email);
-            var email = HttpContext.Session.GetString("Email");
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            //var email = HttpContext.Session.GetString("Email");
             var data = _adminServices.ProfileData(email);
             return View(data);
         }
@@ -312,6 +320,8 @@ namespace HellocDoc1.Controllers
             await _adminServices.ResetPassword(email, password);
             return NoContent();
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateAdminstrator(ProfileData model)
@@ -431,6 +441,12 @@ namespace HellocDoc1.Controllers
             return NoContent();
         }
 
+        public async Task<IActionResult> UpdateUserInfo(AccountData model)
+        {
+            await _adminServices.UpdateUserInfo(model);
+            return NoContent();
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdatePhysicianInfo(UpdatePhycisianInfo model)
         {
@@ -449,6 +465,18 @@ namespace HellocDoc1.Controllers
         {
             await _adminServices.ModifyProfileInfo(model);
             return NoContent();
+        }
+
+        public async Task<IActionResult> ModifyDocInfo(DocumentDataModel model)
+        {
+            await _adminServices.ModifyDocInfo(model);
+            return Json("");
+        }
+
+        public async Task<IActionResult> DeleteAccount(int PhysicianId)
+        {
+            await _adminServices.DeleteAccount(PhysicianId);
+            return Ok();
         }
 
         public IActionResult Access()
@@ -503,6 +531,10 @@ namespace HellocDoc1.Controllers
         }
 
         public IActionResult UserAccess()
+        {
+            return View();
+        }    
+        public IActionResult Schedulling()
         {
             return View();
         }

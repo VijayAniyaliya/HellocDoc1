@@ -32,7 +32,4 @@ namespace Services.Models
         public List<Menu> Menu { get; set; }
     }  
     
-    public class FilterByAccountViewModel
-    {
-    }
 }

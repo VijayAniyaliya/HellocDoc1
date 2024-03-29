@@ -12,47 +12,14 @@
     </div>
     <div class=" pt-4 shadow Document-content mt-3" style="">
         <div class="pr-3 mb-4 ps-3">
-                <select class="form-select select-region" id="region" style="width:300px;">
+                <select class="form-select select-region" id="accounttype" style="width:300px;">
                     <option selected>All Regions</option>
                         <option value="RegionId">Name</option>
                     }
                 </select>
         </div>
-        <div class="table-responsive mt-2 d-md-block d-none">
-            <table class="table">
-                <thead>
-                    <tr class="table-secondary">
-                        <th scope="col" >Account Type</th>
-                        <th scope="col" >Account POC</th>
-                        <th scope="col" >Phone</th>
-                        <th scope="col" >Status</th>
-                        <th scope="col" >Open Requests</th>
-                        <th class="text-center" scope="col" >Actions</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                            <td>Name</td>
-                            <td>AccountType</td>
-                            <td>AccountType</td>
-                            <td>AccountType</td>
-                            <td>AccountType</td>
-                            <td class="text-lg-center">
-                                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-                            </td>
-                        </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="d-md-none d-block">
-            <hr />
-            <div class="mb-2 px-3">Name:</div>
-            <div class="mb-2 px-3">Account Type:</div>
-            <div class="px-3">
-                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-            </div>
-            <hr />
+        <div class="table-responsive mt-2" id="tableContent">
         </div>
         <br />
         <br />
@@ -61,3 +28,44 @@
 
 <br />
 <br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    // var accounttype = 0;
+
+    // $('#accounttype').on('change', function () {
+    //     accounttype = $(this).val();
+    //     accounttype();
+    // })
+    // $(document).ready(function () {
+    //     $.ajax({
+    //         url: "/Admin/AccounttypeMenu",
+    //         type: "POST",
+    //         data: { "region": region },
+    //         dataType: "html",
+    //         success: function (data) {
+    //             $("#tableContent").html(data);
+    //         },
+    //         error: function (error) {
+    //             console.log(error)
+    //         }
+    //     });
+    // });
+    // function accounttype() {
+    //     $.ajax({
+    //         url: "/Admin/AccounttypeMenu",
+    //         type: "POST",
+    //         data: { "accounttype": accounttype },
+    //         dataType: "html",
+    //         success: function (data) {
+    //             $("#tableContent").html(data);
+    //         },
+    //         error: function (error) {
+    //             console.log(error)
+    //         }
+    //     });
+    // }
+
+
+</script>

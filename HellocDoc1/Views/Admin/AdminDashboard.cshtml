@@ -232,23 +232,29 @@
     // });
 
     var filterdata = {
-        status:1,
-        url:"",
+        status: 1,
+        url: "",
         patientname: "",
-        requesttype : 5,
+        requesttype: 5,
         requestedPage: 1,
-        region : 0,
+        region: 0,
     }
 
     function AjaxAll() {
         $.ajax({
             url: filterdata.url,
             type: "POST",
-            data:  filterdata ,
+            data: filterdata,
             dataType: "html",
             success: function (data) {
-                $("#tableContent").html(data);
-                $("#status").html("(New)");
+                let isLogin = data.includes("Login");
+                if (isLogin) {
+                    window.location.reload();
+                }
+                else {
+                    $("#tableContent").html(data);
+                    $("#status").html("(New)");
+                }
 
             },
             error: function (error) {
@@ -288,7 +294,7 @@
     }
 
     function searchpatient() {
-            filterdata.patientname = $("#searchpatient")[0].value;
+        filterdata.patientname = $("#searchpatient")[0].value;
         filterdata.requestedPage = 1;
         AjaxAll();
     }
@@ -304,12 +310,19 @@
         $.ajax({
             url: "/Admin/NewState",
             type: "POST",
-            data:  filterdata ,
+            data: filterdata,
             dataType: "html",
             success: function (data) {
-                $("#tableContent").html(data);
-                $("#status").html("(New)");
-                 filterdata.url = "/Admin/NewState";
+                let isLogin = data.includes("Login");
+                if (isLogin) {
+                    window.location.reload();
+                }
+                else {
+                    $("#tableContent").html(data);
+                    $("#status").html("(New)");
+                    filterdata.url = "/Admin/NewState";
+
+                }
             },
             error: function (error) {
                 console.log(error)
@@ -322,9 +335,13 @@
             $.ajax({
                 url: "/Admin/NewState",
                 type: "POST",
-                data:  filterdata ,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
                     $("#tableContent").html(data);
                     $("#status").html("(New)");
                     filterdata.url = "/Admin/NewState";
@@ -340,12 +357,19 @@
             $.ajax({
                 url: "/Admin/PendingState",
                 type: "POST",
-                data:  filterdata,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
-                    $("#tableContent").html(data);
-                    $("#status").html("(Pending)");
-                    filterdata.url = "/Admin/PendingState";
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Pending)");
+                        filterdata.url = "/Admin/PendingState";
+
+                    }
 
                 },
                 error: function () {
@@ -359,12 +383,19 @@
             $.ajax({
                 url: "/Admin/ActiveState",
                 type: "POST",
-                data:  filterdata ,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
-                    $("#tableContent").html(data);
-                    $("#status").html("(Active)");
-                    filterdata.url = "/Admin/ActiveState";
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Active)");
+                        filterdata.url = "/Admin/ActiveState";
+
+                    }
 
                 },
                 error: function () {
@@ -378,12 +409,19 @@
             $.ajax({
                 url: "/Admin/ConcludeState",
                 type: "POST",
-                data:  filterdata ,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
-                    $("#tableContent").html(data);
-                    $("#status").html("(Conclude)");
-                    filterdata.url = "/Admin/ConcludeState";
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Conclude)");
+                        filterdata.url = "/Admin/ConcludeState";
+
+                    }
 
                 },
                 error: function () {
@@ -397,13 +435,19 @@
             $.ajax({
                 url: "/Admin/ToCloseState",
                 type: "POST",
-                data:  filterdata ,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
-                    $("#tableContent").html(data);
-                    $("#status").html("(Close)");
-                    filterdata.url = "/Admin/ToCloseState";
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Close)");
+                        filterdata.url = "/Admin/ToCloseState";
 
+                    }
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -416,13 +460,18 @@
             $.ajax({
                 url: "/Admin/UnpaidState",
                 type: "POST",
-                data:  filterdata ,
+                data: filterdata,
                 dataType: "html",
                 success: function (data) {
-                    $("#tableContent").html(data);
-                    $("#status").html("(Unpaid)");
-                    filterdata.url = "/Admin/UnpaidState";
-
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Unpaid)");
+                        filterdata.url = "/Admin/UnpaidState";
+                    }
                 },
                 error: function () {
                     alert("No Projects Found");
@@ -451,7 +500,7 @@
 
     $('#exportbtn').click(function () {
         if (typeof (filterdata.patientname == "undefined")) {
-           filterdata.patientname = ""
+            filterdata.patientname = ""
         }
         var link = document.createElement('a');
         link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status

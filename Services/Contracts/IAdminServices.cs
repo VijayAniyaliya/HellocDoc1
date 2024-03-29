@@ -69,5 +69,8 @@ namespace Services.Contracts
         Task CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected);
         CreateAdminViewModel CreateAdmin();
         Task CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected);
+        Task ModifyDocInfo(DocumentDataModel model);
+        Task DeleteAccount(int PhysicianId);
+        Task UpdateUserInfo(AccountData model);
     }
 }

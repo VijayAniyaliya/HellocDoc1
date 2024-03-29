@@ -1044,6 +1044,7 @@ namespace Services.Implementation
         public ProviderViewModel PhysicianData(int region)
         {
             List<Physician> data = _context.Physicians.Include(x => x.Role).ToList();
+            data = data.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
             List<PhysicianData> obj = data.Select(a => new PhysicianData()
             {
@@ -1210,7 +1211,7 @@ namespace Services.Implementation
             PhysicianAccountViewModel model = new PhysicianAccountViewModel()
             {
                 PhysicianId = PhysicianId,
-                Username = physician.FirstName + " " + physician.LastName,
+                Username = aspNetUser.UserName,
                 Password = aspNetUser.PasswordHash,
                 rolename = physician.Role.Name,
                 StatusCode = (int)physician.Status,
@@ -1233,6 +1234,7 @@ namespace Services.Implementation
                 BusinessName = physician.BusinessName,
                 BusinessWeb = physician.BusinessWebsite,
                 Photo = physician.Photo,
+                Sign = physician.Signature,
                 AdminNotes = physician.AdminNotes,
             };
 
@@ -1248,6 +1250,30 @@ namespace Services.Implementation
 
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUserInfo(AccountData model)
+        {
+            Physician? physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            AspNetUser? aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician!.AspNetUserId).FirstOrDefault();
+
+            aspNetUser!.UserName = model.Username;
+            aspNetUser.ModifiedDate = DateTime.Now;
+            if (model.status != 0)  
+            {
+                physician!.Status = (short)model.status;
+            }
+            if (model.Role != 0)
+            {
+                physician.RoleId = model.Role;
+            }
+            physician.ModifiedDate = DateTime.Now;
+
+            _context.Physicians.Update(physician);
+            _context.AspNetUsers.Update(aspNetUser);
+            await _context.SaveChangesAsync();
+
+
         }
 
         public async Task UpdatePhysicianInfo(UpdatePhycisianInfo model)
@@ -1324,7 +1350,7 @@ namespace Services.Implementation
                 var uniquesignName = GetUniqueFileName(sign);
                 var uploadssign = Path.Combine(_environment.WebRootPath, "uploads");
                 var signPath = Path.Combine(uploadssign, uniquesignName);
-                model.Photo.CopyTo(new FileStream(signPath, FileMode.Create));
+                model.Signature.CopyTo(new FileStream(signPath, FileMode.Create));
                 physician.Signature = uniquesignName;
             }
 
@@ -1333,6 +1359,61 @@ namespace Services.Implementation
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
 
+        }
+
+        public async Task ModifyDocInfo(DocumentDataModel model)
+        {
+            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+
+            if (model.AggrementDoc != null)
+            {
+                var uniquefileName = model.PhysicianId + "_" + "Agreement";
+                IFormFile item = model.AggrementDoc;
+                NewMethod(item, uniquefileName);
+                physician.IsAgreementDoc = new BitArray(new[] { true });
+            }
+            if (model.BackgoundDoc != null)
+            {
+                var uniquefileName = model.PhysicianId + "_" + "BackgroundDoc";
+                IFormFile item = model.BackgoundDoc;
+                NewMethod(item, uniquefileName);
+                physician.IsBackgroundDoc = new BitArray(new[] { true });
+            }
+            if (model.DisclosureDoc != null)
+            {
+                var uniquefileName = model.PhysicianId + "_" + "Disclosure";
+                IFormFile item = model.DisclosureDoc;
+                NewMethod(item, uniquefileName);
+                physician.IsNonDisclosureDoc = new BitArray(new[] { true });
+            }
+            if (model.LicenseDoc != null)
+            {
+                var uniquefileName = model.PhysicianId + "_" + "License";
+                IFormFile item = model.LicenseDoc;
+                NewMethod(item, uniquefileName);
+                physician.IsLicenseDoc = new BitArray(new[] { true });
+            }
+
+
+
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
+
+        }
+
+        private void NewMethod(IFormFile item, string uniquefileName)
+        {
+            string extension = Path.GetExtension(item.FileName);            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+            var photoPath = Path.Combine(uploads, uniquefileName + extension);
+            item.CopyTo(new FileStream(photoPath, FileMode.Create));
+        }
+
+        public async Task DeleteAccount(int PhysicianId)
+        {
+            Physician? physician = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            physician!.IsDeleted = new BitArray(new[] { true });
+            _context.Physicians.Update(physician);
+            await _context.SaveChangesAsync();
 
         }
 
@@ -1480,6 +1561,29 @@ namespace Services.Implementation
                         IsBackgroundDoc = new BitArray(new[] { false }),
                         IsNonDisclosureDoc = new BitArray(new[] { false }),
                     };
+
+                    if (model.AggrementDoc != null)
+                    {
+                        var uniquefileName = physician.PhysicianId + "_" + "Agreement";
+                        IFormFile item = model.AggrementDoc;
+                        DocumentMethod(item, uniquefileName);
+                        physician.IsAgreementDoc = new BitArray(new[] { true });
+                    }
+                    if (model.BackgoundDoc != null)
+                    {
+                        var uniquefileName = physician.PhysicianId + "_" + "BackgroundDoc";
+                        IFormFile item = model.BackgoundDoc;
+                        DocumentMethod(item, uniquefileName);
+                        physician.IsBackgroundDoc = new BitArray(new[] { true });
+                    }
+                    if (model.DisclosureDoc != null)
+                    {
+                        var uniquefileName = physician.PhysicianId + "_" + "Disclosure";
+                        IFormFile item = model.DisclosureDoc;
+                        DocumentMethod(item, uniquefileName);
+                        physician.IsNonDisclosureDoc = new BitArray(new[] { true });
+                    }
+
                     _context.Physicians.Add(physician);
                     await _context.SaveChangesAsync();
 
@@ -1500,15 +1604,15 @@ namespace Services.Implementation
                     _context.PhysicianNotifications.Add(physicianNotification);
                     await _context.SaveChangesAsync();
 
-                    PhysicianLocation physicianLocation = new PhysicianLocation()
-                    {
-                        PhysicianId = physician.PhysicianId,
-                        PhysicianName = model.FirstName + " " + model.LastName,
-                        Address = model.address1,
-                        CreatedDate = DateTime.Now,
-                    };
-                    _context.PhysicianLocations.Add(physicianLocation);
-                    await _context.SaveChangesAsync();
+                    //PhysicianLocation physicianLocation = new PhysicianLocation()
+                    //{
+                    //    PhysicianId = physician.PhysicianId,
+                    //    PhysicianName = model.FirstName + " " + model.LastName,
+                    //    Address = model.address1,
+                    //    CreatedDate = DateTime.Now,
+                    //};
+                    //_context.PhysicianLocations.Add(physicianLocation);
+                    //await _context.SaveChangesAsync();
 
                     transaction.Commit();
                 }
@@ -1518,6 +1622,12 @@ namespace Services.Implementation
                 }
             }
 
+        }
+
+        private void DocumentMethod(IFormFile item, string uniquefileName)
+        {            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+            var photoPath = Path.Combine(uploads, uniquefileName);
+            item.CopyTo(new FileStream(photoPath, FileMode.Create));
         }
 
         public CreateAdminViewModel CreateAdmin()
