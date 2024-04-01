@@ -7,7 +7,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
-        <h4>Edit Physician Account</h4>
+        <h4>Create Physician Account</h4>
         <a asp-area="" asp-action="Provider" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
             &lt;  Back
         </a>
@@ -234,7 +234,7 @@
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" id="AggrementDoc" asp-for="AggrementDoc" class="selectfile" />
+                    <input type="file" id="AggrementDoc" asp-for="AggrementDoc" class="selectfile" accept=".pdf,.png" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
@@ -243,7 +243,7 @@
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" id="BackgoundDoc" asp-for="BackgoundDoc" class="selectfile" />
+                    <input type="file" id="BackgoundDoc" asp-for="BackgoundDoc" class="selectfile" accept=".pdf,.png" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
@@ -252,11 +252,11 @@
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>
                     Upload
-                    <input type="file" id="HipaaDoc" asp-for="HipaaDoc" class="selectfile" />
+                    <input type="file" id="HipaaDoc" asp-for="HipaaDoc" class="selectfile" accept=".pdf,.png" />
                 </div>
             </div>
             <div class="d-flex align-items-center mb-3">
-                <input type="checkbox" id="checkdisclosure" class="checks mr-4" disabled />
+                <input type="checkbox" id="checkdisclosure" class="checks mr-4" disabled accept=".pdf,.png" />
                 <span class="" style="width:60%;">Non-disclosure Agreement</span>
                 <div class="file btn btn-info">
                     <i class="bi bi-cloud-arrow-up"></i>

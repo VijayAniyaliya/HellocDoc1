@@ -40,14 +40,14 @@
                     <div class="form-floating">
                         <select class="form-select account mb-3" id="status" aria-label="Floating label select example" disabled>
                             <option selected>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
-                            @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))         
+                            @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))
                             {
                                 <option value="@i">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
                             }
 
                         </select>
                         <label for="status">Status</label>
-                        
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -309,9 +309,13 @@
             <div class="file btn btn-info mr-3">
                 <i class="bi bi-cloud-arrow-up"></i>
                 Upload
-                <input type="file" id="AggrementDoc" class="selectfile" />
+                <input type="file" id="AggrementDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</button>
+            @if(Model.AggrementDoc == true) 
+            {   
+                var fileName = @Model.PhysicianId + "_Aggrement";
+                <a href="~/uploads/MVC (1)_5bd7d7.pdf" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
+            }
         </div>
         <div class="d-flex align-items-center mb-3">
             <input type="checkbox" id="checkback" class="checks mr-4" disabled />
@@ -319,9 +323,13 @@
             <div class="file btn btn-info mr-3">
                 <i class="bi bi-cloud-arrow-up"></i>
                 Upload
-                <input type="file" id="BackgoundDoc" class="selectfile" />
+                <input type="file" id="BackgoundDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
+            @if (Model.AggrementDoc == true)
+            {
+                <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
+            }
+
         </div>
         <div class="d-flex align-items-center mb-3">
             <input type="checkbox" id="checkhipaa" class="checks mr-4" disabled />
@@ -329,7 +337,7 @@
             <div class="file btn btn-info mr-3">
                 <i class="bi bi-cloud-arrow-up"></i>
                 Upload
-                <input type="file" id="HipaaDoc" class="selectfile" />
+                <input type="file" id="HipaaDoc" class="selectfile" accept=".pdf,.png" />
             </div>
             <button type="button" id="viewhipaa" class="btn bg-info text-white h5 mb-0 view">View</button>
         </div>
@@ -339,9 +347,12 @@
             <div class="file btn btn-info mr-3">
                 <i class="bi bi-cloud-arrow-up"></i>
                 Upload
-                <input type="file" id="DisclosureDoc" class="selectfile" />
+                <input type="file" id="DisclosureDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewdisclosure" class="btn bg-info text-white h5 mb-0 view">View</button>
+            @if (Model.AggrementDoc == true)
+            {
+                <button type="button" id="viewdisclosure" class="btn bg-info text-white h5 mb-0 view">View</button>
+            }
         </div>
         <div class="d-flex align-items-center">
             <input type="checkbox" id="checklicense" class="checks mr-4" disabled />
@@ -349,9 +360,12 @@
             <div class="file btn btn-info mr-3">
                 <i class="bi bi-cloud-arrow-up"></i>
                 Upload
-                <input type="file" id="LicenseDoc" class="selectfile" />
+                <input type="file" id="LicenseDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewlicense" class="btn bg-info text-white h5 mb-0 view">View</button>
+            @if (Model.AggrementDoc == true)
+            {
+                <button type="button" id="viewlicense" class="btn bg-info text-white h5 mb-0 view">View</button>
+            }
         </div>
         <hr />
         <div class="text-end">
@@ -426,7 +440,7 @@
                     console.log(error);
                 }
             });
-                    $('.user').html('');
+            $('.user').html('');
 
         }
         else {
@@ -573,7 +587,7 @@
                     $('.physicianinfo').each(function () {
                         $(this).prop('disabled', true);
                     })
-                    window.location.reload();
+                    // window.location.reload();
                 },
                 error: function (error) {
                     alert("No Projects Found");
@@ -679,9 +693,6 @@
 
     };
 
-    $('.view').each(function () {
-        $(this).css('display', 'none');
-    })
 
     $('#AggrementDoc').on('change', function () {
         if ($('#AggrementDoc')[0].files.length > 0) {
@@ -786,13 +797,13 @@
         else {
             $('#passwarn').html("")
         }
-    })  
+    })
     $('#username').on('input', function () {
         if ($('#username').val() == "") {
             $('#userwarn').html("Please enter username")
         }
         else {
-            $('#userwarn').html("")     
+            $('#userwarn').html("")
         }
     })
     $('#firstname').on('input', function () {

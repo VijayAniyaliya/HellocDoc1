@@ -278,7 +278,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> AcceptAgreement(int request_id)
         {
             await patientServices.AcceptAgreement(request_id);
-            return RedirectToAction("AdminDashboard");
+            return NoContent();
         }
 
         public async Task<IActionResult> CancelAgreement(int request_id, string reason)

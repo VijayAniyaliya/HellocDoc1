@@ -262,7 +262,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> SubmitEncounterForm(EncounterFormViewModel model, int request_id)
         {
             await _adminServices.SubmitEncounterForm(model, request_id);
-            return View();
+            return NoContent();
         }
 
         [HttpGet]
@@ -489,7 +489,14 @@ namespace HellocDoc1.Controllers
             var data = _adminServices.CreateAccess();
             return View(data);
         }
-            
+
+        public async Task<IActionResult> DeleteRole(int RoleId)
+        {
+            await _adminServices.DeleteRole(RoleId);
+            return NoContent();
+        }
+
+
         public IActionResult FilterByAccountType(int accounttype)
         {
             var data = _adminServices.FilterByAccountType(accounttype);
@@ -533,10 +540,26 @@ namespace HellocDoc1.Controllers
         public IActionResult UserAccess()
         {
             return View();
-        }    
+        }
         public IActionResult Schedulling()
         {
-            return View();
+            var data = _adminServices.Schedulling();
+            return View(data);
+        }
+
+        public IActionResult SchedullingData(int region)
+        {
+            var data = _adminServices.SchedullingData(region);
+            return PartialView("_SchedullingData", data);
+        }    
+        public IActionResult WeekSchedullingData(int region)
+        {
+            var data = _adminServices.SchedullingData(region);
+            return PartialView("_WeekWiseSchedulling", data);
+        }    
+        public IActionResult MonthSchedullingData(int region)
+        {
+            return PartialView("_MonthWiseSchedulling");
         }
     }
 }

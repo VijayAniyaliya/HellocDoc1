@@ -72,5 +72,8 @@ namespace Services.Contracts
         Task ModifyDocInfo(DocumentDataModel model);
         Task DeleteAccount(int PhysicianId);
         Task UpdateUserInfo(AccountData model);
+        SchedullingViewModel Schedulling();
+        SchedullingViewModel SchedullingData(int region);
+        Task DeleteRole(int RoleId);
     }
 }

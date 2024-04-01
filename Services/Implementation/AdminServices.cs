@@ -1083,7 +1083,7 @@ namespace Services.Implementation
             PhysicianNotification physicianNotification = new PhysicianNotification();
 
             if (notification == null)
-            {
+            {   
                 physicianNotification.PhysicianId = PhysicianId;
                 physicianNotification.IsNotificationStopped = (new BitArray(new[] { true }));
                 _context.PhysicianNotifications.Add(physicianNotification);
@@ -1202,7 +1202,7 @@ namespace Services.Implementation
 
         public PhysicianAccountViewModel EditPhysician(int PhysicianId)
         {
-            Physician physician = _context.Physicians.Include(x => x.Role).FirstOrDefault(a => a.PhysicianId == PhysicianId);
+            Physician? physician = _context.Physicians.Include(x => x.Role).FirstOrDefault(a => a.PhysicianId == PhysicianId);
             AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
             List<Role> role = _context.Roles.ToList();
             List<Region> regions = _context.Regions.ToList();
@@ -1237,6 +1237,23 @@ namespace Services.Implementation
                 Sign = physician.Signature,
                 AdminNotes = physician.AdminNotes,
             };
+
+            if(physician?.IsAgreementDoc?[0] == true)
+            {
+                model.AggrementDoc = true;
+            }      
+            if(physician?.IsBackgroundDoc?[0] == true)
+            {
+                model.BackgoundDoc = true;
+            }      
+            if(physician?.IsNonDisclosureDoc?[0] == true)
+            {
+                model.DisclosureDoc = true;
+            }      
+            if(physician?.IsLicenseDoc?[0] == true)
+            {
+                model.LicenseDoc = true;
+            }
 
             return model;
         }
@@ -1420,6 +1437,7 @@ namespace Services.Implementation
         public AccessViewModel Access()
         {
             List<Role> roles = _context.Roles.ToList();
+            roles = roles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<RoleData> roleData = roles.Select(a => new RoleData() { RoleId = a.RoleId, Name = a.Name, AccountType = a.AccountType }).ToList();
 
             AccessViewModel accessViewModel = new AccessViewModel()
@@ -1439,6 +1457,15 @@ namespace Services.Implementation
                 menus = menu,
             };
             return model;
+
+        }
+
+        public async Task DeleteRole(int RoleId)
+        {
+            Role? role = _context.Roles.Where(a => a.RoleId == RoleId).FirstOrDefault();
+            role.IsDeleted = new BitArray(new[] { true });
+            _context.Roles.Update(role);
+            await _context.SaveChangesAsync();
 
         }
 
@@ -1704,6 +1731,30 @@ namespace Services.Implementation
                 }
             }
 
+        }
+
+        public SchedullingViewModel Schedulling()
+        {
+            List<Region> region = _context.Regions.ToList();
+
+            SchedullingViewModel model = new SchedullingViewModel()
+            {
+                RegionList = region,
+            };
+            return model;
+        }
+
+        public SchedullingViewModel SchedullingData(int region)
+        {
+            List<Physician> physician = _context.Physicians.ToList();
+
+            SchedullingViewModel model = new SchedullingViewModel();
+            if (region != 0)
+            {
+                physician = physician.Where(x => x.RegionId == region).ToList();
+            }
+            model.physicians = physician;
+            return model;
         }
     }
 }

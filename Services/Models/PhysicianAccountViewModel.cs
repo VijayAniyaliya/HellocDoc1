@@ -1,6 +1,7 @@
 ﻿using Data.Entity;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -51,6 +52,11 @@ namespace Services.Models
         public string Sign { get; set; }
 
         public string AdminNotes { get; set; }
+
+        public bool? AggrementDoc { get; set; }
+        public bool? BackgoundDoc { get; set; }
+        public bool? DisclosureDoc { get; set; }
+        public bool? LicenseDoc { get; set; }
 
     }
 

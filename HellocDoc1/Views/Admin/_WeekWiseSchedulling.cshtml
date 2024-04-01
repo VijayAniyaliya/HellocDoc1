@@ -1,0 +1,46 @@
+﻿@model Services.Models.SchedullingViewModel
+
+
+
+<table class="table table-bordered">
+    <thead class="text-white" style="background: #504a4a;">
+        <tr>
+            <th class="" style="">STAFF</th>
+            <th class="text-center">SUN3</th>
+            <th class="text-center">MUN4</th>
+            <th class="text-center">TUE5</th>
+            <th class="text-center">WED6</th>
+            <th class="text-center">THU7</th>
+            <th class="text-center">FRI8</th>
+            <th class="text-center">SAT9</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td scope="row">Coverage</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        @foreach (var item in Model.physicians)
+        {
+
+            <tr>
+                <td><div><img src="~/uploads/@item.Photo" style="    height: 25px; width: 25px;" class="mr-1" />@item.FirstName</div></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+
+
+    </tbody>
+</table>
