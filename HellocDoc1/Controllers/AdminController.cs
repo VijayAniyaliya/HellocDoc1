@@ -1,18 +1,10 @@
-﻿using Data.Entity;
-using HellocDoc1.Services.Models;
-using HellocDoc1.Services;
+﻿using Common.Enum;
+using Common.Helpers;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Models;
-using Common.Enum;
-using HelloDoc1.Services;
-using Common.Helpers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNet.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using NPOI.XSSF.UserModel;
-using System.Drawing;
 using System.Security.Claims;
 
 namespace HellocDoc1.Controllers
@@ -36,16 +28,14 @@ namespace HellocDoc1.Controllers
             model = _adminServices.AdminDashboard();
             return View(model);
         }
-
-
         public IActionResult NewState(AdminDashboardViewModel obj)
-       {
+        {
             AdminDashboardViewModel model = _adminServices.NewState(obj);
             return View(model);
         }
         public IActionResult PendingState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model=_adminServices.PendingState(obj);
+            AdminDashboardViewModel model = _adminServices.PendingState(obj);
             return View(model);
         }
         public IActionResult ActiveState(AdminDashboardViewModel obj)
@@ -98,7 +88,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> CancelCase(int request_id, int caseId, string cancelNote)
         {
-            await _adminServices.CancelCase(request_id, caseId,  cancelNote);
+            await _adminServices.CancelCase(request_id, caseId, cancelNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -162,12 +152,11 @@ namespace HellocDoc1.Controllers
         {
             _adminServices.SendMail(DocumentId);
             return RedirectToAction("AdminDashboard");
-            //return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
 
         public IActionResult SendOrders(int request_id)
         {
-            var data=_adminServices.SendOders(request_id);
+            var data = _adminServices.SendOders(request_id);
             return View(data);
         }
 
@@ -198,7 +187,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> TransferCase(int request_id, int physicianid, string description)
         {
-            await _adminServices.TransferCase(request_id,  physicianid, description);
+            await _adminServices.TransferCase(request_id, physicianid, description);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -215,7 +204,6 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-
         public IActionResult SendAgreementDetails(int request_id)
         {
             var data = _adminServices.SendAgreementDetails(request_id);
@@ -226,26 +214,25 @@ namespace HellocDoc1.Controllers
         public IActionResult SendAgreement(int request_id)
         {
             string RequestId = HashingServices.Encrypt(request_id.ToString());
-            _adminServices.SendAgreement( RequestId);
+            _adminServices.SendAgreement(RequestId);
             return RedirectToAction("AdminDashboard");
         }
-            
+
 
         public IActionResult CloseCase(int request_id)
         {
-            var data=_adminServices.CloseCase(request_id);
+            var data = _adminServices.CloseCase(request_id);
             return View(data);
         }
 
         [HttpPost]
-        public async Task <IActionResult> SaveCloseCase(CloseCaseViewModel model, int request_id)
+        public async Task<IActionResult> SaveCloseCase(CloseCaseViewModel model, int request_id)
         {
             await _adminServices.SaveCloseCase(model, request_id);
             return RedirectToAction("CloseCase", new { request_id });
         }
 
-
-        public async Task <IActionResult> CloseCaseRequest(int request_id)
+        public async Task<IActionResult> CloseCaseRequest(int request_id)
         {
             await _adminServices.CloseCaseRequest(request_id);
             return RedirectToAction("AdminDashboard");
@@ -272,8 +259,6 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-
-
         [HttpPost]
         [AllowAnonymous]
         public IActionResult AdminLogin(AdminLoginViewModel user)
@@ -284,7 +269,6 @@ namespace HellocDoc1.Controllers
                 if (result.Status == ResponseStatus.Success)
                 {
                     Response.Cookies.Append("jwt", result.Token);
-
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
                     return RedirectToAction("AdminDashboard", "Admin");
@@ -294,7 +278,6 @@ namespace HellocDoc1.Controllers
                     ModelState.AddModelError("", result.Message);
                     TempData["Error"] = result.Message;
                     return View();
-
                 }
             }
             return View();
@@ -302,32 +285,29 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt"); 
+            Response.Cookies.Delete("jwt");
             return RedirectToAction("AdminLogin");
         }
 
         public IActionResult AdminProfile()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            //var email = HttpContext.Session.GetString("Email");
             var data = _adminServices.ProfileData(email);
             return View(data);
         }
 
-        public async Task <IActionResult> ResetPassword(string password)
+        public async Task<IActionResult> ResetPassword(string password)
         {
             var email = HttpContext.Session.GetString("Email");
             await _adminServices.ResetPassword(email, password);
             return NoContent();
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> UpdateAdminstrator(ProfileData model)
         {
             var email = HttpContext.Session.GetString("Email");
-            await _adminServices.UpdateAdminstrator(model,email);
+            await _adminServices.UpdateAdminstrator(model, email);
             return NoContent();
         }
 
@@ -335,7 +315,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> UpdateBillInfo(BillingData model)
         {
             var email = HttpContext.Session.GetString("Email");
-            await _adminServices.UpdateBillInfo(model,email);
+            await _adminServices.UpdateBillInfo(model, email);
             return NoContent();
         }
 
@@ -347,8 +327,8 @@ namespace HellocDoc1.Controllers
         public IActionResult ProviderMenu(int region)
         {
             var data = _adminServices.PhysicianData(region);
-            return PartialView("_ProviderMenu",data);
-        }  
+            return PartialView("_ProviderMenu", data);
+        }
 
         public IActionResult StopNotification(int PhysicianId)
         {
@@ -358,14 +338,14 @@ namespace HellocDoc1.Controllers
 
         public IActionResult ContactProvider(int PhysicianId)
         {
-            PhysicianData physicianData =new PhysicianData();
-            physicianData.physicianId= PhysicianId;
+            PhysicianData physicianData = new PhysicianData();
+            physicianData.physicianId = PhysicianId;
             return PartialView("_ContactProvider", physicianData);
         }
 
         public IActionResult SendMessage(int PhysicianId, string message)
         {
-            _adminServices.SendMessage(PhysicianId,message);
+            _adminServices.SendMessage(PhysicianId, message);
             return Json("");
         }
 
@@ -390,12 +370,11 @@ namespace HellocDoc1.Controllers
         {
             int CurrentPage = 0;
             int PageSize = 10;
-            
-            AdminDashboardViewModel  model= new AdminDashboardViewModel();
+            AdminDashboardViewModel model = new AdminDashboardViewModel();
             switch (obj.status)
             {
                 case 1:
-                    model= _adminServices.NewState(obj);
+                    model = _adminServices.NewState(obj);
                     break;
                 case 2:
                     model = _adminServices.PendingState(obj);
@@ -419,8 +398,6 @@ namespace HellocDoc1.Controllers
             string filename = $"{obj.status}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)
@@ -483,7 +460,7 @@ namespace HellocDoc1.Controllers
         {
             var data = _adminServices.Access();
             return View(data);
-        }    
+        }
         public IActionResult CreateAccess()
         {
             var data = _adminServices.CreateAccess();
@@ -495,7 +472,6 @@ namespace HellocDoc1.Controllers
             await _adminServices.DeleteRole(RoleId);
             return NoContent();
         }
-
 
         public IActionResult FilterByAccountType(int accounttype)
         {
@@ -551,15 +527,35 @@ namespace HellocDoc1.Controllers
         {
             var data = _adminServices.SchedullingData(region);
             return PartialView("_SchedullingData", data);
-        }    
+        }
         public IActionResult WeekSchedullingData(int region)
         {
             var data = _adminServices.SchedullingData(region);
             return PartialView("_WeekWiseSchedulling", data);
-        }    
+        }
         public IActionResult MonthSchedullingData(int region)
         {
             return PartialView("_MonthWiseSchedulling");
+        }
+
+        public IActionResult NewShift()
+        {
+            var data = _adminServices.NewShift();
+            return PartialView("_CreateNewShift", data);
+        }
+
+        public IActionResult ViewShift(int PhysicanId)
+        {
+            var data = _adminServices.ViewShift(PhysicanId);
+            return PartialView("_ViewShift", data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateShift(CreateNewShift model, List<int> repeatdays)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.CreateShift(model, email, repeatdays);
+            return RedirectToAction("Schedulling");
         }
     }
 }

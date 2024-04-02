@@ -9,8 +9,10 @@ namespace Services.Models
 {
     public class SchedullingViewModel
     {
-        public List<Region> RegionList { get; set; }
+        public List<Region>? RegionList { get; set; }
 
-        public List<Physician> physicians { get; set; }
+        public List<Physician>? physicians { get; set; }
+
+        public List<ShiftDetail> ShiftDetailList { get; set; }
     }
 }

@@ -301,7 +301,7 @@ namespace HellocDoc1.Services
             {
                 try
                 {
-                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    var data = _context.Requests.FirstOrDefault(a => a.RequestId == request_id);
                     data.Status = 5;
 
                     RequestStatusLog requestStatusLog = new RequestStatusLog()

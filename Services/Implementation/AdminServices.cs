@@ -5,14 +5,13 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
-using System;
 using System.Collections;
 
 namespace Services.Implementation
@@ -20,9 +19,7 @@ namespace Services.Implementation
     public class AdminServices : IAdminServices
     {
         private ApplicationDbContext _context;
-        //private IHostingEnvironment _environment;
         private IWebHostEnvironment _environment;
-
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
@@ -58,7 +55,6 @@ namespace Services.Implementation
                 regions = regions,
             };
             return model;
-
         }
         public AdminDashboardViewModel NewState(AdminDashboardViewModel obj)
         {
@@ -232,9 +228,7 @@ namespace Services.Implementation
             model.RequestId = request_id;
             model.RequestTypeId = data.Request.RequestTypeId;
             model.Status = data.Request.Status;
-
             return model;
-
         }
 
         public ViewNotesViewModel ViewNotes(int request_id)
@@ -246,16 +240,13 @@ namespace Services.Implementation
             model.PhysicianNotes = data1?.PhysicianNotes;
             model.AdminNotes = data1?.AdminNotes;
             model.RequestId = request_id;
-
             return model;
-
         }
 
         public void AddNotes(ViewNotesViewModel model, int request_id)
         {
             var data = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
             data!.AdminNotes = model.AdditionalNotes;
-
             _context.Update(data);
             _context.SaveChanges();
         }
@@ -288,9 +279,7 @@ namespace Services.Implementation
                 Status = 5,
                 Notes = cancelNote,
                 CreatedDate = DateTime.Now,
-
             };
-
             _context.Requests.Update(data);
             await _context.RequestStatusLogs.AddAsync(requestStatusLog);
             await _context.SaveChangesAsync();
@@ -311,46 +300,31 @@ namespace Services.Implementation
         {
             List<Physician> data = _context.Physicians.Where(a => a.RegionId == regionid).ToList();
             List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel() { Name = a.FirstName, PhysicianId = a.PhysicianId }).ToList();
-
             return data1;
         }
 
         public async Task AssignCase(int request_id, int physicianid, string description)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            data.Status = 2;
+            data.PhysicianId = physicianid;
+            RequestStatusLog requestStatusLog = new RequestStatusLog()
             {
-                try
-                {
-                    var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    data.Status = 2;
-                    data.PhysicianId = physicianid;
-                    RequestStatusLog requestStatusLog = new RequestStatusLog()
-                    {
-                        RequestId = request_id,
-                        Status = 2,
-                        TransToPhysicianId = physicianid,
-                        Notes = description,
-                        CreatedDate = DateTime.Now,
+                RequestId = request_id,
+                Status = 2,
+                TransToPhysicianId = physicianid,
+                Notes = description,
+                CreatedDate = DateTime.Now,
+            };
 
-                    };
-
-                    _context.Requests.Update(data);
-                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-                    await _context.SaveChangesAsync();
-                    transaction.Commit();
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                }
-            }
-
+            _context.Requests.Update(data);
+            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            await _context.SaveChangesAsync();
         }
 
         public BlockCaseViewModel BlockDetails(int request_id)
         {
             var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-
             BlockCaseViewModel model = new BlockCaseViewModel()
             {
                 RequestId = request_id,
@@ -369,7 +343,6 @@ namespace Services.Implementation
                 Status = 10,
                 Notes = reason,
                 CreatedDate = DateTime.Now,
-
             };
 
             BlockRequest blockRequest = new BlockRequest()
@@ -380,7 +353,6 @@ namespace Services.Implementation
                 RequestId = request_id.ToString(),
                 CreatedDate = DateTime.Now,
             };
-
             _context.Requests.Update(data);
             await _context.RequestStatusLogs.AddAsync(requestStatusLog);
             await _context.BlockRequests.AddAsync(blockRequest);
@@ -399,7 +371,6 @@ namespace Services.Implementation
 
             foreach (var item in data.RequestWiseFiles)
             {
-
                 DocumentDetail documentDetail = new DocumentDetail()
                 {
                     DocumentId = item.RequestWiseFileId,
@@ -407,8 +378,6 @@ namespace Services.Implementation
                     UploadDate = item.CreatedDate.ToString()
                 };
                 viewUploads.Documents.Add(documentDetail);
-
-
             }
             return viewUploads;
         }
@@ -418,7 +387,6 @@ namespace Services.Implementation
             IEnumerable<IFormFile> upload = model.Upload;
             foreach (var item in upload)
             {
-
                 var file = item.FileName;
                 var uniqueFileName = GetUniqueFileName(file);
                 var uploads = Path.Combine(_environment.WebRootPath, "uploads");
@@ -429,11 +397,9 @@ namespace Services.Implementation
                 {
                     FileName = uniqueFileName,
                     CreatedDate = DateTime.Now,
-
                 };
                 _context.RequestWiseFiles.Add(requestWiseFile);
                 requestWiseFile.RequestId = request_id;
-
             }
             _context.SaveChanges();
         }
@@ -453,7 +419,6 @@ namespace Services.Implementation
                 RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
                 data.IsDeleted = new BitArray(new[] { true });
                 _context.RequestWiseFiles.Update(data);
-
             }
             _context.SaveChanges();
         }
@@ -466,11 +431,8 @@ namespace Services.Implementation
                 RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
                 var file = data.FileName;
                 name.Add(file);
-
-
             }
             var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-
             EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
         }
 
@@ -502,7 +464,6 @@ namespace Services.Implementation
             {
                 RequestId = request_id,
                 HealthProfessions = obj,
-
             };
             return model;
         }
@@ -516,7 +477,6 @@ namespace Services.Implementation
             {
                 Business = obj,
             };
-
             return model;
         }
 
@@ -530,7 +490,6 @@ namespace Services.Implementation
             {
                 Business = obj,
             };
-
             return model;
         }
 
@@ -590,7 +549,6 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
         }
 
         public ClearCaseViewModel ClearDetails(int request_id)
@@ -619,7 +577,6 @@ namespace Services.Implementation
                         CreatedDate = DateTime.Now,
 
                     };
-
                     _context.Requests.Update(obj);
                     await _context.RequestStatusLogs.AddAsync(requestStatusLog);
                     await _context.SaveChangesAsync();
@@ -678,11 +635,9 @@ namespace Services.Implementation
                     UploadDate = item.CreatedDate.ToString()
                 };
                 model.Documents.Add(documentDetail);
-
             }
             return model;
         }
-
 
         public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
         {
@@ -707,9 +662,7 @@ namespace Services.Implementation
                         RequestId = request_id,
                         Status = 6,
                         CreatedDate = DateTime.Now,
-
                     };
-
                     _context.Requests.Update(obj);
                     await _context.RequestStatusLogs.AddAsync(requestStatusLog);
                     await _context.SaveChangesAsync();
@@ -720,7 +673,6 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
         }
 
         public EncounterFormViewModel EncounterForm(int request_id)
@@ -836,7 +788,6 @@ namespace Services.Implementation
                 _context.EncounterForms.Update(encounter);
             }
             await _context.SaveChangesAsync();
-
         }
 
         public AdminProfileViewModel ProfileData(string email)
@@ -862,9 +813,7 @@ namespace Services.Implementation
                 State = admin.City,
                 Zip = admin.Zip,
                 AltPhoneNumber = admin.AltPhone,
-
             };
-
             return model;
         }
 
@@ -877,6 +826,7 @@ namespace Services.Implementation
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
         }
+
         public async Task UpdateAdminstrator(ProfileData model, string email)
         {
             Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
@@ -906,8 +856,6 @@ namespace Services.Implementation
             _context.Admins.Update(admin);
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
-
-
         }
         public async Task UpdateBillInfo(BillingData model, string email)
         {
@@ -920,8 +868,6 @@ namespace Services.Implementation
             admin.ModifiedDate = DateTime.Now;
             _context.Admins.Update(admin);
             await _context.SaveChangesAsync();
-
-
         }
 
         public void SendLink(SendLinkViewModel model)
@@ -948,7 +894,6 @@ namespace Services.Implementation
                             CreatedDate = DateTime.Now
 
                         };
-
                         await _context.AspNetUsers.AddAsync(aspnetuser1);
 
                         user.AspNetUserId = aspnetuser1.Id;
@@ -966,7 +911,6 @@ namespace Services.Implementation
                         user.StrMonth = model.DOB.ToString("MMM");
                         user.CreatedDate = DateTime.Now;
                         user.CreatedBy = aspnetuser.UserName;
-
                         await _context.Users.AddAsync(user);
                     }
                     else
@@ -1018,7 +962,6 @@ namespace Services.Implementation
                         CreatedBy = "Admin",
                         CreatedDate = DateTime.Now,
                     };
-
                     await _context.RequestNotes.AddAsync(requestNote);
                     request.RequestClients.Add(requestclient);
                     await _context.RequestClients.AddAsync(requestclient);
@@ -1029,8 +972,6 @@ namespace Services.Implementation
                 {
                     transaction.Rollback();
                 }
-
-
             }
         }
 
@@ -1083,7 +1024,7 @@ namespace Services.Implementation
             PhysicianNotification physicianNotification = new PhysicianNotification();
 
             if (notification == null)
-            {   
+            {
                 physicianNotification.PhysicianId = PhysicianId;
                 physicianNotification.IsNotificationStopped = (new BitArray(new[] { true }));
                 _context.PhysicianNotifications.Add(physicianNotification);
@@ -1099,7 +1040,6 @@ namespace Services.Implementation
                 _context.PhysicianNotifications.Update(notification);
             }
             _context.SaveChanges();
-
         }
 
         public byte[] DownloadExcle(AdminDashboardViewModel model)
@@ -1191,8 +1131,7 @@ namespace Services.Implementation
 
                 using (var stream = new MemoryStream())
                 {
-                    workbook.Write(stream)
-;
+                    workbook.Write(stream);
                     var content = stream.ToArray();
                     return content;
                 }
@@ -1218,7 +1157,7 @@ namespace Services.Implementation
                 Role = role,
                 FirstName = physician.FirstName,
                 LastName = physician.LastName,
-                Email = physician.Email,
+                Email = physician.Email,    
                 PhoneNumber = physician.Mobile,
                 MediLiencense = physician.MedicalLicense,
                 NPI = physician.Npinumber,
@@ -1238,19 +1177,19 @@ namespace Services.Implementation
                 AdminNotes = physician.AdminNotes,
             };
 
-            if(physician?.IsAgreementDoc?[0] == true)
+            if (physician?.IsAgreementDoc?[0] == true)
             {
                 model.AggrementDoc = true;
-            }      
-            if(physician?.IsBackgroundDoc?[0] == true)
+            }
+            if (physician?.IsBackgroundDoc?[0] == true)
             {
                 model.BackgoundDoc = true;
-            }      
-            if(physician?.IsNonDisclosureDoc?[0] == true)
+            }
+            if (physician?.IsNonDisclosureDoc?[0] == true)
             {
                 model.DisclosureDoc = true;
-            }      
-            if(physician?.IsLicenseDoc?[0] == true)
+            }
+            if (physician?.IsLicenseDoc?[0] == true)
             {
                 model.LicenseDoc = true;
             }
@@ -1264,7 +1203,6 @@ namespace Services.Implementation
             AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
             aspNetUser.PasswordHash = password;
             aspNetUser.ModifiedDate = DateTime.Now;
-
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
         }
@@ -1276,7 +1214,7 @@ namespace Services.Implementation
 
             aspNetUser!.UserName = model.Username;
             aspNetUser.ModifiedDate = DateTime.Now;
-            if (model.status != 0)  
+            if (model.status != 0)
             {
                 physician!.Status = (short)model.status;
             }
@@ -1289,8 +1227,6 @@ namespace Services.Implementation
             _context.Physicians.Update(physician);
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
-
-
         }
 
         public async Task UpdatePhysicianInfo(UpdatePhycisianInfo model)
@@ -1325,8 +1261,6 @@ namespace Services.Implementation
             _context.Physicians.Update(physician);
             _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
-
-
         }
 
         public async Task ModifyBillInfo(ModifyBillingData model)
@@ -1340,9 +1274,8 @@ namespace Services.Implementation
             physician.ModifiedDate = DateTime.Now;
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
-
-
         }
+
         public async Task ModifyProfileInfo(ModifyProfileData model)
         {
             Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
@@ -1370,18 +1303,13 @@ namespace Services.Implementation
                 model.Signature.CopyTo(new FileStream(signPath, FileMode.Create));
                 physician.Signature = uniquesignName;
             }
-
-
-
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
-
         }
 
         public async Task ModifyDocInfo(DocumentDataModel model)
         {
             Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
-
             if (model.AggrementDoc != null)
             {
                 var uniquefileName = model.PhysicianId + "_" + "Agreement";
@@ -1410,12 +1338,8 @@ namespace Services.Implementation
                 NewMethod(item, uniquefileName);
                 physician.IsLicenseDoc = new BitArray(new[] { true });
             }
-
-
-
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
-
         }
 
         private void NewMethod(IFormFile item, string uniquefileName)
@@ -1431,7 +1355,6 @@ namespace Services.Implementation
             physician!.IsDeleted = new BitArray(new[] { true });
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
-
         }
 
         public AccessViewModel Access()
@@ -1444,9 +1367,7 @@ namespace Services.Implementation
             {
                 roleData = roleData,
             };
-
             return accessViewModel;
-
         }
 
         public CreateAccessViewModel CreateAccess()
@@ -1457,7 +1378,6 @@ namespace Services.Implementation
                 menus = menu,
             };
             return model;
-
         }
 
         public async Task DeleteRole(int RoleId)
@@ -1466,7 +1386,6 @@ namespace Services.Implementation
             role.IsDeleted = new BitArray(new[] { true });
             _context.Roles.Update(role);
             await _context.SaveChangesAsync();
-
         }
 
         public CreateAccessViewModel FilterByAccountType(int accounttype)
@@ -1526,7 +1445,6 @@ namespace Services.Implementation
                 Role = role,
                 RegionList = regions,
             };
-
             return model;
         }
 
@@ -1557,9 +1475,6 @@ namespace Services.Implementation
                     var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                     var filePath = Path.Combine(uploads, uniqueFileName);
                     model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
-
-
-
 
                     Physician physician = new Physician()
                     {
@@ -1610,7 +1525,6 @@ namespace Services.Implementation
                         DocumentMethod(item, uniquefileName);
                         physician.IsNonDisclosureDoc = new BitArray(new[] { true });
                     }
-
                     _context.Physicians.Add(physician);
                     await _context.SaveChangesAsync();
 
@@ -1640,7 +1554,6 @@ namespace Services.Implementation
                     //};
                     //_context.PhysicianLocations.Add(physicianLocation);
                     //await _context.SaveChangesAsync();
-
                     transaction.Commit();
                 }
                 catch
@@ -1648,7 +1561,6 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
         }
 
         private void DocumentMethod(IFormFile item, string uniquefileName)
@@ -1667,7 +1579,6 @@ namespace Services.Implementation
                 Role = role,
                 RegionList = regions,
             };
-
             return model;
         }
 
@@ -1690,7 +1601,7 @@ namespace Services.Implementation
 
                     var role = _context.AspNetRoles.FirstOrDefault(a => a.Name == "Admin");
                     aspNetUser.Roles.Add(role);
-                    await _context.SaveChangesAsync();
+                    /*await _context.SaveChangesAsync();*/
 
                     Admin admin = new Admin()
                     {
@@ -1710,7 +1621,6 @@ namespace Services.Implementation
                         Status = (int)Common.Enum.PhysicianStatus.NotActive,
                         RoleId = model.role,
                     };
-
                     _context.Admins.Add(admin);
                     await _context.SaveChangesAsync();
 
@@ -1722,7 +1632,6 @@ namespace Services.Implementation
                         _context.AdminRegions.Add(adminRegion);
                     }
                     await _context.SaveChangesAsync();
-
                     transaction.Commit();
                 }
                 catch
@@ -1730,7 +1639,6 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
         }
 
         public SchedullingViewModel Schedulling()
@@ -1747,14 +1655,173 @@ namespace Services.Implementation
         public SchedullingViewModel SchedullingData(int region)
         {
             List<Physician> physician = _context.Physicians.ToList();
-
+            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a=>a.Shift).ToList();
             SchedullingViewModel model = new SchedullingViewModel();
             if (region != 0)
             {
                 physician = physician.Where(x => x.RegionId == region).ToList();
             }
+            model.ShiftDetailList = shiftDetails;
             model.physicians = physician;
             return model;
+        }
+
+        public CreateNewShift NewShift()
+        {
+            List<Region> regions = _context.Regions.ToList();
+            CreateNewShift model = new CreateNewShift()
+            {
+                RegionList = regions,
+            };
+            return model;
+        }    
+        
+        public CreateNewShift ViewShift(int PhysicianId)
+        {
+            Physician? physicians = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            ShiftDetail shiftDetails = _context.ShiftDetails.Include(a => a.Shift).Where(a => a.Shift.PhysicianId == PhysicianId).FirstOrDefault();
+            Region region = _context.Regions.Where(a => a.RegionId == physicians.RegionId).FirstOrDefault();
+            CreateNewShift model = new CreateNewShift()
+            {
+                PhysicianId= PhysicianId,
+                PhysicianName= physicians.FirstName+" "+physicians.LastName,
+                RegionId= region.RegionId,
+                RegionName= region.Name,
+                ShiftDate= shiftDetails.ShiftDate,
+                Start= shiftDetails.StartTime,
+                End= shiftDetails.EndTime,
+            };
+            return model;
+        }
+
+        public async Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
+        {
+            AspNetUser? aspNetUser= _context.AspNetUsers.FirstOrDefault(a=> a.Email == Email);
+
+
+            var chk = repeatdays.ToList();
+
+            var shiftid = _context.Shifts.Where(u => u.PhysicianId == model.PhysicianId).Select(u => u.ShiftId).ToList();
+            if (shiftid.Count() > 0)
+            {
+                foreach (var obj in shiftid)
+                {
+                    var shiftdetailchk = _context.ShiftDetails.Where(u => u.ShiftId == obj && u.ShiftDate == model.ShiftDate).ToList();
+                    if (shiftdetailchk.Count() > 0)
+                    {
+                        foreach (var item in shiftdetailchk)
+                        {
+                            if ((model.Start >= item.StartTime && model.Start <= item.EndTime) || (model.End >= item.StartTime && model.End <= item.EndTime))
+                            {
+                                //TempData["error"] = "Shift is already assigned in this time";
+                                //return RedirectToAction("Scheduling");
+                            }
+                        }
+                    }
+                }
+            }
+            Shift shift = new Shift
+            {
+                PhysicianId = model.PhysicianId,
+                StartDate = DateOnly.FromDateTime(model.ShiftDate),
+                RepeatUpto = model.RepeatEnd,
+                CreatedDate = DateTime.Now,
+                CreatedBy = aspNetUser!.Id
+            };
+            foreach (var obj in chk)
+            {
+                shift.WeekDays += obj;
+            }
+            if (model.RepeatEnd > 0)
+            {
+                shift.IsRepeat = new BitArray(new[] { true });
+            }
+            else
+            {
+                shift.IsRepeat = new BitArray(new[] { false });
+            }
+            _context.Shifts.Add(shift);
+            await _context.SaveChangesAsync();
+            DateTime curdate = model.ShiftDate;
+
+            ShiftDetail shiftdetail = new ShiftDetail();
+            shiftdetail.ShiftId = shift.ShiftId;
+            shiftdetail.ShiftDate = curdate;
+            shiftdetail.RegionId = model.RegionId;
+            shiftdetail.StartTime = model.Start;
+            shiftdetail.EndTime = model.End;
+            shiftdetail.IsDeleted = new BitArray(new[] { false });
+            _context.ShiftDetails.Add(shiftdetail);
+            await _context.SaveChangesAsync();
+
+            var dayofweek = model.ShiftDate.DayOfWeek.ToString();
+            int valueforweek;
+            if (dayofweek == "Sunday")
+            {
+                valueforweek = 0;
+            }
+            else if (dayofweek == "Monday")
+            {
+                valueforweek = 1;
+            }
+            else if (dayofweek == "Tuesday")
+            {
+                valueforweek = 2;
+            }
+            else if (dayofweek == "Wednesday")
+            {
+                valueforweek = 3;
+            }
+            else if (dayofweek == "Thursday")
+            {
+                valueforweek = 4;
+            }
+            else if (dayofweek == "Friday")
+            {
+                valueforweek = 5;
+            }
+            else
+            {
+                valueforweek = 6;
+            }
+            if (shift.IsRepeat[0] == true)
+            {
+                for (int j = 0; j < shift.WeekDays.Count(); j++)
+                {
+                    var z = shift.WeekDays;
+                    var p = shift.WeekDays.ElementAt(j).ToString();
+                    int ele = Int32.Parse(p);
+                    int x;
+                    if (valueforweek > ele)
+                    {
+                        x = 6 - valueforweek + 1 + ele;
+                    }
+                    else
+                    {
+                        x = ele - valueforweek;
+                    }
+                    if (x == 0)
+                    {
+                        x = 7;
+                    }
+                    DateTime newcurdate = model.ShiftDate.AddDays(x);
+                    for (int i = 0; i < model.RepeatEnd; i++)
+                    {
+                        ShiftDetail shiftdetailnew = new ShiftDetail
+                        {
+                            ShiftId = shift.ShiftId,
+                            ShiftDate = newcurdate,
+                            RegionId = model.RegionId,
+                            StartTime = model.Start,
+                            EndTime = model.End,
+                            IsDeleted = new BitArray(new[] { false })
+                        };
+                        _context.ShiftDetails.Add(shiftdetailnew);
+                        await _context.SaveChangesAsync();
+                        newcurdate = newcurdate.AddDays(7);
+                    }
+                }
+            }
         }
     }
 }

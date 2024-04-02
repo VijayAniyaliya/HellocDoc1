@@ -75,5 +75,8 @@ namespace Services.Contracts
         SchedullingViewModel Schedulling();
         SchedullingViewModel SchedullingData(int region);
         Task DeleteRole(int RoleId);
+        CreateNewShift NewShift();
+        Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
+        CreateNewShift ViewShift(int PhysicianId);
     }
 }
