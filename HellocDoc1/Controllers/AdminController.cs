@@ -523,14 +523,14 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
-        public IActionResult SchedullingData(int region)
+        public IActionResult SchedullingData(int region, DateTime date)
         {
-            var data = _adminServices.SchedullingData(region);
+            var data = _adminServices.SchedullingData(region, date);
             return PartialView("_SchedullingData", data);
         }
-        public IActionResult WeekSchedullingData(int region)
+        public IActionResult WeekSchedullingData(int region, DateTime date)
         {
-            var data = _adminServices.SchedullingData(region);
+            var data = _adminServices.SchedullingData(region, date);
             return PartialView("_WeekWiseSchedulling", data);
         }
         public IActionResult MonthSchedullingData(int region)
@@ -544,18 +544,26 @@ namespace HellocDoc1.Controllers
             return PartialView("_CreateNewShift", data);
         }
 
-        public IActionResult ViewShift(int PhysicanId)
+        public IActionResult ViewShift(int ShiftDetailId)
         {
-            var data = _adminServices.ViewShift(PhysicanId);
+            var data = _adminServices.ViewShift(ShiftDetailId);
             return PartialView("_ViewShift", data);
         }
 
-        [HttpPost]
+        [HttpPost]  
         public async Task<IActionResult> CreateShift(CreateNewShift model, List<int> repeatdays)
-        {
+            {
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _adminServices.CreateShift(model, email, repeatdays);
+            TempData["Success"] = "Shift Created Successfully";
             return RedirectToAction("Schedulling");
         }
+
+        public IActionResult RequestedShifts()
+        {
+            return View();
+        }
+
+            
     }
 }

@@ -73,7 +73,7 @@ namespace Services.Contracts
         Task DeleteAccount(int PhysicianId);
         Task UpdateUserInfo(AccountData model);
         SchedullingViewModel Schedulling();
-        SchedullingViewModel SchedullingData(int region);
+        SchedullingViewModel SchedullingData(int region, DateTime date);
         Task DeleteRole(int RoleId);
         CreateNewShift NewShift();
         Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);

@@ -1157,7 +1157,7 @@ namespace Services.Implementation
                 Role = role,
                 FirstName = physician.FirstName,
                 LastName = physician.LastName,
-                Email = physician.Email,    
+                Email = physician.Email,
                 PhoneNumber = physician.Mobile,
                 MediLiencense = physician.MedicalLicense,
                 NPI = physician.Npinumber,
@@ -1652,10 +1652,10 @@ namespace Services.Implementation
             return model;
         }
 
-        public SchedullingViewModel SchedullingData(int region)
+        public SchedullingViewModel SchedullingData(int region, DateTime date)
         {
             List<Physician> physician = _context.Physicians.ToList();
-            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a=>a.Shift).ToList();
+            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift).ToList();
             SchedullingViewModel model = new SchedullingViewModel();
             if (region != 0)
             {
@@ -1663,6 +1663,7 @@ namespace Services.Implementation
             }
             model.ShiftDetailList = shiftDetails;
             model.physicians = physician;
+            model.ShiftDate = date;
             return model;
         }
 
@@ -1674,29 +1675,29 @@ namespace Services.Implementation
                 RegionList = regions,
             };
             return model;
-        }    
-        
-        public CreateNewShift ViewShift(int PhysicianId)
+        }
+
+        public CreateNewShift ViewShift(int ShiftDetailId)
         {
-            Physician? physicians = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
-            ShiftDetail shiftDetails = _context.ShiftDetails.Include(a => a.Shift).Where(a => a.Shift.PhysicianId == PhysicianId).FirstOrDefault();
-            Region region = _context.Regions.Where(a => a.RegionId == physicians.RegionId).FirstOrDefault();
+            ShiftDetail? shiftDetails = _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefault();
+            Physician? physicians = _context.Physicians.Where(a => a.PhysicianId == shiftDetails.Shift.PhysicianId).FirstOrDefault();
+            Region? region = _context.Regions.Where(a => a.RegionId == physicians!.RegionId).FirstOrDefault();
             CreateNewShift model = new CreateNewShift()
             {
-                PhysicianId= PhysicianId,
-                PhysicianName= physicians.FirstName+" "+physicians.LastName,
-                RegionId= region.RegionId,
-                RegionName= region.Name,
-                ShiftDate= shiftDetails.ShiftDate,
-                Start= shiftDetails.StartTime,
-                End= shiftDetails.EndTime,
+                PhysicianId = physicians.PhysicianId,
+                PhysicianName = physicians.FirstName + " " + physicians.LastName,
+                RegionId = region.RegionId,
+                RegionName = region.Name,
+                ShiftDate = shiftDetails.ShiftDate,
+                Start = shiftDetails.StartTime,
+                End = shiftDetails.EndTime,
             };
             return model;
         }
 
         public async Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
         {
-            AspNetUser? aspNetUser= _context.AspNetUsers.FirstOrDefault(a=> a.Email == Email);
+            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == Email);
 
 
             var chk = repeatdays.ToList();
@@ -1728,9 +1729,12 @@ namespace Services.Implementation
                 CreatedDate = DateTime.Now,
                 CreatedBy = aspNetUser!.Id
             };
-            foreach (var obj in chk)
+            if (chk.Count != 0)
             {
-                shift.WeekDays += obj;
+                foreach (var obj in chk)
+                {
+                    shift.WeekDays += obj;
+                }
             }
             if (model.RepeatEnd > 0)
             {

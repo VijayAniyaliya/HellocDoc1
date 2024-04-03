@@ -90,13 +90,14 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3 repeatend">
-                            <select asp-for="RepeatEnd"  class="form-select text-secondary" id="repeat" aria-label="Floating label select example">
-                                <option value="2" selected>2-times</option>
+                            <select asp-for="RepeatEnd"  class="form-select text-secondary py-1" id="repeat" aria-label="Floating label select example">
+                                <option value="0" selected>Repeat End</option>
+                                <option value="2">2-times</option>
                                 <option value="3">3-times</option>
                                 <option value="4">4-times</option>
                                 <option value="5">5-times</option>
                             </select>
-                            <label for="repeat">Narrow Search By Region</label>
+                            <label for="repeat"></label>
                             <span asp-validation-for="RepeatEnd" class="text-danger"></span>
                         </div>
                     </div>

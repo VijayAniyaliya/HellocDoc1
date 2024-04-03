@@ -14,5 +14,7 @@ namespace Services.Models
         public List<Physician>? physicians { get; set; }
 
         public List<ShiftDetail> ShiftDetailList { get; set; }
+
+        public DateTime ShiftDate { get; set; }
     }
 }

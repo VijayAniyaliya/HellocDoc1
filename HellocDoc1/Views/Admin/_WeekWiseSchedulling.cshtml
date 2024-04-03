@@ -17,16 +17,13 @@
     </thead>
     <tbody>
         <tr>
-            <td scope="row">Coverage</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td scope="row">Coverage</td>   
+            @for (int i = 0; i < 7; i++)
+            {
+                <td class="text-center" style="background:#efabd2">0/24</td>
+            }   
         </tr>
-        @foreach (var item in Model.physicians)
+@*         @foreach (var item in Model.physicians)
         {
 
             <tr>
@@ -39,8 +36,76 @@
                 <td></td>
                 <td></td>
             </tr>
+        } *@
+        @foreach (var obj in Model.physicians)                  
+        {   
+            @for(var i=0; i<=6; i++)
+            {
+                
+            }
+            var shift = Model.ShiftDetailList.Where(u => u.ShiftDate == Model.ShiftDate.Date && u.Shift.PhysicianId == obj.PhysicianId).ToList();
+            <tr>
+                <td><div><img src="~/uploads/@obj.Photo" style="    height: 25px; width: 25px;" class="mr-1" />@obj.FirstName</div></td>
+
+                @for (  int i = 0; i < 7; i++)
+                {
+                    if (shift.Count() > 0)
+                    {
+                        int flag = 0;
+                        foreach (var item in shift)
+                        {
+                            var diff = item.ShiftDate - Model.ShiftDate.Date;
+                            if (item.StartTime.Hour <= i && item.EndTime.Hour >= i)
+                            {
+                                var perstart = (item.StartTime.Minute / 60.00) * 100;
+                                int wid = 100;
+                                if (item.EndTime.Minute != 0)
+                                {
+                                    wid = 58;
+                                }   
+                                perstart /= 2;
+                                <td onclick="viewshift(@item.ShiftDetailId)" id="i_@obj.PhysicianId" colspan="@diff" class="p-0">
+                                    <button class="dates d-flex align-items-center justify-content-center border-0 viewshiftbtn" value="@item.ShiftId" style="height:88.5px;background-color:#efabd2; margin-left:@perstart%;width:@wid%">
+                                        @item.StartTime.ToString("hh:mm tt")-@item.EndTime.ToString("hh:mm tt")
+                                    </button>
+                                </td>
+                                @* i += (@diff - 1); *@
+
+                                flag = 1;
+                            }
+                        }
+                        if (flag == 0)
+                        {
+                            <td id="i_@obj.PhysicianId"></td>
+                        }
+                    }
+                    else
+                    {
+                        <td id="i_@obj.PhysicianId"></td>
+                    }
+                }
+            </tr>
         }
-
-
+                
     </tbody>
 </table>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    // function viewshift(ShiftDetailId) {
+    //     $.ajax({
+    //         url: "/Admin/ViewShift/",
+    //         type: "POST",
+    //         data: { "ShiftDetailId": ShiftDetailId },
+    //         dataType: "html",
+    //         success: function (data) {
+    //             $("#shift").html(data);
+    //             const myModal = new bootstrap.Modal("#staticBackdrop", {});
+    //             myModal.show();
+    //         },
+    //         error: function () {
+    //             alert("No Projects Found");
+    //             $("#shift").html('An error has occurred');
+    //         }
+    //     });
+    // };
+</script>
