@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Services.Contracts;
@@ -1826,6 +1827,124 @@ namespace Services.Implementation
                     }
                 }
             }
+        }
+
+        public VendorsDetailsViewModel VendorsData()
+        {
+            List<Region> regions = _context.Regions.ToList();
+            VendorsDetailsViewModel model = new VendorsDetailsViewModel()
+            {
+                Regions = regions,
+            };
+            return (model);
+        }
+
+        public VendorsDetailsViewModel VendorMenu(int region, string searchvendor)
+        {
+            List<HealthProfessional> healthProfessionals = _context.HealthProfessionals.ToList();
+            healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+            if (!string.IsNullOrWhiteSpace(searchvendor))
+            {
+                healthProfessionals = healthProfessionals.Where(a => a.VendorName.ToLower().Contains(searchvendor.ToLower())).ToList();
+            }
+            if (region != 0)
+            {
+                healthProfessionals = healthProfessionals.Where(a => a.RegionId == region).ToList();
+            }
+
+            List<VendorsData> vendorsData = healthProfessionals.Select(a => new VendorsData
+            {
+                ProfessionId = a.VendorId,
+                VendorName = a.VendorName,
+                Email = a.Email,
+                PhoneNumber = a.PhoneNumber,
+                FaxNumber = a.FaxNumber,
+                BusinessContact = a.BusinessContact
+            }).ToList();
+
+            VendorsDetailsViewModel model = new VendorsDetailsViewModel()
+            {
+                vendorsDatas = vendorsData,
+            };
+            return (model);
+        }
+
+        public AddBusinessViewModel AddBusiness(int VendorId)
+        {
+            HealthProfessional? healthProfessional = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
+            List<HealthProfessionalType> healthProfessionalTypes = _context.HealthProfessionalTypes.ToList();
+
+            AddBusinessViewModel model = new AddBusinessViewModel()
+            {
+                professionalTypes = healthProfessionalTypes,
+            };
+
+            if (healthProfessional != null)
+            {
+                model.professionalTypes = healthProfessionalTypes;
+                model.VendorName = healthProfessional!.VendorName;
+                model.VendorId = VendorId;
+                model.Email = healthProfessional.Email!;
+                model.PhoneNumber = healthProfessional!.PhoneNumber!;
+                model.FaxNumber = healthProfessional.FaxNumber;
+                model.BusinessContact = healthProfessional.BusinessContact;
+            }
+            return (model);
+        }
+
+        public async Task AddNewBusiness(AddBusinessViewModel model, int VendorId)
+        {
+            HealthProfessional? healthProfessional1 = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
+
+            if (healthProfessional1 != null)
+            {
+                healthProfessional1.VendorName = model.VendorName;
+                healthProfessional1.Profession = model.ProfessionId;
+                healthProfessional1.Email = model.Email;
+                healthProfessional1.PhoneNumber = model.PhoneNumber;
+                healthProfessional1.FaxNumber = model.FaxNumber;
+                healthProfessional1.BusinessContact = model.BusinessContact;
+                healthProfessional1.State = model.State;
+                healthProfessional1.City = model.City;
+                healthProfessional1.Zip = model.ZipCode;
+                healthProfessional1.Address = model.Street + " " + model.City + " " + model.State;
+                healthProfessional1.ModifiedDate = DateTime.Now;
+                _context.HealthProfessionals.Update(healthProfessional1);
+            }
+            else
+            {
+                HealthProfessional healthProfessional = new HealthProfessional()
+                {
+                    VendorName = model.VendorName,
+                    Profession = model.ProfessionId,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    FaxNumber = model.FaxNumber,
+                    BusinessContact = model.BusinessContact,
+                    State = model.State,
+                    City = model.City,
+                    Zip = model.ZipCode,
+                    Address = model.Street + " " + model.City + " " + model.State,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.HealthProfessionals.Add(healthProfessional);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteBusiness(int VendorId)
+        {
+            HealthProfessional? healthProfessional = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
+            healthProfessional.IsDeleted = new BitArray(new[] { true });
+            _context.HealthProfessionals.Update(healthProfessional);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public List<PhysicianLocation> GetPhysicianlocations()
+        {
+            var phyLocation = _context.PhysicianLocations.ToList();
+            return phyLocation;
         }
     }
 }

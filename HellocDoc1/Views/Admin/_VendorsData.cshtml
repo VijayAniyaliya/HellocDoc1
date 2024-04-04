@@ -1,0 +1,58 @@
+﻿@model Services.Models.VendorsDetailsViewModel
+
+<table class="table  d-md-table d-none">
+    <thead>
+        <tr class="table-secondary">
+            <th scope="col">Profession</th>
+            <th scope="col">Business Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Fax Number</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Business Contact</th>
+            <th class="text-center" scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.vendorsDatas)
+        {
+
+            <tr>
+                <td>profession</td>
+                <td>@item.VendorName</td>
+                <td>@item.Email</td>
+                <td>@item.FaxNumber</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.BusinessContact</td>
+                <td class="text-center">
+                    <a asp-action="AddBusiness" asp-controller="Admin" asp-route-VendorId="@item.ProfessionId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
+                    <button type="button" onclick="deletebusiness(@item.ProfessionId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+@if (Model.vendorsDatas.Count == 0)
+{
+    <div class="text-center text-danger fw-bold h5">No record found</div>
+}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    function deletebusiness(VendorId) {
+        $.ajax({
+            url: "/Admin/DeleteBusiness/",
+            type: "POST",
+            data: { "VendorId": VendorId },
+            dataType: "html",
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    };
+</script>

@@ -78,5 +78,11 @@ namespace Services.Contracts
         CreateNewShift NewShift();
         Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
         CreateNewShift ViewShift(int PhysicianId);
+        VendorsDetailsViewModel VendorsData();
+        VendorsDetailsViewModel VendorMenu(int region, string searchvendor);
+        AddBusinessViewModel AddBusiness(int VendorId);
+        Task AddNewBusiness(AddBusinessViewModel model, int VendorId);
+        Task DeleteBusiness(int VendorId);
+        List<PhysicianLocation> GetPhysicianlocations();
     }
 }

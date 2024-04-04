@@ -1,0 +1,111 @@
+﻿@model Services.Models.VendorsDetailsViewModel
+
+@{
+    ViewData["Title"] = "Vendors";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class=" pt-3">
+        <h4>Vendors</h4>
+
+    </div>
+    <div class=" pt-4 shadow Document-content mt-3" style="">
+
+        <div class="d-flex flex-md-row flex-column justify-content-md-between pr-3 mb-4 px-3">
+            <div class="d-flex flex-sm-row flex-column gap-2">
+                <div class="">
+                    <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da; width:250px;">
+                        <i class="bi bi-search my-1 ms-1 mr-2"></i>
+                        <input id="searchvendor" onkeyup="SearchVendor()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Vendors" aria-label="Search">
+                    </div>
+                </div>
+                <div class=" m-md-0">
+                    <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da; width:250px;">
+                        <i class="bi bi-search my-1 ms-1 mr-2"></i>
+                        <select class="form-select select-region text-secondary border-0" id="region">
+                            <option selected>All Regions</option>
+                            @foreach (var item in Model.Regions)
+                            {
+                                <option value="@item.RegionId">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class=" mt-md-0 mt-2 text-lg-end pr-0 pr-3">
+                <a asp-action="AddBusiness" class="btn bg-white text-info border-info rounded-3 addbusnes  rounded-3 fw-bold">
+                    <i class="bi bi-plus"></i> Add Business
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-2" id="tableContent">
+        </div>
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+    var region = 0;
+    var searchvendor = "";
+
+    $('#region').on('change', function () {
+        region = $(this).val();
+        AjaxAll();
+    })
+
+    function SearchVendor() {
+        searchvendor = $("#searchvendor")[0].value;
+        AjaxAll();
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/VendorMenu",
+            type: "POST",
+            data: { "region": region, "searchvendor": searchvendor },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function AjaxAll() {
+        $.ajax({
+            url: "/Admin/VendorMenu",
+            type: "POST",
+            data: { "region": region, "searchvendor": searchvendor },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+
+</script>
+
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

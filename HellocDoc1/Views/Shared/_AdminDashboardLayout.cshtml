@@ -15,6 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <!-- Option 1: Include in HTML -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" />
@@ -60,7 +61,15 @@
             {
                 <a asp-action="AdminDashboard" class="text-decoration-none px-2" style="color:black;">Dashboard</a>
             }
-            <a class="text-decoration-none" style="color:black;">Providers Location</a>
+            @if (Context.Request.Path.Equals("/Admin/ProviderLocation"))
+            {
+                <a asp-action="ProviderLocation" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Providers Location</a>
+            }
+            else
+            {
+                <a asp-action="ProviderLocation" class="text-decoration-none px-2" style="color:black;">Providers Location</a>
+
+            }
             @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
             {
                 <a asp-action="AdminProfile" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">My Profile</a>
@@ -89,7 +98,15 @@
                     <li><a class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                 </ul>
             }
-            <a class="text-decoration-none  px-2" style="color:black;">Partners</a>
+            @if ((Context.Request.Path.Equals("/Admin/Vendors")) || (Context.Request.Path.Equals("/Admin/AddBusiness")))
+            {
+                <a asp-action="Vendors" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Partners</a>
+            }
+            else
+            {
+                <a asp-action="Vendors" class="text-decoration-none px-2" style="color:black;">Partners</a>
+
+            }
             @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")) || (Context.Request.Path.Equals("/Admin/UserAccess")))
             {
                 <a asp-action="Access" class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Access</a>
@@ -97,7 +114,6 @@
                     <li><a asp-action="Access" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
                     <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
                 </ul>
-
             }
             else
             {

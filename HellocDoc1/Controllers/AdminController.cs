@@ -1,9 +1,11 @@
 ﻿using Common.Enum;
 using Common.Helpers;
+using Data.Entity;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
+using Services.Implementation;
 using Services.Models;
 using System.Security.Claims;
 
@@ -550,9 +552,9 @@ namespace HellocDoc1.Controllers
             return PartialView("_ViewShift", data);
         }
 
-        [HttpPost]  
+        [HttpPost]
         public async Task<IActionResult> CreateShift(CreateNewShift model, List<int> repeatdays)
-            {
+        {
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _adminServices.CreateShift(model, email, repeatdays);
             TempData["Success"] = "Shift Created Successfully";
@@ -564,6 +566,55 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-            
+        public IActionResult Vendors()
+        {
+            var data = _adminServices.VendorsData();
+            return View(data);
+        }
+
+        public IActionResult VendorMenu(int region, string searchvendor)
+        {
+            var data = _adminServices.VendorMenu(region, searchvendor);
+            return PartialView("_VendorsData", data);
+        }
+
+        public IActionResult AddBusiness(int VendorId)      
+        {
+                var data = _adminServices.AddBusiness(VendorId);
+                return View(data);
+        }
+
+        public async Task<IActionResult> AddNewBusiness(AddBusinessViewModel model, int VendorId)
+        {
+            await _adminServices.AddNewBusiness(model, VendorId);
+            if(VendorId != 0)
+            {
+                TempData["Success"] = "Business Updated Sucessfully";
+            }
+            else
+            {
+                TempData["Success"] = "Business Addedd Sucessfully";
+            }
+            return RedirectToAction("Vendors");
+        }
+
+        public async Task<IActionResult> DeleteBusiness(int VendorId)
+        {
+            await _adminServices.DeleteBusiness(VendorId);
+            TempData["Success"] = "Business Deleted Sucessfully";
+            return NoContent();
+        }
+
+       public IActionResult ProviderLocation()
+        {
+            return View();
+        }
+
+        public IActionResult GetLocation()
+        {
+            List<PhysicianLocation> getLocation = _adminServices.GetPhysicianlocations();
+            return Ok(getLocation);
+        }
+
     }
 }

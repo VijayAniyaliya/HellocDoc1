@@ -73,6 +73,8 @@
 <div id="shift"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 <script>
     var url;
     var RequestedDate = new Date();
@@ -87,198 +89,204 @@
                 '@DateTime.Now.Date.ToString("MMM dd yyyy")'
             );
         });
-        $('#Week').on('click', function () {
+    $('#Week').on('click', function () {
+        $('#showDate').html('' +
+            '@weekRange'
+        );
+    });
+    $('#Month').on('click', function () {
+        $('#showDate').html('' +
+            '@DateTime.Now.ToString("MMM, yyyy")'
+        );
+    });
+
+    let date = new Date();
+    console.log(date);
+    function prev() {
+        if (url == "/Admin/SchedullingData") {
+            date.setDate(date.getDate() - 1);
+            RequestedDate = date;
             $('#showDate').html('' +
-                '@weekRange'
+                date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
             );
-        });
-        $('#Month').on('click', function () {
-             $('#showDate').html('' +
-                '@DateTime.Now.ToString("MMM, yyyy")'
+            Day();
+        }
+        else if (url == "/Admin/WeekSchedullingData") {
+            date.setDate(date.getDate() - 7);
+            RequestedDate = date;
+            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+            let nextWeek = new Date(currentWeek.getTime());
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            $('#showDate').html('' +
+                currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
+                nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
             );
+            Week()
+        }
+        else if (url == "/Admin/MonthSchedullingData") {
+            let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            date.setDate(1);
+            date.setDate(date.getDate() - daysInMonth);
+            $('#showDate').html('' +
+                date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+            );
+        }
+
+    }
+
+    function next() {
+        if (url == "/Admin/SchedullingData") {
+            date.setDate(date.getDate() + 1);
+            RequestedDate = date;
+            $('#showDate').html('' +
+                date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+            );
+            Day();
+        }
+        else if (url == "/Admin/WeekSchedullingData") {
+            date.setDate(date.getDate() + 7);
+            RequestedDate = date;
+            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+            let nextWeek = new Date(currentWeek.getTime());
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            $('#showDate').html('' +
+                currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
+                nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
+            );
+            Week()
+        }
+        else if (url == "/Admin/MonthSchedullingData") {
+            let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+            date.setDate(1);
+            date.setDate(date.getDate() + daysInMonth);
+            $('#showDate').html('' +
+                date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
+            );
+        }
+
+    }
+
+    function newshift() {
+        $.ajax({
+            url: "/Admin/NewShift/",
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#shift").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#shift").html('An error has occurred');
+            }
         });
+    };
 
-        let date = new Date();
-        console.log(date);
-       function prev() {
-         if (url == "/Admin/SchedullingData") {
-           date.setDate(date.getDate() - 1);
-           RequestedDate = date;
-           $('#showDate').html('' +
-             date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-           );
-                 Day();
-         }
-         else if (url == "/Admin/WeekSchedullingData") {
-           date.setDate(date.getDate() - 7);
-           let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
-           let nextWeek = new Date(currentWeek.getTime());
-           nextWeek.setDate(nextWeek.getDate() + 7);
-           $('#showDate').html('' +
-             currentWeek.toLocaleDateString("en-US", {month: 'long', day: 'numeric'}) + ' - ' +
-             nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
-           );
-         }
-         else if (url == "/Admin/MonthSchedullingData") {
-           let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-           date.setDate(1);
-           date.setDate(date.getDate() - daysInMonth);
-           $('#showDate').html('' +
-             date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
-           );
-         }
-   
-       }
-       
-       function next() {
-         if (url == "/Admin/SchedullingData") {
-           date.setDate(date.getDate() + 1);
-         RequestedDate =date;
-           $('#showDate').html('' +
-             date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-           );
-             Day();
-         }
-         else if (url == "/Admin/WeekSchedullingData") {
-           date.setDate(date.getDate() + 7);    
-           let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
-           let nextWeek = new Date(currentWeek.getTime());
-           nextWeek.setDate(nextWeek.getDate() + 7);
-           $('#showDate').html('' +
-             currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric'}) + ' - ' +
-             nextWeek.toLocaleDateString("en-US", {month: 'long', day: 'numeric', year: 'numeric' })
-           );
-         }
-         else if (url == "/Admin/MonthSchedullingData") {
-           let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-           date.setDate(1);
-           date.setDate(date.getDate() + daysInMonth);
-           $('#showDate').html('' +
-             date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
-           );
-         }
-       
-       }
+    var region = 0;
+    let shiftDate = RequestedDate.toISOString().split("T")[0];
 
-        function newshift() {
-            $.ajax({
-                url: "/Admin/NewShift/",
-                type: "POST",
-                dataType: "html",
-                success: function (data) {
-                    $("#shift").html(data);
-                    const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                    myModal.show();
-                },
-                error: function () {
-                    alert("No Projects Found");
-                    $("#shift").html('An error has occurred');
+    $('#region').on('change', function () {
+        region = $(this).val();
+        Region();
+    })
+    function Region() {
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { "region": region, "date": shiftDate },
+            dataType: "html",
+            success: function (data) {
+                let isLogin = data.includes("Login");
+                if (isLogin) {
+                    window.location.reload();
                 }
-            });
-        };
-
-        var region = 0;
-        let shiftDate = RequestedDate.toISOString().split("T")[0];
-
-        $('#region').on('change', function () {
-            region = $(this).val();
-            Region();
-        })
-        function Region() {
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: { "region": region, "date": shiftDate},
-                dataType: "html",
-                success: function (data) {
-                    let isLogin = data.includes("Login");
-                    if (isLogin) {
-                        window.location.reload();
-                    }
-                    else {
-                        $("#tableContent").html(data);
-                        $("#status").html("(New)");
-                    }
-                },
-                error: function (error) {
-                    console.log(error)
-                    $("#tableContent").html('An error has occurred');
-                }
-            });
-        }
-           let dateString = RequestedDate.toISOString().split("T")[0];
-        $(document).ready(function () {
-            $.ajax({
-                url: "/Admin/SchedullingData",
-                type: "POST",
-                data: { "region": region ,"date": dateString},
-                dataType: "html",
-                success: function (data) {
-                    console.log(date);
+                else {
                     $("#tableContent").html(data);
-                    url = "/Admin/SchedullingData";
-                },
-                error: function (error) {
-                    console.log(error)
+                    $("#status").html("(New)");
                 }
-            });
+            },
+            error: function (error) {
+                console.log(error)
+                $("#tableContent").html('An error has occurred');
+            }
         });
-        function Day() {
-            var shiftdate = RequestedDate.toISOString().split("T")[0];
-            $.ajax({
-                url: "/Admin/SchedullingData",
-                type: "POST",
-                data: { "region": region ,"date": shiftdate},
-                dataType: "html",
-                success: function (data) {
-                    $("#tableContent").html(data);
-                    url = "/Admin/SchedullingData";
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-            $('#Day').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
-            $('#Week').removeClass('btn-info').addClass('bg-white text-info border-info');
-            $('#Month').removeClass('btn-info').addClass('bg-white text-info border-info');
-        }
-        function Week() {
-            var shiftdates = RequestedDate.toISOString().split("T")[0];
-            $.ajax({
-                url: "/Admin/WeekSchedullingData",
-                type: "POST",
-                data: { "region": region ,"date": shiftdates},
-                dataType: "html",
-                success: function (data) {
-                    $("#tableContent").html(data);
-                    url = "/Admin/WeekSchedullingData";
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-            $('#Day').removeClass('btn-info').addClass('bg-white text-info border-info');
-            $('#Week').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
-            $('#Month').removeClass('btn-info').addClass('bg-white text-info border-info');
-        }
-        function Month() {
-            $.ajax({
-                url: "/Admin/MonthSchedullingData",
-                type: "POST",
-                data: { "region": region ,"date": date},
-                dataType: "html",
-                success: function (data) {
-                    $("#tableContent").html(data);
-                    url = "/Admin/MonthSchedullingData";
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
-            $('#Day').removeClass('btn-info').addClass('bg-white text-info border-info');
-            $('#Week').removeClass('btn-info').addClass('bg-white text-info border-info');
-            $('#Month').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
-        }
+    }
+    $(document).ready(function () {
+    let dateString = RequestedDate.toISOString().split("T")[0];
+        $.ajax({
+            url: "/Admin/SchedullingData",
+            type: "POST",
+            data: { "region": region, "date": dateString },
+            dataType: "html",
+            success: function (data) {
+                console.log(date);
+                $("#tableContent").html(data);
+                url = "/Admin/SchedullingData";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function Day() {
+        var shiftdate = RequestedDate.toISOString().split("T")[0];
+        $.ajax({
+            url: "/Admin/SchedullingData",
+            type: "POST",
+            data: { "region": region, "date": shiftdate },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+                url = "/Admin/SchedullingData";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+        $('#Day').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
+        $('#Week').removeClass('btn-info').addClass('bg-white text-info border-info');
+        $('#Month').removeClass('btn-info').addClass('bg-white text-info border-info');
+    }
+
+    function Week() {
+        var shiftdates = RequestedDate.toISOString().split("T")[0];
+        const startOfWeek = moment(shiftdates).startOf('week');
+        $.ajax({
+            url: "/Admin/WeekSchedullingData",
+            type: "POST",
+            data: { "region": region, "date": startOfWeek.format('YYYY-MM-DD') },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+                url = "/Admin/WeekSchedullingData";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+        $('#Day').removeClass('btn-info').addClass('bg-white text-info border-info');
+        $('#Week').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
+        $('#Month').removeClass('btn-info').addClass('bg-white text-info border-info');
+    }
+    function Month() {
+        $.ajax({
+            url: "/Admin/MonthSchedullingData",
+            type: "POST",
+            data: { "region": region, "date": date },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+                url = "/Admin/MonthSchedullingData";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+        $('#Day').removeClass('btn-info').addClass('bg-white text-info border-info');
+        $('#Week').removeClass('btn-info').addClass('bg-white text-info border-info');
+        $('#Month').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
+    }
 
 
 </script>

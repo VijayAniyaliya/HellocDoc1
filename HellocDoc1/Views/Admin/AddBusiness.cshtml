@@ -1,0 +1,127 @@
+﻿@model Services.Models.AddBusinessViewModel
+
+@{
+    ViewData["Title"] = "AddBusiness";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        @if(Model.VendorId != 0)
+        {
+            <div class="h4">Update Business</div>
+        }
+        else
+        {
+        <div class="h4">Add Business</div>
+        }
+        <a asp-area="" asp-action="Vendors" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <form asp-action="AddNewBusiness" asp-route-VendorId="@Model.VendorId" method="post">
+        <div class="mt-3 border rounded-3 shadow pt-3 px-3">
+            <div class="h5 mb-3">Submit Information</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="VendorName" class="form-control" id="contact"
+                               placeholder="business" />
+                        <label for="contact" class="">Business Name</label>
+                        <span asp-validation-for="VendorName" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <select asp-for="ProfessionId" class="form-select text-secondary py-0 profession" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected disabled>Select Profession</option>
+                            @foreach (var item in Model.professionalTypes)
+                            {
+                                <option value="@item.HealthProfessionalId">@item.ProfessionName</option>
+                            }
+                        </select>
+                        <label for="floatingSelect"></label>
+                        <span asp-validation-for="ProfessionId" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="FaxNumber" class="form-control" id="faxnumber"
+                               placeholder="fax number" />
+                        <label for="faxnumber" class="">Fax Number</label>
+                        <span asp-validation-for="FaxNumber" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="PhoneNumber" class="form-control" id="phone"
+                               placeholder="phone" />
+                        <label for="contact" class="">Phone Number</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" asp-for="Email" class="form-control" id="email"
+                               placeholder="abc@gmail.com" />
+                        <label for="email" class="">Email</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="BusinessContact" class="form-control" id="contact"
+                               placeholder="business contact" />
+                        <label for="contact" class="">Business Contact</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="Street" class="form-control" id="Street"
+                               placeholder="Street" />
+                        <label for="Street" class="">Street</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="City" class="form-control" id="City"
+                               placeholder="City" />
+                        <label for="City" class="">City</label>
+                        <span asp-validation-for="City" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="State" class="form-control" id="faxnumber"
+                               placeholder="State" />
+                        <label for="State" class="">State</label>
+                        <span asp-validation-for="State" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" asp-for="ZipCode" class="form-control" id="faxnumber"
+                               placeholder="ZipCode" />
+                        <label for="ZipCode" class="">ZipCode</label>
+                    </div>
+                </div>
+            </div>
+            <div class="footer mt-5 mb-4 text-end">
+                <button type="submit" class="btn bg-info text-white">Save</button>
+                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+<br />
+<br />
+<br />

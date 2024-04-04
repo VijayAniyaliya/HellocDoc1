@@ -18,7 +18,7 @@ namespace Common.Helpers
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
-        {
+            {
             if (context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any())
                 return;
 
