@@ -1,4 +1,4 @@
-﻿
+﻿@model Services.Models.SchedullingViewModel
 
 
 <table class="table table-bordered">
@@ -15,22 +15,20 @@
     </thead>
     <tbody>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            @for (var a = 0; a <= 6; a++)
+            {
+                <td class="p-0">
+                    @foreach (var shifts in Model.ShiftDetailList)
+                    {
+                        if (shifts.ShiftDate.Date == Model.ShiftDate.Date.AddDays(a))
+                        {
+                            <button onclick="viewshift(@shifts.ShiftDetailId)" class="dates mb-1 d-flex align-items-center justify-content-center border-0 viewshiftbtn" @* value="@item.ShiftId" *@ style="width:100%;background-color:#efabd2;">
+                                @shifts.StartTime.ToString("hh:mm tt")-@shifts.EndTime.ToString("hh:mm tt")
+                            </button>
+                        }
+                    }
+                </td>
+            }
         </tr>
 
     </tbody>

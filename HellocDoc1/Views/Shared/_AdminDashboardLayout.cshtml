@@ -55,7 +55,7 @@
         <div class=" h6 d-none d-md-flex gap-4 ">
             @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Admin/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Admin/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Admin/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Admin/CloseCase")))
             {
-                <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
+                <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
             }
             else
             {
@@ -63,7 +63,7 @@
             }
             @if (Context.Request.Path.Equals("/Admin/ProviderLocation"))
             {
-                <a asp-action="ProviderLocation" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Providers Location</a>
+                <a asp-action="ProviderLocation" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Providers Location</a>
             }
             else
             {
@@ -72,7 +72,7 @@
             }
             @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
             {
-                <a asp-action="AdminProfile" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">My Profile</a>
+                <a asp-action="AdminProfile" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">My Profile</a>
             }
             else
             {
@@ -81,13 +81,12 @@
             }
             @if ((Context.Request.Path.Equals("/Admin/Provider")) || (Context.Request.Path.Equals("/Admin/EditPhysician")) || (Context.Request.Path.Equals("/Admin/CreatePhysician")) || (Context.Request.Path.Equals("/Admin/Schedulling")))
             {
-                <a asp-action="Provider" class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Providers</a>
+                <a asp-action="Provider" class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Providers</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                     <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
                     <li><a a asp-action="Schedulling" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
                     <li><a class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                 </ul>
-
             }
             else
             {
@@ -100,16 +99,15 @@
             }
             @if ((Context.Request.Path.Equals("/Admin/Vendors")) || (Context.Request.Path.Equals("/Admin/AddBusiness")))
             {
-                <a asp-action="Vendors" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Partners</a>
-            }
+                <a asp-action="Vendors" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Partners</a>
+            }   
             else
             {
                 <a asp-action="Vendors" class="text-decoration-none px-2" style="color:black;">Partners</a>
-
             }
             @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")) || (Context.Request.Path.Equals("/Admin/UserAccess")))
             {
-                <a asp-action="Access" class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 4px solid #17a2b8!important;">Access</a>
+                <a asp-action="Access" class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Access</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                     <li><a asp-action="Access" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
                     <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
@@ -123,7 +121,28 @@
                     <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User ACcess</a></li>
                 </ul>
             }
-            <a class="text-decoration-none px-2" style="color:black;">Records</a>
+            @if (Context.Request.Path.Equals("/Admin/PatientHistory"))
+            {
+                <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Records</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
+                    <li><a asp-action=""  class="text-decoration-none dropdown-item provider-menu mb-2">Email Logs</a></li>
+                    <li><a asp-action=""  class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
+                    <li><a asp-action="PatientHistory" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu">Block History</a></li>
+                </ul>
+            }
+            else
+            {
+                <a class="text-decoration-none px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor:pointer;">Records</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                    <li><a asp-action=""  class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu mb-2">Email Logs</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
+                    <li><a asp-action="PatientHistory" class="text-decoration-none dropdown-item provider-menu  mb-2">Patient Records</a></li>
+                    <li><a asp-action="" class="text-decoration-none dropdown-item provider-menu">Block History</a></li>
+                </ul>
+            }
         </div>
     </div>
     @RenderBody()

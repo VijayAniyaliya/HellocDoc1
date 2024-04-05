@@ -4,15 +4,16 @@
 
 <table class="table table-bordered">
     <thead class="text-white" style="background: #504a4a;">
+            
         <tr>
             <th class="" style="">STAFF</th>
-            <th class="text-center">SUN3</th>
-            <th class="text-center">MUN4</th>
-            <th class="text-center">TUE5</th>
-            <th class="text-center">WED6</th>
-            <th class="text-center">THU7</th>
-            <th class="text-center">FRI8</th>
-            <th class="text-center">SAT9</th>
+            <th class="text-center">SUN @Model.ShiftDate.Date.Day </th>
+            <th class="text-center">MUN @Model.ShiftDate.Date.AddDays(1).Day</th>
+            <th class="text-center">TUE @Model.ShiftDate.Date.AddDays(2).Day</th>
+            <th class="text-center">WED @Model.ShiftDate.Date.AddDays(3).Day</th>
+            <th class="text-center">THU @Model.ShiftDate.Date.AddDays(4).Day</th>
+            <th class="text-center">FRI @Model.ShiftDate.Date.AddDays(5).Day</th>
+            <th class="text-center">SAT @Model.ShiftDate.Date.AddDays(6).Day</th>
         </tr>
     </thead>
     <tbody>
@@ -23,49 +24,24 @@
                 <td class="text-center" style="background:#efabd2">0/24</td>
             }
         </tr>
-        @*         @foreach (var item in Model.physicians)
-        {
-
-        <tr>
-        <td><div><img src="~/uploads/@item.Photo" style="    height: 25px; width: 25px;" class="mr-1" />@item.FirstName</div></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        </tr>
-        } *@
         @foreach (var obj in Model.physicians)
         {
             var shift = Model.ShiftDetailList.Where(u => u.Shift.PhysicianId == obj.PhysicianId).ToList();
             <tr>
-                <td><div><img src="~/uploads/@obj.Photo" style="    height: 25px; width: 25px;" class="mr-1" />@obj.FirstName</div></td>
+                <td><div><img src="~/uploads/@obj.Photo" style="height: 25px; width: 25px;" class="mr-1" />@obj.FirstName</div></td>
                 @for (var a = 0; a <= 6; a++)
                 {
-
-                    @if (shift.Count() > 0 && shift[0].ShiftDate.Date == Model.ShiftDate.Date.AddDays(a))
-                    {
-
-                        <td  id="i_@obj.PhysicianId" class="p-0">
-
-                            @foreach (var item in shift)        
+                    <td id="i_@obj.PhysicianId" class="p-0">
+                        @foreach (var shifts in shift)
+                        {
+                            if (shifts.ShiftDate.Date == Model.ShiftDate.Date.AddDays(a))
                             {
-                                    
-                                @if (item.ShiftDate == Model.ShiftDate.Date.AddDays(a))
-                                {
-                                    <button onclick="viewshift(@shift[0].ShiftDetailId)" class="dates mb-1 d-flex align-items-center justify-content-center border-0 viewshiftbtn" @* value="@item.ShiftId" *@ style="width:100%;background-color:#efabd2;">
-                                        @item.StartTime.ToString("hh:mm tt")-@item.EndTime.ToString("hh:mm tt")
-                                    </button>
-                                }
+                                <button onclick="viewshift(@shifts.ShiftDetailId)" class="dates mb-1 d-flex align-items-center justify-content-center border-0 viewshiftbtn" @* value="@item.ShiftId" *@ style="width:100%;background-color:#efabd2;">
+                                    @shifts.StartTime.ToString("hh:mm tt")-@shifts.EndTime.ToString("hh:mm tt")
+                                </button>
                             }
-                        </td>
-                    }
-                    else
-                    {
-                        <td id="i_@obj.PhysicianId"></td>
-                    }
+                        }
+                    </td>
                 }
             </tr>
         }

@@ -121,7 +121,7 @@
                 currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
                 nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
             );
-            Week()
+            Week();
         }
         else if (url == "/Admin/MonthSchedullingData") {
             let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -130,6 +130,7 @@
             $('#showDate').html('' +
                 date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
             );
+            Month();
         }
 
     }
@@ -153,7 +154,7 @@
                 currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
                 nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
             );
-            Week()
+            Week();
         }
         else if (url == "/Admin/MonthSchedullingData") {
             let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -162,6 +163,7 @@
             $('#showDate').html('' +
                 date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
             );
+            Month();
         }
 
     }
@@ -251,13 +253,17 @@
 
     function Week() {
         var shiftdates = RequestedDate.toISOString().split("T")[0];
+        console.log(shiftdates);
         const startOfWeek = moment(shiftdates).startOf('week');
+        console.log(startOfWeek);
         $.ajax({
             url: "/Admin/WeekSchedullingData",
-            type: "POST",
+            type: "GET",
             data: { "region": region, "date": startOfWeek.format('YYYY-MM-DD') },
             dataType: "html",
             success: function (data) {
+
+                console.log(startOfWeek.format('YYYY-MM-DD'));
                 $("#tableContent").html(data);
                 url = "/Admin/WeekSchedullingData";
             },
@@ -270,10 +276,11 @@
         $('#Month').removeClass('btn-info').addClass('bg-white text-info border-info');
     }
     function Month() {
+        let monthOfDate = RequestedDate.toISOString().split("T")[0];
         $.ajax({
             url: "/Admin/MonthSchedullingData",
             type: "POST",
-            data: { "region": region, "date": date },
+            data: { "date": monthOfDate },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

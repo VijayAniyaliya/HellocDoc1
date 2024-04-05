@@ -35,7 +35,7 @@ namespace Services.Implementation
             _environment = hostEnvironment;
         }
 
-        public AdminDashboardViewModel AdminDashboard()
+        public async Task<AdminDashboardViewModel> AdminDashboardAsync()
         {
             var requestCount1 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).Count();
             var requestCount2 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 2).Count();
@@ -43,7 +43,7 @@ namespace Services.Implementation
             var requestCount4 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 4).Count();
             var requestCount5 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 5).Count();
             var requestCount6 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6).Count();
-            List<Region> regions = _context.Regions.ToList();
+            List<Region> regions = await _context.Regions.ToListAsync();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel()
             {
@@ -1829,6 +1829,17 @@ namespace Services.Implementation
             }
         }
 
+        public SchedullingViewModel MonthSchedullingData(DateTime date)
+        {
+            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift)
+                .Where(x => x.ShiftDate.Month == date.Month).ToList();
+
+            SchedullingViewModel model = new SchedullingViewModel();
+            model.ShiftDetailList = shiftDetails;
+            model.ShiftDate = date;
+            return model;
+        }
+
         public VendorsDetailsViewModel VendorsData()
         {
             List<Region> regions = _context.Regions.ToList();
@@ -1945,6 +1956,40 @@ namespace Services.Implementation
         {
             var phyLocation = _context.PhysicianLocations.ToList();
             return phyLocation;
+        }
+
+        public PatientHistoryViewModel PatientHistory(PatientHistoryViewModel obj)
+        {
+            List<RequestClient> requestClients = _context.RequestClients.ToList();
+
+            if (!string.IsNullOrWhiteSpace(obj.FirstName))
+            {
+                requestClients = requestClients.Where(a => a.FirstName.ToLower().Contains(obj.FirstName.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(obj.LastName))
+            {
+                requestClients = requestClients.Where(a => a.LastName.ToLower().Contains(obj.LastName.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(obj.Email))
+            {
+                requestClients = requestClients.Where(a => a.Email.ToLower().Contains(obj.Email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(obj.PhoneNumber))
+            {
+                requestClients = requestClients.Where(a => a.PhoneNumber.Contains(obj.PhoneNumber)).ToList();
+            }
+
+            int count = requestClients.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+
+            PatientHistoryViewModel model = new PatientHistoryViewModel()
+            {
+                requestClients = requestClients,
+                CurrentPage = obj.requestedPage,
+                TotalPage = TotalPage,
+            };
+            return model;
         }
     }
 }

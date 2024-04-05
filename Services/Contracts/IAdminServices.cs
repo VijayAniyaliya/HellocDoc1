@@ -8,7 +8,7 @@ namespace Services.Contracts
     {
         AdminDashboardViewModel NewState(AdminDashboardViewModel obj);
 
-        AdminDashboardViewModel AdminDashboard();
+        Task<AdminDashboardViewModel> AdminDashboardAsync();
         AdminDashboardViewModel PendingState(AdminDashboardViewModel obj);
         AdminDashboardViewModel ActiveState(AdminDashboardViewModel obj);
         AdminDashboardViewModel ConcludeState(AdminDashboardViewModel obj);
@@ -84,5 +84,7 @@ namespace Services.Contracts
         Task AddNewBusiness(AddBusinessViewModel model, int VendorId);
         Task DeleteBusiness(int VendorId);
         List<PhysicianLocation> GetPhysicianlocations();
+        PatientHistoryViewModel PatientHistory(PatientHistoryViewModel model);
+        SchedullingViewModel MonthSchedullingData(DateTime date);
     }
 }

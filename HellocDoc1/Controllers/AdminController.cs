@@ -24,10 +24,10 @@ namespace HellocDoc1.Controllers
 
         }
 
-        public IActionResult AdminDashboard()
+        public async Task<IActionResult> AdminDashboardAsync()
         {
             AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model = _adminServices.AdminDashboard();
+            model = await _adminServices.AdminDashboardAsync();
             return View(model);
         }
         public IActionResult NewState(AdminDashboardViewModel obj)
@@ -535,10 +535,11 @@ namespace HellocDoc1.Controllers
             var data = _adminServices.SchedullingData(region, date);
             return PartialView("_WeekWiseSchedulling", data);
         }
-        public IActionResult MonthSchedullingData(int region)
+        public IActionResult MonthSchedullingData(DateTime date)
         {
-            return PartialView("_MonthWiseSchedulling");
-        }
+            var data = _adminServices.MonthSchedullingData(date);
+            return PartialView("_MonthWiseSchedulling", data);
+            }
 
         public IActionResult NewShift()
         {
@@ -616,5 +617,20 @@ namespace HellocDoc1.Controllers
             return Ok(getLocation);
         }
 
+        public IActionResult PatientHistory()
+        {
+            return View();
+        }
+
+        public IActionResult PatientHistoryData(PatientHistoryViewModel model)
+        {
+            var data = _adminServices.PatientHistory(model);
+            return PartialView("_PatientHistoryData", data);
+        }
+
+        public IActionResult PatientRecords()
+        {
+            return View();
+        }
     }
 }
