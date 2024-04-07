@@ -33,7 +33,124 @@
                 </a>
             </div>
         </div>
+@* 		List<RequestClient>
+			requestClients = _context.RequestClients.ToList();
 
+			requestClients = requestClients
+			.Where(a => string.IsNullOrWhiteSpace(model.FirstName) || a.FirstName.ToLower().Contains(model.FirstName.ToLower()))
+			.Where(a => string.IsNullOrWhiteSpace(model.LastName) || a.LastName.ToLower().Contains(model.LastName.ToLower()))
+			.Where(a => string.IsNullOrWhiteSpace(model.Email) || a.Email.ToLower().Contains(model.Email.ToLower()))
+			.Where(a => string.IsNullOrWhiteSpace(model.PhoneNumber) || a.PhoneNumber.Contains(model.PhoneNumber))
+			.ToList();
+
+
+			List<RequestClient>
+				requestClients = _context.RequestClients.ToList();
+
+				requestClients = requestClients.Where(a =>
+				(string.IsNullOrWhiteSpace(model.FirstName) || a.FirstName.ToLower().Contains(model.FirstName.ToLower())) &&
+				(string.IsNullOrWhiteSpace(model.LastName) || a.LastName.ToLower().Contains(model.LastName.ToLower())) &&
+				(string.IsNullOrWhiteSpace(model.Email) || a.Email.ToLower().Contains(model.Email.ToLower())) &&
+				(string.IsNullOrWhiteSpace(model.PhoneNumber) || a.PhoneNumber.Contains(model.PhoneNumber))
+				).ToList();
+
+
+				Anil, 16:22
+				@using HalloDocRepository.DataModels;
+				@model List<Physician>
+
+				@{
+					var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+					var currentDate = DateOnly.FromDateTime(DateTime.Now);
+					var flag = true;
+				}
+
+				<p>MDs On Call</p>
+
+				<div class="row">
+					@{
+						foreach (var item in Model)
+						{
+							if (item.Shifts.Count != 0)
+							{
+								foreach (var shifts in item.Shifts)
+								{
+									foreach (var shiftDetail in shifts.ShiftDetails)
+									{
+										if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate)
+										{
+											<div class="col-md-4">
+												@if (item.Photo == null)
+												{
+													<img src="/images/newicon.png" class="me-1" width="50" height="50" />
+												}
+												else
+												{
+													<img src="/Uploads/@item.Photo" class="me-1" width="50" height="50" />
+												}
+												<span>@item.FirstName @item.LastName</span>
+											</div>
+										}
+
+
+									}
+
+								}
+							}
+						}
+					}
+
+				</div>
+
+				<p>Physicians Off Duty</p>
+
+				<div class="row">
+					@foreach (var item in Model)
+					{
+						if (item.Shifts.Count == 0)
+						{
+							<div class="col-md-4">
+								@if (item.Photo == null)
+								{
+									<img src="/images/newicon.png" class="me-1" width="50" height="50" />
+								}
+								else
+								{
+									<img src="/Uploads/@item.Photo" class="me-1" width="50" height="50" />
+								}
+								<span>@item.FirstName @item.LastName</span>
+							</div>
+						}
+						else
+						{
+							flag = true;
+							foreach (var shifts in item.Shifts)
+							{
+								foreach (var shiftDetail in shifts.ShiftDetails)
+								{
+									if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate)
+									{
+										flag = false;
+									}
+								}
+							}
+							if (flag)
+							{
+								<div class="col-md-4">
+									@if (item.Photo == null)
+									{
+										<img src="/images/moon.svg" class="me-1" width="50" height="50" />
+									}
+									else
+									{
+										<img src="/Uploads/@item.Photo" class="me-1" width="50" height="50" />
+									}
+									<span>@item.FirstName @item.LastName</span>
+								</div>
+							}
+						}
+					}
+				</div>
         <div class="table-responsive shadow p-3 mt-4" id="tableContent">
             <div class="h6">Md On call</div>
             <div class="row mb-3">
@@ -66,7 +183,7 @@
                 </div>
             </div>
         </div>
-
+ *@
         <br />
         <br />
     </div>

@@ -1,26 +1,54 @@
-﻿@{
-    ViewData["Title"] = "PatientHistory";
+﻿@model Services.Models.PatientHistoryViewModel
+
+@{
+    ViewData["Title"] = "PatientRecords";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 
-<div class="container-fluid pt-4">
-    <div class="d-flex justify-content-between pt-3">
-        <div class="h4">Patient History</div>
+<div class="container-fluid pt-4 px-5">
+
+    <div class="d-flex justify-content-between pt-3 pb-3">
+        <div class="h4 fw-bold">Patient Records</div>
         <a asp-area="" asp-action="PatientHistory" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
             &lt;  Back
         </a>
 
     </div>
-    <div class=" pt-4 shadow Document-content mt-3 m-0 mx-md-5" style="">
 
-        <div class="table-responsive mt-2" id="tableContent">
+    <div class="table-responsive rounded-3 shadow-lg pt-4">
 
-        </div>
+        <table class="table  d-md-table d-none">
+            <thead>
+                <tr class="table-secondary">
+                    <th scope="col">Client/Member</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Confirmation</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Conclude Date</th>
+                    <th scope="col">Status</th>
+                    <th class="text-center" scope="col">Final Report</th>
+                    <th class="text-center" scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        <br />
-        <br />
+                <tr>
+                    <td>@Model.requestClient.FirstName, @Model.requestClient.LastName</td>
+                    <td>@Model.requestClient.Request.CreatedDate.ToString("MMM d, yyyy")</td>
+                    <td>@Model.requestClient.Request.ConfirmationNumber</td>
+                    <td>@Model.requestClient.Request.Physician?.FirstName</td>
+                    <td>Conclude Date</td>
+                    <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @Model.requestClient.Request.Status.ToString())</td>
+                    <td class="text-center">
+                        <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">View</button>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Actions</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
-</div>
 
-<br />
-<br />
+</div>

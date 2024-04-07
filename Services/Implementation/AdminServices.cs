@@ -57,9 +57,9 @@ namespace Services.Implementation
             };
             return model;
         }
-        public AdminDashboardViewModel NewState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> NewState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToListAsync();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
@@ -84,9 +84,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel PendingState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> PendingState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 2).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 2).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -110,9 +110,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel ActiveState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 3).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 3).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -136,9 +136,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel ConcludeState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 4).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 4).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -162,9 +162,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel ToCloseState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> ToCloseState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Where(a => a.Request.Status == 5).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Where(a => a.Request.Status == 5).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -188,9 +188,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public AdminDashboardViewModel UnpaidState(AdminDashboardViewModel obj)
+        public async Task<AdminDashboardViewModel> UnpaidState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToList();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -214,9 +214,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public ViewCaseViewModel ViewCase(int request_id)
+        public async Task<ViewCaseViewModel> ViewCase(int request_id)
         {
-            var data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             ViewCaseViewModel model = new ViewCaseViewModel();
             model.PatientNotes = data?.Notes!;
             model.FirstName = data?.FirstName!;
@@ -232,9 +232,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public ViewNotesViewModel ViewNotes(int request_id)
+        public async Task<ViewNotesViewModel> ViewNotes(int request_id)
         {
-            var data = _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             var data1 = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
             ViewNotesViewModel model = new ViewNotesViewModel();
             model.TransferNotes = data?.Notes;
@@ -244,17 +244,17 @@ namespace Services.Implementation
             return model;
         }
 
-        public void AddNotes(ViewNotesViewModel model, int request_id)
+        public async Task AddNotes(ViewNotesViewModel model, int request_id)
         {
-            var data = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data!.AdminNotes = model.AdditionalNotes;
             _context.Update(data);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public CancelCaseViewModel CancelDetails(int request_id)
+        public async Task<CancelCaseViewModel> CancelDetails(int request_id)
         {
-            List<CaseTag> data = _context.CaseTags.ToList();
+            List<CaseTag> data = await _context.CaseTags.ToListAsync();
             List<CaseTagViewModel> obj = data.Select(a => new CaseTagViewModel() { CaseId = a.CaseTagId, CaseName = a.Name }).ToList();
             var data1 = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
 
@@ -286,9 +286,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public AssignCaseViewModel AssignDetails(int request_id)
+        public async Task<AssignCaseViewModel> AssignDetails(int request_id)
         {
-            List<Region> data = _context.Regions.ToList();
+            List<Region> data = await _context.Regions.ToListAsync();
             AssignCaseViewModel model = new AssignCaseViewModel()
             {
                 RequestId = request_id,
@@ -297,9 +297,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public List<PhysicianSelectlViewModel> FilterData(int regionid)
+        public async Task<List<PhysicianSelectlViewModel>> FilterData(int regionid)
         {
-            List<Physician> data = _context.Physicians.Where(a => a.RegionId == regionid).ToList();
+            List<Physician> data = await _context.Physicians.Where(a => a.RegionId == regionid).ToListAsync();
             List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel() { Name = a.FirstName, PhysicianId = a.PhysicianId }).ToList();
             return data1;
         }
@@ -323,9 +323,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public BlockCaseViewModel BlockDetails(int request_id)
+        public async Task<BlockCaseViewModel> BlockDetails(int request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             BlockCaseViewModel model = new BlockCaseViewModel()
             {
                 RequestId = request_id,
@@ -336,7 +336,7 @@ namespace Services.Implementation
 
         public async Task BlockCase(int request_id, string reason)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data.Status = 10;
             RequestStatusLog requestStatusLog = new RequestStatusLog()
             {
@@ -360,9 +360,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public ViewUploadsViewModel ViewUploads(int request_id)
+        public async Task<ViewUploadsViewModel> ViewUploads(int request_id)
         {
-            Request data = _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefault();
+            Request data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             ViewUploadsViewModel viewUploads = new ViewUploadsViewModel()
             {
@@ -383,63 +383,75 @@ namespace Services.Implementation
             return viewUploads;
         }
 
-        public void UploadDocuments(ViewUploadsViewModel model, int request_id)
-        {
-            IEnumerable<IFormFile> upload = model.Upload;
-            foreach (var item in upload)
-            {
-                var file = item.FileName;
-                var uniqueFileName = GetUniqueFileName(file);
-                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                item.CopyTo(new FileStream(filePath, FileMode.Create));
+		public async Task UploadDocuments(ViewUploadsViewModel model, int request_id)
+		{
+			IEnumerable<IFormFile> upload = model.Upload;
+			foreach (var item in upload)
+			{
+				var file = item.FileName;
+				var uniqueFileName = GetUniqueFileName(file);
+				var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+				var filePath = Path.Combine(uploads, uniqueFileName);
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await item.CopyToAsync(fileStream);
+				}
 
-                RequestWiseFile requestWiseFile = new RequestWiseFile()
-                {
-                    FileName = uniqueFileName,
-                    CreatedDate = DateTime.Now,
-                };
-                _context.RequestWiseFiles.Add(requestWiseFile);
-                requestWiseFile.RequestId = request_id;
-            }
-            _context.SaveChanges();
-        }
+				RequestWiseFile requestWiseFile = new RequestWiseFile()
+				{
+					FileName = uniqueFileName,
+					CreatedDate = DateTime.Now,
+				};
+				_context.RequestWiseFiles.Add(requestWiseFile);
+				requestWiseFile.RequestId = request_id;
+			}
+			await _context.SaveChangesAsync();
+		}
 
-        public void Delete(int DocumentId)
-        {
-            RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == DocumentId).FirstOrDefault();
-            data.IsDeleted = new BitArray(new[] { true });
-            _context.RequestWiseFiles.Update(data);
-            _context.SaveChanges();
-        }
+		public async Task Delete(int DocumentId)
+		{
+			RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == DocumentId);
+			if (data != null)
+			{
+				data.IsDeleted = new BitArray(new[] { true });
+				_context.RequestWiseFiles.Update(data);
+				await _context.SaveChangesAsync();
+			}
+		}
 
-        public void DeleteAll(List<int> DocumentId)
-        {
-            foreach (var item in DocumentId)
-            {
-                RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
-                data.IsDeleted = new BitArray(new[] { true });
-                _context.RequestWiseFiles.Update(data);
-            }
-            _context.SaveChanges();
-        }
+		public async Task DeleteAll(List<int> DocumentId)
+		{
+			foreach (var item in DocumentId)
+			{
+				RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+				if (data != null)
+				{
+					data.IsDeleted = new BitArray(new[] { true });
+					_context.RequestWiseFiles.Update(data);
+				}
+			}
+			await _context.SaveChangesAsync();
+		}
 
-        public void SendMail(List<int> DocumentId)
-        {
-            List<string> name = new List<string>();
-            foreach (var item in DocumentId)
-            {
-                RequestWiseFile data = _context.RequestWiseFiles.Where(a => a.RequestWiseFileId == item).FirstOrDefault();
-                var file = data.FileName;
-                name.Add(file);
-            }
-            var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-            EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
-        }
+		public async Task SendMail(List<int> DocumentId)
+		{
+			List<string> name = new List<string>();
+			foreach (var item in DocumentId)
+			{
+				RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+				if (data != null)
+				{
+					var file = data.FileName;
+					name.Add(file);
+				}
+			}
+			var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
+			await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
+		}
 
-        public LoginResponseViewModel AdminLogin(AdminLoginViewModel model)
+		public async Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model)
         {
-            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).FirstOrDefault();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).FirstOrDefaultAsync();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
@@ -455,9 +467,9 @@ namespace Services.Implementation
             return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Password does not match" };
         }
 
-        public SendOrdersViewModel SendOders(int request_id)
+        public async Task<SendOrdersViewModel> SendOders(int request_id)
         {
-            List<HealthProfessionalType> data = _context.HealthProfessionalTypes.ToList();
+            List<HealthProfessionalType> data = await _context.HealthProfessionalTypes.ToListAsync();
             List<HealthProfession> obj = data.Select(a => new HealthProfession() { ProfessionId = a.HealthProfessionalId, ProfessionName = a.ProfessionName }).ToList();
 
 
@@ -469,9 +481,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public SendOrdersViewModel FilterDataByProfession(int ProfessionId)
+        public async Task<SendOrdersViewModel> FilterDataByProfession(int ProfessionId)
         {
-            List<HealthProfessional> data = _context.HealthProfessionals.Where(a => a.Profession == ProfessionId).ToList();
+            List<HealthProfessional> data = await _context.HealthProfessionals.Where(a => a.Profession == ProfessionId).ToListAsync();
             List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName }).ToList();
 
             SendOrdersViewModel model = new SendOrdersViewModel()
@@ -482,9 +494,9 @@ namespace Services.Implementation
         }
 
 
-        public SendOrdersViewModel FilterDataByBusiness(int BusinessId)
+        public async Task<SendOrdersViewModel> FilterDataByBusiness(int BusinessId)
         {
-            List<HealthProfessional> data = _context.HealthProfessionals.Where(a => a.VendorId == BusinessId).ToList();
+            List<HealthProfessional> data = await _context.HealthProfessionals.Where(a => a.VendorId == BusinessId).ToListAsync();
             List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
 
             SendOrdersViewModel model = new SendOrdersViewModel()
@@ -494,26 +506,27 @@ namespace Services.Implementation
             return model;
         }
 
-        public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
-        {
-            OrderDetail orderDetail = new OrderDetail()
-            {
-                VendorId = vendorid,
-                RequestId = request_id,
-                FaxNumber = faxnumber,
-                Email = email,
-                BusinessContact = contact,
-                Prescription = model.Prescription,
-                NoOfRefill = model.Refills,
-                CreatedDate = DateTime.Now,
-            };
-            await _context.OrderDetails.AddAsync(orderDetail);
-            await _context.SaveChangesAsync();
-        }
+		public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+		{
+			OrderDetail orderDetail = new OrderDetail()
+			{
+				VendorId = vendorid,
+				RequestId = request_id,
+				FaxNumber = faxnumber,
+				Email = email,
+				BusinessContact = contact,
+				Prescription = model.Prescription,
+				NoOfRefill = model.Refills,
+				CreatedDate = DateTime.Now,
+			};
+			await _context.OrderDetails.AddAsync(orderDetail);
+			await _context.SaveChangesAsync();
+		}
 
-        public TransferCaseViewModel TransferDetails(int request_id)
+
+		public async Task<TransferCaseViewModel> TransferDetails(int request_id)
         {
-            List<Region> data = _context.Regions.ToList();
+            List<Region> data = await _context.Regions.ToListAsync();
             TransferCaseViewModel model = new TransferCaseViewModel()
             {
                 RequestId = request_id,
@@ -552,9 +565,9 @@ namespace Services.Implementation
             }
         }
 
-        public ClearCaseViewModel ClearDetails(int request_id)
+        public async Task<ClearCaseViewModel> ClearDetails(int request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             ClearCaseViewModel model = new ClearCaseViewModel()
             {
@@ -591,9 +604,9 @@ namespace Services.Implementation
 
         }
 
-        public SendAgreementViewModel SendAgreementDetails(int request_id)
+        public async Task<SendAgreementViewModel> SendAgreementDetails(int request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             SendAgreementViewModel model = new SendAgreementViewModel()
             {
@@ -605,14 +618,15 @@ namespace Services.Implementation
             return model;
         }
 
-        public void SendAgreement(string request_id)
-        {
-            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $" <a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
-        }
+		public async Task SendAgreement(string request_id)
+		{
+			await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+		}
 
-        public CloseCaseViewModel CloseCase(int request_id)
+
+		public async Task<CloseCaseViewModel> CloseCase(int request_id)
         {
-            RequestClient data = _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefault();
+            RequestClient data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
             CloseCaseViewModel model = new CloseCaseViewModel()
@@ -642,7 +656,7 @@ namespace Services.Implementation
 
         public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
         {
-            RequestClient requestClient = _context.RequestClients.Where(a => a.RequestId == request_id).FirstOrDefault();
+            RequestClient requestClient = await _context.RequestClients.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             requestClient.Email = model.Email;
             requestClient.PhoneNumber = model.PhoneNumber;
 
@@ -676,10 +690,10 @@ namespace Services.Implementation
             }
         }
 
-        public EncounterFormViewModel EncounterForm(int request_id)
+        public async Task<EncounterFormViewModel> EncounterForm(int request_id)
         {
-            RequestClient data = _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefault();
-            EncounterForm obj = _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefault();
+            RequestClient data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            EncounterForm obj = await _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             EncounterFormViewModel model = new EncounterFormViewModel()
             {
@@ -725,7 +739,7 @@ namespace Services.Implementation
 
         public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id)
         {
-            EncounterForm encounter = _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefault();
+            EncounterForm encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             if (encounter == null)
             {
@@ -791,9 +805,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public AdminProfileViewModel ProfileData(string email)
+        public async Task<AdminProfileViewModel> ProfileData(string email)
         {
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
             Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
             List<Region> regions = _context.Regions.ToList();
             List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
@@ -820,7 +834,7 @@ namespace Services.Implementation
 
         public async Task ResetPassword(string email, string password)
         {
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
             aspNetUser.PasswordHash = password;
             aspNetUser.ModifiedDate = DateTime.Now;
 
@@ -830,9 +844,9 @@ namespace Services.Implementation
 
         public async Task UpdateAdminstrator(ProfileData model, string email)
         {
-            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefault();
-            List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
+            Admin admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
+            List<AdminRegion> adminRegions = await _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToListAsync();
             foreach (var item in adminRegions)
             {
                 _context.AdminRegions.Remove(item);
@@ -860,7 +874,7 @@ namespace Services.Implementation
         }
         public async Task UpdateBillInfo(BillingData model, string email)
         {
-            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            Admin admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
             admin.Address1 = model.address1;
             admin.Address2 = model.address2;
             admin.City = model.city;
@@ -871,9 +885,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public void SendLink(SendLinkViewModel model)
+        public async Task SendLink(SendLinkViewModel model)
         {
-            EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Create request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Agreement</a>");
+            EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Agreement</a>");
         }
 
         public async Task SubmitRequest(CreateRequestViewModel model)
@@ -976,18 +990,18 @@ namespace Services.Implementation
             }
         }
 
-        public ProviderViewModel provider()
+        public async Task<ProviderViewModel> provider()
         {
             ProviderViewModel model = new ProviderViewModel();
-            List<Region> regions = _context.Regions.ToList();
+            List<Region> regions = await _context.Regions.ToListAsync();
             model.Regions = regions;
             return model;
         }
-        public ProviderViewModel PhysicianData(int region)
+        public async Task<ProviderViewModel> PhysicianData(int region)
         {
-            List<Physician> data = _context.Physicians.Include(x => x.Role).ToList();
+            List<Physician> data = await _context.Physicians.Include(x => x.Role).ToListAsync();
             data = data.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
-            List<PhysicianNotification> notifications = _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToList();
+            List<PhysicianNotification> notifications = await _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToListAsync();
             List<PhysicianData> obj = data.Select(a => new PhysicianData()
             {
                 physicianId = a.PhysicianId,
@@ -1011,17 +1025,17 @@ namespace Services.Implementation
         }
 
 
-        public void SendMessage(int PhysicianId, string message)
+        public async Task SendMessage(int PhysicianId, string message)
         {
-            Physician data = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            Physician data = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
             var email = data.Email;
-            EmailSender.SendEmailAsync("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
+            EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
 
         }
 
-        public void StopNotification(int PhysicianId)
+        public async Task StopNotification(int PhysicianId)
         {
-            PhysicianNotification? notification = _context.PhysicianNotifications.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            PhysicianNotification? notification = await _context.PhysicianNotifications.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
             PhysicianNotification physicianNotification = new PhysicianNotification();
 
             if (notification == null)
@@ -1043,7 +1057,7 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public byte[] DownloadExcle(AdminDashboardViewModel model)
+        public async Task<byte[]> DownloadExcle(AdminDashboardViewModel model)
         {
             using (var workbook = new XSSFWorkbook())
             {
@@ -1140,13 +1154,13 @@ namespace Services.Implementation
         }
 
 
-        public PhysicianAccountViewModel EditPhysician(int PhysicianId)
+        public async Task<PhysicianAccountViewModel> EditPhysician(int PhysicianId)
         {
-            Physician? physician = _context.Physicians.Include(x => x.Role).FirstOrDefault(a => a.PhysicianId == PhysicianId);
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
-            List<Role> role = _context.Roles.ToList();
-            List<Region> regions = _context.Regions.ToList();
-            List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
+            Physician? physician = await _context.Physicians.Include(x => x.Role).FirstOrDefaultAsync(a => a.PhysicianId == PhysicianId);
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+            List<Role> role = await _context.Roles.ToListAsync();
+            List<Region> regions = await _context.Regions.ToListAsync();
+            List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
 
             PhysicianAccountViewModel model = new PhysicianAccountViewModel()
             {
@@ -1200,8 +1214,8 @@ namespace Services.Implementation
 
         public async Task ResetAccountPass(int PhysicianId, string password)
         {
-            Physician physician = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
+            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
             aspNetUser.PasswordHash = password;
             aspNetUser.ModifiedDate = DateTime.Now;
             _context.AspNetUsers.Update(aspNetUser);
@@ -1210,8 +1224,8 @@ namespace Services.Implementation
 
         public async Task UpdateUserInfo(AccountData model)
         {
-            Physician? physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
-            AspNetUser? aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician!.AspNetUserId).FirstOrDefault();
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician!.AspNetUserId).FirstOrDefaultAsync();
 
             aspNetUser!.UserName = model.Username;
             aspNetUser.ModifiedDate = DateTime.Now;
@@ -1232,9 +1246,9 @@ namespace Services.Implementation
 
         public async Task UpdatePhysicianInfo(UpdatePhycisianInfo model)
         {
-            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
-            List<PhysicianRegion> physicianRegions = _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToList();
-            AspNetUser aspNetUser = _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefault();
+            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
+            List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
+            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
 
             foreach (var item in physicianRegions)
             {
@@ -1266,7 +1280,7 @@ namespace Services.Implementation
 
         public async Task ModifyBillInfo(ModifyBillingData model)
         {
-            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
             physician.Address1 = model.address1;
             physician.Address2 = model.address2;
             physician.City = model.city;
@@ -1279,7 +1293,7 @@ namespace Services.Implementation
 
         public async Task ModifyProfileInfo(ModifyProfileData model)
         {
-            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
             physician.BusinessName = model.businessname;
             physician.BusinessWebsite = model.businessweb;
             physician.AdminNotes = model.adminnotes;
@@ -1310,7 +1324,7 @@ namespace Services.Implementation
 
         public async Task ModifyDocInfo(DocumentDataModel model)
         {
-            Physician physician = _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefault();
+            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
             if (model.AggrementDoc != null)
             {
                 var uniquefileName = model.PhysicianId + "_" + "Agreement";
@@ -1352,15 +1366,15 @@ namespace Services.Implementation
 
         public async Task DeleteAccount(int PhysicianId)
         {
-            Physician? physician = _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefault();
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
             physician!.IsDeleted = new BitArray(new[] { true });
             _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
         }
 
-        public AccessViewModel Access()
+        public async Task<AccessViewModel> Access()
         {
-            List<Role> roles = _context.Roles.ToList();
+            List<Role> roles = await _context.Roles.ToListAsync();
             roles = roles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<RoleData> roleData = roles.Select(a => new RoleData() { RoleId = a.RoleId, Name = a.Name, AccountType = a.AccountType }).ToList();
 
@@ -1383,15 +1397,15 @@ namespace Services.Implementation
 
         public async Task DeleteRole(int RoleId)
         {
-            Role? role = _context.Roles.Where(a => a.RoleId == RoleId).FirstOrDefault();
+            Role? role = await _context.Roles.Where(a => a.RoleId == RoleId).FirstOrDefaultAsync();
             role.IsDeleted = new BitArray(new[] { true });
             _context.Roles.Update(role);
             await _context.SaveChangesAsync();
         }
 
-        public CreateAccessViewModel FilterByAccountType(int accounttype)
+        public async Task<CreateAccessViewModel> FilterByAccountType(int accounttype)
         {
-            List<Menu> menus = _context.Menus.ToList();
+            List<Menu> menus = await _context.Menus.ToListAsync();
             CreateAccessViewModel model = new CreateAccessViewModel();
             model.Menu = menus;
             if (accounttype != 4)
@@ -1403,7 +1417,7 @@ namespace Services.Implementation
 
         public async Task CreateRole(CreateAccessViewModel model, string Email)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.Where(a => a.Email == Email).FirstOrDefault();
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == Email).FirstOrDefaultAsync();
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
@@ -1436,9 +1450,9 @@ namespace Services.Implementation
             }
         }
 
-        public CreatePhysicianViewModel CreatePhysician()
+        public async Task<CreatePhysicianViewModel> CreatePhysician()
         {
-            List<Role> role = _context.Roles.ToList();
+            List<Role> role = await _context.Roles.ToListAsync();
             List<Region> regions = _context.Regions.ToList();
 
             CreatePhysicianViewModel model = new CreatePhysicianViewModel()
@@ -1570,10 +1584,10 @@ namespace Services.Implementation
             item.CopyTo(new FileStream(photoPath, FileMode.Create));
         }
 
-        public CreateAdminViewModel CreateAdmin()
+        public async Task<CreateAdminViewModel> CreateAdmin()
         {
-            List<Role> role = _context.Roles.ToList();
-            List<Region> regions = _context.Regions.ToList();
+            List<Role> role = await _context.Roles.ToListAsync();
+            List<Region> regions = await _context.Regions.ToListAsync();
 
             CreateAdminViewModel model = new CreateAdminViewModel()
             {
@@ -1642,9 +1656,9 @@ namespace Services.Implementation
             }
         }
 
-        public SchedullingViewModel Schedulling()
+        public async Task<SchedullingViewModel> Schedulling()
         {
-            List<Region> region = _context.Regions.ToList();
+            List<Region> region = await _context.Regions.ToListAsync();
 
             SchedullingViewModel model = new SchedullingViewModel()
             {
@@ -1653,10 +1667,10 @@ namespace Services.Implementation
             return model;
         }
 
-        public SchedullingViewModel SchedullingData(int region, DateTime date)
+        public async Task<SchedullingViewModel> SchedullingData(int region, DateTime date)
         {
-            List<Physician> physician = _context.Physicians.ToList();
-            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift).ToList();
+            List<Physician> physician = await _context.Physicians.ToListAsync();
+            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).ToListAsync();
             SchedullingViewModel model = new SchedullingViewModel();
             if (region != 0)
             {
@@ -1668,9 +1682,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public CreateNewShift NewShift()
+        public async Task<CreateNewShift> NewShift()
         {
-            List<Region> regions = _context.Regions.ToList();
+            List<Region> regions = await _context.Regions.ToListAsync();
             CreateNewShift model = new CreateNewShift()
             {
                 RegionList = regions,
@@ -1678,11 +1692,11 @@ namespace Services.Implementation
             return model;
         }
 
-        public CreateNewShift ViewShift(int ShiftDetailId)
+        public async Task<CreateNewShift> ViewShift(int ShiftDetailId)
         {
-            ShiftDetail? shiftDetails = _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefault();
-            Physician? physicians = _context.Physicians.Where(a => a.PhysicianId == shiftDetails.Shift.PhysicianId).FirstOrDefault();
-            Region? region = _context.Regions.Where(a => a.RegionId == physicians!.RegionId).FirstOrDefault();
+            ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefaultAsync();
+            Physician? physicians = await _context.Physicians.Where(a => a.PhysicianId == shiftDetails.Shift.PhysicianId).FirstOrDefaultAsync();
+            Region? region = await _context.Regions.Where(a => a.RegionId == physicians!.RegionId).FirstOrDefaultAsync();
             CreateNewShift model = new CreateNewShift()
             {
                 PhysicianId = physicians.PhysicianId,
@@ -1698,7 +1712,7 @@ namespace Services.Implementation
 
         public async Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == Email);
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == Email);
 
 
             var chk = repeatdays.ToList();
@@ -1829,10 +1843,10 @@ namespace Services.Implementation
             }
         }
 
-        public SchedullingViewModel MonthSchedullingData(DateTime date)
+        public async Task<SchedullingViewModel> MonthSchedullingData(DateTime date)
         {
-            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift)
-                .Where(x => x.ShiftDate.Month == date.Month).ToList();
+            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a=> a.Shift.Physician)
+                .Where(x => x.ShiftDate.Month == date.Month).ToListAsync();
 
             SchedullingViewModel model = new SchedullingViewModel();
             model.ShiftDetailList = shiftDetails;
@@ -1840,9 +1854,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public VendorsDetailsViewModel VendorsData()
+        public async Task<VendorsDetailsViewModel> VendorsData()
         {
-            List<Region> regions = _context.Regions.ToList();
+            List<Region> regions = await _context.Regions.ToListAsync();
             VendorsDetailsViewModel model = new VendorsDetailsViewModel()
             {
                 Regions = regions,
@@ -1850,9 +1864,9 @@ namespace Services.Implementation
             return (model);
         }
 
-        public VendorsDetailsViewModel VendorMenu(int region, string searchvendor)
+        public async Task<VendorsDetailsViewModel> VendorMenu(int region, string searchvendor)
         {
-            List<HealthProfessional> healthProfessionals = _context.HealthProfessionals.ToList();
+            List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.ToListAsync();
             healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             if (!string.IsNullOrWhiteSpace(searchvendor))
             {
@@ -1880,10 +1894,10 @@ namespace Services.Implementation
             return (model);
         }
 
-        public AddBusinessViewModel AddBusiness(int VendorId)
+        public async Task<AddBusinessViewModel> AddBusiness(int VendorId)
         {
-            HealthProfessional? healthProfessional = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
-            List<HealthProfessionalType> healthProfessionalTypes = _context.HealthProfessionalTypes.ToList();
+            HealthProfessional? healthProfessional = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
+            List<HealthProfessionalType> healthProfessionalTypes = await _context.HealthProfessionalTypes.ToListAsync();
 
             AddBusinessViewModel model = new AddBusinessViewModel()
             {
@@ -1905,7 +1919,7 @@ namespace Services.Implementation
 
         public async Task AddNewBusiness(AddBusinessViewModel model, int VendorId)
         {
-            HealthProfessional? healthProfessional1 = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
+            HealthProfessional? healthProfessional1 = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
 
             if (healthProfessional1 != null)
             {
@@ -1945,45 +1959,77 @@ namespace Services.Implementation
 
         public async Task DeleteBusiness(int VendorId)
         {
-            HealthProfessional? healthProfessional = _context.HealthProfessionals.FirstOrDefault(a => a.VendorId == VendorId);
+            HealthProfessional? healthProfessional = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
             healthProfessional.IsDeleted = new BitArray(new[] { true });
             _context.HealthProfessionals.Update(healthProfessional);
             await _context.SaveChangesAsync();
 
         }
 
-        public List<PhysicianLocation> GetPhysicianlocations()
+        public async Task<List<PhysicianLocation>> GetPhysicianlocations()
         {
-            var phyLocation = _context.PhysicianLocations.ToList();
+            var phyLocation = await _context.PhysicianLocations.ToListAsync();
             return phyLocation;
         }
 
-        public PatientHistoryViewModel PatientHistory(PatientHistoryViewModel obj)
+        public async Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel obj)
         {
-            List<RequestClient> requestClients = _context.RequestClients.ToList();
+            List<RequestClient> requestClients = await _context.RequestClients.ToListAsync();
 
-            if (!string.IsNullOrWhiteSpace(obj.FirstName))
-            {
-                requestClients = requestClients.Where(a => a.FirstName.ToLower().Contains(obj.FirstName.ToLower())).ToList();
-            }
-            if (!string.IsNullOrWhiteSpace(obj.LastName))
-            {
-                requestClients = requestClients.Where(a => a.LastName.ToLower().Contains(obj.LastName.ToLower())).ToList();
-            }
-            if (!string.IsNullOrWhiteSpace(obj.Email))
-            {
-                requestClients = requestClients.Where(a => a.Email.ToLower().Contains(obj.Email.ToLower())).ToList();
-            }
-            if (!string.IsNullOrWhiteSpace(obj.PhoneNumber))
-            {
-                requestClients = requestClients.Where(a => a.PhoneNumber.Contains(obj.PhoneNumber)).ToList();
-            }
+            requestClients = requestClients.Where(a =>
+                (string.IsNullOrWhiteSpace(obj.FirstName) || a.FirstName.ToLower().Contains(obj.FirstName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.LastName) || a.LastName.ToLower().Contains(obj.LastName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
+            ).ToList();
 
             int count = requestClients.Count();
             int TotalPage = (int)Math.Ceiling(count / (double)5);
             requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
 
             PatientHistoryViewModel model = new PatientHistoryViewModel()
+            {
+                requestClients = requestClients,
+                CurrentPage = obj.requestedPage,
+                TotalPage = TotalPage,
+            };
+            return model;
+        }
+
+        public async Task<PatientHistoryViewModel> PatientRecords(int requestid)
+        {
+            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).FirstOrDefaultAsync(a => a.RequestClientId == requestid);
+
+            PatientHistoryViewModel model = new PatientHistoryViewModel()
+            {
+                requestClient = requestClient!,
+            };
+
+            return model;
+        }
+
+        public async Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj)
+        {
+            List<RequestClient> requestClients = await _context.RequestClients
+                .Include(a => a.Request).Include(a => a.Request.Physician)
+                .Include(a => a.Request.RequestNotes)
+                .Include(a => a.Request.RequestStatusLogs)
+                .ToListAsync();
+
+            requestClients = requestClients.Where(a =>
+                //(obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
+                (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
+                //(obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
+                (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
+            ).ToList();
+
+            int count = requestClients.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+
+            SearchRecordsViewModel model = new SearchRecordsViewModel()
             {
                 requestClients = requestClients,
                 CurrentPage = obj.requestedPage,

@@ -1,14 +1,23 @@
-﻿@model Services.Models.PatientHistoryViewModel
+﻿@model Services.Models.SearchRecordsViewModel
 
 <table class="table  d-md-table d-none">
     <thead>
         <tr class="table-secondary">
-            <th scope="col">FirstName</th>
-            <th scope="col">Last Name</th>
+            <th scope="col">Patient Name</th>
+            <th scope="col">Requestor</th>
+            <th scope="col">Date Of Services</th>
+            <th scope="col">Close Case Date</th>
             <th scope="col">Email</th>
-            <th scope="col">Phone</th>
+            <th scope="col">Phone Number</th>
             <th scope="col">Address</th>
-            <th class="text-center" scope="col">Actions</th>
+            <th scope="col">Zip</th>
+            <th scope="col">Request Status</th>
+            <th scope="col">Physician</th>
+            <th scope="col">Physician Notes</th>
+            <th scope="col">Cancelled By Provider Notes</th>
+            <th scope="col">Admin Notes</th>
+            <th scope="col">Patient Notes</th>
+            <th class="text-center" scope="col">Actions Permanently</th>
         </tr>
     </thead>
     <tbody>
@@ -16,13 +25,22 @@
         {
 
             <tr>
-                <td>@item.FirstName</td>
-                <td>@item.LastName</td>
+                <td>@item.FirstName, @item.LastName</td>
+                <td>@Enum.Parse(typeof(Common.Enum.RequestType), @item.Request.RequestTypeId.ToString())</td>
+                <td>Date Of Service</td>
+                <td>Close Case Date</td>
                 <td>@item.Email</td>
                 <td>@item.PhoneNumber</td>
-                <td>@item.Address</td>
+                <td>@item.Street, @item.City, @item.State</td>
+                <td>@item.ZipCode</td>
+                <td>RequestStatus</td>
+                <td>@item.Request.Physician?.FirstName</td>
+                <td>Physician Notes</td>
+                <td>Cancel Notes</td>
+                <td>Admin Notes</td>
+                <td>Patient Notes</td>
                 <td class="text-center">
-                    <a asp-action="PatientRecords" asp-route-requestid="@item.RequestClientId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Explore</a>
+                    <a asp-action=""  class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</a>
                 </td>
             </tr>
         }

@@ -121,7 +121,7 @@
                     <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User ACcess</a></li>
                 </ul>
             }
-            @if (Context.Request.Path.Equals("/Admin/PatientHistory"))
+            @if (Context.Request.Path.Equals("/Admin/PatientHistory") || (Context.Request.Path.StartsWithSegments("/Admin/PatientRecords")))
             {
                 <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Records</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">

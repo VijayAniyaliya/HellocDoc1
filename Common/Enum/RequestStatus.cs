@@ -25,5 +25,13 @@ namespace Common.Enum
         CancelledByProvider=13,
         CCUploadedByClient=14,
         CCApprovedByAdmin=15
+    }  
+
+    public enum RequestType
+    {
+        Patient=1,
+        FamilyFriend=2,
+        Business =3,
+        Concierge=4,
     }
 }

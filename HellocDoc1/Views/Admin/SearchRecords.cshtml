@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "SearchRecords";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+@using Common.Enum; 
+
+<div class="container-fluid pt-4">
+    <div class="d-flex justify-content-between pt-3 pb-3 m-0 mx-md-5">
+        <div class="h4 fw-bold">Search Records</div>
+        <a asp-action="" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            Export Dat To Excel
+        </a>
+
+    </div>
+    <div class=" pt-4 shadow Document-content mt-3 m-0 mx-md-5" style="">
+
+        <div class="pr-3 mb-4 px-3">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary py-0" id="requeststatus" aria-label="Floating label select example">
+                            <option selected disabled>Select Profession</option>
+                           @*  @foreach (var item in RequestStatus)
+                            { *@
+                                <option value="ProfessionId">Unpaid</option>
+                            @* } *@
+                        </select>
+                        <label for="floatingSelect"></label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="patientname"
+                               placeholder="your first name" />
+                        <label for="floatingInput" class="">Patient Name</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary py-0" id="requesttype" aria-label="Floating label select example">
+                            <option selected disabled>Select Profession</option>
+                            @*                         @foreach (var item in Model.HealthProfessions)
+                            { *@
+                            <option value="ProfessionId">Unpaid</option>
+                            @* } *@
+                        </select>
+                        <label for="floatingSelect"></label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="fromdate" placeholder="date of services" />
+                        <label for="floatingInput" class="">From Date Of Services</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="todate" placeholder="to of services" />
+                        <label for="floatingInput" class="">To Date Of Services</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="provider" placeholder="provide rname" />
+                        <label for="floatingInput" class="">Provider Name</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email"
+                               placeholder="abc@gmail.com" />
+                        <label for="email" class="">Email</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="contact"
+                               placeholder="contact" />
+                        <label for="contact" class="">Phone Number</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-end pr-3">
+            <button type="button" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
+            <button type="button" onclick="searchpatient()" class="btn bg-info text-white fw-bold rounded-3 px-4 h5 ">Search</button>
+        </div>
+        <div class="table-responsive mt-2" id="tableContent">
+        </div>
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var filterdata = {
+        RequestStatus: 0,
+        PatientName: "",
+        RequestType: 5,
+        FronDate: "",
+        ToDate: "",
+        ProviderName: "",
+        Email: "",
+        PhoneNumber: "",
+        requestedPage: 1,
+    }
+
+    function changepage(CurrentPage) {
+        filterdata.requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
+    function searchpatient() {
+        filterdata.RequestStatus = $("#requeststatus")[0].value;
+        filterdata.PatientName = $("#patientname")[0].value;
+        filterdata.RequestType = $("#requesttype")[0].value;
+        filterdata.FronDate = $("#fromdate")[0].value;
+        filterdata.ToDate = $("#todate")[0].value;
+        filterdata.ProviderName = $("#provider")[0].value;
+        filterdata.Email = $("#email")[0].value;
+        filterdata.PhoneNumber = $("#contact")[0].value;
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    }
+
+    $("#clear").on("click", function () {
+        $("#requeststatus").val('');
+        $("#patientname").val('');
+        $("#requesttype").val('');
+        $("#fromdate").val('');
+        $("#todate").val('');
+        $("#provider").val('');
+        $("#email").val('');
+        $("#contact").val('');
+        filterdata.RequestStatus = 0;
+        filterdata.PatientName = "";
+        filterdata.RequestType = 5;
+        filterdata.FronDate = "";
+        filterdata.ToDate = "";
+        filterdata.ProviderName = "";
+        filterdata.Email = "";
+        filterdata.PhoneNumber = "";
+        AjaxAll();
+    })
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/SearchRecordsData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function AjaxAll() {
+        $.ajax({
+            url: "/Admin/SearchRecordsData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+
+</script>

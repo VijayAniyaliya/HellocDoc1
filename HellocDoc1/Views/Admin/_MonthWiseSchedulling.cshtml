@@ -14,22 +14,100 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            @for (var a = 0; a <= 6; a++)
+        @* @{
+            int weekday = 1, temp = 1;
+            var firstday = new DateTime(Model.ShiftDate.Year, Model.ShiftDate.Month, weekday);
+            var lastday = firstday.AddMonths(1).AddSeconds(-1);
+            for (int i = 0; i < 6; i++)
             {
-                <td class="p-0">
-                    @foreach (var shifts in Model.ShiftDetailList)
+                <tr>
+                    @for (int j = 0; j < 7; j++)
                     {
-                        if (shifts.ShiftDate.Date == Model.ShiftDate.Date.AddDays(a))
+                        if (weekday <= lastday.Day)
                         {
-                            <button onclick="viewshift(@shifts.ShiftDetailId)" class="dates mb-1 d-flex align-items-center justify-content-center border-0 viewshiftbtn" @* value="@item.ShiftId" *@ style="width:100%;background-color:#efabd2;">
-                                @shifts.StartTime.ToString("hh:mm tt")-@shifts.EndTime.ToString("hh:mm tt")
-                            </button>
+                            firstday = new DateTime(Model.ShiftDate.Year, Model.ShiftDate.Month, weekday);
+
+                            if ((int)firstday.DayOfWeek == j)
+                            {
+                                <td class="text-center p-0" style="height:120px" id="@weekday">
+                                    <div style="background-color:#ffc0e7" class="mb-1">@weekday</div>
+                                    @{
+                                        int count = 0;
+                                        @foreach (var item in Model.ShiftDetailList)
+                                        {
+                                                if (shifts.ShiftDate!.Value.Day == weekday)
+                                                {
+                                                    if (count < 3)
+                                                    {
+                                                        <div style="black" class="mb-1 viewShift pointer" id="@shifts.ShiftDetailId" data-bs-toggle="modal" data-bs-target="#ViewShift">
+                                                            @shifts.StartTime - @shifts.EndTime / <br>
+                                                            @item.Shift.Physician.FirstName
+                                                        </div>
+                                                        count++;
+                                                    }
+                                                    else
+                                                    {
+                                                        break;
+                                                    }
+                                                }
+                                        }
+                                        if (count > 2)
+                                        {
+                                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ViewShift_@weekday">View All</button>
+                                        }
+
+                                        <div class="modal fade" id="ViewShift_@weekday" tabindex="-1" role="dialog" aria-labelledby="modalCenterTitle">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header submitButton w-100">
+                                                        <p class="modal-title" id="exampleModalLongTitle">View All Shift</p>
+                                                        <button type="button" class="text-white border-0" style="background-color:transparent" data-bs-dismiss="modal" aria-label="Close">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @foreach (var item in Model)
+                                                        {
+                                                            @foreach (var shifts in item.Shifts)
+                                                            {
+                                                                if (shifts.ShiftDate!.Value.Day == weekday)
+                                                                {
+                                                                    <div style="background-color:@Status[shifts.Status];" class="mb-1 viewShift pointer" id="@shifts.ShiftDetailId" data-bs-dismiss="modal">
+                                                                        @shifts.StartTime - @shifts.EndTime / <br>
+                                                                        @item.PhysicianName
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn text-info border border-info" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    }
+                                </td>
+                                weekday++;
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                        else
+                        {
+                            <td></td>
                         }
                     }
-                </td>
-            }
-        </tr>
+                </tr>
 
+                if (weekday > lastday.Day)
+                {
+                    break;
+                }
+            }
+        } *@
     </tbody>
 </table>

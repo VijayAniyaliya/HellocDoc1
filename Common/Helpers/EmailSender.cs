@@ -6,7 +6,7 @@ namespace HalloDoc.Utility
 {
     public static class EmailSender
     {
-        public static Task SendEmailAsync(string email, string subject, string message)
+        public static Task SendEmail(string email, string subject, string message)
         {
             var emailToSend = new MimeMessage();
             emailToSend.From.Add(MailboxAddress.Parse("vijay.aniyaliya@etatvasoft.com"));

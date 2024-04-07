@@ -240,7 +240,7 @@ namespace HellocDoc1.Services
 
             if (user != null)
             {
-                EmailSender.SendEmailAsync("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{email}\">Reset</a>");
+                EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{email}\">Reset</a>");
             }
         }
 

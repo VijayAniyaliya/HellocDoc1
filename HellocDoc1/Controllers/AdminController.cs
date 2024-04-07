@@ -30,61 +30,61 @@ namespace HellocDoc1.Controllers
             model = await _adminServices.AdminDashboardAsync();
             return View(model);
         }
-        public IActionResult NewState(AdminDashboardViewModel obj)
+        public async Task<IActionResult> NewState(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.NewState(obj);
+			AdminDashboardViewModel model = await _adminServices.NewState(obj);
             return View(model);
         }
-        public IActionResult PendingState(AdminDashboardViewModel obj)
+        public async Task<IActionResult> PendingStateAsync(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.PendingState(obj);
+            AdminDashboardViewModel model = await _adminServices.PendingState(obj);
             return View(model);
         }
-        public IActionResult ActiveState(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ActiveStateAsync(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.ActiveState(obj);
+            AdminDashboardViewModel model = await _adminServices.ActiveState(obj);
             return View(model);
         }
-        public IActionResult ConcludeState(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ConcludeStateAsync(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.ConcludeState(obj);
-            return View(model);
-        }
-
-        public IActionResult ToCloseState(AdminDashboardViewModel obj)
-        {
-            AdminDashboardViewModel model = _adminServices.ToCloseState(obj);
+            AdminDashboardViewModel model = await _adminServices.ConcludeState(obj);
             return View(model);
         }
 
-        public IActionResult UnpaidState(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ToCloseStateAsync(AdminDashboardViewModel obj)
         {
-            AdminDashboardViewModel model = _adminServices.UnpaidState(obj);
+            AdminDashboardViewModel model = await _adminServices.ToCloseState(obj);
             return View(model);
         }
 
-        public IActionResult ViewCase(int request_id)
+        public async Task<IActionResult> UnpaidStateAsync(AdminDashboardViewModel obj)
         {
-            ViewCaseViewModel data = _adminServices.ViewCase(request_id);
+            AdminDashboardViewModel model = await _adminServices.UnpaidState(obj);
+            return View(model);
+        }
+
+        public async Task<IActionResult> ViewCase(int request_id)
+        {
+            ViewCaseViewModel data = await _adminServices.ViewCase(request_id);
             return View(data);
         }
 
-        public IActionResult ViewNotes(int request_id)
+        public async Task<IActionResult> ViewNotes(int request_id)
         {
-            ViewNotesViewModel data = _adminServices.ViewNotes(request_id);
+            ViewNotesViewModel data = await _adminServices.ViewNotes(request_id);
             return View(data);
         }
 
         [Route("{request_id}")]
-        public IActionResult AddNotes(ViewNotesViewModel model, int request_id)
+        public async Task<IActionResult> AddNotes(ViewNotesViewModel model, int request_id)
         {
-            _adminServices.AddNotes(model, request_id);
+            await _adminServices.AddNotes(model, request_id);
             return RedirectToAction("ViewNotes", new { request_id = request_id });
         }
         [HttpPost("{request_id}")]
-        public IActionResult CancelDetails(int request_id)
+        public async Task<IActionResult> CancelDetails(int request_id)
         {
-            CancelCaseViewModel data = _adminServices.CancelDetails(request_id);
+            CancelCaseViewModel data = await _adminServices.CancelDetails(request_id);
             return PartialView("_CancelCase", data);
         }
 
@@ -95,15 +95,15 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost("{request_id}")]
-        public IActionResult AssignDetails(int request_id)
+        public async Task<IActionResult> AssignDetails(int request_id)
         {
-            AssignCaseViewModel data = _adminServices.AssignDetails(request_id);
+            AssignCaseViewModel data = await _adminServices.AssignDetails(request_id);
             return PartialView("_AssignCase", data);
         }
 
-        public List<PhysicianSelectlViewModel> FilterData(int regionid)
+        public async Task<List<PhysicianSelectlViewModel>> FilterData(int regionid)
         {
-            List<PhysicianSelectlViewModel> data = _adminServices.FilterData(regionid);
+            List<PhysicianSelectlViewModel> data = await _adminServices.FilterData(regionid);
             return data;
         }
 
@@ -114,9 +114,9 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost("{request_id}")]
-        public IActionResult BlockDetails(int request_id)
+        public async Task<IActionResult> BlockDetails(int request_id)
         {
-            BlockCaseViewModel data = _adminServices.BlockDetails(request_id);
+            BlockCaseViewModel data = await _adminServices.BlockDetails(request_id);
             return PartialView("_BlockCase", data);
         }
 
@@ -126,64 +126,64 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult ViewUploads(int request_id)
+        public async Task<IActionResult> ViewUploads(int request_id)
         {
-            var model = _adminServices.ViewUploads(request_id);
+            var model = await _adminServices.ViewUploads(request_id);
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult UploadDocuments(ViewUploadsViewModel model, int request_id)
+        public async Task<IActionResult> UploadDocuments(ViewUploadsViewModel model, int request_id)
         {
-            _adminServices.UploadDocuments(model, request_id);
+            await _adminServices.UploadDocuments(model, request_id);
             return RedirectToAction("ViewUploads", new { request_id = request_id });
         }
 
-        public IActionResult Delete(int DocumentId, int RequestId)
+        public async Task<IActionResult> Delete(int DocumentId, int RequestId)
         {
-            _adminServices.Delete(DocumentId);
+            await _adminServices.Delete(DocumentId);
             return RedirectToAction("ViewUploads", new { request_id = RequestId });
         }
-        public IActionResult DeleteAll([FromBody] List<int> DocumentId)
+        public async Task<IActionResult> DeleteAll([FromBody] List<int> DocumentId)
         {
-            _adminServices.DeleteAll(DocumentId);
+            await _adminServices.DeleteAll(DocumentId);
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult SendMail([FromBody] List<int> DocumentId)
+        public async Task<IActionResult> SendMail([FromBody] List<int> DocumentId)
         {
-            _adminServices.SendMail(DocumentId);
+			await _adminServices.SendMail(DocumentId);
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult SendOrders(int request_id)
+        public async Task<IActionResult> SendOrders(int request_id)
         {
-            var data = _adminServices.SendOders(request_id);
+            var data = await _adminServices.SendOders(request_id);
             return View(data);
         }
 
-        public SendOrdersViewModel FilterDataByProfession(int ProfessionId)
+        public async Task<SendOrdersViewModel> FilterDataByProfession(int ProfessionId)
         {
-            SendOrdersViewModel data = _adminServices.FilterDataByProfession(ProfessionId);
+            SendOrdersViewModel data = await _adminServices.FilterDataByProfession(ProfessionId);
             return data;
         }
 
-        public SendOrdersViewModel FilterDataByBusiness(int BusinessId)
+        public async Task<SendOrdersViewModel> FilterDataByBusiness(int BusinessId)
         {
-            SendOrdersViewModel data = _adminServices.FilterDataByBusiness(BusinessId);
+            SendOrdersViewModel data = await _adminServices.FilterDataByBusiness(BusinessId);
             return data;
         }
 
         [HttpPost]
-        public IActionResult SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        public async Task<IActionResult> SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
         {
-            var data = _adminServices.SendOrderDetails(model, request_id, vendorid, contact, email, faxnumber);
+            await _adminServices.SendOrderDetails(model, request_id, vendorid, contact, email, faxnumber);
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult TransferDetails(int request_id)
+        public async Task<IActionResult> TransferDetails(int request_id)
         {
-            var data = _adminServices.TransferDetails(request_id);
+            var data = await _adminServices.TransferDetails(request_id);
             return PartialView("_TransferCase", data);
         }
 
@@ -193,9 +193,9 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult ClearDetails(int request_id)
+        public async Task<IActionResult> ClearDetails(int request_id)
         {
-            var data = _adminServices.ClearDetails(request_id);
+            var data = await _adminServices.ClearDetails(request_id);
             return PartialView("_ClearCase", data);
         }
 
@@ -206,24 +206,24 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult SendAgreementDetails(int request_id)
+        public async Task<IActionResult> SendAgreementDetails(int request_id)
         {
-            var data = _adminServices.SendAgreementDetails(request_id);
+            var data = await _adminServices.SendAgreementDetails(request_id);
             return PartialView("_SendAgreement", data);
         }
 
         [HttpPost]
-        public IActionResult SendAgreement(int request_id)
+        public async Task<IActionResult> SendAgreement(int request_id)
         {
             string RequestId = HashingServices.Encrypt(request_id.ToString());
-            _adminServices.SendAgreement(RequestId);
+			await _adminServices.SendAgreement(RequestId);
             return RedirectToAction("AdminDashboard");
         }
 
 
-        public IActionResult CloseCase(int request_id)
+        public async Task<IActionResult> CloseCase(int request_id)
         {
-            var data = _adminServices.CloseCase(request_id);
+            var data = await _adminServices.CloseCase(request_id);
             return View(data);
         }
 
@@ -241,9 +241,9 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpGet]
-        public IActionResult EncounterForm(int request_id)
+        public async Task<IActionResult> EncounterForm(int request_id)
         {
-            var data = _adminServices.EncounterForm(request_id);
+            var data = await _adminServices.EncounterForm(request_id);
             return View(data);
         }
 
@@ -263,11 +263,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult AdminLogin(AdminLoginViewModel user)
+        public async Task<IActionResult> AdminLogin(AdminLoginViewModel user)
         {
             if (ModelState.IsValid)
             {
-                LoginResponseViewModel? result = _adminServices.AdminLogin(user);
+                LoginResponseViewModel? result = await _adminServices.AdminLogin(user);
                 if (result.Status == ResponseStatus.Success)
                 {
                     Response.Cookies.Append("jwt", result.Token);
@@ -291,10 +291,10 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminLogin");
         }
 
-        public IActionResult AdminProfile()
+        public async Task<IActionResult> AdminProfile()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var data = _adminServices.ProfileData(email);
+            var data = await _adminServices.ProfileData(email);
             return View(data);
         }
 
@@ -321,20 +321,20 @@ namespace HellocDoc1.Controllers
             return NoContent();
         }
 
-        public IActionResult Provider()
+        public async Task<IActionResult> Provider()
         {
-            var data = _adminServices.provider();
+            var data = await _adminServices.provider();
             return View(data);
         }
-        public IActionResult ProviderMenu(int region)
+        public async Task<IActionResult> ProviderMenu(int region)
         {
-            var data = _adminServices.PhysicianData(region);
+            var data = await _adminServices.PhysicianData(region);
             return PartialView("_ProviderMenu", data);
         }
 
-        public IActionResult StopNotification(int PhysicianId)
+        public async Task<IActionResult> StopNotification(int PhysicianId)
         {
-            _adminServices.StopNotification(PhysicianId);
+			await _adminServices.StopNotification(PhysicianId);
             return NoContent();
         }
 
@@ -345,9 +345,9 @@ namespace HellocDoc1.Controllers
             return PartialView("_ContactProvider", physicianData);
         }
 
-        public IActionResult SendMessage(int PhysicianId, string message)
+        public async Task<IActionResult> SendMessage(int PhysicianId, string message)
         {
-            _adminServices.SendMessage(PhysicianId, message);
+			await _adminServices.SendMessage(PhysicianId, message);
             return Json("");
         }
 
@@ -357,9 +357,9 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendLink(SendLinkViewModel model)
+        public async Task<IActionResult> SendLink(SendLinkViewModel model)
         {
-            _adminServices.SendLink(model);
+			await _adminServices.SendLink(model);
             return Json("success");
         }
 
@@ -368,7 +368,7 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult ExportData(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ExportData(AdminDashboardViewModel obj)
         {
             int CurrentPage = 0;
             int PageSize = 10;
@@ -376,25 +376,25 @@ namespace HellocDoc1.Controllers
             switch (obj.status)
             {
                 case 1:
-                    model = _adminServices.NewState(obj);
+                    model = await _adminServices.NewState(obj);
                     break;
                 case 2:
-                    model = _adminServices.PendingState(obj);
+                    model = await _adminServices.PendingState(obj);
                     break;
                 case 3:
-                    model = _adminServices.ActiveState(obj);
+                    model = await _adminServices.ActiveState(obj);
                     break;
                 case 4:
-                    model = _adminServices.ConcludeState(obj);
+                    model = await _adminServices.ConcludeState(obj);
                     break;
                 case 5:
-                    model = _adminServices.ToCloseState(obj);
+                    model = await _adminServices.ToCloseState(obj);
                     break;
                 case 6:
-                    model = _adminServices.UnpaidState(obj);
+                    model = await _adminServices.UnpaidState(obj);
                     break;
             }
-            var record = _adminServices.DownloadExcle(model);
+            var record = await _adminServices.DownloadExcle(model);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{obj.status}_{strDate}.xlsx";
@@ -408,9 +408,9 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult EditPhysician(int PhysicianId)
+        public async Task<IActionResult> EditPhysician(int PhysicianId)
         {
-            var data = _adminServices.EditPhysician(PhysicianId);
+            var data = await _adminServices.EditPhysician(PhysicianId);
             return View(data);
         }
 
@@ -458,9 +458,9 @@ namespace HellocDoc1.Controllers
             return Ok();
         }
 
-        public IActionResult Access()
+        public async Task<IActionResult> Access()
         {
-            var data = _adminServices.Access();
+            var data = await _adminServices.Access();
             return View(data);
         }
         public IActionResult CreateAccess()
@@ -475,9 +475,9 @@ namespace HellocDoc1.Controllers
             return NoContent();
         }
 
-        public IActionResult FilterByAccountType(int accounttype)
+        public async Task<IActionResult> FilterByAccountType(int accounttype)
         {
-            var data = _adminServices.FilterByAccountType(accounttype);
+            var data = await _adminServices.FilterByAccountType(accounttype);
             return PartialView("_MenuData", data);
         }
 
@@ -489,9 +489,9 @@ namespace HellocDoc1.Controllers
             return Ok();
         }
 
-        public IActionResult CreatePhysician()
+        public async Task<IActionResult> CreatePhysician()
         {
-            var data = _adminServices.CreatePhysician();
+            var data = await _adminServices.CreatePhysician();
             return View(data);
         }
 
@@ -502,9 +502,9 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Provider");
         }
 
-        public IActionResult CreateAdmin()
+        public async Task<IActionResult> CreateAdmin()
         {
-            var data = _adminServices.CreateAdmin();
+            var data = await _adminServices.CreateAdmin();
             return View(data);
         }
 
@@ -519,37 +519,37 @@ namespace HellocDoc1.Controllers
         {
             return View();
         }
-        public IActionResult Schedulling()
+        public async Task<IActionResult> Schedulling()
         {
-            var data = _adminServices.Schedulling();
+            var data = await _adminServices.Schedulling();
             return View(data);
         }
 
-        public IActionResult SchedullingData(int region, DateTime date)
+        public async Task<IActionResult> SchedullingData(int region, DateTime date)
         {
-            var data = _adminServices.SchedullingData(region, date);
+            var data = await _adminServices.SchedullingData(region, date);
             return PartialView("_SchedullingData", data);
         }
-        public IActionResult WeekSchedullingData(int region, DateTime date)
+        public async Task<IActionResult> WeekSchedullingData(int region, DateTime date)
         {
-            var data = _adminServices.SchedullingData(region, date);
+            var data = await _adminServices.SchedullingData(region, date);
             return PartialView("_WeekWiseSchedulling", data);
         }
-        public IActionResult MonthSchedullingData(DateTime date)
+        public async Task<IActionResult> MonthSchedullingData(DateTime date)
         {
-            var data = _adminServices.MonthSchedullingData(date);
+            var data = await _adminServices.MonthSchedullingData(date);
             return PartialView("_MonthWiseSchedulling", data);
             }
 
-        public IActionResult NewShift()
+        public async Task<IActionResult> NewShift()
         {
-            var data = _adminServices.NewShift();
+            var data = await _adminServices.NewShift();
             return PartialView("_CreateNewShift", data);
         }
 
-        public IActionResult ViewShift(int ShiftDetailId)
+        public async Task<IActionResult> ViewShift(int ShiftDetailId)
         {
-            var data = _adminServices.ViewShift(ShiftDetailId);
+            var data = await _adminServices.ViewShift(ShiftDetailId);
             return PartialView("_ViewShift", data);
         }
 
@@ -567,21 +567,21 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult Vendors()
+        public async Task<IActionResult> Vendors()
         {
-            var data = _adminServices.VendorsData();
+            var data = await _adminServices.VendorsData();
             return View(data);
         }
 
-        public IActionResult VendorMenu(int region, string searchvendor)
+        public async Task<IActionResult> VendorMenu(int region, string searchvendor)
         {
-            var data = _adminServices.VendorMenu(region, searchvendor);
+            var data = await _adminServices.VendorMenu(region, searchvendor);
             return PartialView("_VendorsData", data);
         }
 
-        public IActionResult AddBusiness(int VendorId)      
+        public async Task<IActionResult> AddBusiness(int VendorId)      
         {
-                var data = _adminServices.AddBusiness(VendorId);
+                var data = await _adminServices.AddBusiness(VendorId);
                 return View(data);
         }
 
@@ -611,9 +611,9 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult GetLocation()
+        public async Task<IActionResult> GetLocation()
         {
-            List<PhysicianLocation> getLocation = _adminServices.GetPhysicianlocations();
+            List<PhysicianLocation> getLocation = await _adminServices.GetPhysicianlocations();
             return Ok(getLocation);
         }
 
@@ -622,15 +622,27 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult PatientHistoryData(PatientHistoryViewModel model)
+        public async Task<IActionResult> PatientHistoryData(PatientHistoryViewModel model)
         {
-            var data = _adminServices.PatientHistory(model);
+            var data = await _adminServices.PatientHistory(model);
             return PartialView("_PatientHistoryData", data);
         }
 
-        public IActionResult PatientRecords()
+        public async Task<IActionResult> PatientRecords(int requestid)
+        {
+            var data = await _adminServices.PatientRecords(requestid);
+            return View(data);
+        }
+
+        public IActionResult SearchRecords()
         {
             return View();
+        }    
+
+        public async Task<IActionResult> SearchRecordsData(SearchRecordsViewModel model)
+        {
+            var data = await _adminServices.SearchRecords(model); 
+            return PartialView("_SearchRecordsData", data);
         }
     }
 }
