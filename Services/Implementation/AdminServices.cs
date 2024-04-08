@@ -2090,5 +2090,39 @@ namespace Services.Implementation
             };
             return model;
         }
+
+        public LogsDataViewModel EmailLogsData(LogsDataViewModel model)
+        {
+            List<EmailLog> emailLogs = _context.EmailLogs.ToList();
+
+            int count = emailLogs.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            emailLogs = emailLogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+
+            LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+            {
+                EmailLogs= emailLogs,
+                CurrentPage= model.CurrentPage,
+                TotalPage= TotalPage,
+            };
+            return logsDataViewModel;
+        }    
+
+        public LogsDataViewModel SMSLogsData(LogsDataViewModel model)
+        {
+            List<Smslog> smslogs = _context.Smslogs.ToList();
+
+            int count = smslogs.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            smslogs = smslogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+
+            LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+            {
+                SmsLogs= smslogs,
+                CurrentPage= model.CurrentPage,
+                TotalPage= TotalPage,
+            };
+            return logsDataViewModel;
+        }
     }
 }

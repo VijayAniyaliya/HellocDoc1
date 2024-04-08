@@ -668,5 +668,26 @@ namespace HellocDoc1.Controllers
             var data = await _adminServices.SearchRecords(model);
             return PartialView("_SearchRecordsData", data);
         }
-    }
+
+		public IActionResult EmailLogs()
+		{
+			return View();
+		}	
+
+        public IActionResult EmailLogsData(LogsDataViewModel model)
+		{
+            var data = _adminServices.EmailLogsData(model);
+            return PartialView("_EmailLogsData", data);
+		}
+
+        public IActionResult SMSLogs()
+		{
+			return View();
+		}
+        public IActionResult SMSLogsData(LogsDataViewModel model)
+		{
+            var data = _adminServices.SMSLogsData(model);
+            return PartialView("_SMSLogsData", data);
+		}	
+	}
 }

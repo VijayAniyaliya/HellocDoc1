@@ -1,0 +1,60 @@
+﻿@model Services.Models.LogsDataViewModel
+
+<table class="table  d-md-table d-none">
+    <thead>
+        <tr class="table-secondary">
+            <th scope="col">Recipent</th>
+            <th scope="col">Action</th>
+            <th scope="col">Role Name</th>
+            <th scope="col">Email Id</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Sent Date</th>
+            <th scope="col">Sent</th>
+            <th scope="col">Sent Tries</th>
+            <th scope="col">Confiramtion Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.EmailLogs)
+        {
+
+            <tr>
+                <td>Reciepent</td>
+                <td>Action</td>
+                <td>Role Name</td>
+                <td>@item.EmailId</td>
+                <td>@item.CreateDate.ToString("MMM dd, yyyy h:mm tt")</td>
+                <td>@(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</td>
+                <td>IsEmailSent</td>
+                <td>@item.SentTries</td>
+                <td>@item.ConfirmationNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPage > 1)
+{
+    <div class="page-container">
+        <ul class="pagination justify-content-center d-flex page-list">
+            <li class="page-item @(Model.CurrentPage <= 1 ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage - 1)"><i class="bi bi-chevron-double-left text-info page"></i></a>
+            </li>
+            @for (int CurrentPage = 1; CurrentPage <= Model.TotalPage; CurrentPage++)
+            {
+                <li class="m-2 btn @(CurrentPage == Model.CurrentPage ? "page-active" : "")" onclick="changepage(@CurrentPage)"><a class="text-decoration-none text-black curent-page-index" data-page="@CurrentPage">@CurrentPage</a></li>
+            }
+            <li class="page-item  @(Model.CurrentPage == Model.TotalPage ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage + 1)"><i class="bi bi-chevron-double-right text-info page"></i></a>
+            </li>
+        </ul>
+
+    </div>
+}
+else if (Model.TotalPage == 1)
+{
+}
+else
+{
+    <div class="text-center text-danger fw-bold h5">No record found</div>
+}

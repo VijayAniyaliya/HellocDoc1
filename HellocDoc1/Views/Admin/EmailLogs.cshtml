@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "EmailLogs";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+@using Common.Enum;
+
+<div class="container-fluid pt-4">
+    <div class="h4 fw-bold">Search Records</div>
+    <div class=" pt-4 shadow Document-content mt-3 m-0 mx-md-5" style="">
+
+        <div class="pr-3 mb-4 px-3">
+            <div class="row">
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <select class="form-select text-secondary" id="role" aria-label="Floating label select example">
+                            <option selected disabled>All</option>
+                            @*  @foreach (var item in RequestStatus)
+                            { *@
+                            <option value="RoleId">Unpaid</option>
+                            @* } *@
+                        </select>
+                        <label for="floatingSelect">Search By Role</label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="receivername"
+                               placeholder="receiver name" />
+                        <label for="floatingInput" class="">Receiver Name</label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email"
+                               placeholder="abc@gmail.com" />
+                        <label for="email" class="">Email Id</label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="createddate" placeholder="created date" />
+                        <label for="floatingInput" class="">Created Date</label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="sentdate" placeholder="sent date" />
+                        <label for="floatingInput" class="">Sent Date</label>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 d-flex align-items-center justify-content-end">
+                    <div class="text-end pr-3 ">
+                        <button type="button" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
+                        <button type="button" onclick="searchpatient()" class="btn bg-info text-white fw-bold rounded-3 px-4 h5 ">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mt-2" id="tableContent">
+        </div>
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var filterdata = {
+        RoleId: 0,
+        ReceiverName: "",
+        CreatedDate: "",
+        SentDate: "",
+        Email: "",
+        requestedPage: 1,
+    }
+
+    function changepage(CurrentPage) {
+        filterdata.requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
+    function searchpatient() {
+        filterdata.RoleId = $("#role")[0].value;
+        filterdata.ReceiverName = $("#receivername")[0].value;
+        filterdata.CreatedDate = $("#createddate")[0].value;
+        filterdata.SentDate = $("#sentdate")[0].value;
+        filterdata.Email = $("#email")[0].value;
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    }
+
+    $("#clear").on("click", function () {
+        $("#role").val('');
+        $("#receivername").val('');
+        $("#requesttype").val('');
+        $("#createddate").val('');
+        $("#sentdate").val('');
+        $("#email").val('');
+        filterdata.RoleId = 0;
+        filterdata.ReceiverName = "";
+        filterdata.CreatedDate = "";
+        filterdata.SentDate = "";
+        filterdata.Email = "";
+        AjaxAll();
+    })
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/EmailLogsData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function AjaxAll() {
+        $.ajax({
+            url: "/Admin/EmailLogsData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+
+</script>

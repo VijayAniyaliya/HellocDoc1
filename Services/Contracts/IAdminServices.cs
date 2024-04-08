@@ -91,5 +91,7 @@ namespace Services.Contracts
         Task ReturnShift(int ShiftDetailId, string email);
         Task DeleteShift(int ShiftDetailId, string email);
         Task EditShift(CreateNewShift model, string email);
+        LogsDataViewModel EmailLogsData(LogsDataViewModel model);
+        LogsDataViewModel SMSLogsData(LogsDataViewModel model);
     }
 }
