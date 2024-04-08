@@ -9,9 +9,9 @@ namespace Services.Models
 {
     public class PatientHistoryViewModel
     {
+        public List<User>? Users { get; set; }
         public List<RequestClient> requestClients { get; set; }
 
-        public RequestClient requestClient { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

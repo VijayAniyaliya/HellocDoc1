@@ -63,7 +63,7 @@
                                 }   
                                 perstart /= 2;
                                 <td onclick="viewshift(@item.ShiftDetailId)" id="i_@obj.PhysicianId" colspan="@diff" class="p-0">
-                                    <button class="dates d-flex align-items-center justify-content-center border-0 viewshiftbtn" value="@item.ShiftId" style="height:88.5px;background-color:#efabd2; margin-left:@perstart%;width:@wid%">
+                                    <button class="status_@item.Status dates d-flex align-items-center justify-content-center border-0 viewshiftbtn" value="@item.ShiftId" style="height:88.5px; margin-left:@perstart%;width:@wid%">
                                         @item.StartTime.ToString("hh:mm tt")-@item.EndTime.ToString("hh:mm tt")
                                     </button>
                                 </td>

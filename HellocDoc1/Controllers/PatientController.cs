@@ -40,11 +40,11 @@ namespace HellocDoc1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel user)
+        public async Task<IActionResult> Login(LoginViewModel user)
         {
             if (ModelState.IsValid)
             {
-                LoginResponseViewModel? result = loginHandler.Login(user);
+                LoginResponseViewModel? result = await loginHandler.Login(user);
                 if (result.Status == ResponseStatus.Success)
                 {
                     Response.Cookies.Append("jwt", result.Token);
@@ -77,12 +77,12 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Reset_password(AspNetUser user)
+        public async Task<IActionResult> Reset_password(AspNetUser user)
         {
             var aspuser = _context.AspNetUsers.FirstOrDefault(x => x.Email == user.Email);
             if (aspuser != null)
             {
-                patientServices.ResetPassword(aspuser.Email);
+                await patientServices.ResetPassword(aspuser.Email);
             }
 
             return RedirectToAction("Login", "Patient");
@@ -95,9 +95,9 @@ namespace HellocDoc1.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult ChangePassword(ChangePassViewModel model)
+        public async Task<IActionResult> ChangePassword(ChangePassViewModel model)
         {
-            patientServices.ChangePassword(model.Email, model);
+            await patientServices.ChangePassword(model.Email, model);
             return View();
         }
 
@@ -205,11 +205,11 @@ namespace HellocDoc1.Controllers
         {
             return View();
         }
-        public IActionResult SubmitInformationSomeoneelse(SubmitInfoViewModel model)
+        public async Task<IActionResult> SubmitInformationSomeoneelse(SubmitInfoViewModel model)
         {
             if (ModelState.IsValid)
             {
-                patientServices.SubmitInformationSomeone(model);
+                await patientServices.SubmitInformationSomeone(model);
                 return RedirectToAction("Patient_Dashboard", "Patient");
             }
             return View();
@@ -217,27 +217,27 @@ namespace HellocDoc1.Controllers
 
         [CustomAuthorize("User")]
 
-        public IActionResult Patient_Dashboard()
+        public async Task<IActionResult> Patient_Dashboard()
         {
             var email = HttpContext.Session.GetString("Email");
-            var data = patientServices.DashboardService(email);
+            var data = await patientServices.DashboardService(email);
 
             return View(data);
         }
 
         [CustomAuthorize("User")]
-        public IActionResult Patient_Document(int request_id)
+        public async Task<IActionResult> Patient_Document(int request_id)
         {
-            var data = patientServices.DocumentService(request_id);
+            var data = await patientServices.DocumentService(request_id);
             return View(data);
         }
 
         [CustomAuthorize("User")]
         [HttpPost]
-        public IActionResult UploadDocument(PatientServiceModel model,int request_id)
+        public async Task<IActionResult> UploadDocument(PatientServiceModel model, int request_id)
         {
-            patientServices.UploadDocument(model,request_id);
-            return RedirectToAction("Patient_Document", new {request_id=request_id});
+            await patientServices.UploadDocument(model, request_id);
+            return RedirectToAction("Patient_Document", new { request_id = request_id });
         }
 
         [CustomAuthorize("User")]
@@ -251,27 +251,27 @@ namespace HellocDoc1.Controllers
 
         [CustomAuthorize("User")]
 
-        public IActionResult Patient_Profile()
+        public async Task<IActionResult> Patient_Profile()
         {
             var email = HttpContext.Session.GetString("Email");
-            var data = patientServices.ProfileService(email);
+            var data = await patientServices.ProfileService(email);
             return View(data);
         }
 
         [CustomAuthorize("User")]
-        public IActionResult Editing(User model)
+        public async Task<IActionResult> Editing(User model)
         {
             var email = HttpContext.Session.GetString("Email");
-            patientServices.Editing(email, model);
+            await patientServices.Editing(email, model);
             return RedirectToAction("Patient_Profile", "Patient");
         }
 
         //[CustomAuthorize("User")]
         [HttpGet("[controller]/[action]/{request_id}")]
-        public IActionResult ReviewAgreement(string request_id)
+        public async Task<IActionResult> ReviewAgreement(string request_id)
         {
             string RequestId = HashingServices.Decrypt(request_id);
-            var data = patientServices.ReviewAgreement(RequestId);
+            var data = await patientServices.ReviewAgreement(RequestId);
             return View(data);
         }
 

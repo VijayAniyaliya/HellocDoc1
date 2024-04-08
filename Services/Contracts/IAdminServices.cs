@@ -8,7 +8,7 @@ namespace Services.Contracts
     {
 		Task<AdminDashboardViewModel> NewState(AdminDashboardViewModel obj);
 
-        Task<AdminDashboardViewModel> AdminDashboardAsync();
+        Task<AdminDashboardViewModel> AdminDashboard();
 		Task<AdminDashboardViewModel> PendingState(AdminDashboardViewModel obj);
 		Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj);
 		Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj);
@@ -86,7 +86,10 @@ namespace Services.Contracts
 		Task<List<PhysicianLocation>> GetPhysicianlocations();
 		Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel model);
 		Task<SchedullingViewModel> MonthSchedullingData(DateTime date);
-		Task<PatientHistoryViewModel> PatientRecords(int requestid);
+		Task<PatientHistoryViewModel> PatientRecords(int userid);
 		Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj);
+        Task ReturnShift(int ShiftDetailId, string email);
+        Task DeleteShift(int ShiftDetailId, string email);
+        Task EditShift(CreateNewShift model, string email);
     }
 }

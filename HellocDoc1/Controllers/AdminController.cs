@@ -24,40 +24,40 @@ namespace HellocDoc1.Controllers
 
         }
 
-        public async Task<IActionResult> AdminDashboardAsync()
+        public async Task<IActionResult> AdminDashboard()
         {
             AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model = await _adminServices.AdminDashboardAsync();
+            model = await _adminServices.AdminDashboard();
             return View(model);
         }
         public async Task<IActionResult> NewState(AdminDashboardViewModel obj)
         {
-			AdminDashboardViewModel model = await _adminServices.NewState(obj);
+            AdminDashboardViewModel model = await _adminServices.NewState(obj);
             return View(model);
         }
-        public async Task<IActionResult> PendingStateAsync(AdminDashboardViewModel obj)
+        public async Task<IActionResult> PendingState(AdminDashboardViewModel obj)
         {
             AdminDashboardViewModel model = await _adminServices.PendingState(obj);
             return View(model);
         }
-        public async Task<IActionResult> ActiveStateAsync(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ActiveState(AdminDashboardViewModel obj)
         {
             AdminDashboardViewModel model = await _adminServices.ActiveState(obj);
             return View(model);
         }
-        public async Task<IActionResult> ConcludeStateAsync(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ConcludeState(AdminDashboardViewModel obj)
         {
             AdminDashboardViewModel model = await _adminServices.ConcludeState(obj);
             return View(model);
         }
 
-        public async Task<IActionResult> ToCloseStateAsync(AdminDashboardViewModel obj)
+        public async Task<IActionResult> ToCloseState(AdminDashboardViewModel obj)
         {
             AdminDashboardViewModel model = await _adminServices.ToCloseState(obj);
             return View(model);
         }
 
-        public async Task<IActionResult> UnpaidStateAsync(AdminDashboardViewModel obj)
+        public async Task<IActionResult> UnpaidState(AdminDashboardViewModel obj)
         {
             AdminDashboardViewModel model = await _adminServices.UnpaidState(obj);
             return View(model);
@@ -152,7 +152,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> SendMail([FromBody] List<int> DocumentId)
         {
-			await _adminServices.SendMail(DocumentId);
+            await _adminServices.SendMail(DocumentId);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -216,7 +216,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> SendAgreement(int request_id)
         {
             string RequestId = HashingServices.Encrypt(request_id.ToString());
-			await _adminServices.SendAgreement(RequestId);
+            await _adminServices.SendAgreement(RequestId);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -334,7 +334,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> StopNotification(int PhysicianId)
         {
-			await _adminServices.StopNotification(PhysicianId);
+            await _adminServices.StopNotification(PhysicianId);
             return NoContent();
         }
 
@@ -347,7 +347,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> SendMessage(int PhysicianId, string message)
         {
-			await _adminServices.SendMessage(PhysicianId, message);
+            await _adminServices.SendMessage(PhysicianId, message);
             return Json("");
         }
 
@@ -359,7 +359,7 @@ namespace HellocDoc1.Controllers
         [HttpPost]
         public async Task<IActionResult> SendLink(SendLinkViewModel model)
         {
-			await _adminServices.SendLink(model);
+            await _adminServices.SendLink(model);
             return Json("success");
         }
 
@@ -539,7 +539,7 @@ namespace HellocDoc1.Controllers
         {
             var data = await _adminServices.MonthSchedullingData(date);
             return PartialView("_MonthWiseSchedulling", data);
-            }
+        }
 
         public async Task<IActionResult> NewShift()
         {
@@ -551,6 +551,30 @@ namespace HellocDoc1.Controllers
         {
             var data = await _adminServices.ViewShift(ShiftDetailId);
             return PartialView("_ViewShift", data);
+        }
+
+        public async Task<IActionResult> ReturnShift(int ShiftDetailId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.ReturnShift(ShiftDetailId, email);
+            TempData["Success"] = "Shift Return Successfully";
+            return RedirectToAction("Schedulling");
+        }
+
+        public async Task<IActionResult> DeleteShift(int ShiftDetailId)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);  
+            await _adminServices.DeleteShift(ShiftDetailId, email);
+            TempData["Success"] = "Shift Deleted Successfully";
+            return RedirectToAction("Schedulling");
+        }
+
+        public async Task<IActionResult> EditShift(CreateNewShift model)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.EditShift(model, email);
+            TempData["Success"] = "Shift Edited Successfully";
+            return NoContent();
         }
 
         [HttpPost]
@@ -579,16 +603,16 @@ namespace HellocDoc1.Controllers
             return PartialView("_VendorsData", data);
         }
 
-        public async Task<IActionResult> AddBusiness(int VendorId)      
+        public async Task<IActionResult> AddBusiness(int VendorId)
         {
-                var data = await _adminServices.AddBusiness(VendorId);
-                return View(data);
+            var data = await _adminServices.AddBusiness(VendorId);
+            return View(data);
         }
 
         public async Task<IActionResult> AddNewBusiness(AddBusinessViewModel model, int VendorId)
         {
             await _adminServices.AddNewBusiness(model, VendorId);
-            if(VendorId != 0)
+            if (VendorId != 0)
             {
                 TempData["Success"] = "Business Updated Sucessfully";
             }
@@ -606,7 +630,7 @@ namespace HellocDoc1.Controllers
             return NoContent();
         }
 
-       public IActionResult ProviderLocation()
+        public IActionResult ProviderLocation()
         {
             return View();
         }
@@ -628,20 +652,20 @@ namespace HellocDoc1.Controllers
             return PartialView("_PatientHistoryData", data);
         }
 
-        public async Task<IActionResult> PatientRecords(int requestid)
+        public async Task<IActionResult> PatientRecords(int userid)
         {
-            var data = await _adminServices.PatientRecords(requestid);
+            var data = await _adminServices.PatientRecords(userid);
             return View(data);
         }
 
         public IActionResult SearchRecords()
         {
             return View();
-        }    
+        }
 
         public async Task<IActionResult> SearchRecordsData(SearchRecordsViewModel model)
         {
-            var data = await _adminServices.SearchRecords(model); 
+            var data = await _adminServices.SearchRecords(model);
             return PartialView("_SearchRecordsData", data);
         }
     }

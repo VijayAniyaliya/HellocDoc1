@@ -12,17 +12,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.requestClients)
+        @foreach (var item in Model.Users)
         {
 
             <tr>
                 <td>@item.FirstName</td>
                 <td>@item.LastName</td>
                 <td>@item.Email</td>
-                <td>@item.PhoneNumber</td>
-                <td>@item.Address</td>
+                <td>@item.Mobile</td>
+                <td>@item.Street, @item.City, @item.State, @item.ZipCode</td>
                 <td class="text-center">
-                    <a asp-action="PatientRecords" asp-route-requestid="@item.RequestClientId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Explore</a>
+                    <a asp-action="PatientRecords" asp-route-userid="@item.UserId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Explore</a>
                 </td>
             </tr>
         }

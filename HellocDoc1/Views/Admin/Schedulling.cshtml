@@ -79,8 +79,8 @@
     var url;
     var RequestedDate = new Date();
     @{
-        DateTime startOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek + 1);
-        DateTime endOfWeek = DateTime.Now.AddDays(7 - (int)DateTime.Now.DayOfWeek);
+        DateTime startOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+        DateTime endOfWeek = DateTime.Now.AddDays(6 - (int)DateTime.Now.DayOfWeek);
         string weekRange = startOfWeek.ToString("MMM dd") + " - " + endOfWeek.ToString("MMM dd yyyy");
     }
         $('#Day').on('click', function () {
@@ -107,16 +107,16 @@
             date.setDate(date.getDate() - 1);
             RequestedDate = date;
             $('#showDate').html('' +
-                date.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                RequestedDate.toLocaleDateString("en-US", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
             );
             Day();
         }
         else if (url == "/Admin/WeekSchedullingData") {
-            date.setDate(date.getDate() - 7);
+            date.setDate(date.getDate() - 6);
             RequestedDate = date;
-            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
             let nextWeek = new Date(currentWeek.getTime());
-            nextWeek.setDate(nextWeek.getDate() + 7);
+            nextWeek.setDate(nextWeek.getDate() + 6);
             $('#showDate').html('' +
                 currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
                 nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
@@ -127,6 +127,7 @@
             let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
             date.setDate(1);
             date.setDate(date.getDate() - daysInMonth);
+            RequestedDate = date;
             $('#showDate').html('' +
                 date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
             );
@@ -145,11 +146,11 @@
             Day();
         }
         else if (url == "/Admin/WeekSchedullingData") {
-            date.setDate(date.getDate() + 7);
+            date.setDate(date.getDate() + 6);
             RequestedDate = date;
-            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 1);
+            let currentWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
             let nextWeek = new Date(currentWeek.getTime());
-            nextWeek.setDate(nextWeek.getDate() + 7);
+            nextWeek.setDate(nextWeek.getDate() + 6);
             $('#showDate').html('' +
                 currentWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric' }) + ' - ' +
                 nextWeek.toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })
@@ -160,6 +161,7 @@
             let daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
             date.setDate(1);
             date.setDate(date.getDate() + daysInMonth);
+            RequestedDate = date;
             $('#showDate').html('' +
                 date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
             );
@@ -215,14 +217,13 @@
         });
     }
     $(document).ready(function () {
-    let dateString = RequestedDate.toISOString().split("T")[0];
+        let dateString = RequestedDate.toISOString().split("T")[0];
         $.ajax({
             url: "/Admin/SchedullingData",
             type: "POST",
             data: { "region": region, "date": dateString },
             dataType: "html",
             success: function (data) {
-                console.log(date);
                 $("#tableContent").html(data);
                 url = "/Admin/SchedullingData";
             },
@@ -253,17 +254,13 @@
 
     function Week() {
         var shiftdates = RequestedDate.toISOString().split("T")[0];
-        console.log(shiftdates);
         const startOfWeek = moment(shiftdates).startOf('week');
-        console.log(startOfWeek);
         $.ajax({
             url: "/Admin/WeekSchedullingData",
             type: "GET",
             data: { "region": region, "date": startOfWeek.format('YYYY-MM-DD') },
             dataType: "html",
             success: function (data) {
-
-                console.log(startOfWeek.format('YYYY-MM-DD'));
                 $("#tableContent").html(data);
                 url = "/Admin/WeekSchedullingData";
             },
@@ -295,7 +292,41 @@
         $('#Month').removeClass('bg-white text-info border-info').addClass('btn-info text-white');
     }
 
+    // function returnshift(ShiftDetailId) {
+    //     $.ajax({
+    //         url: "/Admin/ReturnShift",
+    //         type: "POST",
+    //         dataType:"json",
+    //         data: { "ShiftDetailId": ShiftDetailId },
+    //         async:false,
+    //         success: function (result) {
+    //             console.log("successs");
+    //         },
+    //         error: function (result) {
+    //             console.log(result);
+    //             alert("No Projects Found");
+    //             window.location.reload();
+    //         }
+    //     });
+    // };
 
+    // function deleteshift(ShiftDetailId) {
+    //     $.ajax({
+    //         url: "/Admin/DeleteShift",
+    //         type: "POST",
+    //         dataType:"json",
+    //         data: { "ShiftDetailId": ShiftDetailId },
+    //         async:false,
+    //         success: function (result) {
+    //             console.log("successs");
+    //         },
+    //         error: function (result) {
+    //             console.log(result);
+    //             alert("No Projects Found");
+    //             window.location.reload();
+    //         }
+    //     });
+    // };
 </script>
 @if (TempData["Success"] != null)
 {

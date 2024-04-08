@@ -12,6 +12,8 @@ namespace Services.Models
     {
         public List<Region>? RegionList { get; set; }
 
+        public int ShiftDetailId { get; set; }
+
         [Required(ErrorMessage = "Please Select Region")]
         public int RegionId { get; set; }
         public string? RegionName { get; set; }

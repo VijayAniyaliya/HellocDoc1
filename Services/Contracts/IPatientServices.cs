@@ -6,24 +6,24 @@ namespace Services.Contracts
 {
     public interface IPatientServices
     {
-        void ChangePassword(string email, ChangePassViewModel model);
+        Task ChangePassword(string email, ChangePassViewModel model);
 
-        List<Request> DashboardService(string Email);
+        Task<List<Request>> DashboardService(string Email);
 
-        PatientServiceModel DocumentService(int Requestid);
+        Task<PatientServiceModel> DocumentService(int Requestid);
 
         Task<byte[]> DownloadFilesForRequest(int request_id);
 
-        void Editing(string Email, User model);
+        Task Editing(string Email, User model);
 
-        User ProfileService(string Email);
+        Task<User> ProfileService(string Email);
 
-        void ResetPassword(string email);
+        Task ResetPassword(string email);
 
-        void SubmitInformationSomeone(SubmitInfoViewModel model);
-        void UploadDocument(PatientServiceModel model, int request_id);
+        Task SubmitInformationSomeone(SubmitInfoViewModel model);
+        Task UploadDocument(PatientServiceModel model, int request_id);
 
-        SendAgreementViewModel ReviewAgreement(string request_id);
+        Task<SendAgreementViewModel> ReviewAgreement(string request_id);
 
         Task AcceptAgreement(int request_id);
         Task CancelAgreement(int request_id, string reason);

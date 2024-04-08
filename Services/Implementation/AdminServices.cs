@@ -14,6 +14,7 @@ using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+using System.Linq;
 
 namespace Services.Implementation
 {
@@ -35,7 +36,7 @@ namespace Services.Implementation
             _environment = hostEnvironment;
         }
 
-        public async Task<AdminDashboardViewModel> AdminDashboardAsync()
+        public async Task<AdminDashboardViewModel> AdminDashboard()
         {
             var requestCount1 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).Count();
             var requestCount2 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 2).Count();
@@ -383,73 +384,73 @@ namespace Services.Implementation
             return viewUploads;
         }
 
-		public async Task UploadDocuments(ViewUploadsViewModel model, int request_id)
-		{
-			IEnumerable<IFormFile> upload = model.Upload;
-			foreach (var item in upload)
-			{
-				var file = item.FileName;
-				var uniqueFileName = GetUniqueFileName(file);
-				var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-				var filePath = Path.Combine(uploads, uniqueFileName);
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
-				{
-					await item.CopyToAsync(fileStream);
-				}
+        public async Task UploadDocuments(ViewUploadsViewModel model, int request_id)
+        {
+            IEnumerable<IFormFile> upload = model.Upload;
+            foreach (var item in upload)
+            {
+                var file = item.FileName;
+                var uniqueFileName = GetUniqueFileName(file);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploads, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await item.CopyToAsync(fileStream);
+                }
 
-				RequestWiseFile requestWiseFile = new RequestWiseFile()
-				{
-					FileName = uniqueFileName,
-					CreatedDate = DateTime.Now,
-				};
-				_context.RequestWiseFiles.Add(requestWiseFile);
-				requestWiseFile.RequestId = request_id;
-			}
-			await _context.SaveChangesAsync();
-		}
+                RequestWiseFile requestWiseFile = new RequestWiseFile()
+                {
+                    FileName = uniqueFileName,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.RequestWiseFiles.Add(requestWiseFile);
+                requestWiseFile.RequestId = request_id;
+            }
+            await _context.SaveChangesAsync();
+        }
 
-		public async Task Delete(int DocumentId)
-		{
-			RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == DocumentId);
-			if (data != null)
-			{
-				data.IsDeleted = new BitArray(new[] { true });
-				_context.RequestWiseFiles.Update(data);
-				await _context.SaveChangesAsync();
-			}
-		}
+        public async Task Delete(int DocumentId)
+        {
+            RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == DocumentId);
+            if (data != null)
+            {
+                data.IsDeleted = new BitArray(new[] { true });
+                _context.RequestWiseFiles.Update(data);
+                await _context.SaveChangesAsync();
+            }
+        }
 
-		public async Task DeleteAll(List<int> DocumentId)
-		{
-			foreach (var item in DocumentId)
-			{
-				RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
-				if (data != null)
-				{
-					data.IsDeleted = new BitArray(new[] { true });
-					_context.RequestWiseFiles.Update(data);
-				}
-			}
-			await _context.SaveChangesAsync();
-		}
+        public async Task DeleteAll(List<int> DocumentId)
+        {
+            foreach (var item in DocumentId)
+            {
+                RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                if (data != null)
+                {
+                    data.IsDeleted = new BitArray(new[] { true });
+                    _context.RequestWiseFiles.Update(data);
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
 
-		public async Task SendMail(List<int> DocumentId)
-		{
-			List<string> name = new List<string>();
-			foreach (var item in DocumentId)
-			{
-				RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
-				if (data != null)
-				{
-					var file = data.FileName;
-					name.Add(file);
-				}
-			}
-			var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-			await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
-		}
+        public async Task SendMail(List<int> DocumentId)
+        {
+            List<string> name = new List<string>();
+            foreach (var item in DocumentId)
+            {
+                RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                if (data != null)
+                {
+                    var file = data.FileName;
+                    name.Add(file);
+                }
+            }
+            var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
+            await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
+        }
 
-		public async Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model)
+        public async Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model)
         {
             var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).FirstOrDefaultAsync();
 
@@ -506,25 +507,25 @@ namespace Services.Implementation
             return model;
         }
 
-		public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
-		{
-			OrderDetail orderDetail = new OrderDetail()
-			{
-				VendorId = vendorid,
-				RequestId = request_id,
-				FaxNumber = faxnumber,
-				Email = email,
-				BusinessContact = contact,
-				Prescription = model.Prescription,
-				NoOfRefill = model.Refills,
-				CreatedDate = DateTime.Now,
-			};
-			await _context.OrderDetails.AddAsync(orderDetail);
-			await _context.SaveChangesAsync();
-		}
+        public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        {
+            OrderDetail orderDetail = new OrderDetail()
+            {
+                VendorId = vendorid,
+                RequestId = request_id,
+                FaxNumber = faxnumber,
+                Email = email,
+                BusinessContact = contact,
+                Prescription = model.Prescription,
+                NoOfRefill = model.Refills,
+                CreatedDate = DateTime.Now,
+            };
+            await _context.OrderDetails.AddAsync(orderDetail);
+            await _context.SaveChangesAsync();
+        }
 
 
-		public async Task<TransferCaseViewModel> TransferDetails(int request_id)
+        public async Task<TransferCaseViewModel> TransferDetails(int request_id)
         {
             List<Region> data = await _context.Regions.ToListAsync();
             TransferCaseViewModel model = new TransferCaseViewModel()
@@ -618,13 +619,13 @@ namespace Services.Implementation
             return model;
         }
 
-		public async Task SendAgreement(string request_id)
-		{
-			await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
-		}
+        public async Task SendAgreement(string request_id)
+        {
+            await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+        }
 
 
-		public async Task<CloseCaseViewModel> CloseCase(int request_id)
+        public async Task<CloseCaseViewModel> CloseCase(int request_id)
         {
             RequestClient data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
@@ -1054,7 +1055,7 @@ namespace Services.Implementation
                 notification.IsNotificationStopped = (new BitArray(new[] { false }));
                 _context.PhysicianNotifications.Update(notification);
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<byte[]> DownloadExcle(AdminDashboardViewModel model)
@@ -1359,7 +1360,8 @@ namespace Services.Implementation
 
         private void NewMethod(IFormFile item, string uniquefileName)
         {
-            string extension = Path.GetExtension(item.FileName);            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+            string extension = Path.GetExtension(item.FileName);
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
             var photoPath = Path.Combine(uploads, uniquefileName + extension);
             item.CopyTo(new FileStream(photoPath, FileMode.Create));
         }
@@ -1579,7 +1581,8 @@ namespace Services.Implementation
         }
 
         private void DocumentMethod(IFormFile item, string uniquefileName)
-        {            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+        {
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
             var photoPath = Path.Combine(uploads, uniquefileName);
             item.CopyTo(new FileStream(photoPath, FileMode.Create));
         }
@@ -1671,6 +1674,8 @@ namespace Services.Implementation
         {
             List<Physician> physician = await _context.Physicians.ToListAsync();
             List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).ToListAsync();
+            shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
             SchedullingViewModel model = new SchedullingViewModel();
             if (region != 0)
             {
@@ -1699,6 +1704,7 @@ namespace Services.Implementation
             Region? region = await _context.Regions.Where(a => a.RegionId == physicians!.RegionId).FirstOrDefaultAsync();
             CreateNewShift model = new CreateNewShift()
             {
+                ShiftDetailId = ShiftDetailId,
                 PhysicianId = physicians.PhysicianId,
                 PhysicianName = physicians.FirstName + " " + physicians.LastName,
                 RegionId = region.RegionId,
@@ -1708,6 +1714,53 @@ namespace Services.Implementation
                 End = shiftDetails.EndTime,
             };
             return model;
+        }
+
+        public async Task ReturnShift(int ShiftDetailId, string email)
+        {
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+            ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefaultAsync();
+
+            if (shiftDetails != null)
+            {
+                shiftDetails!.Status = 1;
+                shiftDetails.ModifiedDate = DateTime.Now;
+                shiftDetails.ModifiedBy = aspNetUser.Id;
+                _context.ShiftDetails.Update(shiftDetails);
+            }
+            await _context.SaveChangesAsync();
+        }    
+
+        public async Task DeleteShift(int ShiftDetailId, string email)
+        {
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+            ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefaultAsync();
+
+            if (shiftDetails != null)
+            {
+                shiftDetails.IsDeleted = new BitArray(new[] { true });
+                shiftDetails.ModifiedDate = DateTime.Now;
+                shiftDetails.ModifiedBy = aspNetUser.Id;
+                _context.ShiftDetails.Update(shiftDetails);
+            }
+            await _context.SaveChangesAsync();
+        }    
+
+        public async Task EditShift(CreateNewShift model, string email) 
+        {
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+            ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == model.ShiftDetailId).FirstOrDefaultAsync();
+
+            if (shiftDetails != null)
+            {
+                shiftDetails.ShiftDate = model.ShiftDate;
+                shiftDetails.StartTime = model.Start;
+                shiftDetails.EndTime = model.End;
+                shiftDetails.ModifiedDate = DateTime.Now;
+                shiftDetails.ModifiedBy = aspNetUser.Id;
+                _context.ShiftDetails.Update(shiftDetails);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
@@ -1845,9 +1898,9 @@ namespace Services.Implementation
 
         public async Task<SchedullingViewModel> MonthSchedullingData(DateTime date)
         {
-            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a=> a.Shift.Physician)
+            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a => a.Shift.Physician)
                 .Where(x => x.ShiftDate.Month == date.Month).ToListAsync();
-
+            shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             SchedullingViewModel model = new SchedullingViewModel();
             model.ShiftDetailList = shiftDetails;
             model.ShiftDate = date;
@@ -1974,35 +2027,35 @@ namespace Services.Implementation
 
         public async Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel obj)
         {
-            List<RequestClient> requestClients = await _context.RequestClients.ToListAsync();
+            List<User> users = await _context.Users.ToListAsync();
 
-            requestClients = requestClients.Where(a =>
+            users = users.Where(a =>
                 (string.IsNullOrWhiteSpace(obj.FirstName) || a.FirstName.ToLower().Contains(obj.FirstName.ToLower())) &&
                 (string.IsNullOrWhiteSpace(obj.LastName) || a.LastName.ToLower().Contains(obj.LastName.ToLower())) &&
                 (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
+                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.Mobile.Contains(obj.PhoneNumber))
             ).ToList();
 
-            int count = requestClients.Count();
+            int count = users.Count();
             int TotalPage = (int)Math.Ceiling(count / (double)5);
-            requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+            users = users.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
 
             PatientHistoryViewModel model = new PatientHistoryViewModel()
             {
-                requestClients = requestClients,
+                Users = users,
                 CurrentPage = obj.requestedPage,
                 TotalPage = TotalPage,
             };
             return model;
         }
 
-        public async Task<PatientHistoryViewModel> PatientRecords(int requestid)
+        public async Task<PatientHistoryViewModel> PatientRecords(int userid)
         {
-            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).FirstOrDefaultAsync(a => a.RequestClientId == requestid);
+            List<RequestClient>? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.UserId == userid).ToListAsync();
 
             PatientHistoryViewModel model = new PatientHistoryViewModel()
             {
-                requestClient = requestClient!,
+                requestClients = requestClient!,
             };
 
             return model;

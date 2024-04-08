@@ -37,18 +37,19 @@ namespace HellocDoc1.Services
             _environment = environment;
 
         }
-        public List<Request> DashboardService(string Email)
+        public async Task<List<Request>> DashboardService(string Email)
         {
-            string lastName = _context.Users.FirstOrDefault(x => x.Email == Email).FirstName + " " + _context.Users.FirstOrDefault(x => x.Email == Email).LastName;
+            var user= await _context.Users.Where(a=> a.Email == Email).FirstOrDefaultAsync();
+            string lastName = user.FirstName + " " + user.LastName;
             HttpContextAccessor.HttpContext.Session.Set("username", Encoding.UTF8.GetBytes((string)lastName));
             List<Request> data = _context.Requests.Where(x => x.User.Email == Email).Include(a => a.RequestWiseFiles).ToList();
             return data;
 
         }
 
-        public PatientServiceModel DocumentService(int request_id)
+        public async Task<PatientServiceModel> DocumentService(int request_id)
         {
-            Request data = _context.Requests.Where(x => x.RequestId == request_id).FirstOrDefault();
+            Request data = await _context.Requests.Where(x => x.RequestId == request_id).FirstOrDefaultAsync();
             RequestClient requestClient = _context.RequestClients.Where(x => x.RequestId == request_id).FirstOrDefault()!;
             List<RequestWiseFile> requestWiseFile = _context.RequestWiseFiles.Where(x => x.RequestId == request_id).ToList();
 
@@ -63,7 +64,7 @@ namespace HellocDoc1.Services
 
         }
 
-        public void UploadDocument(PatientServiceModel model,int request_id)
+        public async Task UploadDocument(PatientServiceModel model,int request_id)
         {
             IEnumerable<IFormFile>upload = model.Doc;
             foreach (var item in upload)
@@ -85,7 +86,7 @@ namespace HellocDoc1.Services
                 requestWiseFile.RequestId = request_id;
                 
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<byte[]> DownloadFilesForRequest(int request_id)
@@ -125,16 +126,16 @@ namespace HellocDoc1.Services
 
         }
 
-        public User ProfileService(string Email)
+        public async Task<User> ProfileService(string Email)
         {
-            User data = _context.Users.Where(x => x.Email == Email).FirstOrDefault();
+            User data = await _context.Users.Where(x => x.Email == Email).FirstOrDefaultAsync();
             return data;
 
         }
 
-        public void Editing(string email, User model)
+        public async Task Editing(string email, User model)
         {
-            User userdata = _context.Users.Where(x => x.Email == email).FirstOrDefault();
+            User userdata = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
             if (userdata.Email == model.Email)
             {
@@ -151,7 +152,7 @@ namespace HellocDoc1.Services
 
                 _context.Users.Update(userdata);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             //else
             //{
@@ -168,10 +169,10 @@ namespace HellocDoc1.Services
             //}
         }
 
-        public void SubmitInformationSomeone(SubmitInfoViewModel model)
+        public async Task SubmitInformationSomeone(SubmitInfoViewModel model)
         {
 
-            AspNetUser aspnetuser = _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefault();
+            AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
 
             if (aspnetuser != null)
             {
@@ -230,13 +231,13 @@ namespace HellocDoc1.Services
 
                 request.RequestClients.Add(requestclient);
                 _context.RequestClients.Add(requestclient);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             };
         }
 
-        public void ResetPassword(string email)
+        public async Task ResetPassword(string email)
         {
-            var user = _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefault();
+            var user = await _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
 
             if (user != null)
             {
@@ -244,20 +245,20 @@ namespace HellocDoc1.Services
             }
         }
 
-        public void ChangePassword(string email, ChangePassViewModel model)
+        public async Task ChangePassword(string email, ChangePassViewModel model)
         {
-            var user = _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefault();
+            var user = await _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
 
             user.PasswordHash = model.Password;
 
             _context.AspNetUsers.Update(user);
-            _context.SaveChanges();
-            
+            await _context.SaveChangesAsync();
+
         }
 
-        public SendAgreementViewModel ReviewAgreement(string request_id)
+        public async Task<SendAgreementViewModel> ReviewAgreement(string request_id)
         {
-            var data = _context.Requests.Where(a => a.RequestId == int.Parse(request_id)).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == int.Parse(request_id)).FirstOrDefaultAsync();
 
             SendAgreementViewModel model = new SendAgreementViewModel()
             {

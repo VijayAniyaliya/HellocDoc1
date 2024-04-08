@@ -20,9 +20,9 @@ namespace HelloDoc1.Services
             
         }
 
-        public LoginResponseViewModel Login(LoginViewModel model)
+        public async Task<LoginResponseViewModel> Login(LoginViewModel model)
         {
-            var user = _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a=> a.Roles).FirstOrDefault();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a=> a.Roles).FirstOrDefaultAsync();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };

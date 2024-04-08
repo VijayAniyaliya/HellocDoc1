@@ -6,6 +6,6 @@ namespace Services.Contracts
 {
     public interface ILoginHandler
     {
-        LoginResponseViewModel Login(LoginViewModel model);
+        Task<LoginResponseViewModel> Login(LoginViewModel model);
     }
 }

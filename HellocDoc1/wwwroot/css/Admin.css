@@ -459,3 +459,11 @@ input[type=radio].radios {
     right: 0;
     top: 0;
 }
+
+.status_0 {
+    background-color: #efabd2;
+}
+
+.status_1 {
+    background-color: #93dc9e;
+}
