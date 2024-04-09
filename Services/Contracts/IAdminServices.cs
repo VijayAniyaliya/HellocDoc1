@@ -85,13 +85,15 @@ namespace Services.Contracts
         Task DeleteBusiness(int VendorId);
 		Task<List<PhysicianLocation>> GetPhysicianlocations();
 		Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel model);
-		Task<SchedullingViewModel> MonthSchedullingData(DateTime date);
+		Task<SchedullingViewModel> MonthSchedullingData(int region, DateTime date);
 		Task<PatientHistoryViewModel> PatientRecords(int userid);
 		Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj);
         Task ReturnShift(int ShiftDetailId, string email);
         Task DeleteShift(int ShiftDetailId, string email);
         Task EditShift(CreateNewShift model, string email);
-        LogsDataViewModel EmailLogsData(LogsDataViewModel model);
-        LogsDataViewModel SMSLogsData(LogsDataViewModel model);
+        Task<LogsDataViewModel> EmailLogsData(LogsDataViewModel model);
+        Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model);
+        Task<SchedullingViewModel> MdOnCall();
+        Task<SchedullingViewModel> MdOnCallData(int region);
     }
 }

@@ -277,7 +277,7 @@
         $.ajax({
             url: "/Admin/MonthSchedullingData",
             type: "POST",
-            data: { "date": monthOfDate },
+            data: { "region": region, "date": monthOfDate },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

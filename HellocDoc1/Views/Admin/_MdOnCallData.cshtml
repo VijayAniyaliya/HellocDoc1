@@ -1,0 +1,89 @@
+﻿@model Services.Models.SchedullingViewModel
+
+@{
+    var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+    var currentDate = DateOnly.FromDateTime(DateTime.Now);
+    var flag = true;
+}
+
+<div class="shadow-lg rounded-3 mt-4 p-3">
+    <div class="h5 mb-3">MDs On Call</div>
+    <div class="row">
+        @{
+            foreach (var item in Model.physicians)
+            {
+                if (item.Shifts.Count != 0)
+                {
+                    foreach (var shifts in item.Shifts)
+                    {
+                        foreach (var shiftDetail in shifts.ShiftDetails)
+                        {
+                            if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate && shiftDetail.Status == 1)
+                            {
+                                <div class="col-md-4 col-sm-6 mb-3">
+                                    @if (item.Photo == null)
+                                    {
+                                        <img src="/Images/doctorimage.png" class="me-1" width="50" height="50" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/uploads/@item.Photo" class="me-1" width="50" height="50" />
+                                    }
+                                    <span>@item.FirstName @item.LastName</span>
+                                </div>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </div>
+    <div class="h5 mb-3 mt-4">Physicians Off Duty</div>
+    <div class="row">
+        @foreach (var item in Model.physicians)
+        {
+            if (item.Shifts.Count == 0)
+            {
+                <div class="col-md-4 col-sm-6 mb-3">
+                    @if (item.Photo == null)
+                    {
+                        <img src="/Images/doctorimage.png" class="me-1" width="50" height="50" />
+                    }
+                    else
+                    {
+                        <img src="/uploads/@item.Photo" class="me-1" width="50" height="50" />
+                    }
+                    <span>@item.FirstName @item.LastName</span>
+                </div>
+            }
+            else
+            {
+                flag = true;
+                foreach (var shifts in item.Shifts)
+                {
+                    foreach (var shiftDetail in shifts.ShiftDetails)
+                    {
+                        if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate && shiftDetail.Status == 1)
+                        {
+                            flag = false;
+                        }
+                    }
+                }
+                if (flag)
+                {
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        @if (item.Photo == null)
+                        {
+                            <img src="/Images/doctorimage.png" class="me-1" width="50" height="50" />
+                        }
+                        else
+                        {
+                            <img src="/uploads/@item.Photo" class="me-1" width="50" height="50" />
+                        }
+                        <span>@item.FirstName @item.LastName</span>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Implementation;
 using Services.Models;
+using System.Drawing.Drawing2D;
 using System.Security.Claims;
 
 namespace HellocDoc1.Controllers
@@ -535,9 +536,9 @@ namespace HellocDoc1.Controllers
             var data = await _adminServices.SchedullingData(region, date);
             return PartialView("_WeekWiseSchedulling", data);
         }
-        public async Task<IActionResult> MonthSchedullingData(DateTime date)
+        public async Task<IActionResult> MonthSchedullingData(int region, DateTime date)
         {
-            var data = await _adminServices.MonthSchedullingData(date);
+            var data = await _adminServices.MonthSchedullingData(region, date);
             return PartialView("_MonthWiseSchedulling", data);
         }
 
@@ -567,7 +568,7 @@ namespace HellocDoc1.Controllers
             await _adminServices.DeleteShift(ShiftDetailId, email);
             TempData["Success"] = "Shift Deleted Successfully";
             return RedirectToAction("Schedulling");
-        }
+        }   
 
         public async Task<IActionResult> EditShift(CreateNewShift model)
         {
@@ -586,10 +587,24 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Schedulling");
         }
 
-        public IActionResult RequestedShifts()
+        public async Task<IActionResult> MdOnCall()
         {
-            return View();
+            var data = await _adminServices.MdOnCall();
+            return View(data);
+        }    
+
+        public async Task<IActionResult> MdOnCallData(int region)
+        {
+            var data = await _adminServices.MdOnCallData(region);
+            return PartialView("_MdOnCallData", data);
         }
+
+        //public IActionResult RequestedShifts()
+        //{
+        //    var data = _adminServices.RequestedShifts();
+        //    return View(data);
+        //}    
+
 
         public async Task<IActionResult> Vendors()
         {
@@ -674,9 +689,9 @@ namespace HellocDoc1.Controllers
 			return View();
 		}	
 
-        public IActionResult EmailLogsData(LogsDataViewModel model)
+        public async Task<IActionResult> EmailLogsData(LogsDataViewModel model)
 		{
-            var data = _adminServices.EmailLogsData(model);
+            var data = await _adminServices.EmailLogsData(model);
             return PartialView("_EmailLogsData", data);
 		}
 
@@ -684,9 +699,9 @@ namespace HellocDoc1.Controllers
 		{
 			return View();
 		}
-        public IActionResult SMSLogsData(LogsDataViewModel model)
+        public async Task<IActionResult> SMSLogsData(LogsDataViewModel model)
 		{
-            var data = _adminServices.SMSLogsData(model);
+            var data = await _adminServices.SMSLogsData(model);
             return PartialView("_SMSLogsData", data);
 		}	
 	}

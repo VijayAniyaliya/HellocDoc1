@@ -271,8 +271,14 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-center">
-
-                    <img src="~/uploads/@Model.Photo" style="height:150px;" />
+                    @if (Model.Photo == null)
+                    {
+                        <img src="/Images/doctorimage.png" style="height:150px;" />
+                    }
+                    else
+                    {
+                        <img src="~/uploads/@Model.Photo" style="height:150px;" />
+                    }
                 </div>
                 <div class="col-md-6 text-center">  
                     <img src="~/uploads/@Model.Sign" style="height:150px;" />

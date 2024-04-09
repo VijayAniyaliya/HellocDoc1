@@ -4,7 +4,7 @@
 
 <table class="table table-bordered">
     <thead class="text-white" style="background: #504a4a;">
-            
+
         <tr>
             <th class="" style="">STAFF</th>
             <th class="text-center">SUN @Model.ShiftDate.Date.Day </th>
@@ -28,7 +28,20 @@
         {
             var shift = Model.ShiftDetailList.Where(u => u.Shift.PhysicianId == obj.PhysicianId).ToList();
             <tr>
-                <td><div><img src="~/uploads/@obj.Photo" style="height: 25px; width: 25px;" class="mr-1" />@obj.FirstName</div></td>
+                <td>
+                    <div>
+                        @if (obj.Photo == null)
+                        {
+                            <img src="/Images/doctorimage.png" class="me-1" width="50" height="50" />
+                            @obj.FirstName
+                        }
+                        else
+                        {
+                            <img src="~/uploads/@obj.Photo" style="height: 25px; width: 25px;"/>
+                            @obj.FirstName
+                        }
+                    </div>
+                </td>
                 @for (var a = 0; a <= 6; a++)
                 {
                     <td id="i_@obj.PhysicianId" class="p-0">

@@ -14,6 +14,7 @@ using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+//using System.Drawing;
 using System.Linq;
 
 namespace Services.Implementation
@@ -1896,16 +1897,57 @@ namespace Services.Implementation
             }
         }
 
-        public async Task<SchedullingViewModel> MonthSchedullingData(DateTime date)
+        public async Task<SchedullingViewModel> MonthSchedullingData(int region, DateTime date)
         {
             List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a => a.Shift.Physician)
                 .Where(x => x.ShiftDate.Month == date.Month).ToListAsync();
             shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             SchedullingViewModel model = new SchedullingViewModel();
+
+            if (region != 0)
+            {
+                shiftDetails = shiftDetails.Where(x => x.Shift.Physician.RegionId == region).ToList();
+            }
+
             model.ShiftDetailList = shiftDetails;
             model.ShiftDate = date;
             return model;
         }
+
+        public async Task<SchedullingViewModel> MdOnCall()
+        {
+            List<Region> regions = await _context.Regions.ToListAsync();
+
+            SchedullingViewModel model = new SchedullingViewModel()
+            {
+                RegionList= regions
+            };
+            return model;
+        }
+
+        public async Task<SchedullingViewModel> MdOnCallData(int region)
+        {
+            List<Physician> physicians = await _context.Physicians.Include(a => a.Shifts).ThenInclude(x => x.ShiftDetails).ToListAsync();
+
+            SchedullingViewModel model = new SchedullingViewModel();
+            if(physicians != null)
+            {
+                model.physicians = physicians;
+            }
+
+            if (region != 0)
+            {
+                model.physicians = model.physicians!.Where(a => a.RegionId == region).ToList();
+            }
+            return model;
+        }
+
+        //public RequestedShiftViewModel RequestedShifts()
+        //{
+        //    List<ShiftDetail> shiftDetails= _context.ShiftDetails.Include(a=>).ToList();
+        //    var data = _adminServices.RequestedShifts();
+        //    return View(data);
+        //}
 
         public async Task<VendorsDetailsViewModel> VendorsData()
         {
@@ -2091,9 +2133,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public LogsDataViewModel EmailLogsData(LogsDataViewModel model)
+        public async Task<LogsDataViewModel> EmailLogsData(LogsDataViewModel model)
         {
-            List<EmailLog> emailLogs = _context.EmailLogs.ToList();
+            List<EmailLog> emailLogs = await _context.EmailLogs.ToListAsync();
 
             int count = emailLogs.Count();
             int TotalPage = (int)Math.Ceiling(count / (double)5);
@@ -2108,9 +2150,9 @@ namespace Services.Implementation
             return logsDataViewModel;
         }    
 
-        public LogsDataViewModel SMSLogsData(LogsDataViewModel model)
+        public async Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model)
         {
-            List<Smslog> smslogs = _context.Smslogs.ToList();
+            List<Smslog> smslogs = await _context.Smslogs.ToListAsync();
 
             int count = smslogs.Count();
             int TotalPage = (int)Math.Ceiling(count / (double)5);

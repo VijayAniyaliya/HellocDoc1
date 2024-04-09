@@ -17,11 +17,11 @@
             <div class="d-flex justify-content-center justify-content-md-start">
                 <select class="form-select select-region" id="region" style="width:300px;">
                     <option selected value="0">All Regions</option>
-                 @*    @foreach (var item in Model.RegionList)
+                    @*    @foreach (var item in Model.RegionList)
                     { *@
-                        <option value="RegionId">Name</option>
+                    <option value="RegionId">Name</option>
 
-                     @* }  *@
+                    @* }  *@
                 </select>
             </div>
             <div class="d-flex gap-2 flex-md-row flex-column m-lg-0 mt-3 mx-md-0 mx-sm-5 mx-0 px-md-0 px-0 px-sm-5">
@@ -39,53 +39,7 @@
         </div>
 
         <div class="table-responsive mt-2" id="tableContent">
-            <table class="table  d-md-table d-none">
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col">
-                <input class="form-check-input checks" type="checkbox" value="" style="position:relative;left: 20px;">
-            </th>
-            <th scope="col">Staff <i class="bi bi-arrow-up-short h5"></i></th>
-            <th scope="col">Day</th>
-            <th scope="col">Time</th>
-            <th scope="col">Region</th>
-        </tr>
-    </thead>
-    <tbody>
-            <tr>
-                <td class="text-center">
-                    <input class="form-check-input checks" type="checkbox" value="">
-                </td>
-                <td>ProviderName</td>
-                <td>dec 09, 2024</td>
-                <td>time</td>
-                <td>new york</td>
-            </tr>
-    </tbody>
-</table>
-<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
-    <div class="accordion-item">
-            <h2 class="accordion-header" id="flush-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
-                    <div class="">
-                        <div class="ps-3 d-flex align-items-center">
-                            <input class="form-check-input checks" type="checkbox" value=""/>
-                            <span class="ms-2">Physician Name: ProviderName</span>
-                        </div>
-                        <div class="ps-1 pt-4 pb-3">
-                            dec 09, 2024
-                        </div>   
-                        <div class="ps-1 pt-4 pb-3">
-                            time
-                        </div>   
-                        <div class="ps-1 pt-4 pb-3">
-                            new york
-                        </div>
-                    </div>
-                </button>
-            </h2>
-    </div>
-</div>
+
         </div>
 
         <br />
@@ -100,37 +54,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     var region = 0;
+    var requestedPage = 1,
 
-    // $('#region').on('change', function () {
-    //     region = $(this).val();
-    //     Region();
-    // })
-    // $(document).ready(function () {
-    //     $.ajax({
-    //         url: "/Admin/GetRequestedShifts",
-    //         type: "POST",
-    //         data: { "region": region },
-    //         dataType: "html",
-    //         success: function (data) {
-    //             $("#tableContent").html(data);
-    //         },
-    //         error: function (error) {
-    //             console.log(error)
-    //         }
-    //     });
-    // });
-    // function Region() {
-    //     $.ajax({
-    //         url: "/Admin/GetRequestedShifts",
-    //         type: "POST",
-    //         data: { "region": region },
-    //         dataType: "html",
-    //         success: function (data) {
-    //             $("#tableContent").html(data);
-    //         },
-    //         error: function (error) {
-    //             console.log(error)
-    //         }
-    //     });
-    // }
+    function changepage(CurrentPage) {
+        filterdata.requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/RequestedShiftData",
+            type: "POST",
+            data: { "requestedPage": requestedPage, "region": region },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function AjaxAll() {
+        $.ajax({
+            url: "/Admin/RequestedShiftData",
+            type: "POST",
+            data: { "requestedPage": requestedPage, "region": region },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
 </script>
