@@ -406,6 +406,8 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ShiftDetails).HasConstraintName("ShiftDetail_ModifiedBy_fkey");
 
+            entity.HasOne(d => d.Region).WithMany(p => p.ShiftDetails).HasConstraintName("ShiftDetail_RegionId_fkey");
+
             entity.HasOne(d => d.Shift).WithMany(p => p.ShiftDetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ShiftDetail_ShiftId_fkey");

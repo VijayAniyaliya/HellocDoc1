@@ -14,6 +14,8 @@ using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
+//using System.Drawing;
 //using System.Drawing;
 using System.Linq;
 
@@ -1634,7 +1636,7 @@ namespace Services.Implementation
                         City = model.city,
                         RegionId = model.state,
                         Zip = model.zip,
-                        AltPhone = model.altphonenumber,
+                        AltPhone = model.altphonenumber,    
                         CreatedBy = aspNetUser.Id,
                         CreatedDate = DateTime.Now,
                         Status = (int)Common.Enum.PhysicianStatus.NotActive,
@@ -1942,12 +1944,74 @@ namespace Services.Implementation
             return model;
         }
 
-        //public RequestedShiftViewModel RequestedShifts()
-        //{
-        //    List<ShiftDetail> shiftDetails= _context.ShiftDetails.Include(a=>).ToList();
-        //    var data = _adminServices.RequestedShifts();
-        //    return View(data);
-        //}
+        public RequestedShiftViewModel RequestedShifts()
+        {
+
+            List<Region> regions = _context.Regions.ToList();
+            RequestedShiftViewModel model = new RequestedShiftViewModel()
+            {
+                RegionList= regions
+            };
+            return model;
+        }     
+
+        public RequestedShiftViewModel RequestedShiftsData(int region, int requestedPage)
+        {
+
+            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a=> a.Shift).ThenInclude(a=> a.Physician).Include(a => a.Region).Where(a=> a.Status == 0).ToList();
+            RequestedShiftViewModel model = new RequestedShiftViewModel();
+            shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
+            if (shiftDetails != null)
+            {
+                model.ShiftDetailList = shiftDetails;
+            }
+            if (region != 0)
+            {
+                model.ShiftDetailList = model.ShiftDetailList!.Where(a => a.RegionId == region).ToList();
+            }
+            int count = model.ShiftDetailList!.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            model.ShiftDetailList = model.ShiftDetailList!.Skip((requestedPage - 1) * 5).Take(5).ToList();
+            model.CurrentPage = requestedPage;
+            model.TotalPage = TotalPage;
+
+            return model;
+        }   
+
+        public void DeleteSelectedShift(List<int> selectedShifts, string email)
+        {
+            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email); 
+            foreach (var item in selectedShifts)
+            {
+                ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
+                if (data != null && aspNetUser != null)
+                {
+                    data.IsDeleted = new BitArray(new[] { true });
+                    data.ModifiedBy = aspNetUser.Id;
+                    data.ModifiedDate = DateTime.Now;
+                    _context.ShiftDetails.Update(data);
+                }
+            }
+            _context.SaveChangesAsync();
+        }    
+
+        public void ApproveSelectedShift(List<int> selectedShifts, string email)
+        {
+            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email); 
+            foreach (var item in selectedShifts)
+            {
+                ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
+                if (data != null && aspNetUser != null)
+                {
+                    data.Status = 1;
+                    data.ModifiedBy = aspNetUser.Id;
+                    data.ModifiedDate = DateTime.Now;
+                    _context.ShiftDetails.Update(data);
+                }
+            }
+            _context.SaveChangesAsync();
+        }
 
         public async Task<VendorsDetailsViewModel> VendorsData()
         {
@@ -1958,6 +2022,7 @@ namespace Services.Implementation
             };
             return (model);
         }
+
 
         public async Task<VendorsDetailsViewModel> VendorMenu(int region, string searchvendor)
         {

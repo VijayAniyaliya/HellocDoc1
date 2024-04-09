@@ -11,6 +11,7 @@ public partial class AspNetUser
     [Key]
     [StringLength(128)]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
     public string Id { get; set; } = null!;
 
     [StringLength(256)]
