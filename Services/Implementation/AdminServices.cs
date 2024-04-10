@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NPOI.XWPF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
@@ -681,10 +682,19 @@ namespace Services.Implementation
                         RequestId = request_id,
                         Status = 6,
                         CreatedDate = DateTime.Now,
-                    };
-                    _context.Requests.Update(obj);
+                    };      
                     await _context.RequestStatusLogs.AddAsync(requestStatusLog);
                     await _context.SaveChangesAsync();
+
+                    RequestClosed requestClosed = new RequestClosed()
+                    {
+                        RequestId= request_id,
+                        RequestStatusLogId= requestStatusLog.RequestStatusLogId
+                    };
+                    await _context.RequestCloseds.AddAsync(requestClosed);
+                    _context.Requests.Update(obj);
+                    await _context.SaveChangesAsync();
+
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -2174,13 +2184,13 @@ namespace Services.Implementation
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
                 .Include(a => a.Request.RequestStatusLogs)
-                .ToListAsync();
-
+                .ToListAsync(); 
+                
             requestClients = requestClients.Where(a =>
-                //(obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
+                (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
                 (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
-                //(obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
-                (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
+                (obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
+                (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
                 (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
                 (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
             ).ToList();

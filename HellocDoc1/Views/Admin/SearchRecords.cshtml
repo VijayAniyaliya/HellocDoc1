@@ -2,13 +2,14 @@
     ViewData["Title"] = "SearchRecords";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
-@using Common.Enum; 
+@using Common.Enum;
 
 <div class="container-fluid pt-4">
     <div class="d-flex justify-content-between pt-3 pb-3 m-0 mx-md-5">
         <div class="h4 fw-bold">Search Records</div>
-        <a asp-action="" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
-            Export Dat To Excel
+        <a class="btn text-white bg-info p-2 px-3 fw-bold">
+            <i class="bi bi-reply-all"></i>
+            <span>Export Data To Excel</span>
         </a>
 
     </div>
@@ -19,11 +20,11 @@
                 <div class="col-md-3 col-sm-6">
                     <div class="form-floating mb-3">
                         <select class="form-select text-secondary py-0" id="requeststatus" aria-label="Floating label select example">
-                            <option selected disabled>Select Profession</option>
-                           @*  @foreach (var item in RequestStatus)
-                            { *@
-                                <option value="ProfessionId">Unpaid</option>
-                            @* } *@
+                            <option selected disabled>Select Request Status</option>
+                            @foreach (var item in Enum.GetValues(typeof(RequestStatus)))
+                            {
+                                <option value="@((int)item)">@item.ToString()</option>
+                            }
                         </select>
                         <label for="floatingSelect"></label>
                     </div>
@@ -36,13 +37,13 @@
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-3">    
                         <select class="form-select text-secondary py-0" id="requesttype" aria-label="Floating label select example">
-                            <option selected disabled>Select Profession</option>
-                            @*                         @foreach (var item in Model.HealthProfessions)
-                            { *@
-                            <option value="ProfessionId">Unpaid</option>
-                            @* } *@
+                            <option selected disabled>Select Request Type</option>
+                            @foreach (var item in Enum.GetValues(typeof(RequestType)))
+                            {
+                                <option value="@((int)item)">@item.ToString()</option>
+                            }
                         </select>
                         <label for="floatingSelect"></label>
                     </div>
@@ -130,9 +131,9 @@
     }
 
     $("#clear").on("click", function () {
-        $("#requeststatus").val('');
+        $("#requeststatus").val('Select Request Status');
         $("#patientname").val('');
-        $("#requesttype").val('');
+        $("#requesttype").val('Select Request Type');
         $("#fromdate").val('');
         $("#todate").val('');
         $("#provider").val('');
