@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "BlockHistory";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<div class="container-fluid pt-4">
+    <div class="p-0 px-md-5 pt-3">
+        <div class="h4 fw-bold">Block History</div>
+
+    </div>
+    <div class=" pt-4 shadow Document-content mt-3 m-0 mx-md-5" style="">
+
+        <div class="pr-3 mb-4 px-3">
+            <div class="row">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="name"
+                               placeholder="name" />
+                        <label for="floatingInput" class="">Name</label>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="fromdate" placeholder="date" />
+                        <label for="floatingInput" class="">Date</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email"
+                               placeholder="abc@gmail.com" />
+                        <label for="email" class="">Email</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="contact"
+                               placeholder="contact" />
+                        <label for="contact" class="">Phone Number</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-end pr-3">
+            <button type="button" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
+            <button type="button" onclick="searchpatient()" class="btn bg-info text-white fw-bold rounded-3 px-4 h5 ">Search</button>
+        </div>
+        <div class="table-responsive mt-2" id="tableContent">
+        </div>
+
+        <br />
+        <br />
+    </div>
+</div>
+
+<br />
+<br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var filterdata = {
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        PhoneNumber: "",
+        requestedPage: 1,
+    }
+
+    function changepage(CurrentPage) {
+        filterdata.requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
+    function searchpatient() {
+        filterdata.FirstName = $("#firstname")[0].value;
+        filterdata.LastName = $("#lastname")[0].value;
+        filterdata.Email = $("#email")[0].value;
+        filterdata.PhoneNumber = $("#contact")[0].value;
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    }
+
+    $("#clear").on("click", function () {
+        $("#firstname").val('');
+        $("#lastname").val('');
+        $("#email").val('');
+        $("#contact").val('');
+        filterdata.FirstName = "";
+        filterdata.LastName = "";
+        filterdata.Email = "";
+        filterdata.PhoneNumber = "";
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    })
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/BlockHistoryData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function AjaxAll() {
+        $.ajax({
+            url: "/Admin/BlockHistoryData",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+
+</script>

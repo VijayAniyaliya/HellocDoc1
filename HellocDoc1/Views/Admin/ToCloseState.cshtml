@@ -32,7 +32,17 @@
                 <td>@item.Request.CreatedDate</td>
 
                 <td>@item.Street @item.City @item.State</td>
-                <td>@item.Notes</td>
+                <td style="width:10%;">
+                    @foreach (var obj in item.Request.RequestStatusLogs)
+                    {
+                        if (obj.Notes != null)
+                        {
+                            <div class="mb-2">
+                                @obj.Notes on @obj.CreatedDate.ToString("MM/dd/yyyy")  at  @obj.CreatedDate.ToString("h:mm tt")
+                            </div>
+                        }
+                    }
+                </td>
                 <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
                 <td>
                     <div class="btn-group">
@@ -46,7 +56,7 @@
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="CloseCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> Close Case</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
-                            <li><a class="dropdown-item ps-3" ><i class="bi bi-list-check mr-1"></i> Clear Case</a></li>
+                            <li><a class="dropdown-item ps-3"><i class="bi bi-list-check mr-1"></i> Clear Case</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                         </ul>
                     </div>

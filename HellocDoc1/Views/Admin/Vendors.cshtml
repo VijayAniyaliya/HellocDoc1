@@ -23,11 +23,11 @@
                 <div class=" m-md-0">
                     <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da; width:250px;">
                         <i class="bi bi-search my-1 ms-1 mr-2"></i>
-                        <select class="form-select select-region text-secondary border-0" id="region">
-                            <option selected>All Regions</option>
-                            @foreach (var item in Model.Regions)
+                        <select class="form-select select-region text-secondary border-0" id="profession">
+                            <option selected>All Professions</option>
+                            @foreach (var item in Model.healthProfessionalTypes)
                             {
-                                <option value="@item.RegionId">@item.Name</option>
+                                <option value="@item.HealthProfessionalId">@item.ProfessionName</option>
                             }
                         </select>
                     </div>
@@ -55,11 +55,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
 
-    var region = 0;
+    var profession = 0;
     var searchvendor = "";
 
-    $('#region').on('change', function () {
-        region = $(this).val();
+    $('#profession').on('change', function () {
+        profession = $(this).val();
         AjaxAll();
     })
 
@@ -72,7 +72,7 @@
         $.ajax({
             url: "/Admin/VendorMenu",
             type: "POST",
-            data: { "region": region, "searchvendor": searchvendor },
+            data: { "profession": profession, "searchvendor": searchvendor },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);
@@ -86,7 +86,7 @@
         $.ajax({
             url: "/Admin/VendorMenu",
             type: "POST",
-            data: { "region": region, "searchvendor": searchvendor },
+            data: { "profession": profession, "searchvendor": searchvendor },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

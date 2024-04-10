@@ -78,7 +78,17 @@
                 </td>
 
                 <td>@item.Street @item.City @item.State</td>
-                <td>@item.Notes</td>
+                <td style="width:10%;">
+                    @foreach (var obj in item.Request.RequestStatusLogs)
+                    {
+                        if (obj.Notes != null)
+                        {
+                            <div class="mb-2">
+                                @obj.Notes on @obj.CreatedDate.ToString("MM/dd/yyyy")  at  @obj.CreatedDate.ToString("h:mm tt")
+                            </div>
+                        }
+                    }
+                </td>
                 <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
                 <td>
                     <div class="btn-group">
@@ -215,7 +225,7 @@ else
         console.log("hello");
         $.ajax({
             url: "/Admin/TransferDetails/",
-            data: {"request_id":request_id},
+            data: { "request_id": request_id },
             type: "POST",
             dataType: "html",
             success: function (data) {

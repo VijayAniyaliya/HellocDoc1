@@ -632,9 +632,9 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> VendorMenu(int region, string searchvendor)
+        public async Task<IActionResult> VendorMenu(int profession, string searchvendor)
         {
-            var data = await _adminServices.VendorMenu(region, searchvendor);
+            var data = await _adminServices.VendorMenu(profession, searchvendor);
             return PartialView("_VendorsData", data);
         }
 
@@ -723,6 +723,17 @@ namespace HellocDoc1.Controllers
         {
             var data = await _adminServices.SMSLogsData(model);
             return PartialView("_SMSLogsData", data);
+        }
+
+        public IActionResult BlockHistory()
+        {
+            return View();
+        }
+
+        public IActionResult BlockHistoryData(BlockHistoryViewModel model)
+        {
+            var data = _adminServices.BlockHistoryData(model);
+            return PartialView("_BlockHistoryData", data);
         }
     }
 }

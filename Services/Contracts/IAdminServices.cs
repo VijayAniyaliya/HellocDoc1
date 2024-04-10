@@ -79,7 +79,7 @@ namespace Services.Contracts
         Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
 		Task<CreateNewShift> ViewShift(int PhysicianId);
 		Task<VendorsDetailsViewModel> VendorsData();
-		Task<VendorsDetailsViewModel> VendorMenu(int region, string searchvendor);
+		Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor);
 		Task<AddBusinessViewModel> AddBusiness(int VendorId);
         Task AddNewBusiness(AddBusinessViewModel model, int VendorId);
         Task DeleteBusiness(int VendorId);
@@ -99,5 +99,6 @@ namespace Services.Contracts
         RequestedShiftViewModel RequestedShiftsData(int region, int requestedPage);
         void DeleteSelectedShift(List<int> selectedShifts, string email);
         void ApproveSelectedShift(List<int> selectedShifts, string email);
+        BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj);
     }
 }

@@ -90,8 +90,8 @@ namespace Services.Implementation
         }
 
         public async Task<AdminDashboardViewModel> PendingState(AdminDashboardViewModel obj)
-        {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 2).ToListAsync();
+        {   
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a=>a.Request.RequestStatusLogs).Where(a => a.Request.Status == 2).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -117,7 +117,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 3).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 3).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -169,7 +169,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ToCloseState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Where(a => a.Request.Status == 5).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 5).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -456,7 +456,7 @@ namespace Services.Implementation
 
         public async Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model)
         {
-            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).FirstOrDefaultAsync();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).Include(a=>a.Users).FirstOrDefaultAsync();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
@@ -2025,31 +2025,32 @@ namespace Services.Implementation
 
         public async Task<VendorsDetailsViewModel> VendorsData()
         {
-            List<Region> regions = await _context.Regions.ToListAsync();
+            List<HealthProfessionalType> healthProfessionalTypes = await _context.HealthProfessionalTypes.ToListAsync();
             VendorsDetailsViewModel model = new VendorsDetailsViewModel()
             {
-                Regions = regions,
+                healthProfessionalTypes = healthProfessionalTypes,
             };
             return (model);
         }
 
 
-        public async Task<VendorsDetailsViewModel> VendorMenu(int region, string searchvendor)
+        public async Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor)
         {
-            List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.ToListAsync();
+            List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.Include(a=> a.ProfessionNavigation).ToListAsync();
             healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             if (!string.IsNullOrWhiteSpace(searchvendor))
             {
                 healthProfessionals = healthProfessionals.Where(a => a.VendorName.ToLower().Contains(searchvendor.ToLower())).ToList();
             }
-            if (region != 0)
+            if (profession != 0)
             {
-                healthProfessionals = healthProfessionals.Where(a => a.RegionId == region).ToList();
+                healthProfessionals = healthProfessionals.Where(a => a.ProfessionNavigation.HealthProfessionalId == profession).ToList();
             }
 
             List<VendorsData> vendorsData = healthProfessionals.Select(a => new VendorsData
             {
                 ProfessionId = a.VendorId,
+                Profession= a.ProfessionNavigation.ProfessionName,
                 VendorName = a.VendorName,
                 Email = a.Email,
                 PhoneNumber = a.PhoneNumber,
@@ -2185,8 +2186,9 @@ namespace Services.Implementation
                 .Include(a => a.Request.RequestNotes)
                 .Include(a => a.Request.RequestStatusLogs)
                 .ToListAsync(); 
-                
-            requestClients = requestClients.Where(a =>
+                    
+            requestClients = requestClients.Where(a =>  
+
                 (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
                 (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
                 (obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
@@ -2240,6 +2242,17 @@ namespace Services.Implementation
                 TotalPage= TotalPage,
             };
             return logsDataViewModel;
+        }
+
+        public BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj)
+        {
+            List<BlockRequest> blockRequests = _context.BlockRequests.ToList();
+
+            BlockHistoryViewModel model = new BlockHistoryViewModel()
+            {
+                blockRequests = blockRequests,
+            };
+            return model;
         }
     }
 }

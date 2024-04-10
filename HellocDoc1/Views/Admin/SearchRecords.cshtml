@@ -20,7 +20,7 @@
                 <div class="col-md-3 col-sm-6">
                     <div class="form-floating mb-3">
                         <select class="form-select text-secondary py-0" id="requeststatus" aria-label="Floating label select example">
-                            <option selected disabled>Select Request Status</option>
+                            <option selected disabled value="0">Select Request Status</option>
                             @foreach (var item in Enum.GetValues(typeof(RequestStatus)))
                             {
                                 <option value="@((int)item)">@item.ToString()</option>
@@ -39,7 +39,7 @@
                 <div class="col-md-3 col-sm-6">
                     <div class="form-floating mb-3">    
                         <select class="form-select text-secondary py-0" id="requesttype" aria-label="Floating label select example">
-                            <option selected disabled>Select Request Type</option>
+                            <option selected disabled value="5">Select Request Type</option>
                             @foreach (var item in Enum.GetValues(typeof(RequestType)))
                             {
                                 <option value="@((int)item)">@item.ToString()</option>
@@ -131,9 +131,9 @@
     }
 
     $("#clear").on("click", function () {
-        $("#requeststatus").val('Select Request Status');
+        $("#requeststatus").text('Select Request Status');
         $("#patientname").val('');
-        $("#requesttype").val('Select Request Type');
+        // $("#requesttype").val('Select Request Type');
         $("#fromdate").val('');
         $("#todate").val('');
         $("#provider").val('');

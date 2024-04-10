@@ -9,7 +9,7 @@ namespace Services.Models
 {
     public class VendorsDetailsViewModel
     {
-        public List<Region>? Regions { get; set; }
+        public List<HealthProfessionalType>? healthProfessionalTypes { get; set; }
 
         public List<VendorsData> vendorsDatas { get; set; }
 
