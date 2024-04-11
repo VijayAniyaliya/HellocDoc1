@@ -315,7 +315,7 @@ namespace Services.Implementation
             List<CaseTagViewModel> obj = data.Select(a => new CaseTagViewModel() { CaseId = a.CaseTagId, CaseName = a.Name }).ToList();
             var data1 = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
 
-            if (data != null && data1!= null)
+            if (data != null && data1 != null)
             {
                 CancelCaseViewModel model = new CancelCaseViewModel()
                 {
@@ -2401,10 +2401,30 @@ namespace Services.Implementation
         public BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj)
         {
             List<BlockRequest> blockRequests = _context.BlockRequests.ToList();
+            List<RequestClient> requestClients = _context.RequestClients.Include(a => a.Request).ToList();
+
+            if (!string.IsNullOrWhiteSpace(obj.Name))
+            {
+                requestClients = requestClients.Where(a => a.FirstName.ToLower().Contains(obj.Name.ToLower()) || a.LastName.ToLower().Contains(obj.Name.ToLower())).ToList();
+            }
+
+            blockRequests = blockRequests.Where(a =>
+
+            (obj.Date == new DateTime() || DateOnly.FromDateTime(a.CreatedDate!.Value) == DateOnly.FromDateTime(obj.Date)) &&
+            (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+            (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber)))
+                .ToList();
+
+            int count = blockRequests.Count();
+            int TotalPage = (int)Math.Ceiling(count / (double)5);
+            blockRequests = blockRequests.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
 
             BlockHistoryViewModel model = new BlockHistoryViewModel()
             {
                 blockRequests = blockRequests,
+                requestClients = requestClients,
+                CurrentPage = obj.requestedPage,
+                TotalPage = TotalPage,
             };
             return model;
         }
@@ -2417,7 +2437,7 @@ namespace Services.Implementation
             if (blockRequest != null)
             {
                 blockRequest.IsActive = new BitArray(new[] { false });
-                blockRequest.ModifiedDate= DateTime.Now;
+                blockRequest.ModifiedDate = DateTime.Now;
                 request!.Status = 1;
             }
             _context.BlockRequests.Update(blockRequest!);

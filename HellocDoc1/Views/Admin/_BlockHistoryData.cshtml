@@ -17,7 +17,10 @@
         {
 
             <tr>
-                <td>patientname</td>
+                <td>    
+                    @Model.requestClients.FirstOrDefault(a=>a.Request.RequestId == int.Parse(item.RequestId))?.FirstName
+                    @Model.requestClients.FirstOrDefault(a=>a.Request.RequestId == int.Parse(item.RequestId))?.LastName
+                    </td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Email</td>
                 <td>@item.CreatedDate</td>
@@ -29,9 +32,16 @@
                         @:checked   
                     }value="" />
                 </th>
+                @if(item.IsActive[0] == true)
+                {
                 <td class="text-center">
                     <a onclick="unblock(@item.BlockRequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Unblock</a>
-                </td>
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center">Blocked</td>
+                }
             </tr>
         }
     </tbody>
