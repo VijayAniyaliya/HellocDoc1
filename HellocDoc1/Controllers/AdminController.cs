@@ -600,29 +600,29 @@ namespace HellocDoc1.Controllers
             return PartialView("_MdOnCallData", data);
         }
 
-        public IActionResult RequestedShifts()
+        public async Task<IActionResult> RequestedShifts()
         {
-            var data = _adminServices.RequestedShifts();
+            var data = await _adminServices.RequestedShifts();
             return View(data);
         }
 
-        public IActionResult RequestedShiftData(int region, int requestedPage)
+        public async Task<IActionResult> RequestedShiftData(int region, int requestedPage)
         {
-            var data = _adminServices.RequestedShiftsData(region, requestedPage);
+            var data = await _adminServices.RequestedShiftsData(region, requestedPage);
             return PartialView("_RequestedShiftData", data);
         }
 
-        public IActionResult DeleteSelectedShift(List<int> selectedShifts)
+        public async Task<IActionResult> DeleteSelectedShift(List<int> selectedShifts)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            _adminServices.DeleteSelectedShift(selectedShifts, email);
+            await _adminServices.DeleteSelectedShift(selectedShifts, email);
             return NoContent();
         }     
 
-        public IActionResult ApproveSelectedShift(List<int> selectedShifts)
+        public async Task<IActionResult> ApproveSelectedShift(List<int> selectedShifts)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            _adminServices.ApproveSelectedShift(selectedShifts, email);
+            await _adminServices.ApproveSelectedShift(selectedShifts, email);
             return NoContent();
         }
 
@@ -731,15 +731,15 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult BlockHistoryData(BlockHistoryViewModel model)
+        public async Task<IActionResult> BlockHistoryData(BlockHistoryViewModel model)
         {
-            var data = _adminServices.BlockHistoryData(model);
+            var data = await _adminServices.BlockHistoryData(model);
             return PartialView("_BlockHistoryData", data);
         }
 
-        public IActionResult UnblockCase(int requestid)
+        public async Task<IActionResult> UnblockCase(int requestid)
         {
-            _adminServices.UnblockCase(requestid);
+            await _adminServices.UnblockCase(requestid);
             return NoContent();
         }
     }

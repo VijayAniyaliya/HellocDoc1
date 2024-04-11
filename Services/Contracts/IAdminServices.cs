@@ -95,11 +95,11 @@ namespace Services.Contracts
         Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model);
         Task<SchedullingViewModel> MdOnCall();
         Task<SchedullingViewModel> MdOnCallData(int region);
-        RequestedShiftViewModel RequestedShifts();
-        RequestedShiftViewModel RequestedShiftsData(int region, int requestedPage);
-        void DeleteSelectedShift(List<int> selectedShifts, string email);
-        void ApproveSelectedShift(List<int> selectedShifts, string email);
-        BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj);
-        void UnblockCase(int requestid);
+        Task<RequestedShiftViewModel> RequestedShifts();
+        Task<RequestedShiftViewModel> RequestedShiftsData(int region, int requestedPage);
+        Task DeleteSelectedShift(List<int> selectedShifts, string email);
+        Task ApproveSelectedShift(List<int> selectedShifts, string email);
+        Task<BlockHistoryViewModel> BlockHistoryData(BlockHistoryViewModel obj);
+        Task UnblockCase(int requestid);
     }
 }

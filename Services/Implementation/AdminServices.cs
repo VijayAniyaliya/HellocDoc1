@@ -330,56 +330,82 @@ namespace Services.Implementation
 
         public async Task CancelCase(int request_id, int caseId, string cancelNote)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-            var reason = _context.CaseTags.Where(a => a.CaseTagId == caseId).FirstOrDefault();
-            data.Status = 5;
-            data.CaseTag = reason.Name;
-            RequestStatusLog requestStatusLog = new RequestStatusLog()
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            var reason = await _context.CaseTags.Where(a => a.CaseTagId == caseId).FirstOrDefaultAsync();
+
+            if (data != null && reason != null)
             {
-                RequestId = request_id,
-                Status = 5,
-                Notes = cancelNote,
-                CreatedDate = DateTime.Now,
-            };
-            _context.Requests.Update(data);
-            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                data.Status = 5;
+                data.CaseTag = reason.Name;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = 5,
+                    Notes = cancelNote,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.Requests.Update(data);
+                await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task<AssignCaseViewModel> AssignDetails(int request_id)
         {
             List<Region> data = await _context.Regions.ToListAsync();
-            AssignCaseViewModel model = new AssignCaseViewModel()
+
+            if (data != null)
             {
-                RequestId = request_id,
-                Regions = data,
-            };
-            return model;
+
+                AssignCaseViewModel model = new AssignCaseViewModel()
+                {
+                    RequestId = request_id,
+                    Regions = data,
+                };
+                return model;
+            }
+            return new AssignCaseViewModel();
         }
 
         public async Task<List<PhysicianSelectlViewModel>> FilterData(int regionid)
         {
             List<Physician> data = await _context.Physicians.Where(a => a.RegionId == regionid).ToListAsync();
-            List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel() { Name = a.FirstName, PhysicianId = a.PhysicianId }).ToList();
-            return data1;
+
+            if (data != null)
+            {
+
+                List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel()
+                {
+                    Name = a.FirstName,
+                    PhysicianId = a.PhysicianId
+                }).ToList();
+
+                return data1;
+            }
+            return new List<PhysicianSelectlViewModel>();
         }
 
         public async Task AssignCase(int request_id, int physicianid, string description)
         {
             var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-            data.Status = 2;
-            data.PhysicianId = physicianid;
-            RequestStatusLog requestStatusLog = new RequestStatusLog()
-            {
-                RequestId = request_id,
-                Status = 2,
-                TransToPhysicianId = physicianid,
-                Notes = description,
-                CreatedDate = DateTime.Now,
-            };
 
-            _context.Requests.Update(data);
-            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            if (data != null)
+            {
+
+                data.Status = 2;
+                data.PhysicianId = physicianid;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = 2,
+                    TransToPhysicianId = physicianid,
+                    Notes = description,
+                    CreatedDate = DateTime.Now,
+                };
+
+                _context.Requests.Update(data);
+                await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -459,25 +485,28 @@ namespace Services.Implementation
 
         public async Task UploadDocuments(ViewUploadsViewModel model, int request_id)
         {
-            IEnumerable<IFormFile> upload = model.Upload;
-            foreach (var item in upload)
+            if (model.Upload != null)
             {
-                var file = item.FileName;
-                var uniqueFileName = GetUniqueFileName(file);
-                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                IEnumerable<IFormFile> upload = model.Upload;
+                foreach (var item in upload)
                 {
-                    await item.CopyToAsync(fileStream);
-                }
+                    var file = item.FileName;
+                    var uniqueFileName = GetUniqueFileName(file);
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(fileStream);
+                    }
 
-                RequestWiseFile requestWiseFile = new RequestWiseFile()
-                {
-                    FileName = uniqueFileName,
-                    CreatedDate = DateTime.Now,
-                };
-                _context.RequestWiseFiles.Add(requestWiseFile);
-                requestWiseFile.RequestId = request_id;
+                    RequestWiseFile requestWiseFile = new RequestWiseFile()
+                    {
+                        FileName = uniqueFileName,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.RequestWiseFiles.Add(requestWiseFile);
+                    requestWiseFile.RequestId = request_id;
+                }
             }
             await _context.SaveChangesAsync();
         }
@@ -603,12 +632,18 @@ namespace Services.Implementation
         public async Task<TransferCaseViewModel> TransferDetails(int request_id)
         {
             List<Region> data = await _context.Regions.ToListAsync();
-            TransferCaseViewModel model = new TransferCaseViewModel()
+
+            if (data != null)
             {
-                RequestId = request_id,
-                Regions = data,
-            };
-            return model;
+
+                TransferCaseViewModel model = new TransferCaseViewModel()
+                {
+                    RequestId = request_id,
+                    Regions = data,
+                };
+                return model;
+            }
+            return new TransferCaseViewModel();
         }
 
         public async Task TransferCase(int request_id, int physicianid, string description)
@@ -649,11 +684,16 @@ namespace Services.Implementation
         {
             var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
-            ClearCaseViewModel model = new ClearCaseViewModel()
+            if (data != null)
             {
-                RequestId = request_id,
-            };
-            return model;
+
+                ClearCaseViewModel model = new ClearCaseViewModel()
+                {
+                    RequestId = request_id,
+                };
+                return model;
+            }
+            return new ClearCaseViewModel();
         }
 
         public async Task ClearCase(ClearCaseViewModel model, int request_id)
@@ -693,19 +733,27 @@ namespace Services.Implementation
         {
             var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
-            SendAgreementViewModel model = new SendAgreementViewModel()
+            if (data != null)
             {
-                RequestId = request_id,
-                RequestTypeId = data.RequestTypeId,
-                Email = data.Email,
-                PhoneNumber = data.PhoneNumber,
-            };
-            return model;
+
+                SendAgreementViewModel model = new SendAgreementViewModel()
+                {
+                    RequestId = request_id,
+                    RequestTypeId = data.RequestTypeId,
+                    Email = data.Email,
+                    PhoneNumber = data.PhoneNumber,
+                };
+                return model;
+            }
+            return new SendAgreementViewModel();
         }
 
         public async Task SendAgreement(string request_id)
         {
-            await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+            if (request_id != null)
+            {
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+            }
         }
 
 
@@ -714,28 +762,33 @@ namespace Services.Implementation
             RequestClient? data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
-            CloseCaseViewModel model = new CloseCaseViewModel()
+            if (data != null)
             {
-                RequestId = request_id,
-                PatientName = data.FirstName + " " + data.LastName,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
-                PhoneNumber = data.PhoneNumber,
-                Email = data.Email
-            };
 
-            foreach (var item in data.Request.RequestWiseFiles)
-            {
-                DocumentDetails documentDetail = new DocumentDetails()
+                CloseCaseViewModel model = new CloseCaseViewModel()
                 {
-                    DocumentId = item.RequestWiseFileId,
-                    Document = item.FileName,
-                    UploadDate = item.CreatedDate.ToString()
+                    RequestId = request_id,
+                    PatientName = data.FirstName + " " + data.LastName,
+                    FirstName = data.FirstName,
+                    LastName = data.LastName,
+                    DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
+                    PhoneNumber = data.PhoneNumber,
+                    Email = data.Email
                 };
-                model.Documents.Add(documentDetail);
+
+                foreach (var item in data.Request.RequestWiseFiles)
+                {
+                    DocumentDetails documentDetail = new DocumentDetails()
+                    {
+                        DocumentId = item.RequestWiseFileId,
+                        Document = item.FileName,
+                        UploadDate = item.CreatedDate.ToString()
+                    };
+                    model.Documents.Add(documentDetail);
+                }
+                return model;
             }
-            return model;
+            return new CloseCaseViewModel();
         }
 
         public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
@@ -794,46 +847,50 @@ namespace Services.Implementation
             RequestClient? data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             EncounterForm? obj = await _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
-            EncounterFormViewModel model = new EncounterFormViewModel()
+            if (data != null)
             {
-                RequestId = request_id,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                Location = data.Street + " " + data.City + " " + data.State + " " + data.ZipCode,
-                DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
-                Date = data.Request.CreatedDate,
-                PhoneNumber = data.PhoneNumber,
-                Email = data.Email,
-            };
+                EncounterFormViewModel model = new EncounterFormViewModel()
+                {
+                    RequestId = request_id,
+                    FirstName = data.FirstName,
+                    LastName = data.LastName,
+                    Location = data.Street + " " + data.City + " " + data.State + " " + data.ZipCode,
+                    DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
+                    Date = data.Request.CreatedDate,
+                    PhoneNumber = data.PhoneNumber,
+                    Email = data.Email,
+                };
 
-            if (obj != null)
-            {
-                model.HistoryOfPatient = obj.HistoryOfPresentIllnessOrInjury;
-                model.MedicalHistory = obj.MedicalHistory;
-                model.Medications = obj.Medications;
-                model.Allergies = obj.Allergies;
-                model.Temp = obj.Temp;
-                model.HeartRate = obj.Hr;
-                model.RespiratoryRate = obj.Rr;
-                model.BloodPressure = obj.BloodPressureSystolic;
-                model.BloodPressure1 = obj.BloodPressureDiastolic;
-                model.O2 = obj.O2;
-                model.Pain = obj.Pain;
-                model.Heent = obj.Heent;
-                model.CV = obj.Cv;
-                model.Chest = obj.Chest;
-                model.ABD = obj.Abd;
-                model.Extr = obj.Extremeties;
-                model.Skin = obj.Skin;
-                model.Neuro = obj.Neuro;
-                model.Other = obj.Other;
-                model.Disgnosis = obj.Diagnosis;
-                model.TreatmentPlan = obj.TreatmentPlan;
-                model.MedicationDispnsed = obj.MedicationsDispensed;
-                model.Procedure = obj.Procedures;
-                model.FollowUp = obj.FollowUp;
+                if (obj != null)
+                {
+                    model.HistoryOfPatient = obj.HistoryOfPresentIllnessOrInjury;
+                    model.MedicalHistory = obj.MedicalHistory;
+                    model.Medications = obj.Medications;
+                    model.Allergies = obj.Allergies;
+                    model.Temp = obj.Temp;
+                    model.HeartRate = obj.Hr;
+                    model.RespiratoryRate = obj.Rr;
+                    model.BloodPressure = obj.BloodPressureSystolic;
+                    model.BloodPressure1 = obj.BloodPressureDiastolic;
+                    model.O2 = obj.O2;
+                    model.Pain = obj.Pain;
+                    model.Heent = obj.Heent;
+                    model.CV = obj.Cv;
+                    model.Chest = obj.Chest;
+                    model.ABD = obj.Abd;
+                    model.Extr = obj.Extremeties;
+                    model.Skin = obj.Skin;
+                    model.Neuro = obj.Neuro;
+                    model.Other = obj.Other;
+                    model.Disgnosis = obj.Diagnosis;
+                    model.TreatmentPlan = obj.TreatmentPlan;
+                    model.MedicationDispnsed = obj.MedicationsDispensed;
+                    model.Procedure = obj.Procedures;
+                    model.FollowUp = obj.FollowUp;
+                }
+                return model;
             }
-            return model;
+            return new EncounterFormViewModel();
         }
 
         public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id)
@@ -911,25 +968,29 @@ namespace Services.Implementation
             List<Region> regions = _context.Regions.ToList();
             List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
 
-            AdminProfileViewModel model = new AdminProfileViewModel()
+            if (aspNetUser != null && admin != null && regions != null)
             {
-                AdminID = admin.AdminId,
-                Username = aspNetUser.UserName,
-                Password = aspNetUser.PasswordHash,
-                FirstName = admin.FirstName,
-                LastName = admin.LastName,
-                Email = admin.Email,
-                PhoneNumber = admin.Mobile,
-                RegionList = regions,
-                AdminRegionList = adminRegions,
-                Address1 = admin.Address1,
-                Address2 = admin.Address2,
-                City = admin.City,
-                State = admin.City,
-                Zip = admin.Zip,
-                AltPhoneNumber = admin.AltPhone,
-            };
-            return model;
+                AdminProfileViewModel model = new AdminProfileViewModel()
+                {
+                    AdminID = admin.AdminId,
+                    Username = aspNetUser.UserName,
+                    Password = aspNetUser.PasswordHash,
+                    FirstName = admin.FirstName,
+                    LastName = admin.LastName,
+                    Email = admin.Email,
+                    PhoneNumber = admin.Mobile,
+                    RegionList = regions,
+                    AdminRegionList = adminRegions,
+                    Address1 = admin.Address1,
+                    Address2 = admin.Address2,
+                    City = admin.City,
+                    State = admin.City,
+                    Zip = admin.Zip,
+                    AltPhoneNumber = admin.AltPhone,
+                };
+                return model;
+            }
+            return new AdminProfileViewModel();
         }
 
         public async Task ResetPassword(string email, string password)
@@ -1121,26 +1182,31 @@ namespace Services.Implementation
             List<Physician> data = await _context.Physicians.Include(x => x.Role).ToListAsync();
             data = data.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<PhysicianNotification> notifications = await _context.PhysicianNotifications.Where(a => a.IsNotificationStopped == (new BitArray(new[] { true }))).ToListAsync();
-            List<PhysicianData> obj = data.Select(a => new PhysicianData()
-            {
-                physicianId = a.PhysicianId,
-                ProviderName = a.FirstName + " " +
-                a.LastName,
-                Status = (int)a.Status,
-                role = a.Role.Name,
-                PhysicianNotifications = notifications,
-                region = a.RegionId
-            }).ToList();
 
-            if (region != 0)
+            if (data != null && notifications != null)
             {
-                obj = obj.Where(x => x.region == region).ToList();
+                List<PhysicianData> obj = data.Select(a => new PhysicianData()
+                {
+                    physicianId = a.PhysicianId,
+                    ProviderName = a.FirstName + " " +
+                    a.LastName,
+                    Status = (int)a.Status!,
+                    role = a.Role!.Name,
+                    PhysicianNotifications = notifications,
+                    region = a.RegionId
+                }).ToList();
+
+                if (region != 0)
+                {
+                    obj = obj.Where(x => x.region == region).ToList();
+                }
+                ProviderViewModel model = new ProviderViewModel()
+                {
+                    Physicians = obj,
+                };
+                return model;
             }
-            ProviderViewModel model = new ProviderViewModel()
-            {
-                Physicians = obj,
-            };
-            return model;
+            return new ProviderViewModel();
         }
 
 
@@ -1284,54 +1350,58 @@ namespace Services.Implementation
             List<Region> regions = await _context.Regions.ToListAsync();
             List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
 
-            PhysicianAccountViewModel model = new PhysicianAccountViewModel()
+            if (physician != null && regions != null)
             {
-                PhysicianId = PhysicianId,
-                Username = aspNetUser.UserName,
-                Password = aspNetUser.PasswordHash,
-                rolename = physician.Role.Name,
-                StatusCode = (int)physician.Status,
-                Role = role,
-                FirstName = physician.FirstName,
-                LastName = physician.LastName,
-                Email = physician.Email,
-                PhoneNumber = physician.Mobile,
-                MediLiencense = physician.MedicalLicense,
-                NPI = physician.Npinumber,
-                SynchroEmail = physician.SyncEmailAddress,
-                RegionList = regions,
-                physicianRegions = physicianRegions,
-                address1 = physician.Address1,
-                address2 = physician.Address2,
-                city = physician.City,
-                state = physician.City,
-                zip = physician.Zip,
-                altphonenumber = physician.AltPhone,
-                BusinessName = physician.BusinessName,
-                BusinessWeb = physician.BusinessWebsite,
-                Photo = physician.Photo,
-                Sign = physician.Signature,
-                AdminNotes = physician.AdminNotes,
-            };
+                PhysicianAccountViewModel model = new PhysicianAccountViewModel()
+                {
+                    PhysicianId = PhysicianId,
+                    Username = aspNetUser.UserName,
+                    Password = aspNetUser.PasswordHash,
+                    rolename = physician.Role.Name,
+                    StatusCode = (int)physician.Status,
+                    Role = role,
+                    FirstName = physician.FirstName,
+                    LastName = physician.LastName,
+                    Email = physician.Email,
+                    PhoneNumber = physician.Mobile,
+                    MediLiencense = physician.MedicalLicense,
+                    NPI = physician.Npinumber,
+                    SynchroEmail = physician.SyncEmailAddress,
+                    RegionList = regions,
+                    physicianRegions = physicianRegions,
+                    address1 = physician.Address1,
+                    address2 = physician.Address2,
+                    city = physician.City,
+                    state = physician.City,
+                    zip = physician.Zip,
+                    altphonenumber = physician.AltPhone,
+                    BusinessName = physician.BusinessName,
+                    BusinessWeb = physician.BusinessWebsite,
+                    Photo = physician.Photo,
+                    Sign = physician.Signature,
+                    AdminNotes = physician.AdminNotes,
+                };
 
-            if (physician?.IsAgreementDoc?[0] == true)
-            {
-                model.AggrementDoc = true;
-            }
-            if (physician?.IsBackgroundDoc?[0] == true)
-            {
-                model.BackgoundDoc = true;
-            }
-            if (physician?.IsNonDisclosureDoc?[0] == true)
-            {
-                model.DisclosureDoc = true;
-            }
-            if (physician?.IsLicenseDoc?[0] == true)
-            {
-                model.LicenseDoc = true;
-            }
+                if (physician?.IsAgreementDoc?[0] == true)
+                {
+                    model.AggrementDoc = true;
+                }
+                if (physician?.IsBackgroundDoc?[0] == true)
+                {
+                    model.BackgoundDoc = true;
+                }
+                if (physician?.IsNonDisclosureDoc?[0] == true)
+                {
+                    model.DisclosureDoc = true;
+                }
+                if (physician?.IsLicenseDoc?[0] == true)
+                {
+                    model.LicenseDoc = true;
+                }
 
-            return model;
+                return model;
+            }
+            return new PhysicianAccountViewModel();
         }
 
         public async Task ResetAccountPass(int PhysicianId, string password)
@@ -1515,8 +1585,6 @@ namespace Services.Implementation
             Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
             if (physician != null)
             {
-
-
                 physician!.IsDeleted = new BitArray(new[] { true });
                 _context.Physicians.Update(physician);
             }
@@ -1530,21 +1598,30 @@ namespace Services.Implementation
             roles = roles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<RoleData> roleData = roles.Select(a => new RoleData() { RoleId = a.RoleId, Name = a.Name, AccountType = a.AccountType }).ToList();
 
-            AccessViewModel accessViewModel = new AccessViewModel()
+            if (roles != null)
             {
-                roleData = roleData,
-            };
-            return accessViewModel;
+                AccessViewModel accessViewModel = new AccessViewModel()
+                {
+                    roleData = roleData,
+                };
+                return accessViewModel;
+            }
+            return new AccessViewModel();
         }
 
         public CreateAccessViewModel CreateAccess()
         {
             var menu = _context.Menus.ToList().DistinctBy(a => a.AccountType).Select(a => (int)a.AccountType).ToList();
-            CreateAccessViewModel model = new CreateAccessViewModel()
+
+            if (menu != null)
             {
-                menus = menu,
-            };
-            return model;
+                CreateAccessViewModel model = new CreateAccessViewModel()
+                {
+                    menus = menu,
+                };
+                return model;
+            }
+            return new CreateAccessViewModel();
         }
 
         public async Task DeleteRole(int RoleId)
@@ -1563,12 +1640,17 @@ namespace Services.Implementation
         {
             List<Menu> menus = await _context.Menus.ToListAsync();
             CreateAccessViewModel model = new CreateAccessViewModel();
-            model.Menu = menus;
-            if (accounttype != 4)
+
+            if (menus != null)
             {
-                model.Menu = menus.Where(a => a.AccountType == accounttype).ToList();
+                model.Menu = menus;
+                if (accounttype != 4)
+                {
+                    model.Menu = menus.Where(a => a.AccountType == accounttype).ToList();
+                }
+                return model;
             }
-            return model;
+            return new CreateAccessViewModel();
         }
 
         public async Task CreateRole(CreateAccessViewModel model, string Email)
@@ -1612,14 +1694,18 @@ namespace Services.Implementation
         public async Task<CreatePhysicianViewModel> CreatePhysician()
         {
             List<Role> role = await _context.Roles.ToListAsync();
-            List<Region> regions = _context.Regions.ToList();
+            List<Region> regions = await _context.Regions.ToListAsync();
 
-            CreatePhysicianViewModel model = new CreatePhysicianViewModel()
+            if (role != null && regions != null)
             {
-                Role = role,
-                RegionList = regions,
-            };
-            return model;
+                CreatePhysicianViewModel model = new CreatePhysicianViewModel()
+                {
+                    Role = role,
+                    RegionList = regions,
+                };
+                return model;
+            }
+            return new CreatePhysicianViewModel();
         }
 
         public async Task CreatePhysicianAccount(CreatePhysicianViewModel model, List<int> regionselected)
@@ -1749,12 +1835,16 @@ namespace Services.Implementation
             List<Role> role = await _context.Roles.ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
 
-            CreateAdminViewModel model = new CreateAdminViewModel()
+            if (role != null && regions != null)
             {
-                Role = role,
-                RegionList = regions,
-            };
-            return model;
+                CreateAdminViewModel model = new CreateAdminViewModel()
+                {
+                    Role = role,
+                    RegionList = regions,
+                };
+                return model;
+            }
+            return new CreateAdminViewModel();
         }
 
         public async Task CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected)
@@ -1820,20 +1910,24 @@ namespace Services.Implementation
         {
             List<Region> region = await _context.Regions.ToListAsync();
 
-            SchedullingViewModel model = new SchedullingViewModel()
+            if (region != null)
             {
-                RegionList = region,
-            };
-            return model;
+                SchedullingViewModel model = new SchedullingViewModel()
+                {
+                    RegionList = region,
+                };
+                return model;
+            }
+            return new SchedullingViewModel();
         }
 
         public async Task<SchedullingViewModel> SchedullingData(int region, DateTime date)
         {
             List<Physician> physician = await _context.Physicians.ToListAsync();
             List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).ToListAsync();
-            SchedullingViewModel model = new SchedullingViewModel();
             shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
+            SchedullingViewModel model = new SchedullingViewModel();
             if (physician != null && shiftDetails != null)
             {
                 if (region != 0)
@@ -1850,11 +1944,16 @@ namespace Services.Implementation
         public async Task<CreateNewShift> NewShift()
         {
             List<Region> regions = await _context.Regions.ToListAsync();
-            CreateNewShift model = new CreateNewShift()
+
+            if (regions != null)
             {
-                RegionList = regions,
-            };
-            return model;
+                CreateNewShift model = new CreateNewShift()
+                {
+                    RegionList = regions,
+                };
+                return model;
+            }
+            return new CreateNewShift();
         }
 
         public async Task<CreateNewShift> ViewShift(int ShiftDetailId)
@@ -1862,18 +1961,23 @@ namespace Services.Implementation
             ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == ShiftDetailId).FirstOrDefaultAsync();
             Physician? physicians = await _context.Physicians.Where(a => a.PhysicianId == shiftDetails.Shift.PhysicianId).FirstOrDefaultAsync();
             Region? region = await _context.Regions.Where(a => a.RegionId == physicians!.RegionId).FirstOrDefaultAsync();
-            CreateNewShift model = new CreateNewShift()
+
+            if (shiftDetails != null)
             {
-                ShiftDetailId = ShiftDetailId,
-                PhysicianId = physicians.PhysicianId,
-                PhysicianName = physicians.FirstName + " " + physicians.LastName,
-                RegionId = region.RegionId,
-                RegionName = region.Name,
-                ShiftDate = shiftDetails.ShiftDate,
-                Start = shiftDetails.StartTime,
-                End = shiftDetails.EndTime,
-            };
-            return model;
+                CreateNewShift model = new CreateNewShift()
+                {
+                    ShiftDetailId = ShiftDetailId,
+                    PhysicianId = physicians.PhysicianId,
+                    PhysicianName = physicians.FirstName + " " + physicians.LastName,
+                    RegionId = region.RegionId,
+                    RegionName = region.Name,
+                    ShiftDate = shiftDetails.ShiftDate,
+                    Start = shiftDetails.StartTime,
+                    End = shiftDetails.EndTime,
+                };
+                return model;
+            }
+            return new CreateNewShift();
         }
 
         public async Task ReturnShift(int ShiftDetailId, string email)
@@ -1927,130 +2031,132 @@ namespace Services.Implementation
         {
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == Email);
 
-
-            var chk = repeatdays.ToList();
-
-            var shiftid = _context.Shifts.Where(u => u.PhysicianId == model.PhysicianId).Select(u => u.ShiftId).ToList();
-            if (shiftid.Count() > 0)
+            if (aspNetUser != null)
             {
-                foreach (var obj in shiftid)
+                var chk = repeatdays.ToList();
+
+                var shiftid = _context.Shifts.Where(u => u.PhysicianId == model.PhysicianId).Select(u => u.ShiftId).ToList();
+                if (shiftid.Count() > 0)
                 {
-                    var shiftdetailchk = _context.ShiftDetails.Where(u => u.ShiftId == obj && u.ShiftDate == model.ShiftDate).ToList();
-                    if (shiftdetailchk.Count() > 0)
+                    foreach (var obj in shiftid)
                     {
-                        foreach (var item in shiftdetailchk)
+                        var shiftdetailchk = _context.ShiftDetails.Where(u => u.ShiftId == obj && u.ShiftDate == model.ShiftDate).ToList();
+                        if (shiftdetailchk.Count() > 0)
                         {
-                            if ((model.Start >= item.StartTime && model.Start <= item.EndTime) || (model.End >= item.StartTime && model.End <= item.EndTime))
+                            foreach (var item in shiftdetailchk)
                             {
-                                //TempData["error"] = "Shift is already assigned in this time";
-                                //return RedirectToAction("Scheduling");
+                                if ((model.Start >= item.StartTime && model.Start <= item.EndTime) || (model.End >= item.StartTime && model.End <= item.EndTime))
+                                {
+                                    //TempData["error"] = "Shift is already assigned in this time";
+                                    //return RedirectToAction("Scheduling");
+                                }
                             }
                         }
                     }
                 }
-            }
-            Shift shift = new Shift
-            {
-                PhysicianId = model.PhysicianId,
-                StartDate = DateOnly.FromDateTime(model.ShiftDate),
-                RepeatUpto = model.RepeatEnd,
-                CreatedDate = DateTime.Now,
-                CreatedBy = aspNetUser!.Id
-            };
-            if (chk.Count != 0)
-            {
-                foreach (var obj in chk)
+                Shift shift = new Shift
                 {
-                    shift.WeekDays += obj;
+                    PhysicianId = model.PhysicianId,
+                    StartDate = DateOnly.FromDateTime(model.ShiftDate),
+                    RepeatUpto = model.RepeatEnd,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = aspNetUser!.Id
+                };
+                if (chk.Count != 0)
+                {
+                    foreach (var obj in chk)
+                    {
+                        shift.WeekDays += obj;
+                    }
                 }
-            }
-            if (model.RepeatEnd > 0)
-            {
-                shift.IsRepeat = new BitArray(new[] { true });
-            }
-            else
-            {
-                shift.IsRepeat = new BitArray(new[] { false });
-            }
-            _context.Shifts.Add(shift);
-            await _context.SaveChangesAsync();
-            DateTime curdate = model.ShiftDate;
-
-            ShiftDetail shiftdetail = new ShiftDetail();
-            shiftdetail.ShiftId = shift.ShiftId;
-            shiftdetail.ShiftDate = curdate;
-            shiftdetail.RegionId = model.RegionId;
-            shiftdetail.StartTime = model.Start;
-            shiftdetail.EndTime = model.End;
-            shiftdetail.IsDeleted = new BitArray(new[] { false });
-            _context.ShiftDetails.Add(shiftdetail);
-            await _context.SaveChangesAsync();
-
-            var dayofweek = model.ShiftDate.DayOfWeek.ToString();
-            int valueforweek;
-            if (dayofweek == "Sunday")
-            {
-                valueforweek = 0;
-            }
-            else if (dayofweek == "Monday")
-            {
-                valueforweek = 1;
-            }
-            else if (dayofweek == "Tuesday")
-            {
-                valueforweek = 2;
-            }
-            else if (dayofweek == "Wednesday")
-            {
-                valueforweek = 3;
-            }
-            else if (dayofweek == "Thursday")
-            {
-                valueforweek = 4;
-            }
-            else if (dayofweek == "Friday")
-            {
-                valueforweek = 5;
-            }
-            else
-            {
-                valueforweek = 6;
-            }
-            if (shift.IsRepeat[0] == true)
-            {
-                for (int j = 0; j < shift.WeekDays.Count(); j++)
+                if (model.RepeatEnd > 0)
                 {
-                    var z = shift.WeekDays;
-                    var p = shift.WeekDays.ElementAt(j).ToString();
-                    int ele = Int32.Parse(p);
-                    int x;
-                    if (valueforweek > ele)
+                    shift.IsRepeat = new BitArray(new[] { true });
+                }
+                else
+                {
+                    shift.IsRepeat = new BitArray(new[] { false });
+                }
+                _context.Shifts.Add(shift);
+                await _context.SaveChangesAsync();
+                DateTime curdate = model.ShiftDate;
+
+                ShiftDetail shiftdetail = new ShiftDetail();
+                shiftdetail.ShiftId = shift.ShiftId;
+                shiftdetail.ShiftDate = curdate;
+                shiftdetail.RegionId = model.RegionId;
+                shiftdetail.StartTime = model.Start;
+                shiftdetail.EndTime = model.End;
+                shiftdetail.IsDeleted = new BitArray(new[] { false });
+                _context.ShiftDetails.Add(shiftdetail);
+                await _context.SaveChangesAsync();
+
+                var dayofweek = model.ShiftDate.DayOfWeek.ToString();
+                int valueforweek;
+                if (dayofweek == "Sunday")
+                {
+                    valueforweek = 0;
+                }
+                else if (dayofweek == "Monday")
+                {
+                    valueforweek = 1;
+                }
+                else if (dayofweek == "Tuesday")
+                {
+                    valueforweek = 2;
+                }
+                else if (dayofweek == "Wednesday")
+                {
+                    valueforweek = 3;
+                }
+                else if (dayofweek == "Thursday")
+                {
+                    valueforweek = 4;
+                }
+                else if (dayofweek == "Friday")
+                {
+                    valueforweek = 5;
+                }
+                else
+                {
+                    valueforweek = 6;
+                }
+                if (shift.IsRepeat[0] == true)
+                {
+                    for (int j = 0; j < shift.WeekDays.Count(); j++)
                     {
-                        x = 6 - valueforweek + 1 + ele;
-                    }
-                    else
-                    {
-                        x = ele - valueforweek;
-                    }
-                    if (x == 0)
-                    {
-                        x = 7;
-                    }
-                    DateTime newcurdate = model.ShiftDate.AddDays(x);
-                    for (int i = 0; i < model.RepeatEnd; i++)
-                    {
-                        ShiftDetail shiftdetailnew = new ShiftDetail
+                        var z = shift.WeekDays;
+                        var p = shift.WeekDays.ElementAt(j).ToString();
+                        int ele = Int32.Parse(p);
+                        int x;
+                        if (valueforweek > ele)
                         {
-                            ShiftId = shift.ShiftId,
-                            ShiftDate = newcurdate,
-                            RegionId = model.RegionId,
-                            StartTime = model.Start,
-                            EndTime = model.End,
-                            IsDeleted = new BitArray(new[] { false })
-                        };
-                        _context.ShiftDetails.Add(shiftdetailnew);
-                        await _context.SaveChangesAsync();
-                        newcurdate = newcurdate.AddDays(7);
+                            x = 6 - valueforweek + 1 + ele;
+                        }
+                        else
+                        {
+                            x = ele - valueforweek;
+                        }
+                        if (x == 0)
+                        {
+                            x = 7;
+                        }
+                        DateTime newcurdate = model.ShiftDate.AddDays(x);
+                        for (int i = 0; i < model.RepeatEnd; i++)
+                        {
+                            ShiftDetail shiftdetailnew = new ShiftDetail
+                            {
+                                ShiftId = shift.ShiftId,
+                                ShiftDate = newcurdate,
+                                RegionId = model.RegionId,
+                                StartTime = model.Start,
+                                EndTime = model.End,
+                                IsDeleted = new BitArray(new[] { false })
+                            };
+                            _context.ShiftDetails.Add(shiftdetailnew);
+                            await _context.SaveChangesAsync();
+                            newcurdate = newcurdate.AddDays(7);
+                        }
                     }
                 }
             }
@@ -2081,11 +2187,15 @@ namespace Services.Implementation
         {
             List<Region> regions = await _context.Regions.ToListAsync();
 
-            SchedullingViewModel model = new SchedullingViewModel()
+            if (regions != null)
             {
-                RegionList = regions
-            };
-            return model;
+                SchedullingViewModel model = new SchedullingViewModel()
+                {
+                    RegionList = regions
+                };
+                return model;
+            }
+            return new SchedullingViewModel();
         }
 
         public async Task<SchedullingViewModel> MdOnCallData(int region)
@@ -2105,21 +2215,24 @@ namespace Services.Implementation
             return model;
         }
 
-        public RequestedShiftViewModel RequestedShifts()
+        public async Task<RequestedShiftViewModel> RequestedShifts()
         {
+            List<Region> regions = await _context.Regions.ToListAsync();
 
-            List<Region> regions = _context.Regions.ToList();
-            RequestedShiftViewModel model = new RequestedShiftViewModel()
+            if (regions != null)
             {
-                RegionList = regions
-            };
-            return model;
+                RequestedShiftViewModel model = new RequestedShiftViewModel()
+                {
+                    RegionList = regions
+                };
+                return model;
+            }
+            return new RequestedShiftViewModel();
         }
 
-        public RequestedShiftViewModel RequestedShiftsData(int region, int requestedPage)
+        public async Task<RequestedShiftViewModel> RequestedShiftsData(int region, int requestedPage)
         {
-
-            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift).ThenInclude(a => a.Physician).Include(a => a.Region).Where(a => a.Status == 0).ToList();
+            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).ThenInclude(a => a.Physician).Include(a => a.Region).Where(a => a.Status == 0).ToListAsync();
             RequestedShiftViewModel model = new RequestedShiftViewModel();
 
             if (shiftDetails != null)
@@ -2139,35 +2252,41 @@ namespace Services.Implementation
             return model;
         }
 
-        public void DeleteSelectedShift(List<int> selectedShifts, string email)
+        public async Task DeleteSelectedShift(List<int> selectedShifts, string email)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email);
-            foreach (var item in selectedShifts)
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+            if (selectedShifts != null)
             {
-                ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
-                if (data != null && aspNetUser != null)
+                foreach (var item in selectedShifts)
                 {
-                    data.IsDeleted = new BitArray(new[] { true });
-                    data.ModifiedBy = aspNetUser.Id;
-                    data.ModifiedDate = DateTime.Now;
-                    _context.ShiftDetails.Update(data);
+                    ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
+                    if (data != null && aspNetUser != null)
+                    {
+                        data.IsDeleted = new BitArray(new[] { true });
+                        data.ModifiedBy = aspNetUser.Id;
+                        data.ModifiedDate = DateTime.Now;
+                        _context.ShiftDetails.Update(data);
+                    }
                 }
             }
             _context.SaveChangesAsync();
         }
 
-        public void ApproveSelectedShift(List<int> selectedShifts, string email)
+        public async Task ApproveSelectedShift(List<int> selectedShifts, string email)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email);
-            foreach (var item in selectedShifts)
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+            if (selectedShifts != null)
             {
-                ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
-                if (data != null && aspNetUser != null)
+                foreach (var item in selectedShifts)
                 {
-                    data.Status = 1;
-                    data.ModifiedBy = aspNetUser.Id;
-                    data.ModifiedDate = DateTime.Now;
-                    _context.ShiftDetails.Update(data);
+                    ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
+                    if (data != null && aspNetUser != null)
+                    {
+                        data.Status = 1;
+                        data.ModifiedBy = aspNetUser.Id;
+                        data.ModifiedDate = DateTime.Now;
+                        _context.ShiftDetails.Update(data);
+                    }
                 }
             }
             _context.SaveChangesAsync();
@@ -2176,11 +2295,16 @@ namespace Services.Implementation
         public async Task<VendorsDetailsViewModel> VendorsData()
         {
             List<HealthProfessionalType> healthProfessionalTypes = await _context.HealthProfessionalTypes.ToListAsync();
-            VendorsDetailsViewModel model = new VendorsDetailsViewModel()
+
+            if (healthProfessionalTypes != null)
             {
-                healthProfessionalTypes = healthProfessionalTypes,
-            };
-            return (model);
+                VendorsDetailsViewModel model = new VendorsDetailsViewModel()
+                {
+                    healthProfessionalTypes = healthProfessionalTypes,
+                };
+                return (model);
+            }
+            return new VendorsDetailsViewModel();
         }
 
 
@@ -2188,31 +2312,36 @@ namespace Services.Implementation
         {
             List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.Include(a => a.ProfessionNavigation).ToListAsync();
             healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
-            if (!string.IsNullOrWhiteSpace(searchvendor))
-            {
-                healthProfessionals = healthProfessionals.Where(a => a.VendorName.ToLower().Contains(searchvendor.ToLower())).ToList();
-            }
-            if (profession != 0)
-            {
-                healthProfessionals = healthProfessionals.Where(a => a.ProfessionNavigation.HealthProfessionalId == profession).ToList();
-            }
 
-            List<VendorsData> vendorsData = healthProfessionals.Select(a => new VendorsData
+            if (healthProfessionals != null)
             {
-                ProfessionId = a.VendorId,
-                Profession = a.ProfessionNavigation.ProfessionName,
-                VendorName = a.VendorName,
-                Email = a.Email,
-                PhoneNumber = a.PhoneNumber,
-                FaxNumber = a.FaxNumber,
-                BusinessContact = a.BusinessContact
-            }).ToList();
+                if (!string.IsNullOrWhiteSpace(searchvendor))
+                {
+                    healthProfessionals = healthProfessionals.Where(a => a.VendorName.ToLower().Contains(searchvendor.ToLower())).ToList();
+                }
+                if (profession != 0)
+                {
+                    healthProfessionals = healthProfessionals.Where(a => a.ProfessionNavigation.HealthProfessionalId == profession).ToList();
+                }
 
-            VendorsDetailsViewModel model = new VendorsDetailsViewModel()
-            {
-                vendorsDatas = vendorsData,
-            };
-            return (model);
+                List<VendorsData> vendorsData = healthProfessionals.Select(a => new VendorsData
+                {
+                    ProfessionId = a.VendorId,
+                    Profession = a.ProfessionNavigation.ProfessionName,
+                    VendorName = a.VendorName,
+                    Email = a.Email,
+                    PhoneNumber = a.PhoneNumber,
+                    FaxNumber = a.FaxNumber,
+                    BusinessContact = a.BusinessContact
+                }).ToList();
+
+                VendorsDetailsViewModel model = new VendorsDetailsViewModel()
+                {
+                    vendorsDatas = vendorsData,
+                };
+                return (model);
+            }
+            return new VendorsDetailsViewModel();
         }
 
         public async Task<AddBusinessViewModel> AddBusiness(int VendorId)
@@ -2220,22 +2349,26 @@ namespace Services.Implementation
             HealthProfessional? healthProfessional = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
             List<HealthProfessionalType> healthProfessionalTypes = await _context.HealthProfessionalTypes.ToListAsync();
 
-            AddBusinessViewModel model = new AddBusinessViewModel()
+            if (healthProfessional != null && healthProfessionalTypes != null)
             {
-                professionalTypes = healthProfessionalTypes,
-            };
+                AddBusinessViewModel model = new AddBusinessViewModel()
+                {
+                    professionalTypes = healthProfessionalTypes,
+                };
 
-            if (healthProfessional != null)
-            {
-                model.professionalTypes = healthProfessionalTypes;
-                model.VendorName = healthProfessional!.VendorName;
-                model.VendorId = VendorId;
-                model.Email = healthProfessional.Email!;
-                model.PhoneNumber = healthProfessional!.PhoneNumber!;
-                model.FaxNumber = healthProfessional.FaxNumber;
-                model.BusinessContact = healthProfessional.BusinessContact;
+                if (healthProfessional != null)
+                {
+                    model.professionalTypes = healthProfessionalTypes;
+                    model.VendorName = healthProfessional!.VendorName;
+                    model.VendorId = VendorId;
+                    model.Email = healthProfessional.Email!;
+                    model.PhoneNumber = healthProfessional!.PhoneNumber!;
+                    model.FaxNumber = healthProfessional.FaxNumber;
+                    model.BusinessContact = healthProfessional.BusinessContact;
+                }
+                return (model);
             }
-            return (model);
+            return new AddBusinessViewModel();
         }
 
         public async Task AddNewBusiness(AddBusinessViewModel model, int VendorId)
@@ -2301,36 +2434,43 @@ namespace Services.Implementation
         {
             List<User> users = await _context.Users.ToListAsync();
 
-            users = users.Where(a =>
-                (string.IsNullOrWhiteSpace(obj.FirstName) || a.FirstName.ToLower().Contains(obj.FirstName.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.LastName) || a.LastName.ToLower().Contains(obj.LastName.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.Mobile.Contains(obj.PhoneNumber))
-            ).ToList();
-
-            int count = users.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            users = users.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-
-            PatientHistoryViewModel model = new PatientHistoryViewModel()
+            if (users != null)
             {
-                Users = users,
-                CurrentPage = obj.requestedPage,
-                TotalPage = TotalPage,
-            };
-            return model;
+                users = users.Where(a =>
+                    (string.IsNullOrWhiteSpace(obj.FirstName) || a.FirstName.ToLower().Contains(obj.FirstName.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.LastName) || a.LastName.ToLower().Contains(obj.LastName.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.Mobile.Contains(obj.PhoneNumber))
+                ).ToList();
+
+                int count = users.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                users = users.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+
+                PatientHistoryViewModel model = new PatientHistoryViewModel()
+                {
+                    Users = users,
+                    CurrentPage = obj.requestedPage,
+                    TotalPage = TotalPage,
+                };
+                return model;
+            }
+            return new PatientHistoryViewModel();
         }
 
         public async Task<PatientHistoryViewModel> PatientRecords(int userid)
         {
             List<RequestClient>? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.UserId == userid).ToListAsync();
 
-            PatientHistoryViewModel model = new PatientHistoryViewModel()
+            if (requestClient != null)
             {
-                requestClients = requestClient!,
-            };
-
-            return model;
+                PatientHistoryViewModel model = new PatientHistoryViewModel()
+                {
+                    requestClients = requestClient!,
+                };
+                return model;
+            }
+            return new PatientHistoryViewModel();
         }
 
         public async Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj)
@@ -2339,71 +2479,83 @@ namespace Services.Implementation
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
                 .Include(a => a.Request.RequestStatusLogs)
-                .ToListAsync(); 
+                .ToListAsync();
 
-            requestClients = requestClients.Where(a =>
-
-                (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
-                (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
-                (obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
-                (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
-                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
-            ).ToList();
-
-            int count = requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-
-            SearchRecordsViewModel model = new SearchRecordsViewModel()
+            if (requestClients != null)
             {
-                requestClients = requestClients,
-                CurrentPage = obj.requestedPage,
-                TotalPage = TotalPage,
-            };
-            return model;
+                requestClients = requestClients.Where(a =>
+
+                    (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
+                    (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
+                    (obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
+                    (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
+                ).ToList();
+
+                int count = requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+
+                SearchRecordsViewModel model = new SearchRecordsViewModel()
+                {
+                    requestClients = requestClients,
+                    CurrentPage = obj.requestedPage,
+                    TotalPage = TotalPage,
+                };
+                return model;
+            }
+            return new SearchRecordsViewModel();
         }
 
         public async Task<LogsDataViewModel> EmailLogsData(LogsDataViewModel model)
         {
             List<EmailLog> emailLogs = await _context.EmailLogs.ToListAsync();
 
-            int count = emailLogs.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            emailLogs = emailLogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
-
-            LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+            if (emailLogs != null)
             {
-                EmailLogs = emailLogs,
-                CurrentPage = model.CurrentPage,
-                TotalPage = TotalPage,
-            };
-            return logsDataViewModel;
+                int count = emailLogs.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                emailLogs = emailLogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+
+                LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+                {
+                    EmailLogs = emailLogs,
+                    CurrentPage = model.CurrentPage,
+                    TotalPage = TotalPage,
+                };
+                return logsDataViewModel;
+            }
+            return new LogsDataViewModel();
         }
 
         public async Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model)
         {
             List<Smslog> smslogs = await _context.Smslogs.ToListAsync();
 
-            int count = smslogs.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            smslogs = smslogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
-
-            LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+            if (smslogs != null)
             {
-                SmsLogs = smslogs,
-                CurrentPage = model.CurrentPage,
-                TotalPage = TotalPage,
-            };
-            return logsDataViewModel;
+                int count = smslogs.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                smslogs = smslogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+
+                LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
+                {
+                    SmsLogs = smslogs,
+                    CurrentPage = model.CurrentPage,
+                    TotalPage = TotalPage,
+                };
+                return logsDataViewModel;
+            }
+            return new LogsDataViewModel();
         }
 
-        public BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj)
+        public async Task<BlockHistoryViewModel> BlockHistoryData(BlockHistoryViewModel obj)
         {
-            List<BlockRequest> blockRequests = _context.BlockRequests.ToList();
-            List<RequestClient> requestClients = _context.RequestClients.Include(a => a.Request).ToList();
+            List<BlockRequest> blockRequests = await _context.BlockRequests.ToListAsync();
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ToListAsync();
 
-            if(blockRequests != null && requestClients != null)
+            if (blockRequests != null && requestClients != null)
             {
                 List<blockdata> blockdatas = blockRequests.Select(a => new blockdata()
                 {
@@ -2444,10 +2596,10 @@ namespace Services.Implementation
             return new BlockHistoryViewModel();
         }
 
-        public void UnblockCase(int requestid)
+        public async Task UnblockCase(int requestid)
         {
-            BlockRequest? blockRequest = _context.BlockRequests.Where(a => a.BlockRequestId == requestid).FirstOrDefault();
-            Request? request = _context.Requests.Where(a => a.RequestId == int.Parse(blockRequest!.RequestId)).FirstOrDefault();
+            BlockRequest? blockRequest = await _context.BlockRequests.Where(a => a.BlockRequestId == requestid).FirstOrDefaultAsync();
+            Request? request = await _context.Requests.Where(a => a.RequestId == int.Parse(blockRequest!.RequestId)).FirstOrDefaultAsync();
 
             if (blockRequest != null)
             {
