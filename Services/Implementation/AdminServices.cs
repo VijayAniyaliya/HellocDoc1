@@ -2339,7 +2339,7 @@ namespace Services.Implementation
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
                 .Include(a => a.Request.RequestStatusLogs)
-                .ToListAsync();
+                .ToListAsync(); 
 
             requestClients = requestClients.Where(a =>
 
@@ -2403,30 +2403,45 @@ namespace Services.Implementation
             List<BlockRequest> blockRequests = _context.BlockRequests.ToList();
             List<RequestClient> requestClients = _context.RequestClients.Include(a => a.Request).ToList();
 
-            if (!string.IsNullOrWhiteSpace(obj.Name))
+            if(blockRequests != null && requestClients != null)
             {
-                requestClients = requestClients.Where(a => a.FirstName.ToLower().Contains(obj.Name.ToLower()) || a.LastName.ToLower().Contains(obj.Name.ToLower())).ToList();
+                List<blockdata> blockdatas = blockRequests.Select(a => new blockdata()
+                {
+                    BlockRequestId = a.BlockRequestId,
+                    PatientName = requestClients.FirstOrDefault(x => x.RequestId == int.Parse(a.RequestId))?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == int.Parse(a.RequestId))?.LastName,
+                    PhoneNumber = a.PhoneNumber!,
+                    Email = a.Email!,
+                    CreatedDate = a.CreatedDate!.Value,
+                    Notes = a.Reason!,
+                    IsActive = a.IsActive!,
+                }).ToList();
+
+                if (!string.IsNullOrWhiteSpace(obj.Name))
+                {
+                    requestClients = requestClients.Where(a => a.FirstName.ToLower().Contains(obj.Name.ToLower()) || a.LastName.ToLower().Contains(obj.Name.ToLower())).ToList();
+                }
+
+                blockdatas = blockdatas.Where(a =>
+
+                (obj.Date == new DateTime() || DateOnly.FromDateTime(a.CreatedDate.Date) == DateOnly.FromDateTime(obj.Date)) &&
+                (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
+                (string.IsNullOrWhiteSpace(obj.Name) || a.PatientName.ToLower().Contains(obj.Name)) &&
+                (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber)))
+                    .ToList();
+
+                int count = blockdatas.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                blockdatas = blockdatas.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+
+                BlockHistoryViewModel model = new BlockHistoryViewModel()
+                {
+                    blockRequests = blockdatas,
+                    CurrentPage = obj.requestedPage,
+                    TotalPage = TotalPage,
+                };
+                return model;
             }
-
-            blockRequests = blockRequests.Where(a =>
-
-            (obj.Date == new DateTime() || DateOnly.FromDateTime(a.CreatedDate!.Value) == DateOnly.FromDateTime(obj.Date)) &&
-            (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
-            (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber)))
-                .ToList();
-
-            int count = blockRequests.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            blockRequests = blockRequests.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-
-            BlockHistoryViewModel model = new BlockHistoryViewModel()
-            {
-                blockRequests = blockRequests,
-                requestClients = requestClients,
-                CurrentPage = obj.requestedPage,
-                TotalPage = TotalPage,
-            };
-            return model;
+            return new BlockHistoryViewModel();
         }
 
         public void UnblockCase(int requestid)

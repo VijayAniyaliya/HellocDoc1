@@ -18,19 +18,18 @@
 
             <tr>
                 <td>    
-                    @Model.requestClients.FirstOrDefault(a=>a.Request.RequestId == int.Parse(item.RequestId))?.FirstName
-                    @Model.requestClients.FirstOrDefault(a=>a.Request.RequestId == int.Parse(item.RequestId))?.LastName
+                   @item.PatientName
                     </td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Email</td>
-                <td>@item.CreatedDate</td>
-                <td>@item.Reason</td>
+                <td>@item.CreatedDate.ToString("MMM dd, yyyy")</td>
+                <td>@item.Notes</td>
                 <th class="text-center">
                     <input class="form-check-input checks" id="isactive" type="checkbox"
                     @if (item.IsActive![0] == true)
                     {
                         @:checked   
-                    }value="" />
+                    }value=""/>
                 </th>
                 @if(item.IsActive[0] == true)
                 {

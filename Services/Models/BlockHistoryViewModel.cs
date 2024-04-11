@@ -10,9 +10,8 @@ namespace Services.Models
 {
     public class BlockHistoryViewModel
     {
-        public List<BlockRequest> blockRequests {  get; set; }
+        public List<blockdata> blockRequests {  get; set; }
 
-        public List<RequestClient> requestClients { get; set; }
         public string? Name { get; set; }
 
         public DateTime Date { get; set; }
@@ -26,6 +25,7 @@ namespace Services.Models
 
     public class blockdata
     {
+        public int BlockRequestId {  get; set; }
         public string PatientName { get; set; }
 
         public string PhoneNumber { get; set; }
