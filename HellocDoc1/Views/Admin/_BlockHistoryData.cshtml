@@ -23,10 +23,14 @@
                 <td>@item.CreatedDate</td>
                 <td>@item.Reason</td>
                 <th class="text-center">
-                    <input class="form-check-input checks" type="checkbox" value="" />
+                    <input class="form-check-input checks" id="isactive" type="checkbox"
+                    @if (item.IsActive![0] == true)
+                    {
+                        @:checked   
+                    }value="" />
                 </th>
                 <td class="text-center">
-                    <a class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Unblock</a>
+                    <a onclick="unblock(@item.BlockRequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Unblock</a>
                 </td>
             </tr>
         }
@@ -58,3 +62,22 @@ else
 {
     <div class="text-center text-danger fw-bold h5">No record found</div>
 }
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    function unblock(requestid) {
+        $.ajax({
+            url: "/Admin/UnblockCase",      
+            type: "POST",
+            data: { "requestid": requestid },
+            success: function () {
+                AjaxAll();
+                toastr.success('Case Unblock Successfully');
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+</script>

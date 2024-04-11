@@ -79,7 +79,8 @@ namespace HellocDoc1.Controllers
         [Route("{request_id}")]
         public async Task<IActionResult> AddNotes(ViewNotesViewModel model, int request_id)
         {
-            await _adminServices.AddNotes(model, request_id);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.AddNotes(model, request_id, email);
             return RedirectToAction("ViewNotes", new { request_id = request_id });
         }
         [HttpPost("{request_id}")]
@@ -725,7 +726,7 @@ namespace HellocDoc1.Controllers
             return PartialView("_SMSLogsData", data);
         }
 
-        public IActionResult BlockHistory()
+        public IActionResult BlockHistory() 
         {
             return View();
         }
@@ -734,6 +735,12 @@ namespace HellocDoc1.Controllers
         {
             var data = _adminServices.BlockHistoryData(model);
             return PartialView("_BlockHistoryData", data);
+        }
+
+        public IActionResult UnblockCase(int requestid)
+        {
+            _adminServices.UnblockCase(requestid);
+            return NoContent();
         }
     }
 }

@@ -5,20 +5,13 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using NPOI.XWPF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
-using System.ComponentModel.DataAnnotations.Schema;
-//using System.Drawing;
-//using System.Drawing;
-using System.Linq;
 
 namespace Services.Implementation
 {
@@ -67,51 +60,59 @@ namespace Services.Implementation
             List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToListAsync();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
-            model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                model.requestClients = clients;
+
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
             return model;
         }
 
         public async Task<AdminDashboardViewModel> PendingState(AdminDashboardViewModel obj)
-        {   
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a=>a.Request.RequestStatusLogs).Where(a => a.Request.Status == 2).ToListAsync();
+        {
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 2).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
+
             return model;
         }
 
@@ -121,23 +122,27 @@ namespace Services.Implementation
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
+
             return model;
         }
 
@@ -147,23 +152,27 @@ namespace Services.Implementation
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
+
             return model;
         }
 
@@ -173,23 +182,27 @@ namespace Services.Implementation
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
+
             return model;
         }
 
@@ -199,23 +212,26 @@ namespace Services.Implementation
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
-            if (!string.IsNullOrWhiteSpace(obj.patientname))
+            if (clients != null)
             {
-                model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                if (!string.IsNullOrWhiteSpace(obj.patientname))
+                {
+                    model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
+                }
+                if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
+                }
+                if (obj.region != 0)
+                {
+                    model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
+                }
+                int count = model.requestClients.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = obj.requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
-            {
-                model.requestClients = model.requestClients.Where(a => a.Request.RequestTypeId == obj.requesttype).ToList();
-            }
-            if (obj.region != 0)
-            {
-                model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-            }
-            int count = model.requestClients.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = obj.requestedPage;
-            model.TotalPage = TotalPage;
             return model;
         }
 
@@ -223,37 +239,73 @@ namespace Services.Implementation
         {
             var data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             ViewCaseViewModel model = new ViewCaseViewModel();
-            model.PatientNotes = data?.Notes!;
-            model.FirstName = data?.FirstName!;
-            model.LastName = data.LastName;
-            model.DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString());
-            model.PhoneNumber = data.PhoneNumber;
-            model.Email = data.Email;
-            model.Region = data.City;
-            model.Address = data.City + " " + data.State + " " + data.ZipCode;
-            model.RequestId = request_id;
-            model.RequestTypeId = data.Request.RequestTypeId;
-            model.Status = data.Request.Status;
+
+            if (data != null)
+            {
+                model.PatientNotes = data?.Notes!;
+                model.FirstName = data?.FirstName!;
+                model.LastName = data.LastName;
+                model.DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString());
+                model.PhoneNumber = data.PhoneNumber;
+                model.Email = data.Email;
+                model.Region = data.City;
+                model.Address = data.City + " " + data.State + " " + data.ZipCode;
+                model.RequestId = request_id;
+                model.RequestTypeId = data.Request.RequestTypeId;
+                model.Status = data.Request.Status;
+            }
+
             return model;
         }
 
         public async Task<ViewNotesViewModel> ViewNotes(int request_id)
         {
-            var data = await _context.RequestStatusLogs.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            List<RequestStatusLog> data = await _context.RequestStatusLogs.Where(a => a.RequestId == request_id).ToListAsync();
             var data1 = _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefault();
             ViewNotesViewModel model = new ViewNotesViewModel();
-            model.TransferNotes = data?.Notes;
-            model.PhysicianNotes = data1?.PhysicianNotes;
-            model.AdminNotes = data1?.AdminNotes;
-            model.RequestId = request_id;
+
+            if (data != null || data1 != null)
+            {
+                model.TransferNotes = new List<TransferNote>();
+                foreach (var item in data!)
+                {
+                    TransferNote transferNotes = new TransferNote
+                    {
+                        Notes = item.Notes,
+                        CreatedDate = item.CreatedDate
+                    };
+                    model.TransferNotes.Add(transferNotes);
+                }
+                model.PhysicianNotes = data1?.PhysicianNotes;
+                model.AdminNotes = data1?.AdminNotes;
+                model.RequestId = request_id;
+            }
             return model;
         }
 
-        public async Task AddNotes(ViewNotesViewModel model, int request_id)
+        public async Task AddNotes(ViewNotesViewModel model, int request_id, string email)
         {
             var data = await _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            data!.AdminNotes = model.AdditionalNotes;
-            _context.Update(data);
+            AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (data != null)
+            {
+                data!.AdminNotes = model.AdditionalNotes;
+                data.ModifiedBy = aspNetUser!.Id;
+                data.ModifiedDate = DateTime.Now;
+                _context.RequestNotes.Update(data);
+            }
+            else
+            {
+                RequestNote requestNote = new RequestNote()
+                {
+                    RequestId = request_id,
+                    AdminNotes = model.AdditionalNotes,
+                    CreatedBy = aspNetUser!.Id,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.RequestNotes.Add(requestNote);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -263,14 +315,17 @@ namespace Services.Implementation
             List<CaseTagViewModel> obj = data.Select(a => new CaseTagViewModel() { CaseId = a.CaseTagId, CaseName = a.Name }).ToList();
             var data1 = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
 
-            CancelCaseViewModel model = new CancelCaseViewModel()
+            if (data != null && data1!= null)
             {
-                RequestId = request_id,
-                Name = data1.FirstName + " " + data1.LastName,
-                ReasonForCancel = obj,
-
-            };
-            return model;
+                CancelCaseViewModel model = new CancelCaseViewModel()
+                {
+                    RequestId = request_id,
+                    Name = data1.FirstName + " " + data1.LastName,
+                    ReasonForCancel = obj,
+                };
+                return model;
+            }
+            return new CancelCaseViewModel();
         }
 
         public async Task CancelCase(int request_id, int caseId, string cancelNote)
@@ -331,60 +386,74 @@ namespace Services.Implementation
         public async Task<BlockCaseViewModel> BlockDetails(int request_id)
         {
             var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            BlockCaseViewModel model = new BlockCaseViewModel()
+            if (data != null)
             {
-                RequestId = request_id,
-                Name = data.FirstName + " " + data.LastName,
-            };
-            return model;
+                BlockCaseViewModel model = new BlockCaseViewModel()
+                {
+                    RequestId = request_id,
+                    Name = data.FirstName + " " + data.LastName,
+                };
+                return model;
+            }
+            return new BlockCaseViewModel();
         }
 
         public async Task BlockCase(int request_id, string reason)
         {
             var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            data.Status = 10;
-            RequestStatusLog requestStatusLog = new RequestStatusLog()
-            {
-                RequestId = request_id,
-                Status = 10,
-                Notes = reason,
-                CreatedDate = DateTime.Now,
-            };
 
-            BlockRequest blockRequest = new BlockRequest()
+            if (data != null)
             {
-                PhoneNumber = data.PhoneNumber,
-                Email = data.Email,
-                Reason = reason,
-                RequestId = request_id.ToString(),
-                CreatedDate = DateTime.Now,
-            };
-            _context.Requests.Update(data);
-            await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-            await _context.BlockRequests.AddAsync(blockRequest);
+                data.Status = 10;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = 10,
+                    Notes = reason,
+                    CreatedDate = DateTime.Now,
+                };
+
+                BlockRequest blockRequest = new BlockRequest()
+                {
+                    PhoneNumber = data.PhoneNumber,
+                    Email = data.Email,
+                    Reason = reason,
+                    RequestId = request_id.ToString(),
+                    CreatedDate = DateTime.Now,
+                };
+                _context.Requests.Update(data);
+                await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                await _context.BlockRequests.AddAsync(blockRequest);
+            }
+
             await _context.SaveChangesAsync();
         }
 
         public async Task<ViewUploadsViewModel> ViewUploads(int request_id)
         {
-            Request data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
-            ViewUploadsViewModel viewUploads = new ViewUploadsViewModel()
-            {
-                RequestId = request_id,
-                Name = data.FirstName + " " + data.LastName,
-            };
+            Request? data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
-            foreach (var item in data.RequestWiseFiles)
+            ViewUploadsViewModel viewUploads = new ViewUploadsViewModel();
+
+            if (data != null)
             {
-                DocumentDetail documentDetail = new DocumentDetail()
+                data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
+                viewUploads.RequestId = request_id;
+                viewUploads.Name = data.FirstName + " " + data.LastName;
+
+                foreach (var item in data.RequestWiseFiles)
                 {
-                    DocumentId = item.RequestWiseFileId,
-                    Document = item.FileName,
-                    UploadDate = item.CreatedDate.ToString()
-                };
-                viewUploads.Documents.Add(documentDetail);
+                    DocumentDetail documentDetail = new DocumentDetail()
+                    {
+                        DocumentId = item.RequestWiseFileId,
+                        Document = item.FileName,
+                        UploadDate = item.CreatedDate.ToString()
+                    };
+                    viewUploads.Documents.Add(documentDetail);
+                }
             }
+
             return viewUploads;
         }
 
@@ -415,7 +484,7 @@ namespace Services.Implementation
 
         public async Task Delete(int DocumentId)
         {
-            RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == DocumentId);
+            RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == DocumentId);
             if (data != null)
             {
                 data.IsDeleted = new BitArray(new[] { true });
@@ -428,7 +497,7 @@ namespace Services.Implementation
         {
             foreach (var item in DocumentId)
             {
-                RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
                 if (data != null)
                 {
                     data.IsDeleted = new BitArray(new[] { true });
@@ -443,20 +512,20 @@ namespace Services.Implementation
             List<string> name = new List<string>();
             foreach (var item in DocumentId)
             {
-                RequestWiseFile data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
                 if (data != null)
                 {
                     var file = data.FileName;
                     name.Add(file);
+                    var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
+                    await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
                 }
             }
-            var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-            await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
         }
 
         public async Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model)
         {
-            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).Include(a=>a.Users).FirstOrDefaultAsync();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).Include(a => a.Users).FirstOrDefaultAsync();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
@@ -475,26 +544,27 @@ namespace Services.Implementation
         public async Task<SendOrdersViewModel> SendOders(int request_id)
         {
             List<HealthProfessionalType> data = await _context.HealthProfessionalTypes.ToListAsync();
-            List<HealthProfession> obj = data.Select(a => new HealthProfession() { ProfessionId = a.HealthProfessionalId, ProfessionName = a.ProfessionName }).ToList();
 
-
-            SendOrdersViewModel model = new SendOrdersViewModel()
+            SendOrdersViewModel model = new SendOrdersViewModel();
+            if (data != null)
             {
-                RequestId = request_id,
-                HealthProfessions = obj,
-            };
+                List<HealthProfession> obj = data.Select(a => new HealthProfession() { ProfessionId = a.HealthProfessionalId, ProfessionName = a.ProfessionName }).ToList();
+                model.RequestId = request_id;
+                model.HealthProfessions = obj;
+            }
             return model;
         }
 
         public async Task<SendOrdersViewModel> FilterDataByProfession(int ProfessionId)
         {
             List<HealthProfessional> data = await _context.HealthProfessionals.Where(a => a.Profession == ProfessionId).ToListAsync();
-            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName }).ToList();
 
-            SendOrdersViewModel model = new SendOrdersViewModel()
+            SendOrdersViewModel model = new SendOrdersViewModel();
+            if (data != null)
             {
-                Business = obj,
-            };
+                List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName }).ToList();
+                model.Business = obj;
+            }
             return model;
         }
 
@@ -502,12 +572,13 @@ namespace Services.Implementation
         public async Task<SendOrdersViewModel> FilterDataByBusiness(int BusinessId)
         {
             List<HealthProfessional> data = await _context.HealthProfessionals.Where(a => a.VendorId == BusinessId).ToListAsync();
-            List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
 
-            SendOrdersViewModel model = new SendOrdersViewModel()
+            SendOrdersViewModel model = new SendOrdersViewModel();
+            if (data != null)
             {
-                Business = obj,
-            };
+                List<BusinessType> obj = data.Select(a => new BusinessType() { BusinessId = a.VendorId, BusinessName = a.VendorName, Contact = a.BusinessContact, Email = a.Email, FaxNumber = a.FaxNumber }).ToList();
+                model.Business = obj;
+            }
             return model;
         }
 
@@ -547,19 +618,23 @@ namespace Services.Implementation
                 try
                 {
                     var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    data.PhysicianId = physicianid;
 
-                    RequestStatusLog requeststatuslog = new RequestStatusLog
+                    if (data != null)
                     {
-                        RequestId = request_id,
-                        Status = 2,
-                        PhysicianId = physicianid,
-                        Notes = description,
-                        CreatedDate = DateTime.Now,
-                        TransToPhysicianId = physicianid
-                    };
-                    _context.Requests.Update(data);
-                    await _context.RequestStatusLogs.AddAsync(requeststatuslog);
+                        data.PhysicianId = physicianid;
+
+                        RequestStatusLog requeststatuslog = new RequestStatusLog
+                        {
+                            RequestId = request_id,
+                            Status = 2,
+                            PhysicianId = physicianid,
+                            Notes = description,
+                            CreatedDate = DateTime.Now,
+                            TransToPhysicianId = physicianid
+                        };
+                        _context.Requests.Update(data);
+                        await _context.RequestStatusLogs.AddAsync(requeststatuslog);
+                    }
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -588,16 +663,21 @@ namespace Services.Implementation
                 try
                 {
                     var obj = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    obj.Status = 10;
-                    RequestStatusLog requestStatusLog = new RequestStatusLog()
-                    {
-                        RequestId = request_id,
-                        Status = 10,
-                        CreatedDate = DateTime.Now,
 
-                    };
-                    _context.Requests.Update(obj);
-                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    if (obj != null)
+                    {
+                        obj.Status = 10;
+                        RequestStatusLog requestStatusLog = new RequestStatusLog()
+                        {
+                            RequestId = request_id,
+                            Status = 10,
+                            CreatedDate = DateTime.Now,
+
+                        };
+                        _context.Requests.Update(obj);
+                        await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                    }
+
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
@@ -631,7 +711,7 @@ namespace Services.Implementation
 
         public async Task<CloseCaseViewModel> CloseCase(int request_id)
         {
-            RequestClient data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            RequestClient? data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
             CloseCaseViewModel model = new CloseCaseViewModel()
@@ -647,7 +727,6 @@ namespace Services.Implementation
 
             foreach (var item in data.Request.RequestWiseFiles)
             {
-
                 DocumentDetails documentDetail = new DocumentDetails()
                 {
                     DocumentId = item.RequestWiseFileId,
@@ -661,11 +740,14 @@ namespace Services.Implementation
 
         public async Task SaveCloseCase(CloseCaseViewModel model, int request_id)
         {
-            RequestClient requestClient = await _context.RequestClients.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            requestClient.Email = model.Email;
-            requestClient.PhoneNumber = model.PhoneNumber;
+            RequestClient? requestClient = await _context.RequestClients.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
-            _context.RequestClients.Update(requestClient);
+            if (requestClient != null)
+            {
+                requestClient.Email = model.Email;
+                requestClient.PhoneNumber = model.PhoneNumber;
+                _context.RequestClients.Update(requestClient);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -676,25 +758,28 @@ namespace Services.Implementation
                 try
                 {
                     var obj = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    obj.Status = 6;
-                    RequestStatusLog requestStatusLog = new RequestStatusLog()
-                    {
-                        RequestId = request_id,
-                        Status = 6,
-                        CreatedDate = DateTime.Now,
-                    };      
-                    await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-                    await _context.SaveChangesAsync();
 
-                    RequestClosed requestClosed = new RequestClosed()
+                    if (obj != null)
                     {
-                        RequestId= request_id,
-                        RequestStatusLogId= requestStatusLog.RequestStatusLogId
-                    };
-                    await _context.RequestCloseds.AddAsync(requestClosed);
-                    _context.Requests.Update(obj);
-                    await _context.SaveChangesAsync();
+                        obj.Status = 6;
+                        RequestStatusLog requestStatusLog = new RequestStatusLog()
+                        {
+                            RequestId = request_id,
+                            Status = 6,
+                            CreatedDate = DateTime.Now,
+                        };
+                        await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                        await _context.SaveChangesAsync();
 
+                        RequestClosed requestClosed = new RequestClosed()
+                        {
+                            RequestId = request_id,
+                            RequestStatusLogId = requestStatusLog.RequestStatusLogId
+                        };
+                        await _context.RequestCloseds.AddAsync(requestClosed);
+                        _context.Requests.Update(obj);
+                    }
+                    await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -706,8 +791,8 @@ namespace Services.Implementation
 
         public async Task<EncounterFormViewModel> EncounterForm(int request_id)
         {
-            RequestClient data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            EncounterForm obj = await _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            RequestClient? data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            EncounterForm? obj = await _context.EncounterForms.DefaultIfEmpty().Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             EncounterFormViewModel model = new EncounterFormViewModel()
             {
@@ -753,7 +838,7 @@ namespace Services.Implementation
 
         public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id)
         {
-            EncounterForm encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            EncounterForm? encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             if (encounter == null)
             {
@@ -821,10 +906,11 @@ namespace Services.Implementation
 
         public async Task<AdminProfileViewModel> ProfileData(string email)
         {
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
-            Admin admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
+            Admin? admin = _context.Admins.Where(a => a.Email == email).FirstOrDefault();
             List<Region> regions = _context.Regions.ToList();
             List<AdminRegion> adminRegions = _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToList();
+
             AdminProfileViewModel model = new AdminProfileViewModel()
             {
                 AdminID = admin.AdminId,
@@ -848,60 +934,74 @@ namespace Services.Implementation
 
         public async Task ResetPassword(string email, string password)
         {
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
-            aspNetUser.PasswordHash = password;
-            aspNetUser.ModifiedDate = DateTime.Now;
-
-            _context.AspNetUsers.Update(aspNetUser);
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
+            if (aspNetUser != null)
+            {
+                aspNetUser.PasswordHash = password;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                _context.AspNetUsers.Update(aspNetUser);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAdminstrator(ProfileData model, string email)
         {
-            Admin admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
-            List<AdminRegion> adminRegions = await _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToListAsync();
-            foreach (var item in adminRegions)
+            Admin? admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
+
+            if (admin != null && aspNetUser != null)
             {
-                _context.AdminRegions.Remove(item);
+                List<AdminRegion> adminRegions = await _context.AdminRegions.Where(a => a.AdminId == admin.AdminId).ToListAsync();
+                foreach (var item in adminRegions)
+                {
+                    _context.AdminRegions.Remove(item);
+                }
+                foreach (var item in model.RegionSelected)
+                {
+                    AdminRegion adminRegion = new AdminRegion();
+                    adminRegion.AdminId = admin.AdminId;
+                    adminRegion.RegionId = item;
+                    await _context.AdminRegions.AddAsync(adminRegion);
+                }
+                admin.FirstName = model.firstname;
+                admin.LastName = model.lastname;
+                admin.Email = model.email;
+                admin.Mobile = model.phonenumber;
+                admin.ModifiedBy = aspNetUser.Id;
+                admin.ModifiedDate = DateTime.Now;
+                aspNetUser.UserName = model.firstname + " " + model.lastname;
+                aspNetUser.Email = model.email;
+                aspNetUser.PhoneNumber = model.phonenumber;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                _context.Admins.Update(admin);
+                _context.AspNetUsers.Update(aspNetUser);
             }
-            foreach (var item in model.RegionSelected)
-            {
-                AdminRegion adminRegion = new AdminRegion();
-                adminRegion.AdminId = admin.AdminId;
-                adminRegion.RegionId = item;
-                await _context.AdminRegions.AddAsync(adminRegion);
-            }
-            admin.FirstName = model.firstname;
-            admin.LastName = model.lastname;
-            admin.Email = model.email;
-            admin.Mobile = model.phonenumber;
-            admin.ModifiedBy = aspNetUser.Id;
-            admin.ModifiedDate = DateTime.Now;
-            aspNetUser.UserName = model.firstname + " " + model.lastname;
-            aspNetUser.Email = model.email;
-            aspNetUser.PhoneNumber = model.phonenumber;
-            aspNetUser.ModifiedDate = DateTime.Now;
-            _context.Admins.Update(admin);
-            _context.AspNetUsers.Update(aspNetUser);
+
             await _context.SaveChangesAsync();
         }
         public async Task UpdateBillInfo(BillingData model, string email)
         {
-            Admin admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
-            admin.Address1 = model.address1;
-            admin.Address2 = model.address2;
-            admin.City = model.city;
-            admin.Zip = model.zip;
-            admin.AltPhone = model.altphonenumber;
-            admin.ModifiedDate = DateTime.Now;
-            _context.Admins.Update(admin);
+            Admin? admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
+
+            if (admin == null)
+            {
+                admin!.Address1 = model.address1;
+                admin.Address2 = model.address2;
+                admin.City = model.city;
+                admin.Zip = model.zip;
+                admin.AltPhone = model.altphonenumber;
+                admin.ModifiedDate = DateTime.Now;
+                _context.Admins.Update(admin);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task SendLink(SendLinkViewModel model)
         {
-            EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Agreement</a>");
+            if (model.Email != null)
+            {
+                EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Agreement</a>");
+            }
         }
 
         public async Task SubmitRequest(CreateRequestViewModel model)
@@ -910,7 +1010,7 @@ namespace Services.Implementation
             {
                 try
                 {
-                    AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
+                    AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
                     User user = new User();
                     if (aspnetuser == null)
                     {
@@ -944,7 +1044,7 @@ namespace Services.Implementation
                     }
                     else
                     {
-                        user = _context.Users.Where(a => a.Email == model.Email).FirstOrDefault();
+                        user = _context.Users.Where(a => a.Email == model.Email).FirstOrDefault()!;
                     }
 
                     var regiondata = _context.Regions.Where(x => x.RegionId == user.RegionId).FirstOrDefault();
@@ -1006,11 +1106,16 @@ namespace Services.Implementation
 
         public async Task<ProviderViewModel> provider()
         {
-            ProviderViewModel model = new ProviderViewModel();
             List<Region> regions = await _context.Regions.ToListAsync();
-            model.Regions = regions;
+            ProviderViewModel model = new ProviderViewModel();
+
+            if (regions != null)
+            {
+                model.Regions = regions;
+            }
             return model;
         }
+
         public async Task<ProviderViewModel> PhysicianData(int region)
         {
             List<Physician> data = await _context.Physicians.Include(x => x.Role).ToListAsync();
@@ -1041,10 +1146,13 @@ namespace Services.Implementation
 
         public async Task SendMessage(int PhysicianId, string message)
         {
-            Physician data = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
-            var email = data.Email;
-            EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
+            Physician? data = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
 
+            if (data != null)
+            {
+                var email = data.Email;
+            }
+            EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
         }
 
         public async Task StopNotification(int PhysicianId)
@@ -1171,7 +1279,7 @@ namespace Services.Implementation
         public async Task<PhysicianAccountViewModel> EditPhysician(int PhysicianId)
         {
             Physician? physician = await _context.Physicians.Include(x => x.Role).FirstOrDefaultAsync(a => a.PhysicianId == PhysicianId);
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
             List<Role> role = await _context.Roles.ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
             List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
@@ -1228,146 +1336,169 @@ namespace Services.Implementation
 
         public async Task ResetAccountPass(int PhysicianId, string password)
         {
-            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
-            aspNetUser.PasswordHash = password;
-            aspNetUser.ModifiedDate = DateTime.Now;
-            _context.AspNetUsers.Update(aspNetUser);
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
+
+            if (physician != null)
+            {
+                AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+                aspNetUser!.PasswordHash = password;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                _context.AspNetUsers.Update(aspNetUser);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateUserInfo(AccountData model)
         {
             Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
-            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician!.AspNetUserId).FirstOrDefaultAsync();
 
-            aspNetUser!.UserName = model.Username;
-            aspNetUser.ModifiedDate = DateTime.Now;
-            if (model.status != 0)
+            if (physician != null)
             {
-                physician!.Status = (short)model.status;
-            }
-            if (model.Role != 0)
-            {
-                physician.RoleId = model.Role;
-            }
-            physician.ModifiedDate = DateTime.Now;
+                AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+                aspNetUser!.UserName = model.Username;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                if (model.status != 0)
+                {
+                    physician!.Status = (short)model.status;
+                }
+                if (model.Role != 0)
+                {
+                    physician.RoleId = model.Role;
+                }
+                physician.ModifiedDate = DateTime.Now;
 
-            _context.Physicians.Update(physician);
-            _context.AspNetUsers.Update(aspNetUser);
+                _context.Physicians.Update(physician);
+                _context.AspNetUsers.Update(aspNetUser);
+
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdatePhysicianInfo(UpdatePhycisianInfo model)
         {
-            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
-            List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
-            AspNetUser aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
 
-            foreach (var item in physicianRegions)
+            if (physician != null)
             {
-                _context.PhysicianRegions.Remove(item);
+                List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
+                AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+
+                foreach (var item in physicianRegions)
+                {
+                    _context.PhysicianRegions.Remove(item);
+                }
+                foreach (var item in model.RegionSelected)
+                {
+                    PhysicianRegion physicianRegion = new PhysicianRegion();
+                    physicianRegion.PhysicianId = physician.PhysicianId;
+                    physicianRegion.RegionId = item;
+                    _context.PhysicianRegions.Add(physicianRegion);
+                }
+                physician.FirstName = model.firstname;
+                physician.LastName = model.lastname;
+                physician.Email = model.email;
+                physician.Mobile = model.phonenumber;
+                physician.MedicalLicense = model.mediliencense;
+                physician.SyncEmailAddress = model.synchroemail;
+                physician.ModifiedBy = aspNetUser.Id;
+                physician.ModifiedDate = DateTime.Now;
+                aspNetUser.UserName = model.firstname + " " + model.lastname;
+                aspNetUser.Email = model.email;
+                aspNetUser.PhoneNumber = model.phonenumber;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                _context.Physicians.Update(physician);
+                _context.AspNetUsers.Update(aspNetUser);
             }
-            foreach (var item in model.RegionSelected)
-            {
-                PhysicianRegion physicianRegion = new PhysicianRegion();
-                physicianRegion.PhysicianId = physician.PhysicianId;
-                physicianRegion.RegionId = item;
-                _context.PhysicianRegions.Add(physicianRegion);
-            }
-            physician.FirstName = model.firstname;
-            physician.LastName = model.lastname;
-            physician.Email = model.email;
-            physician.Mobile = model.phonenumber;
-            physician.MedicalLicense = model.mediliencense;
-            physician.SyncEmailAddress = model.synchroemail;
-            physician.ModifiedBy = aspNetUser.Id;
-            physician.ModifiedDate = DateTime.Now;
-            aspNetUser.UserName = model.firstname + " " + model.lastname;
-            aspNetUser.Email = model.email;
-            aspNetUser.PhoneNumber = model.phonenumber;
-            aspNetUser.ModifiedDate = DateTime.Now;
-            _context.Physicians.Update(physician);
-            _context.AspNetUsers.Update(aspNetUser);
             await _context.SaveChangesAsync();
         }
 
         public async Task ModifyBillInfo(ModifyBillingData model)
         {
-            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
-            physician.Address1 = model.address1;
-            physician.Address2 = model.address2;
-            physician.City = model.city;
-            physician.Zip = model.zip;
-            physician.AltPhone = model.altphonenumber;
-            physician.ModifiedDate = DateTime.Now;
-            _context.Physicians.Update(physician);
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
+
+            if (physician != null)
+            {
+                physician.Address1 = model.address1;
+                physician.Address2 = model.address2;
+                physician.City = model.city;
+                physician.Zip = model.zip;
+                physician.AltPhone = model.altphonenumber;
+                physician.ModifiedDate = DateTime.Now;
+                _context.Physicians.Update(physician);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task ModifyProfileInfo(ModifyProfileData model)
         {
-            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
-            physician.BusinessName = model.businessname;
-            physician.BusinessWebsite = model.businessweb;
-            physician.AdminNotes = model.adminnotes;
-            physician.ModifiedDate = DateTime.Now;
-
-            if (model.Photo != null)
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
+            if (physician != null)
             {
-                var photo = model.Photo.FileName;
-                var uniquephotoName = GetUniqueFileName(photo);
-                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                var photoPath = Path.Combine(uploads, uniquephotoName);
-                model.Photo.CopyTo(new FileStream(photoPath, FileMode.Create));
-                physician.Photo = uniquephotoName;
-            }
+                physician.BusinessName = model.businessname;
+                physician.BusinessWebsite = model.businessweb;
+                physician.AdminNotes = model.adminnotes;
+                physician.ModifiedDate = DateTime.Now;
 
-            if (model.Signature != null)
-            {
-                var sign = model.Signature.FileName;
-                var uniquesignName = GetUniqueFileName(sign);
-                var uploadssign = Path.Combine(_environment.WebRootPath, "uploads");
-                var signPath = Path.Combine(uploadssign, uniquesignName);
-                model.Signature.CopyTo(new FileStream(signPath, FileMode.Create));
-                physician.Signature = uniquesignName;
+                if (model.Photo != null)
+                {
+                    var photo = model.Photo.FileName;
+                    var uniquephotoName = GetUniqueFileName(photo);
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    var photoPath = Path.Combine(uploads, uniquephotoName);
+                    model.Photo.CopyTo(new FileStream(photoPath, FileMode.Create));
+                    physician.Photo = uniquephotoName;
+                }
+
+                if (model.Signature != null)
+                {
+                    var sign = model.Signature.FileName;
+                    var uniquesignName = GetUniqueFileName(sign);
+                    var uploadssign = Path.Combine(_environment.WebRootPath, "uploads");
+                    var signPath = Path.Combine(uploadssign, uniquesignName);
+                    model.Signature.CopyTo(new FileStream(signPath, FileMode.Create));
+                    physician.Signature = uniquesignName;
+                }
+                _context.Physicians.Update(physician);
             }
-            _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
         }
 
         public async Task ModifyDocInfo(DocumentDataModel model)
         {
-            Physician physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
-            if (model.AggrementDoc != null)
+            Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == model.PhysicianId).FirstOrDefaultAsync();
+
+            if (physician != null)
             {
-                var uniquefileName = model.PhysicianId + "_" + "Agreement";
-                IFormFile item = model.AggrementDoc;
-                NewMethod(item, uniquefileName);
-                physician.IsAgreementDoc = new BitArray(new[] { true });
+                if (model.AggrementDoc != null)
+                {
+                    var uniquefileName = model.PhysicianId + "_" + "Agreement";
+                    IFormFile item = model.AggrementDoc;
+                    NewMethod(item, uniquefileName);
+                    physician.IsAgreementDoc = new BitArray(new[] { true });
+                }
+                if (model.BackgoundDoc != null)
+                {
+                    var uniquefileName = model.PhysicianId + "_" + "BackgroundDoc";
+                    IFormFile item = model.BackgoundDoc;
+                    NewMethod(item, uniquefileName);
+                    physician.IsBackgroundDoc = new BitArray(new[] { true });
+                }
+                if (model.DisclosureDoc != null)
+                {
+                    var uniquefileName = model.PhysicianId + "_" + "Disclosure";
+                    IFormFile item = model.DisclosureDoc;
+                    NewMethod(item, uniquefileName);
+                    physician.IsNonDisclosureDoc = new BitArray(new[] { true });
+                }
+                if (model.LicenseDoc != null)
+                {
+                    var uniquefileName = model.PhysicianId + "_" + "License";
+                    IFormFile item = model.LicenseDoc;
+                    NewMethod(item, uniquefileName);
+                    physician.IsLicenseDoc = new BitArray(new[] { true });
+                }
+                _context.Physicians.Update(physician);
             }
-            if (model.BackgoundDoc != null)
-            {
-                var uniquefileName = model.PhysicianId + "_" + "BackgroundDoc";
-                IFormFile item = model.BackgoundDoc;
-                NewMethod(item, uniquefileName);
-                physician.IsBackgroundDoc = new BitArray(new[] { true });
-            }
-            if (model.DisclosureDoc != null)
-            {
-                var uniquefileName = model.PhysicianId + "_" + "Disclosure";
-                IFormFile item = model.DisclosureDoc;
-                NewMethod(item, uniquefileName);
-                physician.IsNonDisclosureDoc = new BitArray(new[] { true });
-            }
-            if (model.LicenseDoc != null)
-            {
-                var uniquefileName = model.PhysicianId + "_" + "License";
-                IFormFile item = model.LicenseDoc;
-                NewMethod(item, uniquefileName);
-                physician.IsLicenseDoc = new BitArray(new[] { true });
-            }
-            _context.Physicians.Update(physician);
             await _context.SaveChangesAsync();
         }
 
@@ -1382,14 +1513,20 @@ namespace Services.Implementation
         public async Task DeleteAccount(int PhysicianId)
         {
             Physician? physician = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
-            physician!.IsDeleted = new BitArray(new[] { true });
-            _context.Physicians.Update(physician);
+            if (physician != null)
+            {
+
+
+                physician!.IsDeleted = new BitArray(new[] { true });
+                _context.Physicians.Update(physician);
+            }
             await _context.SaveChangesAsync();
         }
 
         public async Task<AccessViewModel> Access()
         {
             List<Role> roles = await _context.Roles.ToListAsync();
+
             roles = roles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             List<RoleData> roleData = roles.Select(a => new RoleData() { RoleId = a.RoleId, Name = a.Name, AccountType = a.AccountType }).ToList();
 
@@ -1413,8 +1550,12 @@ namespace Services.Implementation
         public async Task DeleteRole(int RoleId)
         {
             Role? role = await _context.Roles.Where(a => a.RoleId == RoleId).FirstOrDefaultAsync();
-            role.IsDeleted = new BitArray(new[] { true });
-            _context.Roles.Update(role);
+
+            if (role != null)
+            {
+                role.IsDeleted = new BitArray(new[] { true });
+                _context.Roles.Update(role);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -1437,23 +1578,26 @@ namespace Services.Implementation
             {
                 try
                 {
-                    Role role = new Role()
+                    if (aspNetUser != null)
                     {
-                        Name = model.RoleName,
-                        CreatedDate = DateTime.Now,
-                        CreatedBy = aspNetUser!.Id,
-                        AccountType = (short)model.AccountType,
-                        IsDeleted = new BitArray(new[] { false }),
-                    };
-                    await _context.Roles.AddAsync(role);
-                    await _context.SaveChangesAsync();
+                        Role role = new Role()
+                        {
+                            Name = model.RoleName,
+                            CreatedDate = DateTime.Now,
+                            CreatedBy = aspNetUser!.Id,
+                            AccountType = (short)model.AccountType,
+                            IsDeleted = new BitArray(new[] { false }),
+                        };
+                        await _context.Roles.AddAsync(role);
+                        await _context.SaveChangesAsync();
 
-                    foreach (var item in model.MenuData)
-                    {
-                        RoleMenu roleMenu = new RoleMenu();
-                        roleMenu.RoleId = role.RoleId;
-                        roleMenu.MenuId = item;
-                        await _context.RoleMenus.AddAsync(roleMenu);
+                        foreach (var item in model.MenuData)
+                        {
+                            RoleMenu roleMenu = new RoleMenu();
+                            roleMenu.RoleId = role.RoleId;
+                            roleMenu.MenuId = item;
+                            await _context.RoleMenus.AddAsync(roleMenu);
+                        }
                     }
                     await _context.SaveChangesAsync();
                     transaction.Commit();
@@ -1646,7 +1790,7 @@ namespace Services.Implementation
                         City = model.city,
                         RegionId = model.state,
                         Zip = model.zip,
-                        AltPhone = model.altphonenumber,    
+                        AltPhone = model.altphonenumber,
                         CreatedBy = aspNetUser.Id,
                         CreatedDate = DateTime.Now,
                         Status = (int)Common.Enum.PhysicianStatus.NotActive,
@@ -1687,16 +1831,19 @@ namespace Services.Implementation
         {
             List<Physician> physician = await _context.Physicians.ToListAsync();
             List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).ToListAsync();
+            SchedullingViewModel model = new SchedullingViewModel();
             shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
-            SchedullingViewModel model = new SchedullingViewModel();
-            if (region != 0)
+            if (physician != null && shiftDetails != null)
             {
-                physician = physician.Where(x => x.RegionId == region).ToList();
+                if (region != 0)
+                {
+                    physician = physician.Where(x => x.RegionId == region).ToList();
+                }
+                model.ShiftDetailList = shiftDetails;
+                model.physicians = physician;
+                model.ShiftDate = date;
             }
-            model.ShiftDetailList = shiftDetails;
-            model.physicians = physician;
-            model.ShiftDate = date;
             return model;
         }
 
@@ -1738,11 +1885,11 @@ namespace Services.Implementation
             {
                 shiftDetails!.Status = 1;
                 shiftDetails.ModifiedDate = DateTime.Now;
-                shiftDetails.ModifiedBy = aspNetUser.Id;
+                shiftDetails.ModifiedBy = aspNetUser!.Id;
                 _context.ShiftDetails.Update(shiftDetails);
             }
             await _context.SaveChangesAsync();
-        }    
+        }
 
         public async Task DeleteShift(int ShiftDetailId, string email)
         {
@@ -1753,13 +1900,13 @@ namespace Services.Implementation
             {
                 shiftDetails.IsDeleted = new BitArray(new[] { true });
                 shiftDetails.ModifiedDate = DateTime.Now;
-                shiftDetails.ModifiedBy = aspNetUser.Id;
+                shiftDetails.ModifiedBy = aspNetUser!.Id;
                 _context.ShiftDetails.Update(shiftDetails);
             }
             await _context.SaveChangesAsync();
-        }    
+        }
 
-        public async Task EditShift(CreateNewShift model, string email) 
+        public async Task EditShift(CreateNewShift model, string email)
         {
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
             ShiftDetail? shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Where(a => a.ShiftDetailId == model.ShiftDetailId).FirstOrDefaultAsync();
@@ -1770,7 +1917,7 @@ namespace Services.Implementation
                 shiftDetails.StartTime = model.Start;
                 shiftDetails.EndTime = model.End;
                 shiftDetails.ModifiedDate = DateTime.Now;
-                shiftDetails.ModifiedBy = aspNetUser.Id;
+                shiftDetails.ModifiedBy = aspNetUser!.Id;
                 _context.ShiftDetails.Update(shiftDetails);
             }
             await _context.SaveChangesAsync();
@@ -1913,16 +2060,20 @@ namespace Services.Implementation
         {
             List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a => a.Shift.Physician)
                 .Where(x => x.ShiftDate.Month == date.Month).ToListAsync();
-            shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             SchedullingViewModel model = new SchedullingViewModel();
 
-            if (region != 0)
+            if (shiftDetails != null)
             {
-                shiftDetails = shiftDetails.Where(x => x.Shift.Physician.RegionId == region).ToList();
-            }
+                shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
-            model.ShiftDetailList = shiftDetails;
-            model.ShiftDate = date;
+                if (region != 0)
+                {
+                    shiftDetails = shiftDetails.Where(x => x.Shift.Physician.RegionId == region).ToList();
+                }
+
+                model.ShiftDetailList = shiftDetails;
+                model.ShiftDate = date;
+            }
             return model;
         }
 
@@ -1932,7 +2083,7 @@ namespace Services.Implementation
 
             SchedullingViewModel model = new SchedullingViewModel()
             {
-                RegionList= regions
+                RegionList = regions
             };
             return model;
         }
@@ -1942,15 +2093,15 @@ namespace Services.Implementation
             List<Physician> physicians = await _context.Physicians.Include(a => a.Shifts).ThenInclude(x => x.ShiftDetails).ToListAsync();
 
             SchedullingViewModel model = new SchedullingViewModel();
-            if(physicians != null)
+            if (physicians != null)
             {
                 model.physicians = physicians;
+                if (region != 0)
+                {
+                    model.physicians = model.physicians!.Where(a => a.RegionId == region).ToList();
+                }
             }
 
-            if (region != 0)
-            {
-                model.physicians = model.physicians!.Where(a => a.RegionId == region).ToList();
-            }
             return model;
         }
 
@@ -1960,38 +2111,37 @@ namespace Services.Implementation
             List<Region> regions = _context.Regions.ToList();
             RequestedShiftViewModel model = new RequestedShiftViewModel()
             {
-                RegionList= regions
+                RegionList = regions
             };
             return model;
-        }     
+        }
 
         public RequestedShiftViewModel RequestedShiftsData(int region, int requestedPage)
         {
 
-            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a=> a.Shift).ThenInclude(a=> a.Physician).Include(a => a.Region).Where(a=> a.Status == 0).ToList();
+            List<ShiftDetail> shiftDetails = _context.ShiftDetails.Include(a => a.Shift).ThenInclude(a => a.Physician).Include(a => a.Region).Where(a => a.Status == 0).ToList();
             RequestedShiftViewModel model = new RequestedShiftViewModel();
-            shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
             if (shiftDetails != null)
             {
+                shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
                 model.ShiftDetailList = shiftDetails;
+                if (region != 0)
+                {
+                    model.ShiftDetailList = model.ShiftDetailList!.Where(a => a.RegionId == region).ToList();
+                }
+                int count = model.ShiftDetailList!.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                model.ShiftDetailList = model.ShiftDetailList!.Skip((requestedPage - 1) * 5).Take(5).ToList();
+                model.CurrentPage = requestedPage;
+                model.TotalPage = TotalPage;
             }
-            if (region != 0)
-            {
-                model.ShiftDetailList = model.ShiftDetailList!.Where(a => a.RegionId == region).ToList();
-            }
-            int count = model.ShiftDetailList!.Count();
-            int TotalPage = (int)Math.Ceiling(count / (double)5);
-            model.ShiftDetailList = model.ShiftDetailList!.Skip((requestedPage - 1) * 5).Take(5).ToList();
-            model.CurrentPage = requestedPage;
-            model.TotalPage = TotalPage;
-
             return model;
-        }   
+        }
 
         public void DeleteSelectedShift(List<int> selectedShifts, string email)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email); 
+            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email);
             foreach (var item in selectedShifts)
             {
                 ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
@@ -2004,11 +2154,11 @@ namespace Services.Implementation
                 }
             }
             _context.SaveChangesAsync();
-        }    
+        }
 
         public void ApproveSelectedShift(List<int> selectedShifts, string email)
         {
-            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email); 
+            AspNetUser? aspNetUser = _context.AspNetUsers.FirstOrDefault(a => a.Email == email);
             foreach (var item in selectedShifts)
             {
                 ShiftDetail? data = _context.ShiftDetails.FirstOrDefault(a => a.ShiftDetailId == item);
@@ -2036,7 +2186,7 @@ namespace Services.Implementation
 
         public async Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor)
         {
-            List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.Include(a=> a.ProfessionNavigation).ToListAsync();
+            List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.Include(a => a.ProfessionNavigation).ToListAsync();
             healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
             if (!string.IsNullOrWhiteSpace(searchvendor))
             {
@@ -2050,7 +2200,7 @@ namespace Services.Implementation
             List<VendorsData> vendorsData = healthProfessionals.Select(a => new VendorsData
             {
                 ProfessionId = a.VendorId,
-                Profession= a.ProfessionNavigation.ProfessionName,
+                Profession = a.ProfessionNavigation.ProfessionName,
                 VendorName = a.VendorName,
                 Email = a.Email,
                 PhoneNumber = a.PhoneNumber,
@@ -2131,8 +2281,12 @@ namespace Services.Implementation
         public async Task DeleteBusiness(int VendorId)
         {
             HealthProfessional? healthProfessional = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
-            healthProfessional.IsDeleted = new BitArray(new[] { true });
-            _context.HealthProfessionals.Update(healthProfessional);
+
+            if (healthProfessional != null)
+            {
+                healthProfessional.IsDeleted = new BitArray(new[] { true });
+                _context.HealthProfessionals.Update(healthProfessional);
+            }
             await _context.SaveChangesAsync();
 
         }
@@ -2185,9 +2339,9 @@ namespace Services.Implementation
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
                 .Include(a => a.Request.RequestStatusLogs)
-                .ToListAsync(); 
-                    
-            requestClients = requestClients.Where(a =>  
+                .ToListAsync();
+
+            requestClients = requestClients.Where(a =>
 
                 (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
                 (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
@@ -2220,12 +2374,12 @@ namespace Services.Implementation
 
             LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
             {
-                EmailLogs= emailLogs,
-                CurrentPage= model.CurrentPage,
-                TotalPage= TotalPage,
+                EmailLogs = emailLogs,
+                CurrentPage = model.CurrentPage,
+                TotalPage = TotalPage,
             };
             return logsDataViewModel;
-        }    
+        }
 
         public async Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model)
         {
@@ -2237,9 +2391,9 @@ namespace Services.Implementation
 
             LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
             {
-                SmsLogs= smslogs,
-                CurrentPage= model.CurrentPage,
-                TotalPage= TotalPage,
+                SmsLogs = smslogs,
+                CurrentPage = model.CurrentPage,
+                TotalPage = TotalPage,
             };
             return logsDataViewModel;
         }
@@ -2253,6 +2407,22 @@ namespace Services.Implementation
                 blockRequests = blockRequests,
             };
             return model;
+        }
+
+        public void UnblockCase(int requestid)
+        {
+            BlockRequest? blockRequest = _context.BlockRequests.Where(a => a.BlockRequestId == requestid).FirstOrDefault();
+            Request? request = _context.Requests.Where(a => a.RequestId == int.Parse(blockRequest!.RequestId)).FirstOrDefault();
+
+            if (blockRequest != null)
+            {
+                blockRequest.IsActive = new BitArray(new[] { false });
+                blockRequest.ModifiedDate= DateTime.Now;
+                request!.Status = 1;
+            }
+            _context.BlockRequests.Update(blockRequest!);
+            _context.Requests.Update(request!);
+            _context.SaveChanges();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Services.Contracts
 		Task<AdminDashboardViewModel> UnpaidState(AdminDashboardViewModel obj);
         Task<ViewCaseViewModel>  ViewCase(int request_id);
         Task<ViewNotesViewModel> ViewNotes(int request_id);
-        Task AddNotes(ViewNotesViewModel model, int request_id);
+        Task AddNotes(ViewNotesViewModel model, int request_id, string email);
         Task<CancelCaseViewModel> CancelDetails(int request_id);
         Task CancelCase(int request_id, int caseId, string cancelNote);
         Task<BlockCaseViewModel> BlockDetails(int request_id);
@@ -100,5 +100,6 @@ namespace Services.Contracts
         void DeleteSelectedShift(List<int> selectedShifts, string email);
         void ApproveSelectedShift(List<int> selectedShifts, string email);
         BlockHistoryViewModel BlockHistoryData(BlockHistoryViewModel obj);
+        void UnblockCase(int requestid);
     }
 }

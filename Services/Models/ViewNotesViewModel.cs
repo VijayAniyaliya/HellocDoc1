@@ -8,12 +8,19 @@ namespace Services.Models
 {
     public  class ViewNotesViewModel
     {
-        public string? TransferNotes { get; set; }
+        public List<TransferNote>? TransferNotes { get; set; }
         public string? PhysicianNotes { get; set; }
 
         public string? AdminNotes { get; set; }
         public string? AdditionalNotes { get; set; }
 
         public int RequestId { get; set; }
+    }
+
+    public class TransferNote
+    {
+        public string Notes { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }

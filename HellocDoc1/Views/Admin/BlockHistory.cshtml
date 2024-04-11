@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="fromdate" placeholder="date" />
+                        <input type="date" class="form-control" id="date" placeholder="date" />
                         <label for="floatingInput" class="">Date</label>
                     </div>
                 </div>
@@ -60,8 +60,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     var filterdata = {
-        FirstName: "",
-        LastName: "",
+        Name: "",
+        Date: "",
         Email: "",
         PhoneNumber: "",
         requestedPage: 1,
@@ -73,8 +73,8 @@
     }
 
     function searchpatient() {
-        filterdata.FirstName = $("#firstname")[0].value;
-        filterdata.LastName = $("#lastname")[0].value;
+        filterdata.Name = $("#firstname")[0].value;
+        filterdata.Date = $("#date")[0].value;
         filterdata.Email = $("#email")[0].value;
         filterdata.PhoneNumber = $("#contact")[0].value;
         filterdata.requestedPage = 1;
@@ -83,17 +83,17 @@
 
     $("#clear").on("click", function () {
         $("#firstname").val('');
-        $("#lastname").val('');
+        $("#date").val('');
         $("#email").val('');
         $("#contact").val('');
-        filterdata.FirstName = "";
-        filterdata.LastName = "";
+        filterdata.Name = "";
+        filterdata.Date = "";
         filterdata.Email = "";
         filterdata.PhoneNumber = "";
         filterdata.requestedPage = 1;
         AjaxAll();
     })
-
+        
     $(document).ready(function () {
         $.ajax({
             url: "/Admin/BlockHistoryData",
@@ -103,7 +103,7 @@
             success: function (data) {
                 $("#tableContent").html(data);
             },
-            error: function (error) {
+            error: function (error) {   
                 console.log(error)
             }
         });
@@ -125,3 +125,6 @@
 
 
 </script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
