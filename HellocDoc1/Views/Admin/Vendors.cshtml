@@ -25,7 +25,7 @@
                         <i class="bi bi-search my-1 ms-1 mr-2"></i>
                         <select class="form-select select-region text-secondary border-0" id="profession">
                             <option selected>All Professions</option>
-                            @foreach (var item in Model.healthProfessionalTypes)
+                            @foreach (var item in Model.healthProfessionalTypes!)
                             {
                                 <option value="@item.HealthProfessionalId">@item.ProfessionName</option>
                             }
@@ -35,7 +35,8 @@
             </div>
             <div class=" mt-md-0 mt-2 text-lg-end pr-0 pr-3">
                 <a asp-action="AddBusiness" class="btn bg-white text-info border-info rounded-3 addbusnes  rounded-3 fw-bold">
-                    <i class="bi bi-plus"></i> Add Business
+                    <span class="h5">+</span>
+                    <span class="d-none d-sm-inline">Add Business</span>
                 </a>
             </div>
         </div>

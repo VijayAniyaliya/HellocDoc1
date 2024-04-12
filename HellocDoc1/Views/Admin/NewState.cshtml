@@ -95,7 +95,7 @@
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end">        
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
                             <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
@@ -163,9 +163,9 @@
             <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
                 <hr class="m-0">
                 <div class="d-flex justify-content-end d-inline">
-                    <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase">
+                    <a asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId" class="rounded-pill me-3 text-decoration-none viewCaseBtn p-1 viewCase">
                         View Case
-                    </div>
+                    </a>
                 </div>
                 <div class="accordion-body d-flex flex-column gap-1">
                     <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
@@ -178,23 +178,23 @@
                 </div>
                 <div class="row mx-3">
                     <div class="col-6 ps-0 pr-3 pb-2">
-                        <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                        <a onclick="assign(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
                     </div>
                     <div class="col-6 p-0 pb-2 pb-2">
-                        <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                        <a onclick="cancel(@item.RequestId)" class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
-                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                        <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                     </div>
                     <div class="col-6 p-0 pb-2">
-                        <a class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
+                        <a onclick="block(@item.RequestId)" class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
                     </div>
                     <div class="col-6 p-0 pr-3">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                     </div>
                 </div>
             </div>
-            <hr class="my-2"/>
+            <br />
         }
     </div>
 </div>

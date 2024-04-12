@@ -8,6 +8,7 @@ using Services.Contracts;
 using Services.Implementation;
 using Services.Models;
 using System.Drawing.Drawing2D;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace HellocDoc1.Controllers
@@ -201,11 +202,10 @@ namespace HellocDoc1.Controllers
             return PartialView("_ClearCase", data);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ClearCase(ClearCaseViewModel model, int request_id)
+        public async Task<IActionResult> ClearCase(int request_id)
         {
-            await _adminServices.ClearCase(model, request_id);
-            return RedirectToAction("AdminDashboard");
+            await _adminServices.ClearCase(request_id);
+            return NoContent();
         }
 
         public async Task<IActionResult> SendAgreementDetails(int request_id)
@@ -275,7 +275,20 @@ namespace HellocDoc1.Controllers
                     Response.Cookies.Append("jwt", result.Token);
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
-                    return RedirectToAction("AdminDashboard", "Admin");
+                    string token = result.Token;
+                    if (JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
+                    {
+                        IEnumerable<Claim> rolesClaims = jwtSecurityToken.Claims.Where(c => c.Type == ClaimTypes.Role);
+                        var roles = rolesClaims.Select(c => c.Value);
+                        if (roles.FirstOrDefault() == "Admin")
+                        {
+                            return RedirectToAction("AdminDashboard", "Admin");
+                        }
+                        else
+                        {
+                            return RedirectToAction("ProviderDashboard", "Provider");
+                        }
+                    }
                 }
                 else
                 {
@@ -358,11 +371,10 @@ namespace HellocDoc1.Controllers
             return PartialView("_SendMail");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendLink(SendLinkViewModel model)
+        public async Task SendLink(SendLinkViewModel model)
         {
-            await _adminServices.SendLink(model);
-            return Json("success");
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.SendLink(model, email);
         }
 
         public IActionResult CreateRequest()
@@ -617,7 +629,7 @@ namespace HellocDoc1.Controllers
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _adminServices.DeleteSelectedShift(selectedShifts, email);
             return NoContent();
-        }     
+        }
 
         public async Task<IActionResult> ApproveSelectedShift(List<int> selectedShifts)
         {
@@ -705,9 +717,10 @@ namespace HellocDoc1.Controllers
             return PartialView("_SearchRecordsData", data);
         }
 
-        public IActionResult EmailLogs()
+        public async Task<IActionResult> EmailLogs()
         {
-            return View();
+            var data = await _adminServices.EmailLogs();
+            return View(data);
         }
 
         public async Task<IActionResult> EmailLogsData(LogsDataViewModel model)
@@ -716,9 +729,10 @@ namespace HellocDoc1.Controllers
             return PartialView("_EmailLogsData", data);
         }
 
-        public IActionResult SMSLogs()
+        public async Task<IActionResult> SMSLogs()
         {
-            return View();
+            var data = await _adminServices.EmailLogs();
+            return View(data);
         }
         public async Task<IActionResult> SMSLogsData(LogsDataViewModel model)
         {
@@ -726,7 +740,7 @@ namespace HellocDoc1.Controllers
             return PartialView("_SMSLogsData", data);
         }
 
-        public IActionResult BlockHistory() 
+        public IActionResult BlockHistory()
         {
             return View();
         }

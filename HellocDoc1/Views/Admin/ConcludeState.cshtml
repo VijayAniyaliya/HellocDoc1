@@ -68,11 +68,11 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
                             <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                         </ul>
                     </div>
                 </td>
@@ -89,7 +89,7 @@
         @foreach (var item in Model.requestClients)
         {
             <h2 class="accordion-header" id="flush-headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.RequestId" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+                <button class="accordion-button collapsed pb-5" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.RequestId" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
 
                     <div class="col d-flex flex-column">
                         <span class="">@item.FirstName, @item.LastName</span>
@@ -126,10 +126,15 @@
 
                     </div>
                 </button>
-                <hr class="m-0">
             </h2>
 
             <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <hr class="m-0">
+                <div class="d-flex justify-content-end d-inline">
+                    <a asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId" class="rounded-pill me-3 text-decoration-none viewCaseBtn p-1 viewCase">
+                        View Case
+                    </a>
+                </div>  
                 <div class="accordion-body d-flex flex-column gap-1">
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div>
@@ -141,16 +146,16 @@
                         <a class="btn w-100 bg-danger  text-white rounded-pill p-1 btn-sm">Conclude Case</a>
                     </div>
                     <div class="col-6 p-0  pb-2">
-                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                        <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
                         <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background:#3c6b5d;">Doctor Note</a>
                     </div>
                     <div class="col-6 p-0 pb-2">
-                        <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
+                        <a asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
-                        <a class="btn w-100  bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        <a asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId" class="btn w-100  bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
                     </div>
                     <div class="col-6 p-0">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
@@ -162,6 +167,7 @@
                     <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
                 </div>
             </div>
+<br />
         }
     </div>
 </div>

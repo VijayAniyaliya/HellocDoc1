@@ -18,6 +18,7 @@ builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IAdminServices, AdminServices>();
+builder.Services.AddTransient<IProviderServices, ProviderServices>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

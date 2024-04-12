@@ -5,6 +5,7 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
@@ -445,7 +446,8 @@ namespace Services.Implementation
                     Email = data.Email,
                     Reason = reason,
                     RequestId = request_id.ToString(),
-                    CreatedDate = DateTime.Now,
+                    IsActive = new BitArray(new[] { true }),
+                CreatedDate = DateTime.Now,
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
@@ -696,7 +698,7 @@ namespace Services.Implementation
             return new ClearCaseViewModel();
         }
 
-        public async Task ClearCase(ClearCaseViewModel model, int request_id)
+        public async Task ClearCase(int request_id)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -1057,11 +1059,31 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task SendLink(SendLinkViewModel model)
+        public async Task SendLink(SendLinkViewModel model, string email)
         {
-            if (model.Email != null)
+            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).Where(a => a.Email == model.Email).FirstOrDefaultAsync();
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
+            if (requestClient != null && admin != null)
             {
-                EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Agreement</a>");
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Submit Your request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Submit Request</a>")!;
+
+                //EmailLog emailLog = new EmailLog()
+                //{
+                //    EmailLogId = 10,
+                //    EmailTemplate = "Submit_request_screen",
+                //    SubjectName = "Submit Your Request",
+                //    EmailId = model.Email,
+                //    AdminId = admin.AdminId,
+                //    RoleId = admin.RoleId,
+                //    ConfirmationNumber = requestClient.Request.ConfirmationNumber,
+                //    RequestId = requestClient.Request.RequestId,
+                //    CreateDate = DateTime.Now,
+                //    SentDate = DateTime.Now,
+                //    IsEmailSent = new BitArray(new[] { true }),
+                //    SentTries = 1,
+                //};
+                //_context.EmailLogs.Add(emailLog);
+                //await _context.SaveChangesAsync();
             }
         }
 
@@ -2269,7 +2291,7 @@ namespace Services.Implementation
                     }
                 }
             }
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task ApproveSelectedShift(List<int> selectedShifts, string email)
@@ -2289,7 +2311,7 @@ namespace Services.Implementation
                     }
                 }
             }
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<VendorsDetailsViewModel> VendorsData()
@@ -2349,7 +2371,7 @@ namespace Services.Implementation
             HealthProfessional? healthProfessional = await _context.HealthProfessionals.FirstOrDefaultAsync(a => a.VendorId == VendorId);
             List<HealthProfessionalType> healthProfessionalTypes = await _context.HealthProfessionalTypes.ToListAsync();
 
-            if (healthProfessional != null && healthProfessionalTypes != null)
+            if (healthProfessionalTypes != null)
             {
                 AddBusinessViewModel model = new AddBusinessViewModel()
                 {
@@ -2475,6 +2497,7 @@ namespace Services.Implementation
 
         public async Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj)
         {
+            //obj.requestedPage = 1;
             List<RequestClient> requestClients = await _context.RequestClients
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
@@ -2487,7 +2510,7 @@ namespace Services.Implementation
 
                     (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
                     (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
-                    (obj.RequestType == 5 || a.Request.RequestTypeId == obj.RequestType) &&
+                    (obj.RequestType == 0 || a.Request.RequestTypeId == obj.RequestType) &&
                     (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
                     (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
                     (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
@@ -2508,19 +2531,59 @@ namespace Services.Implementation
             return new SearchRecordsViewModel();
         }
 
+        public async Task<LogsDataViewModel> EmailLogs()
+        {
+            List<Role> roles = await _context.Roles.ToListAsync();
+
+            if (roles != null)
+            {
+                LogsDataViewModel model = new LogsDataViewModel()
+                {
+                    Roles = roles
+                };
+                return model;
+            }
+            return new LogsDataViewModel();
+        }
+
         public async Task<LogsDataViewModel> EmailLogsData(LogsDataViewModel model)
         {
             List<EmailLog> emailLogs = await _context.EmailLogs.ToListAsync();
+            List<Physician> physicians = await _context.Physicians.ToListAsync();
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ToListAsync();
+            List<Role> roles = await _context.Roles.ToListAsync();
 
             if (emailLogs != null)
             {
-                int count = emailLogs.Count();
+                List<LogsData> logs = emailLogs.Select(a => new LogsData()
+                {
+                    ReceiverName = a.RequestId == null ? (physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName) : (requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName),
+                    Email = a.EmailId!,
+                    RoleId = a.RoleId!.Value,
+                    CreatedDate = a.CreateDate,
+                    SentDate = a.SentDate!.Value,
+                    ConfirmationNo = a.RequestId == null ? "" : (requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber)!,
+                    Action = a.SubjectName,
+                    RoleName = roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
+                    IsEmailSent = a.IsEmailSent!,
+                    SentTries = a.SentTries!.Value,
+                }).ToList();
+
+                logs = logs.Where(a =>
+                (model.RoleId == 0 || a.RoleId == model.RoleId) &&
+                (string.IsNullOrWhiteSpace(model.ReceiverName) || a.ReceiverName.ToLower().Contains(model.ReceiverName)) &&
+                (model.CreatedDate == new DateTime() || DateOnly.FromDateTime(a.CreatedDate.Date) == DateOnly.FromDateTime(model.CreatedDate)) &&
+                (model.SentDate == new DateTime() || DateOnly.FromDateTime(a.SentDate) == DateOnly.FromDateTime(model.SentDate)) &&
+                (string.IsNullOrWhiteSpace(model.Email) || a.Email!.ToLower().Contains(model.Email.ToLower())))
+                .ToList();
+
+                int count = logs.Count();
                 int TotalPage = (int)Math.Ceiling(count / (double)5);
-                emailLogs = emailLogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+                logs = logs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
 
                 LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
                 {
-                    EmailLogs = emailLogs,
+                    logsDatas = logs,
                     CurrentPage = model.CurrentPage,
                     TotalPage = TotalPage,
                 };
@@ -2532,16 +2595,40 @@ namespace Services.Implementation
         public async Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model)
         {
             List<Smslog> smslogs = await _context.Smslogs.ToListAsync();
+            List<Physician> physicians = await _context.Physicians.ToListAsync();
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ToListAsync();
+            List<Role> roles = await _context.Roles.ToListAsync();
 
             if (smslogs != null)
             {
-                int count = smslogs.Count();
+                List<LogsData> logs = smslogs.Select(a => new LogsData()
+                {
+                    ReceiverName = a.RequestId == null ? (physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName) : (requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName),
+                    PhoneNumber = a.MobileNumber!,
+                    CreatedDate = a.CreateDate,
+                    RoleId = a.RoleId!.Value,
+                    SentDate = a.SentDate!.Value,
+                    ConfirmationNo = a.RequestId == null ? "" : (requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber)!,
+                    RoleName = roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
+                    IsEmailSent = a.IsSmssent!,
+                    SentTries = a.SentTries,
+                }).ToList();
+
+                logs = logs.Where(a =>
+                (model.RoleId == 0 || a.RoleId == model.RoleId) &&
+                (string.IsNullOrWhiteSpace(model.ReceiverName) || a.ReceiverName.ToLower().Contains(model.ReceiverName)) &&
+                (model.CreatedDate == new DateTime() || DateOnly.FromDateTime(a.CreatedDate.Date) == DateOnly.FromDateTime(model.CreatedDate)) &&
+                (model.SentDate == new DateTime() || DateOnly.FromDateTime(a.SentDate) == DateOnly.FromDateTime(model.SentDate)) &&
+                (string.IsNullOrWhiteSpace(model.Email) || a.Email!.ToLower().Contains(model.Email.ToLower())))
+                .ToList();
+
+                int count = logs.Count();
                 int TotalPage = (int)Math.Ceiling(count / (double)5);
-                smslogs = smslogs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
+                logs = logs.Skip((model.requestedPage - 1) * 5).Take(5).ToList();
 
                 LogsDataViewModel logsDataViewModel = new LogsDataViewModel()
                 {
-                    SmsLogs = smslogs,
+                    logsDatas = logs,
                     CurrentPage = model.CurrentPage,
                     TotalPage = TotalPage,
                 };
@@ -2579,7 +2666,7 @@ namespace Services.Implementation
                 (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
                 (string.IsNullOrWhiteSpace(obj.Name) || a.PatientName.ToLower().Contains(obj.Name)) &&
                 (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber)))
-                    .ToList();
+                .ToList();
 
                 int count = blockdatas.Count();
                 int TotalPage = (int)Math.Ceiling(count / (double)5);
@@ -2609,7 +2696,7 @@ namespace Services.Implementation
             }
             _context.BlockRequests.Update(blockRequest!);
             _context.Requests.Update(request!);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

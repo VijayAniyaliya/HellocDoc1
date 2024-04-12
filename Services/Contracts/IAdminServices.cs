@@ -37,7 +37,7 @@ namespace Services.Contracts
 		Task<TransferCaseViewModel> TransferDetails(int request_id);
         Task TransferCase(int request_id, int physicianid, string description);
         Task<ClearCaseViewModel> ClearDetails(int request_id);
-        Task ClearCase(ClearCaseViewModel model, int request_id);
+        Task ClearCase(int request_id);
 		Task<SendAgreementViewModel> SendAgreementDetails(int request_id);
 		Task SendAgreement(string request_id);
 		Task<CloseCaseViewModel> CloseCase(int request_id);
@@ -49,7 +49,7 @@ namespace Services.Contracts
         Task ResetPassword(string email, string password);
         Task UpdateAdminstrator(ProfileData model, string email);
         Task UpdateBillInfo(BillingData model, string email);
-		Task SendLink(SendLinkViewModel model);
+		Task SendLink(SendLinkViewModel model, string email);
         Task SubmitRequest(CreateRequestViewModel model);
         Task<ProviderViewModel> PhysicianData(int region);
 		Task SendMessage(int PhysicianId, string message);
@@ -101,5 +101,6 @@ namespace Services.Contracts
         Task ApproveSelectedShift(List<int> selectedShifts, string email);
         Task<BlockHistoryViewModel> BlockHistoryData(BlockHistoryViewModel obj);
         Task UnblockCase(int requestid);
+        Task<LogsDataViewModel> EmailLogs();
     }
 }

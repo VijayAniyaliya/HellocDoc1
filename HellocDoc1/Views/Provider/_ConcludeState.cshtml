@@ -10,6 +10,7 @@
         <tr>
             <th scope="col">Name</th>
             <th></th>
+            <th scope="col">Date Of Birth</th>
             <th scope="col">Physician Name</th>
             <th>Date of Service</th>
             <th scope="col">Phone</th>
@@ -24,8 +25,10 @@
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
+                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
                 <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
                 <td>@item.Request.CreatedDate</td>
+
                 <td>
                     @switch (item.Request.RequestTypeId)
                     {
@@ -67,6 +70,9 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
+                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                         </ul>
                     </div>
                 </td>
@@ -134,17 +140,24 @@
                     <div>
                         <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.Request.PhoneNumber
                     </div>
-                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service: @item.Request.CreatedDate</div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
                 </div>
                 <div class="row mx-3">
-                    <div class="col-6 p-0 pr-3 pb-2">
+                    <div class="col-6 ps-0 pr-3 pb-2">
+                        <a class="btn w-100 bg-danger  text-white rounded-pill p-1 btn-sm">Conclude Case</a>
+                    </div>
+                    <div class="col-6 p-0  pb-2">
                         <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                    </div>
+                    <div class="col-6 p-0 pr-3 pb-2">
+                        <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background:#3c6b5d;">Doctor Note</a>
                     </div>
                     <div class="col-6 p-0 pb-2">
                         <a asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                     </div>
-                    <div class="col-6 p-0 pr-3">
+                    <div class="col-6 p-0 pr-3 pb-2">
+                        <a asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId" class="btn w-100  bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                    </div>
+                    <div class="col-6 p-0">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                     </div>
                 </div>
@@ -155,7 +168,6 @@
                 </div>
             </div>
             <br />
-
         }
     </div>
 </div>

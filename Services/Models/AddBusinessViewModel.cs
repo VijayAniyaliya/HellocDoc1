@@ -29,14 +29,21 @@ namespace Services.Models
 
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
-        public string? BusinessContact { get; set; }
-        public string? Street { get; set; }
+
+        [Required(ErrorMessage = "Business Contact is required")]
+
+        public string BusinessContact { get; set; }
+        [Required(ErrorMessage = "Street is required")]
+
+        public string Street { get; set; }
 
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is required")]
         public string State { get; set; }
-        public string? ZipCode { get; set; }
+        [Required(ErrorMessage = "Zip Code is required")]
+
+        public string ZipCode { get; set; }
     }
 }

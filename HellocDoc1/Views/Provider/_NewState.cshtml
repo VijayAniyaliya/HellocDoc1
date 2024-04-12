@@ -1,32 +1,31 @@
-﻿@{
+﻿@using System.Globalization;
+@model Services.Models.AdminDashboardViewModel
+
+@{
     Layout = "";
 }
 
-@model Services.Models.AdminDashboardViewModel
-
 
 <table class="table d-md-table d-none">
-    <thead class=" table-secondary">
+    <thead class="table-secondary">
         <tr>
             <th scope="col">Name</th>
             <th></th>
-            <th scope="col">Physician Name</th>
-            <th>Date of Service</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
-            <th scope="col">Chat With</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.requestClients)
         {
-            <tr class="style_@item.Request.RequestTypeId">
+
+            <tr class="style_@item.Request.RequestTypeId ">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
-                <td>@item.Request.CreatedDate</td>
+
                 <td>
+
                     @switch (item.Request.RequestTypeId)
                     {
                         case 1:
@@ -55,26 +54,33 @@
 
                             break;
                     }
+
                 </td>
+
+
                 <td>@item.Street @item.City @item.State</td>
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1" style="cursor:pointer;"></i> Block Patient</a></li>
                         </ul>
                     </div>
                 </td>
+
+
             </tr>
         }
 
     </tbody>
 </table>
+
 
 
 <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
@@ -130,36 +136,35 @@
                     </a>
                 </div>
                 <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div>
                         <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.Request.PhoneNumber
+
                     </div>
-                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service: @item.Request.CreatedDate</div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
                 </div>
                 <div class="row mx-3">
+                    <div class="col-6 ps-0 pr-3 pb-2">
+                        <a onclick="assign(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                    </div>
+                    <div class="col-6 p-0 pb-2 pb-2">
+                        <a onclick="cancel(@item.RequestId)" class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                    </div>
                     <div class="col-6 p-0 pr-3 pb-2">
                         <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                     </div>
                     <div class="col-6 p-0 pb-2">
-                        <a asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
+                        <a onclick="block(@item.RequestId)" class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
                     </div>
                     <div class="col-6 p-0 pr-3">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                     </div>
                 </div>
-                <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pt-2">
-                    <span>Chat with: </span>
-                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
-                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
-                </div>
             </div>
             <br />
-
         }
     </div>
 </div>
-
 @if (Model.TotalPage > 1)
 {
     <div class="page-container">
@@ -186,8 +191,60 @@ else
     <div class="text-center text-danger fw-bold h5">No record found</div>
 }
 
+<div id="cancelCase"></div>
+<div id="assignCase"></div>
+<div id="blockCase"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    function cancel(request_id) {
+        $.ajax({
+            url: "/Admin/CancelDetails/" + request_id,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#cancelCase").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#cancelCase").html('An error has occurred');
+            }
+        });
+    };
+    function assign(request_id) {
+        $.ajax({
+            url: "/Admin/assignDetails/" + request_id,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#assignCase").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#assignCase").html('An error has occurred');
+            }
+        });
+    };
+    function block(request_id) {
+        $.ajax({
+            url: "/Admin/BlockDetails/" + request_id,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#blockCase").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#blockCase").html('An error has occurred');
+            }
+        });
+    };
     console.log(status);
 
 </script>

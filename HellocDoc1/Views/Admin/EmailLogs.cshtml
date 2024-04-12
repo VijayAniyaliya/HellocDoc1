@@ -1,60 +1,65 @@
-﻿@{
+﻿@model Services.Models.LogsDataViewModel
+
+@{
     ViewData["Title"] = "EmailLogs";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
 @using Common.Enum;
 
-<div class="container-fluid pt-4 m-0 mx-md-5">
+<div class="container-fluid pt-4 p-0 px-md-5">
     <div class="h5 fw-bold">Email Logs(Gmail)</div>
     <div class=" pt-4 shadow Document-content mt-3" style="">
 
         <div class="pr-3 mb-4 px-3">
-            <div class="row">
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-floating mb-3">
-                        <select class="form-select text-secondary" id="role" aria-label="Floating label select example">
-                            <option selected disabled>All</option>
-                            @*  @foreach (var item in RequestStatus)
-                            { *@
-                            <option value="RoleId">Unpaid</option>
-                            @* } *@
-                        </select>
-                        <label for="floatingSelect">Search By Role</label>
+            <form>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-floating mb-3">
+                            <select class="form-select text-secondary" id="role" aria-label="Floating label select example">
+                                <option selected disabled>All</option>
+                                @foreach (var item in Model.Roles)
+                                {
+                                    <option value="@item.RoleId">@item.Name</option>
+                                }
+                            </select>
+                            <label for="floatingSelect">Search By Role</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="receivername"
+                                   placeholder="receiver name" />
+                            <label for="floatingInput" class="">Receiver Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email"
+                                   placeholder="abc@gmail.com" />
+                            <label for="email" class="">Email Id</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="createddate" placeholder="created date" />
+                            <label for="floatingInput" class="">Created Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="sentdate" placeholder="sent date" />
+                            <label for="floatingInput" class="">Sent Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 d-flex align-items-center justify-content-end">
+                        <div class="text-end pr-3 ">
+                            <button type="reset" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
+                            <button type="button" onclick="searchpatient()" class="btn bg-info text-white fw-bold rounded-3 px-4 h5 ">Search</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="receivername"
-                               placeholder="receiver name" />
-                        <label for="floatingInput" class="">Receiver Name</label>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email"
-                               placeholder="abc@gmail.com" />
-                        <label for="email" class="">Email Id</label>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="createddate" placeholder="created date" />
-                        <label for="floatingInput" class="">Created Date</label>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-6">
-                    <div class="form-floating mb-3">
-                        <input type="date" class="form-control" id="sentdate" placeholder="sent date" />
-                        <label for="floatingInput" class="">Sent Date</label>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-6 d-flex align-items-center justify-content-end">
-                    <div class="text-end pr-3 ">
-                        <button type="button" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
-                        <button type="button" onclick="searchpatient()" class="btn bg-info text-white fw-bold rounded-3 px-4 h5 ">Search</button>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
         <div class="table-responsive mt-2" id="tableContent">
         </div>
@@ -95,18 +100,16 @@
     }
 
     $("#clear").on("click", function () {
-        $("#role").val('');
-        $("#receivername").val('');
-        $("#requesttype").val('');
-        $("#createddate").val('');
-        $("#sentdate").val('');
-        $("#email").val('');
-        filterdata.RoleId = 0;
-        filterdata.ReceiverName = "";
-        filterdata.CreatedDate = "";
-        filterdata.SentDate = "";
-        filterdata.Email = "";
-        AjaxAll();
+        $.ajax({
+            url: "/Admin/EmailLogsData",
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
     })
 
     $(document).ready(function () {

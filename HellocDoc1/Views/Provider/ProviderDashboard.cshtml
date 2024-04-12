@@ -1,0 +1,394 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_ProviderDashboardLayout.cshtml";
+}
+
+@model Services.Models.AdminDashboardViewModel
+
+<div class="d-flex justify-content-center">
+    <div class="" style="width:95%">
+
+        <div class="row  mt-3 mb-4 mx-auto">
+
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="1">
+                <div class="px-2 py-1 new newActive rounded-3 pt-1 text-md-left text-center" id="pills-new-tab" onclick="newState()">
+
+                    <i class="bi bi-patch-plus icons"></i>
+
+                    <span class="ms-1 fw-bold newTxt">NEW</span>
+
+                    <span class="mt-2 h4 newTxt d-block">@Model.newCount</span>
+                </div>
+            </div>
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="2">
+                <div class="px-2 py-1 rounded-3 pending pt-1 text-md-left text-center" id="pills-pending-tab" onclick="pendingState()">
+
+                    <i class="bi bi-clock-history icons"></i>
+
+                    <span class="ms-1 fw-bold">PENDING</span>
+
+                    <span class="mt-2 h4 d-block">@Model.pendingCount</span>
+                </div>
+            </div>
+            <div class="col-lg-2 col-4 px-2 pb-2 status" id="3">
+                <div class="px-2 py-1 rounded-3 active pt-1 text-md-left text-center" id="pills-active-tab" onclick="activeState()">
+
+                    <i class="bi bi-check2-circle icons"></i>
+
+                    <span class="ms-1 fw-bold">ACTIVE</span>
+
+                    <span class="mt-2 h4 d-block">@Model.activeCount</span>
+                </div>
+            </div>
+            <div class="col-lg-2 col-4 px-2 status" id="4">
+                <div class="px-2 py-1 rounded-3 conclude pt-1 text-md-left text-center" id="pills-conclude-tab" onclick="concludeState()">
+
+                    <i class="bi bi-arrow-counterclockwise icons"></i>
+
+                    <span class="ms-1 fw-bold">CONCLUDE</span>
+
+                    <span class="mt-2 h4 d-block">@Model.concludeCount</span>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-between mt-5 mb-3">
+            <div>
+                <span class="h4">Patient </span>
+                <span class=" fw-bold" id="status" style="color:#203f9a;"></span>
+            </div>
+            <div class="d-flex gap-1">
+                <a onclick="sendmail()" class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                    <i class="bi bi-reply h5 mr-1"></i>
+                    <span class="link-text">Send Link</span>
+                </a>
+                <a asp-action="CreateRequest" class="bg-info text-white rounded-3 p-2 text-decoration-none" style="cursor:pointer;">
+                    <i class="bi bi-pencil-square  mr-1"></i>
+                    <span class="link-text">Create Requests</span>
+                </a>
+            </div>
+        </div>
+        <div class="shadow rounded-3 pt-4">
+
+            <div class="px-2 row" style="">
+                <div class="form col-xl-3 col-md-6">
+                    <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da;">
+                        <i class="bi bi-search my-1 ms-1 mr-2"></i>
+                        <input id="searchpatient" onkeyup="searchpatient()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
+                    </div>
+                    @*                     <input type="search" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
+                    *@
+                </div>
+
+
+                <div class="col-xl-6 col-md-12 mt-2 ms-1 m-xl-0 d-flex flex-row flex-wrap justify-content-xl-end justify-content-start">
+                    <button class="text-secondary mr-sm-2 m-0 border-info rounded-2 bg-transparent selected">
+
+                        <span class="filter-label">ALL</span>
+                    </button>
+                    <button class="text-secondary mr-sm-2 m-0 border-0 bg-transparent selected d-flex flex-column align-items-center flex-sm-row" id="1">
+                        <i class="bi bi-circle-fill text-success mr-1"></i>
+                        <span class="filter-label">Patient</span>
+                    </button>
+                    <button class="text-secondary mr-sm-2 m-0 border-0 bg-transparent selected d-flex flex-column align-items-center flex-sm-row" id="2">
+                        <i class="bi bi-circle-fill text-warning mr-1"></i>
+                        <span class="filter-label">Family/Friend</span>
+                    </button>
+                    <button class="text-secondary mr-sm-2 m-0 border-0 bg-transparent selected d-flex flex-column align-items-center flex-sm-row" id="3">
+                        <i class="bi bi-circle-fill mr-1" style="color:pink;"></i>
+                        <span class="filter-label">Business</span>
+                    </button>
+                    <button class="text-secondary  mr-sm-2 m-0 border-0 bg-transparent selected d-flex flex-column align-items-center flex-sm-row" id="4">
+                        <i class="bi bi-circle-fill text-primary mr-1"></i>
+                        <span class="filter-label">Concierge</span>
+                    </button>
+                    <button class="text-secondar border-0 bg-transparent d-flex flex-column align-items-center flex-sm-row">
+                        <i class="bi bi-circle-fill mr-sm-1 m-0" style="color:purple;"></i>
+                        <span class="mr-2 filter-label">VIP</span>
+                    </button>
+                </div>
+
+
+            </div>
+
+            <div id="tableContent" class="table-responsive mt-4 mb-5">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mail"></div>
+<style>
+    .filter-label {
+        font-size: clamp(12px, 3vw, 15px)
+    }
+
+    .dash-button {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+    var filterdata = {
+        status: 1,
+        url: "",
+        patientname: "",
+        requesttype: 5,
+        requestedPage: 1,
+    }
+
+    function AjaxAll() {
+        $.ajax({
+            url: filterdata.url,
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                let isLogin = data.includes("Login");
+                if (isLogin) {
+                    window.location.reload();
+                }
+                else {
+                    $("#tableContent").html(data);
+                    $("#status").html("(New)");
+                }
+
+            },
+            error: function (error) {
+                console.log(error)
+                $("#tableContent").html('An error has occurred');
+            }
+        });
+    }
+
+    $(".selected").click(function () {
+        var requestType = $(this).attr('id');
+
+        switch (requestType) {
+            case '1':
+                requestType = 1;
+                break;
+            case '2':
+                requestType = 2;
+                break;
+            case '3':
+                requestType = 3;
+                break;
+            case '4':
+                requestType = 4;
+                break;
+            default:
+        }
+        filterdata.requesttype = requestType;
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    })
+
+    function changepage(CurrentPage) {
+        filterdata.requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
+    function searchpatient() {
+        filterdata.patientname = $("#searchpatient")[0].value;
+        filterdata.requestedPage = 1;
+        AjaxAll();
+    }
+
+    $(document).ready(function () {
+        filterdata.status = 1;
+        $.ajax({
+            url: "/Provider/NewState",
+            type: "POST",
+            data: filterdata,
+            dataType: "html",
+            success: function (data) {
+                let isLogin = data.includes("Login");
+                if (isLogin) {
+                    window.location.reload();
+                }
+                else {
+                    $("#tableContent").html(data);
+                    $("#status").html("(New)");
+                    filterdata.url = "/Admin/NewState";
+
+                }
+            },
+            error: function (error) {
+                console.log(error)
+                alert("No Projects Found");
+                $("#tableContent").html('An error has occurred');
+            }
+        });
+        // $('#pills-new-tab').click(function () {
+        //     filterdata.status = 1;
+        //     $.ajax({
+        //         url: "/Admin/NewState",
+        //         type: "POST",
+        //         data: filterdata,
+        //         dataType: "html",
+        //         success: function (data) {
+        //             let isLogin = data.includes("Login");
+        //             if (isLogin) {
+        //                 window.location.reload();
+        //             }
+        //             $("#tableContent").html(data);
+        //             $("#status").html("(New)");
+        //             filterdata.url = "/Admin/NewState";
+        //         },
+        //         error: function () {
+        //             alert("No Projects Found");
+        //             $("#tableContent").html('An error has occurred');
+        //         }
+        //     });
+        // });
+        // $('#pills-pending-tab').click(function () {
+        //     filterdata.status = 2;
+        //     $.ajax({
+        //         url: "/Admin/PendingState",
+        //         type: "POST",
+        //         data: filterdata,
+        //         dataType: "html",
+        //         success: function (data) {
+        //             let isLogin = data.includes("Login");
+        //             if (isLogin) {
+        //                 window.location.reload();
+        //             }
+        //             else {
+        //                 $("#tableContent").html(data);
+        //                 $("#status").html("(Pending)");
+        //                 filterdata.url = "/Admin/PendingState";
+
+        //             }
+
+        //         },
+        //         error: function () {
+        //             alert("No Projects Found");
+        //             $("#tableContent").html('An error has occurred');
+        //         }
+        //     });
+        // });
+        // $('#pills-active-tab').click(function () {
+        //     filterdata.status = 3;
+        //     $.ajax({
+        //         url: "/Admin/ActiveState",
+        //         type: "POST",
+        //         data: filterdata,
+        //         dataType: "html",
+        //         success: function (data) {
+        //             let isLogin = data.includes("Login");
+        //             if (isLogin) {
+        //                 window.location.reload();
+        //             }
+        //             else {
+        //                 $("#tableContent").html(data);
+        //                 $("#status").html("(Active)");
+        //                 filterdata.url = "/Admin/ActiveState";
+
+        //             }
+
+        //         },
+        //         error: function () {
+        //             alert("No Projects Found");
+        //             $("#tableContent").html('An error has occurred');
+        //         }
+        //     });
+        // });
+        // $('#pills-conclude-tab').click(function () {
+        //     filterdata.status = 4;
+        //     $.ajax({
+        //         url: "/Admin/ConcludeState",
+        //         type: "POST",
+        //         data: filterdata,
+        //         dataType: "html",
+        //         success: function (data) {
+        //             let isLogin = data.includes("Login");
+        //             if (isLogin) {
+        //                 window.location.reload();
+        //             }
+        //             else {
+        //                 $("#tableContent").html(data);
+        //                 $("#status").html("(Conclude)");
+        //                 filterdata.url = "/Admin/ConcludeState";
+
+        //             }
+        //         },
+        //         error: function () {
+        //             alert("No Projects Found");
+        //             $("#tableContent").html('An error has occurred');
+        //         }
+        //     });
+        // });
+    });
+
+    // function sendmail() {
+    //     $.ajax({
+    //         url: "/Admin/SendMailDetails",
+    //         type: "POST",
+    //         data: {},
+    //         dataType: "html",
+    //         success: function (data) {
+    //             $("#mail").html(data);
+    //             const myModal = new bootstrap.Modal("#staticBackdrop", {});
+    //             myModal.show();
+    //         },
+    //         error: function () {
+    //             alert("No Projects Found");
+    //         }
+    //     });
+    // };
+
+    $('#exportbtn').click(function () {
+        if (typeof (filterdata.patientname == "undefined")) {
+            filterdata.patientname = ""
+        }
+        var link = document.createElement('a');
+        link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    function newState() {
+        document.getElementById("pills-new-tab").classList.add("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+
+    function pendingState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.add("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function activeState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.add("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+    function concludeState() {
+        document.getElementById("pills-new-tab").classList.remove("newActive");
+        document.getElementById("pills-pending-tab").classList.remove("pendingActive");
+        document.getElementById("pills-active-tab").classList.remove("activeStateActive");
+        document.getElementById("pills-conclude-tab").classList.add("concludeActive");
+        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
+        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
+    }
+</script>
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

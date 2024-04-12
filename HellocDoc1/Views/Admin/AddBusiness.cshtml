@@ -29,7 +29,7 @@
                         <input type="text" asp-for="VendorName" class="form-control" id="contact"
                                placeholder="business" />
                         <label for="contact" class="">Business Name</label>
-                        <span asp-validation-for="VendorName" class="text-danger"></span>
+                        <span asp-validation-for="VendorName" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                             }
                         </select>
                         <label for="floatingSelect"></label>
-                        <span asp-validation-for="ProfessionId" class="text-danger"></span>
+                        <span asp-validation-for="ProfessionId" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                         <input type="text" asp-for="FaxNumber" class="form-control" id="faxnumber"
                                placeholder="fax number" />
                         <label for="faxnumber" class="">Fax Number</label>
-                        <span asp-validation-for="FaxNumber" class="text-danger"></span>
+                        <span asp-validation-for="FaxNumber" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                         <input type="text" asp-for="PhoneNumber" class="form-control" id="phone"
                                placeholder="phone" />
                         <label for="contact" class="">Phone Number</label>
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <span asp-validation-for="PhoneNumber" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         <input type="email" asp-for="Email" class="form-control" id="email"
                                placeholder="abc@gmail.com" />
                         <label for="email" class="">Email</label>
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <span asp-validation-for="Email" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -79,6 +79,7 @@
                         <input type="text" asp-for="BusinessContact" class="form-control" id="contact"
                                placeholder="business contact" />
                         <label for="contact" class="">Business Contact</label>
+                        <span asp-validation-for="BusinessContact" class="text-danger businessvalid"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -86,6 +87,7 @@
                         <input type="text" asp-for="Street" class="form-control" id="Street"
                                placeholder="Street" />
                         <label for="Street" class="">Street</label>
+                        <span asp-validation-for="Street" class="text-danger businessvalid"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -93,7 +95,7 @@
                         <input type="text" asp-for="City" class="form-control" id="City"
                                placeholder="City" />
                         <label for="City" class="">City</label>
-                        <span asp-validation-for="City" class="text-danger"></span>
+                        <span asp-validation-for="City" class="text-danger businessvalid"></span>
 
                     </div>
                 </div>
@@ -102,8 +104,7 @@
                         <input type="text" asp-for="State" class="form-control" id="faxnumber"
                                placeholder="State" />
                         <label for="State" class="">State</label>
-                        <span asp-validation-for="State" class="text-danger"></span>
-
+                        <span asp-validation-for="State" class="text-danger businessvalid"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -111,12 +112,13 @@
                         <input type="text" asp-for="ZipCode" class="form-control" id="faxnumber"
                                placeholder="ZipCode" />
                         <label for="ZipCode" class="">ZipCode</label>
+                        <span asp-validation-for="ZipCode" class="text-danger businessvalid"></span>
                     </div>
                 </div>
             </div>
             <div class="footer mt-5 mb-4 text-end">
                 <button type="submit" class="btn bg-info text-white">Save</button>
-                <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                <button type="reset" id="cancel" class="btn border border-info text-info">Cancel</button>
             </div>
         </div>
     </form>
@@ -125,3 +127,10 @@
 <br />
 <br />
 <br />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $("#cancel").on("click", function(){
+        $(".businessvalid").html("");
+    })
+</script>

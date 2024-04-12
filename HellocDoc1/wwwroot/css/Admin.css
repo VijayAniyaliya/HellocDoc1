@@ -22,6 +22,12 @@
     .doc-img {
         margin-left: 14%;
     }
+}   
+@media only screen and (min-width:768px) {
+    .canvas-body {
+        width: 0;
+        display: none;
+    }
 }
 
 .new {
@@ -46,7 +52,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
     .newActive::after {
         content: "";
         position: absolute;
@@ -82,7 +88,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
 
     .pendingActive::after {
         content: "";
@@ -118,7 +124,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
 
     .activeStateActive::after {
         content: "";
@@ -154,7 +160,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
 
     .concludeActive::after {
         content: "";
@@ -190,7 +196,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
 
     .tocloseActive::after {
         content: "";
@@ -226,7 +232,7 @@
     color: white;
 }
 
-@media only screen and (min-width:768px) {
+@media only screen and (min-width:991px) {
 
     .unpaidActive::after {
         content: "";

@@ -49,9 +49,21 @@
 <script>
 
 
+    $('#firstname').on('focus', function () {
+        $('#firstname').css('border', '');
+        $('.first').html('');
+    });  
+    $('#lastname').on('focus', function () {
+        $('#lastname').css('border', '');
+        $('.last').html('');
+    });  
     $('#email').on('focus', function () {
         $('#email').css('border', '');
         $('.email').html('');
+    }); 
+    $('#phone').on('focus', function () {
+        $('#phone').css('border', '');
+        $('.phone').html('');
     });
 
     $('.sendmail').on('click', function (e) {
@@ -75,19 +87,25 @@
         //     $('#phonenumber').css('border', '1px solid red');
         //     $('.phone').html('Please enter phone number');
         // }
-        if (linkdata.Email == "") { 
+        if ((linkdata.Email == "") && (linkdata.Firstname == "") && (linkdata.Lastname == "") && (linkdata.Phonenumber == "")) {
             console.log("email");
             $('#email').css('border', '1px solid red');
-            $('.email').html('Please enter email');
+            $('.email').html('Please enter email');       
+            $('#firstname').css('border', '1px solid red');
+            $('.first').html('Please enter firstname');
+            $('#lastname').css('border', '1px solid red');
+            $('.last').html('Please enter lastname');
+            $('#phone').css('border', '1px solid red');
+            $('.phone').html('Please enter phone number');
         }
         else {
             $.ajax({
                 url: '/Admin/SendLink',
                 type: "post",
                 data: linkdata,
-                success: function (data) {
-                    console.log("link data");
+                success: function () {
                     $("#cancel").click();
+                    toastr.success('Shifts Approved Successfully');
                 },
                 error: function (error) {
                     
@@ -108,3 +126,6 @@
 
     }
 </script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" asp-for="Password" class="form-control account" id="password"
+                    <input type="text" class="form-control account" id="password"
                            placeholder="password" />
                     <label for="password" class="">Password</label>
                     <span id="passwarn" class="text-danger"></span>
@@ -202,21 +202,29 @@
 
     function resetpass() {
         var password = $('#password').val();
-        $.ajax({
+        if(password == ""){
+            $('#passwarn').html("Please enter password")
+        }
+        else {
+            $.ajax({
             url: "/Admin/ResetPassword/",
             type: "POST",
             async: false,
             data: { "password": password },
             dataType: "html",
             success: function (data) {
-                console.log("reset password")
+                toastr.success('Password Reset Successfully');
+                $('#password').val("")
             },
             error: function () {
                 alert("No Projects Found");
                 console.log('error');
             }
         });
+        $('#passwarn').html("")
+      }
     };
+
 
     $('.modify').each(function () {
         $(this).css('display', 'none');

@@ -15,19 +15,25 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.SmsLogs)
+        @foreach (var item in Model.logsDatas)
         {
-
             <tr>
-                <td>Reciepent</td>
-                <td>Action</td>
-                <td>Role Name</td>
-                <td>@item.MobileNumber</td>
-                <td>@item.CreateDate.ToString("MMM dd, yyyy h:mm tt")</td>
+                <td>@item.ReceiverName</td>
+                <td></td>
+                <td>@item.RoleName</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.CreatedDate.ToString("MMM dd, yyyy h:mm tt")</td>
                 <td>@(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</td>
-                <td>IsSmssent</td>
+                @if (item.IsEmailSent[0] == true)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
                 <td>@item.SentTries</td>
-                <td>@item.ConfirmationNumber</td>
+                <td>@item.ConfirmationNo</td>
             </tr>
         }
     </tbody>

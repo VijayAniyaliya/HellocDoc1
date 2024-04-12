@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Helpers
-{
-    public static class HashingServices
+public static class EncryptDecryptHelper
     {
         public const string secretKey = "ORM@714rGK#zO>6H61Sdt<ST[yx\\38!@GW£|Vx>lg";
 
@@ -25,7 +16,7 @@ namespace Common.Helpers
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(secret);
 
                 // Hash the password with SHA256
-                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);         
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
 
                 byte[] bytesEncrypted = Encrypt(bytesToBeEncrypted, passwordBytes);
 
@@ -34,7 +25,7 @@ namespace Common.Helpers
             catch (Exception)
             {
                 return string.Empty;
-            }   
+            }
         }
 
         public static string Decrypt(string encryptedText, string secret = secretKey)
@@ -54,10 +45,10 @@ namespace Common.Helpers
 
                 byte[] bytesDecrypted = Decrypt(bytesToBeDecrypted, passwordBytes);
 
-                if (bytesDecrypted == null)
+                if(bytesDecrypted == null)
                 {
                     return string.Empty;
-                }
+                }    
 
                 return Encoding.UTF8.GetString(bytesDecrypted);
             }
@@ -130,7 +121,7 @@ namespace Common.Helpers
 
                 return decryptedBytes;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return null!;
             }
@@ -160,4 +151,3 @@ namespace Common.Helpers
             return bytes;
         }
     }
-}

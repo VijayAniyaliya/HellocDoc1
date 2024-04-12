@@ -31,7 +31,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn bg-info text-white block">Confirm</button>
-                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="cancel" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
                 </div>
 
         </div>
@@ -59,10 +59,9 @@
                     url: '/Admin/BlockCase',
                     data: { "request_id": @Model.RequestId, "reason": reason },
                     success: function (response) {
-                        // $('#status-tabContent').html(response);
-                        // $("body").removeAttr("style");
-                        // $(".modal-backdrop").remove();
-                        window.location.reload();
+                        $("#cancel").click();
+                        $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
+                        toastr.success('Case Successfully Blocked');
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
