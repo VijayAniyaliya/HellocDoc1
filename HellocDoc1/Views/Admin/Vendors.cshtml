@@ -58,6 +58,7 @@
 
     var profession = 0;
     var searchvendor = "";
+    var requestedPage = 1;
 
     $('#profession').on('change', function () {
         profession = $(this).val();
@@ -69,11 +70,16 @@
         AjaxAll();
     }
 
+    function changepage(CurrentPage) {
+        requestedPage = CurrentPage;
+        AjaxAll();
+    }
+
     $(document).ready(function () {
         $.ajax({
             url: "/Admin/VendorMenu",
             type: "POST",
-            data: { "profession": profession, "searchvendor": searchvendor },
+            data: { "profession": profession, "searchvendor": searchvendor, "requestedPage": requestedPage },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);
@@ -87,7 +93,7 @@
         $.ajax({
             url: "/Admin/VendorMenu",
             type: "POST",
-            data: { "profession": profession, "searchvendor": searchvendor },
+            data: { "profession": profession, "searchvendor": searchvendor, "requestedPage": requestedPage },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

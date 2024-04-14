@@ -58,7 +58,7 @@ namespace Services.Implementation
         }
         public async Task<AdminDashboardViewModel> NewState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).ThenInclude(a => a.Physician).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 1).ToListAsync();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel();
 
@@ -119,7 +119,12 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 3).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients
+                .Include(a => a.Request)
+                .Include(a => a.Request.Physician)
+                .Include(a => a.Request.RequestStatusLogs)
+                .Where(a => a.Request.Status == 4 || a.Request.Status == 5)
+                .ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -149,7 +154,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 4).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -179,7 +184,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ToCloseState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 5).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Region).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -209,7 +214,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> UnpaidState(AdminDashboardViewModel obj)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 9).ToListAsync();
             AdminDashboardViewModel model = new AdminDashboardViewModel();
             model.requestClients = clients;
 
@@ -245,17 +250,16 @@ namespace Services.Implementation
             {
                 model.PatientNotes = data?.Notes!;
                 model.FirstName = data?.FirstName!;
-                model.LastName = data.LastName;
-                model.DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString());
-                model.PhoneNumber = data.PhoneNumber;
-                model.Email = data.Email;
-                model.Region = data.City;
-                model.Address = data.City + " " + data.State + " " + data.ZipCode;
+                model.LastName = data?.LastName!;
+                model.DOB = DateTime.Parse((data?.IntDate).ToString() + "/" + data?.StrMonth + "/" + (data?.IntYear).ToString());
+                model.PhoneNumber = data?.PhoneNumber!;
+                model.Email = data?.Email!;
+                model.Region = data?.City!;
+                model.Address = data?.City + " " + data?.State + " " + data?.ZipCode;
                 model.RequestId = request_id;
                 model.RequestTypeId = data.Request.RequestTypeId;
                 model.Status = data.Request.Status;
             }
-
             return model;
         }
 
@@ -270,12 +274,15 @@ namespace Services.Implementation
                 model.TransferNotes = new List<TransferNote>();
                 foreach (var item in data!)
                 {
-                    TransferNote transferNotes = new TransferNote
+                    if (!string.IsNullOrEmpty(item.Notes))
                     {
-                        Notes = item.Notes,
-                        CreatedDate = item.CreatedDate
-                    };
-                    model.TransferNotes.Add(transferNotes);
+                        TransferNote transferNotes = new TransferNote
+                        {
+                            Notes = item.Notes,
+                            CreatedDate = item.CreatedDate
+                        };
+                        model.TransferNotes.Add(transferNotes);
+                    }
                 }
                 model.PhysicianNotes = data1?.PhysicianNotes;
                 model.AdminNotes = data1?.AdminNotes;
@@ -336,12 +343,12 @@ namespace Services.Implementation
 
             if (data != null && reason != null)
             {
-                data.Status = 5;
+                data.Status = (int)RequestStatus.Cancelled;
                 data.CaseTag = reason.Name;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
-                    Status = 5,
+                    Status = (int)RequestStatus.Cancelled,
                     Notes = cancelNote,
                     CreatedDate = DateTime.Now,
                 };
@@ -357,7 +364,6 @@ namespace Services.Implementation
 
             if (data != null)
             {
-
                 AssignCaseViewModel model = new AssignCaseViewModel()
                 {
                     RequestId = request_id,
@@ -374,13 +380,11 @@ namespace Services.Implementation
 
             if (data != null)
             {
-
                 List<PhysicianSelectlViewModel> data1 = data.Select(a => new PhysicianSelectlViewModel()
                 {
                     Name = a.FirstName,
                     PhysicianId = a.PhysicianId
                 }).ToList();
-
                 return data1;
             }
             return new List<PhysicianSelectlViewModel>();
@@ -388,17 +392,15 @@ namespace Services.Implementation
 
         public async Task AssignCase(int request_id, int physicianid, string description)
         {
-            var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+            var data = await _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             if (data != null)
             {
-
-                data.Status = 2;
                 data.PhysicianId = physicianid;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
-                    Status = 2,
+                    Status = 1,
                     TransToPhysicianId = physicianid,
                     Notes = description,
                     CreatedDate = DateTime.Now,
@@ -431,11 +433,11 @@ namespace Services.Implementation
 
             if (data != null)
             {
-                data.Status = 10;
+                data.Status = 11;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
-                    Status = 10,
+                    Status = 11,
                     Notes = reason,
                     CreatedDate = DateTime.Now,
                 };
@@ -447,7 +449,7 @@ namespace Services.Implementation
                     Reason = reason,
                     RequestId = request_id.ToString(),
                     IsActive = new BitArray(new[] { true }),
-                CreatedDate = DateTime.Now,
+                    CreatedDate = DateTime.Now,
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
@@ -462,7 +464,6 @@ namespace Services.Implementation
             Request? data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             ViewUploadsViewModel viewUploads = new ViewUploadsViewModel();
-
             if (data != null)
             {
                 data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
@@ -541,15 +542,18 @@ namespace Services.Implementation
         public async Task SendMail(List<int> DocumentId)
         {
             List<string> name = new List<string>();
-            foreach (var item in DocumentId)
+            if (DocumentId.Count() > 0)
             {
-                RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
-                if (data != null)
+                foreach (var item in DocumentId)
                 {
-                    var file = data.FileName;
-                    name.Add(file);
-                    var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-                    await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
+                    RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                    if (data != null)
+                    {
+                        var file = data.FileName;
+                        name.Add(file);
+                        var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
+                        await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
+                    }
                 }
             }
         }
@@ -613,15 +617,15 @@ namespace Services.Implementation
             return model;
         }
 
-        public async Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        public async Task SendOrderDetails(SendOrdersViewModel model, int request_id)
         {
             OrderDetail orderDetail = new OrderDetail()
             {
-                VendorId = vendorid,
+                VendorId = model.VendorId,
                 RequestId = request_id,
-                FaxNumber = faxnumber,
-                Email = email,
-                BusinessContact = contact,
+                FaxNumber = model.FaxNumber,
+                Email = model.Email,
+                BusinessContact = model.Contact,
                 Prescription = model.Prescription,
                 NoOfRefill = model.Refills,
                 CreatedDate = DateTime.Now,
@@ -1199,7 +1203,7 @@ namespace Services.Implementation
             return model;
         }
 
-        public async Task<ProviderViewModel> PhysicianData(int region)
+        public async Task<ProviderViewModel> PhysicianData(int region, int requestedPage)
         {
             List<Physician> data = await _context.Physicians.Include(x => x.Role).ToListAsync();
             data = data.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
@@ -1222,10 +1226,17 @@ namespace Services.Implementation
                 {
                     obj = obj.Where(x => x.region == region).ToList();
                 }
+
+                int count = obj!.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                obj = obj!.Skip((requestedPage - 1) * 5).Take(5).ToList();
                 ProviderViewModel model = new ProviderViewModel()
                 {
                     Physicians = obj,
+                    CurrentPage = requestedPage,
+                    TotalPage = TotalPage,
                 };
+
                 return model;
             }
             return new ProviderViewModel();
@@ -2330,7 +2341,7 @@ namespace Services.Implementation
         }
 
 
-        public async Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor)
+        public async Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor, int requestedPage)
         {
             List<HealthProfessional> healthProfessionals = await _context.HealthProfessionals.Include(a => a.ProfessionNavigation).ToListAsync();
             healthProfessionals = healthProfessionals.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
@@ -2357,10 +2368,16 @@ namespace Services.Implementation
                     BusinessContact = a.BusinessContact
                 }).ToList();
 
+                int count = vendorsData!.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                vendorsData = vendorsData!.Skip((requestedPage - 1) * 5).Take(5).ToList();
                 VendorsDetailsViewModel model = new VendorsDetailsViewModel()
                 {
-                    vendorsDatas = vendorsData,
+                    vendorsDatas = vendorsData, 
+                    CurrentPage = requestedPage,
+                    TotalPage = TotalPage,
                 };
+
                 return (model);
             }
             return new VendorsDetailsViewModel();

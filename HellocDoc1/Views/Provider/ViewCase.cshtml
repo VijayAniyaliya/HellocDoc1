@@ -1,7 +1,7 @@
 ﻿@model Services.Models.ViewCaseViewModel
 @{
     ViewData["Title"] = "ViewCase";
-    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_ProviderDashboardLayout.cshtml";
 }
 
 
@@ -24,11 +24,11 @@
                     break;
                 case 4:
                     <span class="border rounded-pill bg-primary text-white px-3 pt-1 pb-2 h5">Concierge</span>
-                    break;
+                    break;  
 
             }
         </div>
-        <a asp-action="AdminDashboard" class="btn back-btn border-2 border-info text-info px-2 pt-2 fw-bold">
+        <a asp-action="ProviderDashboard" class="btn back-btn border-2 border-info text-info px-2 pt-2 fw-bold">
             &lt; Back
         </a>
 
@@ -88,8 +88,8 @@
                         <label for="floatingInput" class="">Email</label>
                     </div>
                 </div>
-@*                 <div class="col-md-3">
-                    <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
+                @*                 <div class="col-md-3">
+                <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
                 </div> *@
             </div>
         </div>
@@ -114,7 +114,7 @@
                 <div class="col-md-1 col-sm-2 col-3 p-0 ">
                     <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-geo-alt h3 fw-bolder"></i></button>
                 </div>
-                <div class="col-md-6">  
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" asp-for="Room" id="floatingInput" placeholder="room" disabled />
                         <label for="floatingInput" class="">Room # / Suite (Optional)</label>
@@ -123,54 +123,7 @@
             </div>
         </div>
         <div class="text-end mb-4">
-            <button type="button" onclick="assign(@Model.RequestId)" class="btn bg-info text-white h5">Assign</button>
             <a class="btn bg-info text-white h5" asp-action="ViewNotes" asp-route-request_id="@Model.RequestId">View Notes</a>
-            <button type="button" onclick="cancel(@Model.RequestId)" class="btn bg-danger text-white h5">Cancel</button>
         </div>
     </div>
 </div>
-<div id="cancelCase"></div>
-<div id="assignCase"></div>
-<br>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-    const phoneInputField = document.querySelector("#phone");
-    const phoneInput = window.intlTelInput(phoneInputField, {
-        utilsScript:
-            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-    });
-
-    function cancel(request_id) {
-        $.ajax({
-            url: "/Admin/CancelDetails/" + request_id,
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#cancelCase").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#cancelCase").html('An error has occurred');
-            }
-        });
-    };
-    function assign(request_id) {
-        $.ajax({
-            url: "/Admin/assignDetails/" + request_id,
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#assignCase").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#assignCase").html('An error has occurred');
-            }
-        });
-    };
-</script>

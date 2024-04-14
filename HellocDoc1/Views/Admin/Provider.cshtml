@@ -45,16 +45,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     var region = 0;
-
+    var requestedPage = 1;
     $('#region').on('change', function () {
         region = $(this).val();
         Region();
     })
+
+    function changepage(CurrentPage) {
+        requestedPage = CurrentPage;
+        Region();
+    }
     $(document).ready(function () {
         $.ajax({
             url: "/Admin/ProviderMenu",
             type: "POST",
-            data: { "region": region },
+            data: { "region": region, "requestedPage": requestedPage },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);
@@ -68,7 +73,7 @@
         $.ajax({
             url: "/Admin/ProviderMenu",
             type: "POST",
-            data: { "region": region },
+            data: { "region": region, "requestedPage": requestedPage },
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

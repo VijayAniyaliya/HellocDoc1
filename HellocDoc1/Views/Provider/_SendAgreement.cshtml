@@ -9,7 +9,7 @@
                     <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex flex-column">    
+                    <div class="d-flex flex-column">
                         @switch (Model.RequestTypeId)
                         {
                             case 1:
@@ -66,7 +66,7 @@
 <script>
     function SendAgreement(request_id) {
         $.ajax({
-            url: "/Admin/SendAgreement/",
+            url: "/Provider/SendAgreement/",
             type: "POST",
             data: { "request_id": request_id },
             dataType: "html",

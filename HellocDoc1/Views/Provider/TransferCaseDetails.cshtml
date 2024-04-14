@@ -1,0 +1,68 @@
+﻿@model Services.Models.ClearCaseViewModel
+
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Transfer Request</h5>
+                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-row">
+                    <p class="text-secondary mr-1">This Request transfered to admin.</p>
+                </div>
+                <div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control reason" placeholder="reason"
+                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Description
+                        </label>
+                        <span id="error" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn bg-info text-white transfer">Confirm</button>
+                <button type="button" id="cancel" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.reason').on('focus', function () {
+            $('.reason').css('border', '');
+            $('#error').html('');
+        });
+
+        $('.transfer').on('click', function (e) {
+            var reason = $('.reason').val();
+            console.log(reason);
+            if (reason == "") {
+                $('.reason').css('border', '1px solid red');
+                $('#error').html('Please Enter Description');
+            }
+            else {
+                $.ajax({
+                    url: '/Provider/TransferCaseToAdmin',
+                    data: { "request_id": @Model.RequestId, "reason": reason },
+                    success: function (response) {
+                        $("#cancel").click();
+                        $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                        toastr.success('Case Successfully Transfered To Admin');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
+</script>

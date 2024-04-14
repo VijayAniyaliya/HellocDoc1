@@ -43,7 +43,7 @@ namespace HellocDoc1.Services
                         };
                         await _context.Concierges.AddAsync(concirge);
 
-                        User user = _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefault();
+                        User? user = _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefault();
                         var regiondata = _context.Regions.Where(x => x.RegionId == user.RegionId).FirstOrDefault();
                         var requestcount = _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToList();
                         Request request = new Request()
@@ -57,8 +57,8 @@ namespace HellocDoc1.Services
                             Status = 1,
                             IsUrgentEmailSent = new BitArray(1),
                             CreatedDate = DateTime.Now,
-                            ConfirmationNumber = regiondata.Abbreviation + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
-                                             + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) +
+                            ConfirmationNumber = regiondata?.Abbreviation?.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
+                                             + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2).ToUpper() + model.FirstName.Substring(0, 2).ToUpper() +
                                              (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
                         };
                         await _context.Requests.AddAsync(request);

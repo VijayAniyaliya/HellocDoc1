@@ -12,6 +12,8 @@ namespace Services.Models
         public List<PhysicianData>? Physicians { get; set; }
 
         public List<Region> Regions { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPage { get; set; }
     }  
     public class PhysicianData
     {

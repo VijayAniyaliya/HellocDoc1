@@ -3,13 +3,13 @@
 
 @{
     ViewData["Title"] = "SendOrders";
-    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_ProviderDashboardLayout.cshtml";
 }
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
         <h4>Documents</h4>
-        <a asp-area="" asp-action="AdminDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+        <a asp-area="" asp-action="ProviderDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
             &lt;  Back
         </a>
 
@@ -32,31 +32,38 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-select text-secondary py-0 Business" name="vendorid" id="business" aria-label="Floating label select example">
+                        <select class="form-select text-secondary py-0 Business" asp-for="VendorId" id="business" aria-label="Floating label select example">
                             <option selected disabled>Business</option>
                         </select>
                         <label for="business"></label>
+                        <span asp-validation-for="VendorId" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="contact" id="contact"
+                        <input type="text" class="form-control" asp-for="Contact" id="contact"
                                placeholder="business contact" />
                         <label for="contact" class="">Business Contact</label>
+                        <span asp-validation-for="Contact" class="text-danger order"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" name="email" id="email"
+                        <input type="email" class="form-control" asp-for="Email" id="email"
                                placeholder="abc@gmail.com" />
                         <label for="email" class="">Email</label>
+                        <span asp-validation-for="Email" class="text-danger order"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="faxnumber" id="faxnumber"
+                        <input type="text" class="form-control" asp-for="FaxNumber" id="faxnumber"
                                placeholder="fax number" />
                         <label for="faxnumber" class="">Fax Number</label>
+                        <span asp-validation-for="FaxNumber" class="text-danger order"></span>
+
                     </div>
                 </div>
                 <div class="col-12">
@@ -66,15 +73,17 @@
                         <label for="floatingTextarea2" class="">
                             Prescription or Order details
                         </label>
+                        <span asp-validation-for="Prescription" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" asp-for="Refills" aria-label="Floating label select example">
-                            <option selected>Not Required</option>
-                            <option value="1">1</option>
+                        <select class="form-select" asp-for="Refills" id=" floatingSelect" asp-for="Refills" aria-label="Floating label select example">
+                            <option selected value="1">Not Required</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
+                            <option value="4">4</option>
                         </select>
                         <label for="floatingSelect">Number Of Refil</label>
                     </div>
@@ -82,7 +91,7 @@
             </div>
             <div class="footer mt-5 mb-4 text-end">
                 <button type="submit" class="btn bg-info text-white">Submit</button>
-                <a asp-action="AdminDashboard" class="btn border border-info text-info">Cancel</a>
+                <a asp-action="ProviderDashboard" class="btn border border-info text-info">Cancel</a>
             </div>
         </form>
 
@@ -92,14 +101,14 @@
     <br />
 
 </div>
-@section Scripts{
+@section Scripts {
     <script>
         $('.profession').on('change', function (e) {
             var ProfessionId = $(this).val();
             console.log(ProfessionId);
 
             $.ajax({
-                url: '/Admin/FilterDataByProfession',
+                url: '/Provider/FilterDataByProfession',
                 data: { "ProfessionId": ProfessionId },
                 success: function (response) {
                     var business = $('#business');
@@ -132,7 +141,7 @@
             console.log(businessid);
 
             $.ajax({
-                url: '/Admin/FilterDataByBusiness',
+                url: '/Provider/FilterDataByBusiness',
                 data: { "BusinessId": businessid },
                 success: function (response) {
                     var contact = document.getElementById("contact");
@@ -143,6 +152,10 @@
                     contact.value = response.business[0].contact;
                     email.value = response.business[0].email;
                     faxnumber.value = response.business[0].faxNumber;
+                    $(".order").html("");
+                    $("#contact").css('border', '1px solid #ced4da');
+                    $("#email").css('border', '1px solid #ced4da');
+                    $("#faxnumber").css('border', '1px solid #ced4da');
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

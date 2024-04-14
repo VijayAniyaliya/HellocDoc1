@@ -10,7 +10,7 @@
 
         <div class="row  mt-3 mb-4 mx-auto">
 
-            <div class="col-lg-2 col-4 px-2 pb-2 status" id="1">
+            <div class="col-xl-2 col-md-3 col-4 px-2 pb-2 status" id="1">
                 <div class="px-2 py-1 new newActive rounded-3 pt-1 text-md-left text-center" id="pills-new-tab" onclick="newState()">
 
                     <i class="bi bi-patch-plus icons"></i>
@@ -20,7 +20,7 @@
                     <span class="mt-2 h4 newTxt d-block">@Model.newCount</span>
                 </div>
             </div>
-            <div class="col-lg-2 col-4 px-2 pb-2 status" id="2">
+            <div class="col-xl-2 col-md-3 col-4 px-2 pb-2 status" id="2">
                 <div class="px-2 py-1 rounded-3 pending pt-1 text-md-left text-center" id="pills-pending-tab" onclick="pendingState()">
 
                     <i class="bi bi-clock-history icons"></i>
@@ -30,7 +30,7 @@
                     <span class="mt-2 h4 d-block">@Model.pendingCount</span>
                 </div>
             </div>
-            <div class="col-lg-2 col-4 px-2 pb-2 status" id="3">
+            <div class="col-xl-2 col-md-3 col-4 px-2 pb-2 status" id="3">
                 <div class="px-2 py-1 rounded-3 active pt-1 text-md-left text-center" id="pills-active-tab" onclick="activeState()">
 
                     <i class="bi bi-check2-circle icons"></i>
@@ -40,7 +40,7 @@
                     <span class="mt-2 h4 d-block">@Model.activeCount</span>
                 </div>
             </div>
-            <div class="col-lg-2 col-4 px-2 status" id="4">
+            <div class="col-xl-2 col-md-3 col-4 px-2 status" id="4">
                 <div class="px-2 py-1 rounded-3 conclude pt-1 text-md-left text-center" id="pills-conclude-tab" onclick="concludeState()">
 
                     <i class="bi bi-arrow-counterclockwise icons"></i>
@@ -70,20 +70,18 @@
         <div class="shadow rounded-3 pt-4">
 
             <div class="px-2 row" style="">
-                <div class="form col-xl-3 col-md-6">
-                    <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da;">
-                        <i class="bi bi-search my-1 ms-1 mr-2"></i>
-                        <input id="searchpatient" onkeyup="searchpatient()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
+                <div class="form col-xl-2 col-lg-3 col-12 col-sm-6">
+                    <div class="d-flex rounded-3 h-100 py-2" style="border: 1px solid #ced4da;">
+                        <i class="bi bi-search my-1 ms-1 mr-2 text-secondary"></i>
+                        <input id="searchpatient" onkeyup="searchpatient()" class="form-control border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search" style="font-size: 16px;">
                     </div>
-                    @*                     <input type="search" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
-                    *@
                 </div>
 
 
-                <div class="col-xl-6 col-md-12 mt-2 ms-1 m-xl-0 d-flex flex-row flex-wrap justify-content-xl-end justify-content-start">
+                <div class="col-xl-10 col-lg-8 col-12 mt-2 ms-1 m-xl-0 d-flex flex-row flex-wrap  justify-content-start justify-content-lg-end">
                     <button class="text-secondary mr-sm-2 m-0 border-info rounded-2 bg-transparent selected">
 
-                        <span class="filter-label">ALL</span>
+                        <span class="filter-label">ALL</span>   
                     </button>
                     <button class="text-secondary mr-sm-2 m-0 border-0 bg-transparent selected d-flex flex-column align-items-center flex-sm-row" id="1">
                         <i class="bi bi-circle-fill text-success mr-1"></i>
@@ -209,7 +207,7 @@
                 else {
                     $("#tableContent").html(data);
                     $("#status").html("(New)");
-                    filterdata.url = "/Admin/NewState";
+                    filterdata.url = "/Provider/NewState";
 
                 }
             },
@@ -219,105 +217,105 @@
                 $("#tableContent").html('An error has occurred');
             }
         });
-        // $('#pills-new-tab').click(function () {
-        //     filterdata.status = 1;
-        //     $.ajax({
-        //         url: "/Admin/NewState",
-        //         type: "POST",
-        //         data: filterdata,
-        //         dataType: "html",
-        //         success: function (data) {
-        //             let isLogin = data.includes("Login");
-        //             if (isLogin) {
-        //                 window.location.reload();
-        //             }
-        //             $("#tableContent").html(data);
-        //             $("#status").html("(New)");
-        //             filterdata.url = "/Admin/NewState";
-        //         },
-        //         error: function () {
-        //             alert("No Projects Found");
-        //             $("#tableContent").html('An error has occurred');
-        //         }
-        //     });
-        // });
-        // $('#pills-pending-tab').click(function () {
-        //     filterdata.status = 2;
-        //     $.ajax({
-        //         url: "/Admin/PendingState",
-        //         type: "POST",
-        //         data: filterdata,
-        //         dataType: "html",
-        //         success: function (data) {
-        //             let isLogin = data.includes("Login");
-        //             if (isLogin) {
-        //                 window.location.reload();
-        //             }
-        //             else {
-        //                 $("#tableContent").html(data);
-        //                 $("#status").html("(Pending)");
-        //                 filterdata.url = "/Admin/PendingState";
+        $('#pills-new-tab').click(function () {
+            filterdata.status = 1;
+            $.ajax({
+                url: "/Provider/NewState",
+                type: "POST",
+                data: filterdata,
+                dataType: "html",
+                success: function (data) {
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    $("#tableContent").html(data);
+                    $("#status").html("(New)");
+                    filterdata.url = "/Provider/NewState";
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-pending-tab').click(function () {
+            filterdata.status = 2;
+            $.ajax({
+                url: "/Provider/PendingState",
+                type: "POST",
+                data: filterdata,
+                dataType: "html",
+                success: function (data) {
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Pending)");
+                        filterdata.url = "/Provider/PendingState";
 
-        //             }
+                    }
 
-        //         },
-        //         error: function () {
-        //             alert("No Projects Found");
-        //             $("#tableContent").html('An error has occurred');
-        //         }
-        //     });
-        // });
-        // $('#pills-active-tab').click(function () {
-        //     filterdata.status = 3;
-        //     $.ajax({
-        //         url: "/Admin/ActiveState",
-        //         type: "POST",
-        //         data: filterdata,
-        //         dataType: "html",
-        //         success: function (data) {
-        //             let isLogin = data.includes("Login");
-        //             if (isLogin) {
-        //                 window.location.reload();
-        //             }
-        //             else {
-        //                 $("#tableContent").html(data);
-        //                 $("#status").html("(Active)");
-        //                 filterdata.url = "/Admin/ActiveState";
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-active-tab').click(function () {
+            filterdata.status = 3;
+            $.ajax({
+                url: "/Provider/ActiveState",
+                type: "POST",
+                data: filterdata,
+                dataType: "html",
+                success: function (data) {
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Active)");
+                        filterdata.url = "/Provider/ActiveState";
 
-        //             }
+                    }
 
-        //         },
-        //         error: function () {
-        //             alert("No Projects Found");
-        //             $("#tableContent").html('An error has occurred');
-        //         }
-        //     });
-        // });
-        // $('#pills-conclude-tab').click(function () {
-        //     filterdata.status = 4;
-        //     $.ajax({
-        //         url: "/Admin/ConcludeState",
-        //         type: "POST",
-        //         data: filterdata,
-        //         dataType: "html",
-        //         success: function (data) {
-        //             let isLogin = data.includes("Login");
-        //             if (isLogin) {
-        //                 window.location.reload();
-        //             }
-        //             else {
-        //                 $("#tableContent").html(data);
-        //                 $("#status").html("(Conclude)");
-        //                 filterdata.url = "/Admin/ConcludeState";
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
+        $('#pills-conclude-tab').click(function () {
+            filterdata.status = 4;
+            $.ajax({
+                url: "/Provider/ConcludeState",
+                type: "POST",
+                data: filterdata,
+                dataType: "html",
+                success: function (data) {
+                    let isLogin = data.includes("Login");
+                    if (isLogin) {
+                        window.location.reload();
+                    }
+                    else {
+                        $("#tableContent").html(data);
+                        $("#status").html("(Conclude)");
+                        filterdata.url = "/Provider/ConcludeState";
 
-        //             }
-        //         },
-        //         error: function () {
-        //             alert("No Projects Found");
-        //             $("#tableContent").html('An error has occurred');
-        //         }
-        //     });
-        // });
+                    }
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#tableContent").html('An error has occurred');
+                }
+            });
+        });
     });
 
     // function sendmail() {
@@ -337,25 +335,23 @@
     //     });
     // };
 
-    $('#exportbtn').click(function () {
-        if (typeof (filterdata.patientname == "undefined")) {
-            filterdata.patientname = ""
-        }
-        var link = document.createElement('a');
-        link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
+    // $('#exportbtn').click(function () {
+    //     if (typeof (filterdata.patientname == "undefined")) {
+    //         filterdata.patientname = ""
+    //     }
+    //     var link = document.createElement('a');
+    //     link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
+    //     link.style.display = 'none';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // });
 
     function newState() {
         document.getElementById("pills-new-tab").classList.add("newActive");
         document.getElementById("pills-pending-tab").classList.remove("pendingActive");
         document.getElementById("pills-active-tab").classList.remove("activeStateActive");
         document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
-        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
-        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
     }
 
     function pendingState() {
@@ -363,24 +359,18 @@
         document.getElementById("pills-pending-tab").classList.add("pendingActive");
         document.getElementById("pills-active-tab").classList.remove("activeStateActive");
         document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
-        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
-        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
     }
     function activeState() {
         document.getElementById("pills-new-tab").classList.remove("newActive");
         document.getElementById("pills-pending-tab").classList.remove("pendingActive");
         document.getElementById("pills-active-tab").classList.add("activeStateActive");
         document.getElementById("pills-conclude-tab").classList.remove("concludeActive");
-        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
-        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
     }
     function concludeState() {
         document.getElementById("pills-new-tab").classList.remove("newActive");
         document.getElementById("pills-pending-tab").classList.remove("pendingActive");
         document.getElementById("pills-active-tab").classList.remove("activeStateActive");
         document.getElementById("pills-conclude-tab").classList.add("concludeActive");
-        document.getElementById("pills-close-tab").classList.remove("tocloseActive");
-        document.getElementById("pills-unpaid-tab").classList.remove("unpaidActive");
     }
 </script>
 @if (TempData["Success"] != null)

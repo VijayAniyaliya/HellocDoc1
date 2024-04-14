@@ -12,6 +12,8 @@ namespace Services.Models
         public List<HealthProfessionalType>? healthProfessionalTypes { get; set; }
 
         public List<VendorsData> vendorsDatas { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPage { get; set; }
 
     }
 

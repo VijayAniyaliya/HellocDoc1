@@ -59,7 +59,7 @@
     <hr class="my-0 d-none d-md-block" />
     <div class="shadow px-lg-5 px-2 my-2">
         <div class=" h6 d-none d-md-flex gap-4 ">
-            @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Admin/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Admin/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Admin/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Admin/CloseCase")))
+            @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewUploads")) || (Context.Request.Path.StartsWithSegments("/Admin/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Admin/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Admin/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Admin/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Admin/CloseCase")))
             {
                 <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
             }

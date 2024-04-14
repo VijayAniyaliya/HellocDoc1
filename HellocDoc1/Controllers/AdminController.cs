@@ -113,7 +113,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> AssignCase(int request_id, int physicianid, string description)
         {
             await _adminServices.AssignCase(request_id, physicianid, description);
-            return RedirectToAction("AdminDashboard");
+            return NoContent();
         }
 
         [HttpPost("{request_id}")]
@@ -178,9 +178,9 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber)
+        public async Task<IActionResult> SendOrderDetails(SendOrdersViewModel model, int request_id)
         {
-            await _adminServices.SendOrderDetails(model, request_id, vendorid, contact, email, faxnumber);
+            await _adminServices.SendOrderDetails(model, request_id);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -214,12 +214,11 @@ namespace HellocDoc1.Controllers
             return PartialView("_SendAgreement", data);
         }
 
-        [HttpPost]
         public async Task<IActionResult> SendAgreement(int request_id)
         {
             string RequestId = HashingServices.Encrypt(request_id.ToString());
             await _adminServices.SendAgreement(RequestId);
-            return RedirectToAction("AdminDashboard");
+            return NoContent();
         }
 
 
@@ -275,7 +274,7 @@ namespace HellocDoc1.Controllers
                     Response.Cookies.Append("jwt", result.Token);
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
-                    string token = result.Token;
+                    string token = result.Token;    
                     if (JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
                     {
                         IEnumerable<Claim> rolesClaims = jwtSecurityToken.Claims.Where(c => c.Type == ClaimTypes.Role);
@@ -341,9 +340,9 @@ namespace HellocDoc1.Controllers
             var data = await _adminServices.provider();
             return View(data);
         }
-        public async Task<IActionResult> ProviderMenu(int region)
+        public async Task<IActionResult> ProviderMenu(int region, int requestedPage)
         {
-            var data = await _adminServices.PhysicianData(region);
+            var data = await _adminServices.PhysicianData(region, requestedPage);
             return PartialView("_ProviderMenu", data);
         }
 
@@ -645,9 +644,9 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
-        public async Task<IActionResult> VendorMenu(int profession, string searchvendor)
+        public async Task<IActionResult> VendorMenu(int profession, string searchvendor, int requestedPage)
         {
-            var data = await _adminServices.VendorMenu(profession, searchvendor);
+            var data = await _adminServices.VendorMenu(profession, searchvendor, requestedPage);
             return PartialView("_VendorsData", data);
         }
 

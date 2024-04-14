@@ -29,6 +29,38 @@
     </tbody>
 </table>
 
+<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+    <div class="accordion-item">
+        @foreach (var item in Model.Users)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.UserId" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                    <div class="col d-flex flex-column">
+                        <span class="">@item.FirstName, @item.LastName</span>
+                        <span class=" mt-4">@item.Mobile</span>
+                    </div>
+                </button>
+            </h2>
+
+            <div id="flush-collapseOne-@item.UserId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <hr class="m-0">
+                <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-envelope mr-2 icn text-info"></i>Email: @item.Email</div>
+                    <div>
+                        <i class="bi bi-telephone mr-2 icn text-info"></i>Phone: @item.Mobile
+                    </div>
+                </div>
+                <div class="text-end mx-3">
+                    <a asp-action="PatientRecords" asp-route-userid="@item.UserId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Explore</a>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
+</div>
+
 @if (Model.TotalPage > 1)
 {
     <div class="page-container">

@@ -10,14 +10,9 @@
         <tr>
             <th scope="col">Name</th>
             <th></th>
-            <th scope="col">Date Of Birth</th>
-            <th scope="col">Requestor</th>
-            <th scope="col">Physician Name</th>
-            <th>Date of Service</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Chat With</th>
+            <th scope="col">Status</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -27,25 +22,6 @@
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
-                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
-                @switch (item.Request.RequestTypeId)
-                {
-                    case 1:
-                        <td>Patient @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 2:
-                        <td>Family/Friend @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 3:
-                        <td>Business @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 4:
-                        <td>Concierge @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                }
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
-                <td>@item.Request.CreatedDate</td>
-
                 <td>
                     @switch (item.Request.RequestTypeId)
                     {
@@ -77,18 +53,7 @@
                     }
                 </td>
                 <td>@item.Street @item.City @item.State</td>
-                <td style="width:10%;">
-                    @foreach (var obj in item.Request.RequestStatusLogs)
-                    {
-                        if (obj.Notes != null)
-                        {
-                            <div class="mb-2">
-                                @obj.Notes on @obj.CreatedDate.ToString("MM/dd/yyyy")  at  @obj.CreatedDate.ToString("h:mm tt")
-                            </div>
-                        }
-                    }
-                </td>
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
+                <td><button type="button" class="btn rounded-3 text-white" style="background:#02cdf7;">House Call</button></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,9 +64,7 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
-
                         </ul>
                     </div>
                 </td>

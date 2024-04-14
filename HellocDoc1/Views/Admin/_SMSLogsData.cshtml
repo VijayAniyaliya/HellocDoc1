@@ -39,6 +39,50 @@
     </tbody>
 </table>
 
+<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+    <div class="accordion-item">
+        @foreach (var item in Model.logsDatas)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.PhoneNumber" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                    <div class="col d-flex flex-column">
+                        <span class="">@item.ReceiverName</span>
+                        <span class="mt-4">Action Name: @item.Action</span>
+                        <span class="mt-2">Mobile Number:@item.PhoneNumber</span>
+                    </div>
+                </button>
+            </h2>
+
+            <div id="flush-collapseOne-@item.PhoneNumber" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <hr class="m-0">
+                <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-person mr-2 icn text-info"></i>Role Name: @item.RoleName</div>
+                    <div><i class="bi bi-calendar2-minus mr-2 icn text-info"></i>Created Date: @item.CreatedDate.ToString("MMM dd, yyyy h:mm tt")</div>
+                    <div><i class="bi bi-calendar2-minus mr-2 icn text-info"></i>Sent Date: @(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</div>
+                    <div>
+                        <i class="bi bi-check2 mr-2 icn text-info"></i>Sent:
+                        @if (item.IsEmailSent[0] == true)
+                        {
+                            <span>Yes</span>
+                        }
+                        else
+                        {
+                            <span>No</span>
+                        }
+                    </div>
+                    <div><i class="bi bi-envelope mr-2 icn text-info"></i>Sent Tries: @item.SentTries</div>
+                    <div>
+                        <i class="bi bi-check2 mr-2 icn text-info"></i>Confirmation Number: @item.ConfirmationNo
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
+</div>
+
 @if (Model.TotalPage > 1)
 {
     <div class="page-container">

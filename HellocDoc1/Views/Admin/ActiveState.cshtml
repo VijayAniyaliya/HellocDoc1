@@ -43,7 +43,7 @@
                         <td>Concierge @item.Request.FirstName, @item.Request.LastName</td>
                         break;
                 }
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
+                <td>@item.Request.Physician?.FirstName,  @item.Request.Physician?.LastName</td>
                 <td>@item.Request.CreatedDate</td>
 
                 <td>

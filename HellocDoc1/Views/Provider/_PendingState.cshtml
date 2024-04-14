@@ -10,14 +10,8 @@
         <tr>
             <th scope="col">Name</th>
             <th></th>
-            <th scope="col">Date Of Birth</th>
-            <th scope="col">Requestor</th>
-            <th scope="col">Physician Name</th>
-            <th>Date of Service</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Chat With</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -27,25 +21,6 @@
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
-                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
-                @switch (item.Request.RequestTypeId)
-                {
-                    case 1:
-                        <td>Patient @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 2:
-                        <td>Family/Friend @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 3:
-                        <td>Business @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                    case 4:
-                        <td>Concierge @item.Request.FirstName, @item.Request.LastName</td>
-                        break;
-                }
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
-                <td>@item.Request.CreatedDate</td>
-
                 <td>
                     @switch (item.Request.RequestTypeId)
                     {
@@ -78,30 +53,17 @@
                 </td>
 
                 <td>@item.Street @item.City @item.State</td>
-                <td style="width:10%;">
-                    @foreach (var obj in item.Request.RequestStatusLogs)
-                    {
-                        if (obj.Notes != null)
-                        {
-                            <div class="mb-2">
-                                @obj.Notes on @obj.CreatedDate.ToString("MM/dd/yyyy")  at  @obj.CreatedDate.ToString("h:mm tt")
-                            </div>
-                        }
-                    }
-                </td>
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="sendagreement(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-controller="Admin" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="transfer(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
-                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="clearcase(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Clear Case</a></li>
-                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="sendagreement(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
                         </ul>
                     </div>
                 </td>
@@ -164,15 +126,10 @@
                     </a>
                 </div>
                 <div class="accordion-body d-flex flex-column gap-1">
-                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div>
                         <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.Request.PhoneNumber
                     </div>
-                    <div><i class="bi bi-card-text mr-1 icn"></i>Transfer Notes: abc</div>
-                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service: @item.Request.CreatedDate</div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Requestor: @item.Request.FirstName, @item.Request.LastName</div>
                 </div>
                 <div class="row mx-3">
                     <div class="col-6 ps-0 pr-3 pb-2">
@@ -182,13 +139,7 @@
                         <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
-                        <a onclick="transfer(@item.RequestId)" class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm">Transfer</a>
-                    </div>
-                    <div class="col-6 p-0  pb-2">
-                        <a asp-controller="Admin" asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
-                    </div>
-                    <div class="col-6 p-0 pr-3 pb-2">
-                        <a onclick="clearcase(@item.RequestId)" class="btn w-100  bg-warning text-white rounded-pill p-1 btn-sm">Clear Case</a>
+                        <a asp-action="ViewUploads" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                     </div>
                     <div class="col-6 p-0 ">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
@@ -229,27 +180,8 @@ else
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     function transfer(request_id) {
-        console.log("hello");
         $.ajax({
-            url: "/Admin/TransferDetails/",
-            data: { "request_id": request_id },
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#transfer").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#transfer").html('An error has occurred');
-            }
-        });
-    };
-    function clearcase(request_id) {
-        console.log("hello");
-        $.ajax({
-            url: "/Admin/ClearDetails/",
+            url: "/Provider/TransferCaseDetails/",
             data: { "request_id": request_id },
             type: "POST",
             dataType: "html",
@@ -265,9 +197,8 @@ else
         });
     };
     function sendagreement(request_id) {
-        console.log("hello");
         $.ajax({
-            url: "/Admin/SendAgreementDetails/",
+            url: "/Provider/SendAgreementDetails/",
             data: { "request_id": request_id },
             type: "POST",
             dataType: "html",
@@ -282,7 +213,6 @@ else
             }
         });
     };
-    console.log(status);
 
 </script>
 

@@ -13,18 +13,13 @@ namespace Common.Enum
         Unassigned=1,
         Accepted=2,
         Cancelled =3,
-        Reserving=4,
-        MdEnRoute =5,
-        MdOnSite=6,
-        FollowUp=7,
+        MdEnRoute =4,
+        MdOnSite=5,
+        Cuncluded=6,
+        CancelledByPatient =7,
         Closed =8,
-        Locked=9, 
-        Declined=10,
-        Consult=11,
-        Clear =12,
-        CancelledByProvider=13,
-        CCUploadedByClient=14,
-        CCApprovedByAdmin=15
+        Unpaid =9,
+        Clear =10,
     }  
 
     public enum RequestType

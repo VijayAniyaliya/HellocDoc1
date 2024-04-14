@@ -36,12 +36,12 @@ namespace HellocDoc1.Services
             {
                 try
                 {
-                    AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
+                    AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
 
 
-                    User? user = _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefault(); 
-                    var regiondata = _context.Regions.Where(a => a.RegionId == user.RegionId).FirstOrDefault();
-                    var requestcount = _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToList();
+                    User? user = await _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefaultAsync(); 
+                    Region? regiondata = await _context.Regions.Where(a => a.RegionId == user.RegionId).FirstOrDefaultAsync();
+                    List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToListAsync();
                     Request request = new Request()
                     {
                         UserId = 6,

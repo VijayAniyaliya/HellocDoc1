@@ -13,6 +13,7 @@
             <th></th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
+            <th scope="col">Chat With</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -59,17 +60,16 @@
 
 
                 <td>@item.Street @item.City @item.State</td>
+                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Admin</button></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
-                            <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
+                            <li style="cursor:pointer;"><a onclick="accept(@item.Request.RequestId)" class="dropdown-item ps-3"><i class="bi bi-list-check mr-2"></i>Accept</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase"  asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1" style="cursor:pointer;"></i> Block Patient</a></li>
                         </ul>
                     </div>
                 </td>
@@ -145,16 +145,10 @@
                 </div>
                 <div class="row mx-3">
                     <div class="col-6 ps-0 pr-3 pb-2">
-                        <a onclick="assign(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
-                    </div>
-                    <div class="col-6 p-0 pb-2 pb-2">
-                        <a onclick="cancel(@item.RequestId)" class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                        <a onclick="accept(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Accept</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
                         <a asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
-                    </div>
-                    <div class="col-6 p-0 pb-2">
-                        <a onclick="block(@item.RequestId)" class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
                     </div>
                     <div class="col-6 p-0 pr-3">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
@@ -191,60 +185,24 @@ else
     <div class="text-center text-danger fw-bold h5">No record found</div>
 }
 
-<div id="cancelCase"></div>
-<div id="assignCase"></div>
-<div id="blockCase"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function cancel(request_id) {
+    function accept(request_id) {
         $.ajax({
-            url: "/Admin/CancelDetails/" + request_id,
+            url: "/Provider/AcceptCase/",
             type: "POST",
+            data: { "request_id" : request_id},
             dataType: "html",
-            success: function (data) {
-                $("#cancelCase").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
+            success: function (response) {
+                $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
+                $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                toastr.success('Case Successfully Accepted');
             },
             error: function () {
-                alert("No Projects Found");
-                $("#cancelCase").html('An error has occurred');
+                console.log("No Projects Found");
             }
         });
     };
-    function assign(request_id) {
-        $.ajax({
-            url: "/Admin/assignDetails/" + request_id,
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#assignCase").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#assignCase").html('An error has occurred');
-            }
-        });
-    };
-    function block(request_id) {
-        $.ajax({
-            url: "/Admin/BlockDetails/" + request_id,
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#blockCase").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#blockCase").html('An error has occurred');
-            }
-        });
-    };
-    console.log(status);
 
 </script>

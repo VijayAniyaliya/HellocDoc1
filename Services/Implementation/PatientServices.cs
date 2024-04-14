@@ -276,12 +276,12 @@ namespace HellocDoc1.Services
                 try
                 {
                     var data = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
-                    data.Status = 3;
+                    data!.Status = (int)RequestStatus.MdEnRoute;
 
                     RequestStatusLog requestStatusLog = new RequestStatusLog()
                     {
                         RequestId = request_id,
-                        Status = 3,
+                        Status = (int)RequestStatus.MdEnRoute,
                         CreatedDate = DateTime.Now,
                     };
                     _context.Requests.Update(data);
@@ -303,12 +303,12 @@ namespace HellocDoc1.Services
                 try
                 {
                     var data = _context.Requests.FirstOrDefault(a => a.RequestId == request_id);
-                    data.Status = 5;
+                    data.Status = (int)RequestStatus.CancelledByPatient;
 
                     RequestStatusLog requestStatusLog = new RequestStatusLog()
                     {
                         RequestId = request_id,
-                        Status = 5,
+                        Status = (int)RequestStatus.CancelledByPatient,
                         Notes = reason,
                         CreatedDate = DateTime.Now,
                     };

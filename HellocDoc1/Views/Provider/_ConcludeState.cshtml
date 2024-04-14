@@ -10,12 +10,8 @@
         <tr>
             <th scope="col">Name</th>
             <th></th>
-            <th scope="col">Date Of Birth</th>
-            <th scope="col">Physician Name</th>
-            <th>Date of Service</th>
             <th scope="col">Phone</th>
             <th scope="col">Address</th>
-            <th scope="col">Chat With</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -25,10 +21,6 @@
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
                 <td><i class="bi bi-envelope h5"></i></td>
-                <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
-                <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
-                <td>@item.Request.CreatedDate</td>
-
                 <td>
                     @switch (item.Request.RequestTypeId)
                     {
@@ -60,18 +52,16 @@
                     }
                 </td>
                 <td>@item.Street @item.City @item.State</td>
-                <td><button type="button" class="btn border rounded-3 text-white"><i class="bi bi-person mr-1 h5"></i>Provider</button></td>
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Conclude Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                         </ul>
                     </div>
@@ -162,9 +152,9 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pt-2">
-                    <span>Chat with: </span>
-                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
-                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Provider</button>
+                    <span>Chat with: </span>    
+                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Patient</button>
+                    <button type="button" class="btn border-info rounded-3 text-info p-1"><i class="bi bi-person mr-1 h5"></i>Admin</button>
                 </div>
             </div>
             <br />

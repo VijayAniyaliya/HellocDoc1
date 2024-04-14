@@ -33,7 +33,7 @@ namespace Services.Contracts
 		Task<SendOrdersViewModel> SendOders(int request_id);
 		Task<SendOrdersViewModel> FilterDataByProfession(int ProfessionId);
 		Task<SendOrdersViewModel> FilterDataByBusiness(int BusinessId);
-        Task SendOrderDetails(SendOrdersViewModel model, int request_id, int vendorid, string contact, string email, string faxnumber);
+        Task SendOrderDetails(SendOrdersViewModel model, int request_id);
 		Task<TransferCaseViewModel> TransferDetails(int request_id);
         Task TransferCase(int request_id, int physicianid, string description);
         Task<ClearCaseViewModel> ClearDetails(int request_id);
@@ -51,7 +51,7 @@ namespace Services.Contracts
         Task UpdateBillInfo(BillingData model, string email);
 		Task SendLink(SendLinkViewModel model, string email);
         Task SubmitRequest(CreateRequestViewModel model);
-        Task<ProviderViewModel> PhysicianData(int region);
+        Task<ProviderViewModel> PhysicianData(int region, int requestedPage);
 		Task SendMessage(int PhysicianId, string message);
 		Task StopNotification(int PhysicianId);
 		Task<byte[]> DownloadExcle(AdminDashboardViewModel model);
@@ -79,7 +79,7 @@ namespace Services.Contracts
         Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
 		Task<CreateNewShift> ViewShift(int PhysicianId);
 		Task<VendorsDetailsViewModel> VendorsData();
-		Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor);
+		Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor, int requestedPage);
 		Task<AddBusinessViewModel> AddBusiness(int VendorId);
         Task AddNewBusiness(AddBusinessViewModel model, int VendorId);
         Task DeleteBusiness(int VendorId);
