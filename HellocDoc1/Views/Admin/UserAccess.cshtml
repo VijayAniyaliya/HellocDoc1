@@ -4,6 +4,7 @@
     ViewData["Title"] = "UserAccess";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+@using Common.Enum;
 
 <div class="container">
     <div class=" pt-3">
@@ -12,11 +13,13 @@
     </div>
     <div class=" pt-4 shadow Document-content mt-3" style="">
         <div class="pr-3 mb-4 ps-3">
-                <select class="form-select select-region" id="accounttype" style="width:300px;">
-                    <option selected>All Regions</option>
-                        <option value="RegionId">Name</option>
-                    }
-                </select>
+            <select class="form-select text-secondary py-0" id="requeststatus" aria-label="Floating label select example">
+                <option selected disabled value="0">Select AccountType</option>
+                @foreach (var item in Enum.GetValues(typeof(AccountType)))
+                {
+                    <option value="@((int)item)">@item.ToString()</option>
+                }
+            </select>
         </div>
 
         <div class="table-responsive mt-2" id="tableContent">

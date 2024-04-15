@@ -30,21 +30,19 @@ namespace HellocDoc1.Services
             this.environment = environment;
         }
 
-        public async Task Family_request(FamilyRequestModel model)
+        public async Task Family_request(FamilyRequestModel model)  
         {   
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
                     AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
-
-
                     User? user = await _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefaultAsync(); 
-                    Region? regiondata = await _context.Regions.Where(a => a.RegionId == user.RegionId).FirstOrDefaultAsync();
-                    List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToListAsync();
+                    Region regiondata = await _context.Regions.FirstOrDefaultAsync(a => a.RegionId == 1);
+                    List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Today).ToListAsync();
+                  
                     Request request = new Request()
                     {
-                        UserId = 6,
                         RequestTypeId = 2,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
@@ -104,7 +102,7 @@ namespace HellocDoc1.Services
 
                     if (aspnetuser == null)
                     {   
-                        await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{request.RequestId}\">Agreement</a>");
+                        await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{request.RequestId}\">Create Account</a>");
 
                         EmailLog emailLog = new EmailLog()
                         {
@@ -115,6 +113,7 @@ namespace HellocDoc1.Services
                             RequestId = request.RequestId,
                             CreateDate = DateTime.Now,
                             SentDate = DateTime.Now,
+                            SentTries = 1,
                             IsEmailSent = new BitArray(new[] { true }),
                         };
                         _context.EmailLogs.Add(emailLog);

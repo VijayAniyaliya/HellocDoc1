@@ -1,6 +1,7 @@
 ﻿using Common.Enum;
 using Common.Helpers;
 using Data.Context;
+using Data.Entity;
 using HalloDoc.Utility;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,15 +15,15 @@ namespace HelloDoc1.Services
     {
         private readonly ApplicationDbContext _context;
 
-        public LoginHandler(ApplicationDbContext context )
+        public LoginHandler(ApplicationDbContext context)
         {
             _context = context;
-            
+
         }
 
         public async Task<LoginResponseViewModel> Login(LoginViewModel model)
         {
-            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a=> a.Roles).Include(a=>a.Users).FirstOrDefaultAsync();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).Include(a => a.Roles).Include(a => a.Users).FirstOrDefaultAsync();
 
             if (user == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
@@ -34,8 +35,54 @@ namespace HelloDoc1.Services
 
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success, Token = jwtToken };
             }
-            return new LoginResponseViewModel(){ Status = ResponseStatus.Failed , Message="Password does not match"};
+            return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Password does not match" };
         }
 
+        public async Task<LoginResponseViewModel> CreateNewAccount(CreateAccountViewModel model)
+        {
+            var user = await _context.RequestClients.Where(u => u.RequestId == model.RequestId).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Please entered the email you used when submitting your request" };
+            }
+            else
+            {
+                AspNetUser aspNetUser = new AspNetUser()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = user.FirstName + user.LastName,
+                    PasswordHash = model.Password,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.AspNetUsers.Add(aspNetUser);
+                await _context.SaveChangesAsync();
+
+                User user1 = new User()
+                {
+                    UserId = 10,
+                    AspNetUserId = aspNetUser.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Mobile = user.PhoneNumber,
+                    Street = user.Street,
+                    City = user.City,
+                    State = user.State,
+                    RegionId = 3,
+                    ZipCode = user.ZipCode,
+                    IntDate = user.IntDate,
+                    IntYear = user.IntYear,
+                    StrMonth = user.StrMonth,
+                    CreatedBy = aspNetUser.Id,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.Users.Add(user1);
+                await _context.SaveChangesAsync();
+            }
+            return new LoginResponseViewModel();
+        }
     }
 }

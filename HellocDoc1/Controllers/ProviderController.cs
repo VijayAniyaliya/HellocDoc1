@@ -195,11 +195,11 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("ConcludeCare", new { request_id = request_id });
         }    
 
-        [HttpPost]
-        public async Task<IActionResult> ConcludeCase(ConcludeCareViewModel model, int request_id)
-        {
-            await _providerServices.ConcludeCase(model, request_id);
-            return RedirectToAction("ProviderDashboard");
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ConcludeCase(ConcludeCareViewModel model, int request_id)
+        //{
+        //    await _providerServices.ConcludeCase(model, request_id);
+        //    return RedirectToAction("ProviderDashboard");
+        //}
     }
 }

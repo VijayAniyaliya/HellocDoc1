@@ -1,29 +1,4 @@
-﻿@model Services.Models.AccessViewModel
-
-
-<table class="table">
-    <thead>
-        <tr class="table-secondary">
-            <th scope="col" style="width:40%;">Name</th>
-            <th scope="col" style="width:35%;">Account Type</th>
-            <th class="text-center" scope="col" style="width:25%;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.roleData)
-        {
-
-            <tr>
-                <td>@item.Name</td>
-                <td>@Enum.GetName( typeof(Common.Enum.AccountType), item.AccountType)</td>
-                <td class="text-lg-center">
-                    <a type="button" asp-action="CreateAccess" asp-route-role_id="@item.RoleId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
-                    <button type="button" onclick="deleteraccount(@item.RoleId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+﻿c
 
 @foreach (var item in Model.roleData)
 {

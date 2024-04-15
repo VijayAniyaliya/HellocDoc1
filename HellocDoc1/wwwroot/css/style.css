@@ -48,11 +48,6 @@ body {
     }
 }
 
-
-.content {
-    margin-top: 100px;
-}
-
 @media only screen and (max-width:426px) {
     .hellodoc-img {
         display: none;

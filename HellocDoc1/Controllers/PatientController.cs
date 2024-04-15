@@ -3,6 +3,7 @@ using Common.Helpers;
 using Data.Context;
 using Data.Entity;
 using HellocDoc1.Services.Models;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
@@ -101,8 +102,34 @@ namespace HellocDoc1.Controllers
             return View();
         }
 
-        public IActionResult CreatePatientAccount()
+
+        [HttpGet("[controller]/[action]/{request_id}")]
+        public IActionResult CreatePatientAccount(string request_id)
         {
+            CreateAccountViewModel model = new CreateAccountViewModel()
+            {
+                RequestId = int.Parse(request_id),
+            };
+            return View(model);
+        }
+
+        public async Task<IActionResult> CreateNewAccount(CreateAccountViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                LoginResponseViewModel? result = await loginHandler.CreateNewAccount(model);
+                if (result.Status == ResponseStatus.Success)
+                {
+                    TempData["Success"] = "Account Created Successfully";
+                    return RedirectToAction("Login", "Patient");
+                }
+                else
+                {
+                    ModelState.AddModelError("", result.Message);
+                    TempData["Error"] = result.Message;
+                    return View();
+                }
+            }
             return View();
         }
 
@@ -286,6 +313,8 @@ namespace HellocDoc1.Controllers
             await patientServices.CancelAgreement(request_id, reason);
             return RedirectToAction("AdminDashboard");
         }
+
+
     }
 }
 
