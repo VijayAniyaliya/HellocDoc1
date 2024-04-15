@@ -113,10 +113,10 @@
             }
             @if ((Context.Request.Path.Equals("/Admin/Access")) || (Context.Request.Path.Equals("/Admin/CreateAccess")) || (Context.Request.Path.Equals("/Admin/UserAccess")))
             {
-                <a asp-action="Access" class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Access</a>
+                <a class="text-decoration-none dropdown-toggle text-info px-2" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Access</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                     <li><a asp-action="Access" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
-                    <li><a asp-action="UserAccess" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                    <li><a asp-action="UserAccess" class="text-decoration-none drop down-item provider-menu  mb-2">User Access</a></li>
                 </ul>
             }
             else

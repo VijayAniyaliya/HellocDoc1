@@ -1,0 +1,66 @@
+﻿@model Services.Models.AccessViewModel
+
+
+<table class="table">
+    <thead>
+        <tr class="table-secondary">
+            <th scope="col" style="width:40%;">Name</th>
+            <th scope="col" style="width:35%;">Account Type</th>
+            <th class="text-center" scope="col" style="width:25%;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.roleData)
+        {
+
+            <tr>
+                <td>@item.Name</td>
+                <td>@Enum.GetName( typeof(Common.Enum.AccountType), item.AccountType)</td>
+                <td class="text-lg-center">
+                    <a type="button" asp-action="CreateAccess" asp-route-role_id="@item.RoleId" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</a>
+                    <button type="button" onclick="deleteraccount(@item.RoleId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@foreach (var item in Model.roleData)
+{
+    <div class="d-md-none d-block">
+        <hr />
+        <div class="mb-2 px-3">Name: @item.Name</div>
+        <div class="mb-2 px-3">Account Type: @Enum.GetName( typeof(Common.Enum.AccountType), item.AccountType)</div>
+        <div class="px-3">
+            <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
+            <button type="button" onclick="deleteraccount(@item.RoleId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
+        </div>
+        <hr />
+    </div>
+}
+
+@if (Model.TotalPage > 1)
+{
+    <div class="page-container">
+        <ul class="pagination justify-content-center d-flex page-list">
+            <li class="page-item @(Model.CurrentPage <= 1 ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage - 1)"><i class="bi bi-chevron-double-left text-info page"></i></a>
+            </li>
+            @for (int CurrentPage = 1; CurrentPage <= Model.TotalPage; CurrentPage++)
+            {
+                <li class="m-2 btn @(CurrentPage == Model.CurrentPage ? "page-active" : "")" onclick="changepage(@CurrentPage)"><a class="text-decoration-none text-black curent-page-index" data-page="@CurrentPage">@CurrentPage</a></li>
+            }
+            <li class="page-item  @(Model.CurrentPage == Model.TotalPage ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage + 1)"><i class="bi bi-chevron-double-right text-info page"></i></a>
+            </li>
+        </ul>
+
+    </div>
+}
+else if (Model.TotalPage == 1)
+{
+}
+else
+{
+    <div class="text-center text-danger fw-bold h5">No record found</div>
+}       

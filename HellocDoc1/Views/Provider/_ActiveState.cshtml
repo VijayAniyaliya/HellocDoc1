@@ -3,7 +3,7 @@
 }
 
 @model Services.Models.AdminDashboardViewModel
-
+@using Common.Enum
 
 <table class="table table-responsive d-md-table d-none">
     <thead class=" table-secondary">
@@ -53,18 +53,25 @@
                     }
                 </td>
                 <td>@item.Street @item.City @item.State</td>
-                <td><button type="button" class="btn rounded-3 text-white" style="background:#02cdf7;">House Call</button></td>
+                @if(item.Request.Status == (int)Common.Enum.RequestStatus.MdOnSite)
+                {
+                    <td><button type="button" class="btn rounded-3 text-white" style="background:#02cdf7;">House Call</button></td>
+                }
+                else
+                {
+                    <td></td>
+                }
                 <td>
                     <div class="btn-group">
                         <button type="button" class="btn border rounded-3 text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Actions
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end pointer-event">
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            <li><a class="dropdown-item ps-3" onclick="housecall(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                         </ul>
                     </div>
                 </td>
@@ -143,7 +150,7 @@
                         <a asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                     </div>
                     <div class="col-6 p-0  pb-2">
-                        <a asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        <a onclick="housecall(@item.Request.RequestId)" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
                         <a asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId" class="btn w-100  bg-warning text-white rounded-pill p-1 btn-sm">Orders</a>
@@ -160,6 +167,7 @@
         }
     </div>
 </div>
+<div id="housecall"></div>
 
 @if (Model.TotalPage > 1)
 {
@@ -187,7 +195,24 @@ else
     <div class="text-center text-danger fw-bold h5">No record found</div>
 }
 
-<script>
-    console.log(status);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+<script>
+    function housecall(request_id) {
+        $.ajax({
+            url: "/Provider/HouseCallDetails/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (data) {
+                $("#housecall").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#housecall").html('An error has occurred');
+            }
+        });
+    };
 </script>

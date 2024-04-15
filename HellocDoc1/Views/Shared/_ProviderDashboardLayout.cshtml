@@ -19,6 +19,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Provider.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -54,7 +55,7 @@
     <hr class="my-0 d-none d-md-block" />
     <div class="shadow px-lg-5 px-2 my-2">
         <div class=" h6 d-none d-md-flex gap-4 ">
-            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
+            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
             {
                 <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
             }

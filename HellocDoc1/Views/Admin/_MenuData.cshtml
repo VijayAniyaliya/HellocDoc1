@@ -3,8 +3,15 @@
 @foreach (var item in Model.Menu)
 {
     <div class="d-flex align-items-center">
-
-        <input type="checkbox" onchange="checkbox()" name="checkboxs" id="check"  class="checks data mr-2" value="@item.MenuId" />
+        <input type="checkbox" onchange="checkbox()" name="checkboxs" id="check" class="checks data mr-2" value="@item.MenuId"
+        @if (Model.roleMenusData?.Count() > 0)
+        {
+            @foreach (var obj in Model.roleMenusData)
+                @if (item.MenuId == obj.MenuId)
+                {
+                    @:checked
+                }
+        } />
         <label class="m-0">@item.Name</label>
     </div>
 }

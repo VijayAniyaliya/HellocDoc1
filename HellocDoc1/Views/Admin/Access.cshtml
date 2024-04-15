@@ -4,7 +4,6 @@
     ViewData["Title"] = "CreateAccess";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
-
 <div class="container">
     <div class=" pt-3">
         <h4>Account Access</h4>
@@ -16,41 +15,9 @@
             <a type="button" asp-action="CreateAccess" class="btn text-info border-2 border-info fw-bold rounded-3 px-3 h5 d-md-block d-none">Create Access</a>
             <a type="button" asp-action="CreateAccess" class="btn text-info border-2 border-info fw-bold rounded-3 h5 px-2 pb-1 d-md-none d-block p-0"><i class="bi bi-plus h3"></i></a>
         </div>
-        <div class="table-responsive mt-2 d-md-block d-none">
-            <table class="table">
-                <thead>
-                    <tr class="table-secondary">
-                        <th scope="col" style="width:40%;">Name</th>
-                        <th scope="col" style="width:35%;">Account Type</th>
-                        <th class="text-center" scope="col" style="width:25%;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.roleData)
-                    {
+        <div class="table-responsive mt-2 d-md-block d-none" id="tableContent">
+        </div>
 
-                        <tr>
-                            <td>@item.Name</td>
-                            <td>@Enum.GetName( typeof(Common.Enum.AccountType), item.AccountType)</td>
-                            <td class="text-lg-center">
-                                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-                                <button type="button" onclick="deleteraccount(@item.RoleId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="d-md-none d-block">
-            <hr />
-            <div class="mb-2 px-3">Name:</div>
-            <div class="mb-2 px-3">Account Type:</div>
-            <div class="px-3">
-                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-                <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</button>
-            </div>
-            <hr />
-        </div>
         <br />
         <br />
     </div>
@@ -58,7 +25,9 @@
 
 <br />
 <br />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
     function deleteraccount(RoleId) {
         $.ajax({
@@ -73,4 +42,36 @@
             }
         });
     }
+    var requestedPage;
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Admin/AccessData",
+            type: "POST",
+            data: { "requestedPage": 1 },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function changepage(CurrentPage) {
+        $.ajax({
+            url: "/Admin/AccessData",
+            type: "POST",
+            data: { "requestedPage": CurrentPage },
+            dataType: "html",
+            async: false,
+            success: function (response) {
+                $("#tableContent").html(response);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+    
 </script>

@@ -103,7 +103,8 @@ else
             data: { "VendorId": VendorId },
             dataType: "html",
             success: function (data) {
-                window.location.reload();
+                AjaxAll();
+                toastr.success('Business Deleted Sucessfully');
             },
             error: function () {
                 console.log('error');

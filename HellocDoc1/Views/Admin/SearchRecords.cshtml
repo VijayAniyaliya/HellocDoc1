@@ -82,7 +82,7 @@
                             <label for="contact" class="">Phone Number</label>
                         </div>
                     </div>
-                </div>
+                </div>      
             </div>
             <div class="text-end pr-3">
                 <button type="reset" id="clear" class="btn text-info border-2 border-info fw-bold rounded-3 px-4 mr-2 h5 ">Clear</button>
@@ -164,7 +164,7 @@
         $.ajax({
             url: "/Admin/SearchRecordsData",
             type: "POST",
-            data: filterdata,
+            data: filterdata,   
             dataType: "html",
             success: function (data) {
                 $("#tableContent").html(data);

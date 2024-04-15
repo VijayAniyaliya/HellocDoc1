@@ -2,6 +2,9 @@
 using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
@@ -10,10 +13,23 @@ namespace Services.Implementation
 {
     public class ProviderServices : IProviderServices
     {
+
         private ApplicationDbContext _context;
-        public ProviderServices(ApplicationDbContext context)
+
+        private IWebHostEnvironment _environment;
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 6)
+                      + Path.GetExtension(fileName);
+        }
+        public ProviderServices(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _environment = hostEnvironment;
+
         }
 
         public async Task<AdminDashboardViewModel> ProviderDashboard(string email)
@@ -238,6 +254,104 @@ namespace Services.Implementation
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
             }
             await _context.SaveChangesAsync();
+        }
+
+        public async Task Consult(int request_id)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.RequestId == request_id);
+            if (request != null)
+            {
+                request.Status = (int)RequestStatus.Concluded;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = (int)RequestStatus.Concluded,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.RequestStatusLogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<ConcludeCareViewModel> ConcludeCare(int request_id)
+        {
+            RequestClient? data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+
+            if (data != null)
+            {
+                data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
+                ConcludeCareViewModel model = new ConcludeCareViewModel()
+                {
+                    RequestId = request_id,
+                    PatientName = data.FirstName + " " + data.LastName,
+                };
+                foreach (var item in data.Request.RequestWiseFiles)
+                {
+                    model.Documents.Add(item.FileName);
+                }
+                return model;
+            }
+            return new ConcludeCareViewModel();
+        }
+
+        public async Task UploadDocuments(ConcludeCareViewModel model, int request_id)
+        {
+            if (model.Upload != null)
+            {
+                IEnumerable<IFormFile> upload = model.Upload;
+                foreach (var item in upload)
+                {
+                    var file = item.FileName;
+                    var uniqueFileName = GetUniqueFileName(file);
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(fileStream);
+                    }
+
+                    RequestWiseFile requestWiseFile = new RequestWiseFile()
+                    {
+                        FileName = uniqueFileName,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.RequestWiseFiles.Add(requestWiseFile);
+                    requestWiseFile.RequestId = request_id;
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ConcludeCase(ConcludeCareViewModel model, int request_id)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var obj = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+
+                    if (obj != null)
+                    {
+                        obj.Status = (int)RequestStatus.Closed;
+                        RequestStatusLog requestStatusLog = new RequestStatusLog()
+                        {
+                            RequestId = request_id,
+                            Notes= model.ProviderNotes,
+                            Status = (int)RequestStatus.Closed,
+                            CreatedDate = DateTime.Now,
+                        };
+                        await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                        _context.Requests.Update(obj);
+                        await _context.SaveChangesAsync();
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
     }
 }

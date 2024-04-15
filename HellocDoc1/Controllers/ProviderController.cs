@@ -165,5 +165,41 @@ namespace HellocDoc1.Controllers
             TempData["Success"] = "Order Sended Succefully";
             return RedirectToAction("ProviderDashboard");
         }
+
+        [HttpPost]
+        public IActionResult HouseCallDetails(int request_id)
+        {
+            HouseCallViewModel model = new HouseCallViewModel()
+            {
+                RequestId = request_id,
+            };
+            return PartialView("_HouseCall", model);
+        }
+
+        public async Task<IActionResult> Consult(int request_id)
+        {
+            await _providerServices.Consult(request_id);
+            return NoContent();
+        }    
+
+        public async Task<IActionResult> ConcludeCare(int request_id)
+        {
+            var data = await _providerServices.ConcludeCare(request_id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadEncounter(ConcludeCareViewModel model, int request_id)
+        {
+            await _providerServices.UploadDocuments(model, request_id);
+            return RedirectToAction("ConcludeCare", new { request_id = request_id });
+        }    
+
+        [HttpPost]
+        public async Task<IActionResult> ConcludeCase(ConcludeCareViewModel model, int request_id)
+        {
+            await _providerServices.ConcludeCase(model, request_id);
+            return RedirectToAction("ProviderDashboard");
+        }
     }
 }

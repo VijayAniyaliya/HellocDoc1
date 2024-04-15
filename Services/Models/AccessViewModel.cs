@@ -10,6 +10,9 @@ namespace Services.Models
     public class AccessViewModel
     {
         public List<RoleData> roleData {  get; set; }
+        public int CurrentPage { get; set; }
+
+        public int TotalPage { get; set; }
     }
 
     public class RoleData
@@ -23,6 +26,9 @@ namespace Services.Models
     public class CreateAccessViewModel
     {
         public List<int> menus { get; set; }
+
+        public List<RoleMenu>? roleMenusData { get; set; }
+        public int RoleID { get; set; }
 
         public string RoleName { get; set; }
 

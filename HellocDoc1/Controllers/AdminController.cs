@@ -274,7 +274,7 @@ namespace HellocDoc1.Controllers
                     Response.Cookies.Append("jwt", result.Token);
                     HttpContext.Session.SetString("Email", user.Email);
                     TempData["Success"] = "Login Successfully";
-                    string token = result.Token;    
+                    string token = result.Token;
                     if (JwtService.ValidateToken(token, out JwtSecurityToken jwtSecurityToken))
                     {
                         IEnumerable<Claim> rolesClaims = jwtSecurityToken.Claims.Where(c => c.Type == ClaimTypes.Role);
@@ -471,14 +471,20 @@ namespace HellocDoc1.Controllers
             return Ok();
         }
 
-        public async Task<IActionResult> Access()
+        public IActionResult Access()
         {
-            var data = await _adminServices.Access();
-            return View(data);
+            return View();
         }
-        public IActionResult CreateAccess()
+
+        [HttpPost]
+        public async Task<IActionResult> AccessData(int requestedPage)
         {
-            var data = _adminServices.CreateAccess();
+            var data = await _adminServices.AccessData(requestedPage);
+            return PartialView("_AccountAccessData",data);
+        }
+        public IActionResult CreateAccess(int role_id)
+        {   
+            var data = _adminServices.CreateAccess(role_id);
             return View(data);
         }
 
@@ -488,9 +494,9 @@ namespace HellocDoc1.Controllers
             return NoContent();
         }
 
-        public async Task<IActionResult> FilterByAccountType(int accounttype)
+        public async Task<IActionResult> FilterByAccountType(int accounttype, int role_id)
         {
-            var data = await _adminServices.FilterByAccountType(accounttype);
+            var data = await _adminServices.FilterByAccountType(accounttype, role_id);
             return PartialView("_MenuData", data);
         }
 
@@ -673,7 +679,6 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> DeleteBusiness(int VendorId)
         {
             await _adminServices.DeleteBusiness(VendorId);
-            TempData["Success"] = "Business Deleted Sucessfully";
             return NoContent();
         }
 

@@ -29,7 +29,7 @@ namespace Services.Models
     }
     public class DocumentDetails
     {
-        public int DocumentId { get; set; }
+        public int DocumentId { get; set; }     
 
         public String Document { get; set; }
 

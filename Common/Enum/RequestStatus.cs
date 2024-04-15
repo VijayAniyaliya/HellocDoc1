@@ -15,7 +15,7 @@ namespace Common.Enum
         Cancelled =3,
         MdEnRoute =4,
         MdOnSite=5,
-        Cuncluded=6,
+        Concluded=6,
         CancelledByPatient =7,
         Closed =8,
         Unpaid =9,

@@ -20,7 +20,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="role"
+                    <input type="text" asp-for="RoleName" class="form-control" id="role"
                            placeholder="role" />
                     <label for="role" class="">Role</label>
                     <span id="rolewarn" class="text-danger"></span>
@@ -28,7 +28,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating">
-                    <select class="form-select" id="accounttype" aria-label="Floating label select example">
+                    <select class="form-select" id="accounttype" aria-label="Floating label select example" asp-for="AccountType">
                         <option selected value="4">All</option>
                         @foreach (var item in Model.menus)
                         {
@@ -45,7 +45,7 @@
         <span id="menuitem" class="text-danger mt-1"></span>
         <div class="mt-4 text-end">
             <button type="button" onclick="createrole()" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5">Save</button>
-            <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5">Cancel</button>
+            <a type="button" asp-action="Access" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5">Cancel</a>
         </div>
         <br />
     </div>
@@ -56,14 +56,25 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    var accounttype = 4;
+    $(document).ready(function () {
+        if (@Model.AccountType != 0) {
+            $("#accounttype").prop("disabled", true);
+        }
+    });
+    var accounttype;
+    if (@Model.AccountType == 0) {
+        accounttype = 4;
+    }
+    else {
+        accounttype = @Model.AccountType
+                }
 
     $('#accounttype').on('change', function () {
         accounttype = $(this).val();
         $.ajax({
             url: "/Admin/FilterByAccountType",
             type: "POST",
-            data: { "accounttype": accounttype },
+            data: { "accounttype": accounttype, "role_id": @Model.RoleID},
             dataType: "html",
             success: function (data) {
                 $(".menudata").html(data);
@@ -77,7 +88,7 @@
         $.ajax({
             url: "/Admin/FilterByAccountType",
             type: "POST",
-            data: { "accounttype": accounttype },
+            data: { "accounttype": accounttype, "role_id": @Model.RoleID},
             dataType: "html",
             success: function (data) {
                 $(".menudata").html(data);
@@ -93,7 +104,8 @@
         if ($('#role').val() != "") {
             $('#rolewarn').html("")
         }
-        
+    });
+
     function checkbox() {
         console.log("asdgh");
         if ($('input[name="checkboxs"]:checked').length > 0) {
@@ -110,6 +122,7 @@
         });
         console.log(MenuData);
         var formdata = {
+            RoleId: @Model.RoleID,
             RoleName: $('#role').val(),
             AccountType: $('#accounttype').val(),
             MenuData: MenuData,
@@ -134,7 +147,6 @@
                 },
                 error: function (error) {
                     window.location.href = "/Admin/Access"
-                    console.log(error);
                 }
             });
             $('#rolewarn').html("");

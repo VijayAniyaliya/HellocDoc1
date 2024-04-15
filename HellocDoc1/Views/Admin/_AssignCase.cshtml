@@ -103,7 +103,7 @@
                     url: '/Admin/AssignCase',
                     data: { "request_id": @Model.RequestId, "physicianid": physicianid, "description": description },
                     success: function (response) {
-                        $("#cancel").click();
+                        $("#cancel").click();   
                         $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
                         toastr.success('Case assign Successfully');
                     },

@@ -58,11 +58,11 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Conclude Case</a></li>
+                            <li><a href="@Url.Action("ConcludeCare", new {request_id = item.RequestId})" class="dropdown-item ps-3"><i class="bi bi-heart-fill"></i> Conclude Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-richtext"></i> Encounter</a></li>
                         </ul>
                     </div>
                 </td>
@@ -189,7 +189,21 @@ else
 }
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    console.log(status);
+    function conclude(request_id) {
+        $.ajax({
+            url: "/Provider/ConcludeCare/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (response) {
+                window.location.href = "/Provider/ConcludeCare" + response;
+            },
+            error: function () {
+                console.log("No Projects Found");
+            }
+        });
+    };
 
 </script>

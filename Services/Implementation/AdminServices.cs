@@ -283,7 +283,7 @@ namespace Services.Implementation
                         };
                         model.TransferNotes.Add(transferNotes);
                     }
-                }
+                }           
                 model.PhysicianNotes = data1?.PhysicianNotes;
                 model.AdminNotes = data1?.AdminNotes;
                 model.RequestId = request_id;
@@ -770,7 +770,6 @@ namespace Services.Implementation
 
             if (data != null)
             {
-
                 CloseCaseViewModel model = new CloseCaseViewModel()
                 {
                     RequestId = request_id,
@@ -783,7 +782,7 @@ namespace Services.Implementation
                 };
 
                 foreach (var item in data.Request.RequestWiseFiles)
-                {
+                {   
                     DocumentDetails documentDetail = new DocumentDetails()
                     {
                         DocumentId = item.RequestWiseFileId,
@@ -1624,7 +1623,7 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<AccessViewModel> Access()
+        public async Task<AccessViewModel> AccessData(int requestedPage)
         {
             List<Role> roles = await _context.Roles.ToListAsync();
 
@@ -1633,17 +1632,23 @@ namespace Services.Implementation
 
             if (roles != null)
             {
+                int count = roleData!.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                roleData = roleData!.Skip((requestedPage - 1) * 5).Take(5).ToList();
                 AccessViewModel accessViewModel = new AccessViewModel()
                 {
                     roleData = roleData,
+                    TotalPage = TotalPage,
+                    CurrentPage = requestedPage,
                 };
                 return accessViewModel;
             }
             return new AccessViewModel();
         }
 
-        public CreateAccessViewModel CreateAccess()
+        public CreateAccessViewModel CreateAccess(int role_id)
         {
+            Role? role = _context.Roles.FirstOrDefault(a => a.RoleId == role_id);
             var menu = _context.Menus.ToList().DistinctBy(a => a.AccountType).Select(a => (int)a.AccountType).ToList();
 
             if (menu != null)
@@ -1651,7 +1656,13 @@ namespace Services.Implementation
                 CreateAccessViewModel model = new CreateAccessViewModel()
                 {
                     menus = menu,
+                    RoleID = role_id,
                 };
+                if (role != null)
+                {
+                    model.RoleName = role.Name;
+                    model.AccountType = role.AccountType;
+                }
                 return model;
             }
             return new CreateAccessViewModel();
@@ -1669,8 +1680,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<CreateAccessViewModel> FilterByAccountType(int accounttype)
+        public async Task<CreateAccessViewModel> FilterByAccountType(int accounttype, int role_id)
         {
+            Role? role = _context.Roles.FirstOrDefault(a => a.RoleId == role_id);
             List<Menu> menus = await _context.Menus.ToListAsync();
             CreateAccessViewModel model = new CreateAccessViewModel();
 
@@ -1680,6 +1692,11 @@ namespace Services.Implementation
                 if (accounttype != 4)
                 {
                     model.Menu = menus.Where(a => a.AccountType == accounttype).ToList();
+                }
+                if (role != null)
+                {
+                    List<RoleMenu> roleMenus = _context.RoleMenus.Where(a => a.RoleId == role_id).ToList();
+                    model.roleMenusData = roleMenus;
                 }
                 return model;
             }
@@ -1695,26 +1712,55 @@ namespace Services.Implementation
                 {
                     if (aspNetUser != null)
                     {
-                        Role role = new Role()
+                        if (model.RoleID != 0)
                         {
-                            Name = model.RoleName,
-                            CreatedDate = DateTime.Now,
-                            CreatedBy = aspNetUser!.Id,
-                            AccountType = (short)model.AccountType,
-                            IsDeleted = new BitArray(new[] { false }),
-                        };
-                        await _context.Roles.AddAsync(role);
-                        await _context.SaveChangesAsync();
+                            Role? role1 = _context.Roles.FirstOrDefault(a => a.RoleId == model.RoleID);
+                            role1!.Name = model.RoleName;
+                            role1.ModifiedBy = aspNetUser.Id;
+                            role1.ModifiedDate = DateTime.Now;
 
-                        foreach (var item in model.MenuData)
-                        {
-                            RoleMenu roleMenu = new RoleMenu();
-                            roleMenu.RoleId = role.RoleId;
-                            roleMenu.MenuId = item;
-                            await _context.RoleMenus.AddAsync(roleMenu);
+                            _context.Roles.Update(role1);
+                            await _context.SaveChangesAsync();
+
+                            List<RoleMenu> roleMenu = _context.RoleMenus.Where(a => a.RoleId == model.RoleID).ToList();
+                            foreach (var item in roleMenu)
+                            {
+                                _context.RoleMenus.Remove(item);
+                            }
+                            await _context.SaveChangesAsync();
+
+                            foreach (var item in model.MenuData)
+                            {
+                                RoleMenu roleMenus = new RoleMenu();
+                                roleMenus.RoleId = model.RoleID;
+                                roleMenus.MenuId = item;
+                                await _context.RoleMenus.AddAsync(roleMenus);
+                            }
+                            await _context.SaveChangesAsync();
                         }
+                        else
+                        {
+                            Role role = new Role()
+                            {
+                                Name = model.RoleName,
+                                CreatedDate = DateTime.Now,
+                                CreatedBy = aspNetUser!.Id,
+                                AccountType = (short)model.AccountType,
+                                IsDeleted = new BitArray(new[] { false }),
+                            };
+                            await _context.Roles.AddAsync(role);
+                            await _context.SaveChangesAsync();
+
+                            foreach (var item in model.MenuData)
+                            {
+                                RoleMenu roleMenu = new RoleMenu();
+                                roleMenu.RoleId = role.RoleId;
+                                roleMenu.MenuId = item;
+                                await _context.RoleMenus.AddAsync(roleMenu);
+                            }
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -2373,7 +2419,7 @@ namespace Services.Implementation
                 vendorsData = vendorsData!.Skip((requestedPage - 1) * 5).Take(5).ToList();
                 VendorsDetailsViewModel model = new VendorsDetailsViewModel()
                 {
-                    vendorsDatas = vendorsData, 
+                    vendorsDatas = vendorsData,
                     CurrentPage = requestedPage,
                     TotalPage = TotalPage,
                 };
