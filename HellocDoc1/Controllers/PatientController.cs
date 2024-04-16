@@ -113,7 +113,7 @@ namespace HellocDoc1.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> CreateNewAccount(CreateAccountViewModel model)
+        public async Task<IActionResult> CreatePatientAccount(CreateAccountViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -125,9 +125,13 @@ namespace HellocDoc1.Controllers
                 }
                 else
                 {
+                    CreateAccountViewModel model1 = new CreateAccountViewModel()
+                    {
+                        RequestId = model.RequestId,
+                    };
                     ModelState.AddModelError("", result.Message);
                     TempData["Error"] = result.Message;
-                    return View();
+                    return View(model1);
                 }
             }
             return View();

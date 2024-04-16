@@ -12,6 +12,7 @@ namespace Services.Contracts
         Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj, string email);
         Task Consult(int request_id);
         Task<CreateNewShift> CreateMyShift(string email);
+        Task<PhysicianAccountViewModel> EditPhysician(string email);
         Task finalize(int request_id);
         Task HouseCall(int request_id);
         Task Housecalling(int request_id);

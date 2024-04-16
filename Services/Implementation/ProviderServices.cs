@@ -464,5 +464,67 @@ namespace Services.Implementation
             }
             return new CreateNewShift();
         }
+
+        public async Task<PhysicianAccountViewModel> EditPhysician(string email)
+        {
+            Physician? physician = await _context.Physicians.Include(x => x.Role).FirstOrDefaultAsync(a => a.Email == email);
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
+            List<Role> role = await _context.Roles.ToListAsync();
+            List<Region> regions = await _context.Regions.ToListAsync();
+            List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
+
+            if (physician != null && regions != null)
+            {
+                PhysicianAccountViewModel model = new PhysicianAccountViewModel()
+                {
+                    PhysicianId = physician.PhysicianId,
+                    Username = aspNetUser.UserName,
+                    Password = aspNetUser.PasswordHash,
+                    rolename = physician.Role.Name,
+                    StatusCode = (int)physician.Status,
+                    Role = role,
+                    FirstName = physician.FirstName,
+                    LastName = physician.LastName,
+                    Email = physician.Email,
+                    PhoneNumber = physician.Mobile,
+                    MediLiencense = physician.MedicalLicense,
+                    NPI = physician.Npinumber,
+                    SynchroEmail = physician.SyncEmailAddress,
+                    RegionList = regions,
+                    physicianRegions = physicianRegions,
+                    address1 = physician.Address1,
+                    address2 = physician.Address2,
+                    city = physician.City,
+                    state = physician.City,
+                    zip = physician.Zip,
+                    altphonenumber = physician.AltPhone,
+                    BusinessName = physician.BusinessName,
+                    BusinessWeb = physician.BusinessWebsite,
+                    Photo = physician.Photo,
+                    Sign = physician.Signature,
+                    AdminNotes = physician.AdminNotes,
+                };
+
+                if (physician?.IsAgreementDoc?[0] == true)
+                {
+                    model.AggrementDoc = true;
+                }
+                if (physician?.IsBackgroundDoc?[0] == true)
+                {
+                    model.BackgoundDoc = true;
+                }
+                if (physician?.IsNonDisclosureDoc?[0] == true)
+                {
+                    model.DisclosureDoc = true;
+                }
+                if (physician?.IsLicenseDoc?[0] == true)
+                {
+                    model.LicenseDoc = true;
+                }
+
+                return model;
+            }
+            return new PhysicianAccountViewModel();
+        }
     }
 }

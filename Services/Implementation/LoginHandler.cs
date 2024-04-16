@@ -41,8 +41,9 @@ namespace HelloDoc1.Services
         public async Task<LoginResponseViewModel> CreateNewAccount(CreateAccountViewModel model)
         {
             var user = await _context.RequestClients.Where(u => u.RequestId == model.RequestId).FirstOrDefaultAsync();
+            AspNetUser? aspnetuser = await _context.AspNetUsers.Where(a => a.Email == model.Email).FirstOrDefaultAsync();
 
-            if (user == null)
+            if (aspnetuser == null)
             {
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Please entered the email you used when submitting your request" };
             }

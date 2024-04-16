@@ -1,9 +1,9 @@
-﻿@model Services.Models.CreateAccountViewModel
-
-@{
+﻿@{
     Layout = "";
 }
 
+
+@model Services.Models.CreateAccountViewModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,8 +18,14 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/style.css">
+    <style>
+        .input-validation-error {
+            border: 1px solid red;
+        }
+    </style>
 </head>
 
 <body>
@@ -38,39 +44,34 @@
 
             <div class="content ">
 
-                <div class=" back-btn">
-                    <a asp-controller="Patient" asp-action="Submit_request" class="link-info text-decoration-none">
-
-                        <span class="back-btn-txt h5">&lt; Back</span>
-                    </a>
-                </div>
-
                 <div class="h3 mt-3">Create account</div>
 
-                <form asp-action="CreateNewAccount"  method="post">
+                <form asp-action="CreatePatientAccount" method="post">
                     <input asp-for="RequestId" value="@Model.RequestId" hidden/>
-
-                    <div class="form-floating inputs mt-4">
-                        <input type="email" asp-for="Email" class="form-control patient-input" id="floatingInput"
-                               placeholder="name@example.com" >
+                    <div class="form-floating inputs mb-1 mt-4">
+                        <input type="email" class="form-control patient-input" id="floatingInput"
+                               placeholder="name@example.com" asp-for="Email">
                         <label for="floatingInput" class="label">Email address</label>
                         <i class="bi bi-person-circle input-icon"></i>
-                        <span asp-validation-for="Email"></span>
                     </div>
-                    <div class="form-floating">
-                        <input type="password" asp-for="Password" class="form-control inputs" id="password" placeholder="password">
-                        <label for="floatingpassword" class="label">password</label>
-                        <i class="bi bi-eye-slash-fill" onclick="fun()" id="eye" style="position:relative; bottom:40px; left:93%;"></i>
-                        <span asp-validation-for="Password" class="text-danger" style="position:relative;  right:20px;"></span>
+                    <span asp-validation-for="Email" class="text-danger " style="position:relative; bottom:25px; right:75px;"></span>
+                    <div class="form-floating inputs mb-0">
+                        <input type="password" class="form-control patient-input" id="password"
+                               placeholder="Password" asp-for="Password">
+                        <label for="password" class="label">Password</label>
+                        <i class="bi bi-eye-slash-fill input-icon" onclick="fun()" id="eye"></i>
                     </div>
-                    <div class="form-floating">
-                        <input type="password" asp-for="ConfirmPassword" class="form-control inputs" id="password" placeholder="password">
-                        <label for="floatingpassword" class="label">confirm password</label>
-                        <i class="bi bi-eye-slash-fill" onclick="fun()" id="eye" style="position:relative; bottom:40px; left:93%;"></i>
-                        <span asp-validation-for="ConfirmPassword" class="text-danger" style="position:relative;  right:20px;"></span>
+                    <span asp-validation-for="Password" class="text-danger d-block " style="position:relative; bottom:25px; right:65px;"></span>                    <div class="form-floating inputs mb-0">
+                        <input type="password" class="form-control patient-input" id="confirpassword"
+                               placeholder="Password" asp-for="ConfirmPassword">
+                        <label for="confirpassword" class="label">Confirm Password</label>
+                        <i class="bi bi-eye-slash-fill input-icon" onclick="confirmPassword()" id="eyes"></i>
                     </div>
-                    <button type="submit" class="btn bg-info inputs py-3">Log in</button>
-                </form>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger d-block " style="position:relative; bottom:25px; right:40px;"></span>
+
+
+                    <button type="submit" class="btn bg-info inputs py-3">Create</button>
+                </form> 
             </div>
         </div>
 
@@ -87,35 +88,60 @@
         <img src="~/images/11116016_415.jpg" width="100%" alt="">
     </div>
 
+    @* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
     <script src="~/js/custom.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    @*     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
+    <partial name="_ValidationScriptsPartial" /> *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        const path = document.getElementById("eye");
+        const password = document.getElementById('password')
+        function fun() {
+            console.log(password);
+            if (password.type === "password") {
+                path.classList.remove("bi-eye-slash-fill");
+                path.classList.add("bi-eye-fill");
+                password.type = "text";
+            }
+            else {
+                path.classList.remove("bi-eye-fill");
+                path.classList.add("bi-eye-slash-fill");
+                password.type = "password";
 
+            }
+        }
+
+        const eyes = document.getElementById("eyes");
+        const confirmpassword = document.getElementById('confirpassword')
+        function confirmPassword() {
+            console.log(password);
+            if (confirmpassword.type === "password") {
+                eyes.classList.remove("bi-eye-slash-fill");
+                eyes.classList.add("bi-eye-fill");
+                confirmpassword.type = "text";
+            }
+            else {
+                eyes.classList.remove("bi-eye-fill");
+                eyes.classList.add("bi-eye-slash-fill");
+                confirmpassword.type = "password";
+
+            }
+        }
+
+    </script>
 </body>
 
 
 </html>
 
-<script>
-    const path = document.getElementById("eye");
-    const password = document.getElementById('password')
-    function fun() {
-        console.log(password);
-        if (password.type === "password") {
-            path.classList.remove("bi-eye-slash-fill");
-            path.classList.add("bi-eye-fill");
-            password.type = "text";
-        }
-        else {
-            path.classList.remove("bi-eye-fill");
-            path.classList.add("bi-eye-slash-fill");
-            password.type = "password";
 
-        }
-    }
 
-</script>
 @if (TempData["Error"] != null)
 {
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />

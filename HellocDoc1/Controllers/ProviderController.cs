@@ -276,5 +276,18 @@ namespace HellocDoc1.Controllers
             TempData["Success"] = "Shift Created Successfully";
             return RedirectToAction("MySchedulle");
         }
+
+        public async Task<IActionResult> MyProfile()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var data = await _providerServices.EditPhysician(email);
+            return View(data);
+        }
+
+        public async Task<IActionResult> ResetAccountPass(int PhysicianId, string password)
+        {
+            await _adminServices.ResetAccountPass(PhysicianId, password);
+            return NoContent();
+        }
     }
 }
