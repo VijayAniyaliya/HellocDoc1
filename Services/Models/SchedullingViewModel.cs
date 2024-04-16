@@ -11,6 +11,8 @@ namespace Services.Models
     {
         public List<Region>? RegionList { get; set; }
 
+        public int PhysicianId { get; set; }
+
         public List<Physician>? physicians { get; set; }
 
         public List<ShiftDetail> ShiftDetailList { get; set; }

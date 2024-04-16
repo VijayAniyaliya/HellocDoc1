@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace Services.Models
 
         public int RequestId { get; set; }
 
-        [Required]
+        public int IsFinalize { get; set; }
+
         public string ProviderNotes { get; set; }
 
         public List<string> Documents= new List<string>();

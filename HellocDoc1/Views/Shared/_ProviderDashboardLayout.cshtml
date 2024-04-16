@@ -55,34 +55,31 @@
     <hr class="my-0 d-none d-md-block" />
     <div class="shadow px-lg-5 px-2 my-2">
         <div class=" h6 d-none d-md-flex gap-4 ">
-            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
+            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/Encounter")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
             {
-                <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
+                <a asp-action="ProviderDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
             }
             else
             {
-                <a asp-action="AdminDashboard" class="text-decoration-none px-2" style="color:black;">Dashboard</a>
+                <a asp-action="ProviderDashboard" class="text-decoration-none px-2" style="color:black;">Dashboard</a>
             }
-            @if (Context.Request.Path.Equals("/Admin/ProviderLocation"))
-            {
-                <a asp-action="ProviderLocation" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Providers Location</a>
-            }
-            else
-            {
-                <a asp-action="ProviderLocation" class="text-decoration-none px-lg-2 px-0" style="color:black;">Providers Location</a>
+            <a class="text-decoration-none px-lg-2 px-0" style="color:black;">Invoices</a>   
 
-            }
-            @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
+            @if (Context.Request.Path.Equals("/Provider/MySchedulle"))
             {
-                <a asp-action="AdminProfile" class="text-decoration-none text-info px-lg-2 px-0" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">My Profile</a>
-            }
-            @if ((Context.Request.Path.Equals("/Admin/Vendors")) || (Context.Request.Path.Equals("/Admin/AddBusiness")))
-            {
-                <a asp-action="Vendors" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Partners</a>
+                <a asp-action="MySchedulle" class="text-decoration-none text-info px-lg-2 px-0" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">My Schedule</a>
             }
             else
             {
-                <a asp-action="Vendors" class="text-decoration-none px-2" style="color:black;">Partners</a>
+                <a asp-action="MySchedulle" class="text-decoration-none px-lg-2 px-0" style="color:black;">My Schedule</a>
+            }
+            @if ((Context.Request.Path.Equals("/Provider/MyProfile")))
+            {
+                <a class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">My Profile</a>
+            }
+            else
+            {
+                <a asp-action="" class="text-decoration-none px-2" style="color:black;">My Profile</a>
             }
         </div>
     </div>
@@ -98,7 +95,7 @@
                 <span>
                     <span class="fw-bold ps-3">Welcome @firstName @lastName</span>
                 </span>
-                <div class="d-flex flex-column gap-3 h6 mt-2" style=""> 
+                <div class="d-flex flex-column gap-3 h6 mt-2" style="">
 
                     @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewUploads")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
                     {

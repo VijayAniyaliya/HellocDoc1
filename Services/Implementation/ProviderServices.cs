@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
+using System.Collections;
 
 namespace Services.Implementation
 {
@@ -123,7 +124,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj, string email)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.RequestStatusLogs).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.RequestStatusLogs).Include(a => a.Request.EncounterForms).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToListAsync();
             Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
             clients = clients.Where(a => a.Request.PhysicianId == physician?.PhysicianId).ToList();
 
@@ -156,7 +157,7 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj, string email)
         {
-            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Where(a => a.Request.Status == 6).ToListAsync();
+            List<RequestClient> clients = await _context.RequestClients.Include(a => a.Request).Include(x => x.Request.Physician).Include(a => a.Request.EncounterForms).Where(a => a.Request.Status == 6).ToListAsync();
             Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
             clients = clients.Where(a => a.Request.PhysicianId == physician?.PhysicianId).ToList();
 
@@ -247,8 +248,9 @@ namespace Services.Implementation
                     RequestId = request_id,
                     Status = (int)RequestStatus.Unassigned,
                     Notes = reason,
-                    PhysicianId = data.PhysicianId,
+                    PhysicianId = physician!.PhysicianId,
                     CreatedDate = DateTime.Now,
+                    TransToAdmin = new BitArray(1, true),
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
@@ -273,9 +275,56 @@ namespace Services.Implementation
             }
         }
 
+        public async Task HouseCall(int request_id)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.RequestId == request_id);
+            if (request != null)
+            {
+                request.Status = (int)RequestStatus.MdOnSite;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = (int)RequestStatus.MdOnSite,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.RequestStatusLogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task Housecalling(int request_id)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.RequestId == request_id);
+            if (request != null)
+            {
+                request.Status = (int)RequestStatus.Concluded;
+                RequestStatusLog requestStatusLog = new RequestStatusLog()
+                {
+                    RequestId = request_id,
+                    Status = (int)RequestStatus.Concluded,
+                    CreatedDate = DateTime.Now,
+                };
+                _context.RequestStatusLogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task finalize(int request_id)
+        {
+            EncounterForm? encounterForm = await _context.EncounterForms.FirstOrDefaultAsync(a => a.RequestId == request_id);
+
+            if (encounterForm != null)
+            {
+                encounterForm.IsFinalize = true;
+                _context.EncounterForms.Update(encounterForm);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ConcludeCareViewModel> ConcludeCare(int request_id)
         {
             RequestClient? data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            EncounterForm? encounterForm = await _context.EncounterForms.FirstOrDefaultAsync(a => a.RequestId == request_id);
 
             if (data != null)
             {
@@ -286,6 +335,14 @@ namespace Services.Implementation
                     RequestId = request_id,
                     PatientName = data.FirstName + " " + data.LastName,
                 };
+                if (encounterForm != null && encounterForm.IsFinalize == true)
+                {
+                    model.IsFinalize = 1;
+                }
+                else
+                {
+                    model.IsFinalize = 0;
+                }
                 foreach (var item in data.Request.RequestWiseFiles)
                 {
                     model.Documents.Add(item.FileName);
@@ -323,28 +380,49 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task ConcludeCase(ConcludeCareViewModel model, int request_id)
+        public async Task ConcludeCase(ConcludeCareViewModel model, string email)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    var obj = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
+                    var obj = await _context.Requests.Where(a => a.RequestId == model.RequestId).FirstOrDefaultAsync();
+                    var data = await _context.RequestNotes.Where(a => a.RequestId == model.RequestId).FirstOrDefaultAsync();
+                    var physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
 
-                    if (obj != null)
+                    if (data != null)
+                    {
+                        data!.PhysicianNotes = model.ProviderNotes;
+                        data.ModifiedBy = physician!.AspNetUserId;
+                        data.ModifiedDate = DateTime.Now;
+                        _context.RequestNotes.Update(data);
+                    }
+                    else
+                    {
+                        RequestNote requestNote = new RequestNote()
+                        {
+                            RequestId = model.RequestId,
+                            AdminNotes = model.ProviderNotes,
+                            CreatedBy = physician!.AspNetUserId!,
+                            CreatedDate = DateTime.Now,
+                        };
+                        _context.RequestNotes.Add(requestNote);
+                    }
+
+                    if (obj != null && physician != null)
                     {
                         obj.Status = (int)RequestStatus.Closed;
                         RequestStatusLog requestStatusLog = new RequestStatusLog()
                         {
-                            RequestId = request_id,
-                            Notes= model.ProviderNotes,
+                            RequestId = model.RequestId,
+                            Notes = model.ProviderNotes,
                             Status = (int)RequestStatus.Closed,
                             CreatedDate = DateTime.Now,
                         };
                         await _context.RequestStatusLogs.AddAsync(requestStatusLog);
                         _context.Requests.Update(obj);
-                        await _context.SaveChangesAsync();
                     }
+                    await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -352,6 +430,39 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
+        }
+
+        public async Task<SchedullingViewModel> MonthWiseMySchedule(DateTime date, string email)
+        {
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+            List<ShiftDetail> shiftDetails = await _context.ShiftDetails.Include(a => a.Shift).Include(a => a.Shift.Physician)
+                .Where(x => x.ShiftDate.Month == date.Month).Where(a => a.Shift.PhysicianId == physician!.PhysicianId).ToListAsync();
+            SchedullingViewModel model = new SchedullingViewModel();
+
+            if (shiftDetails != null)
+            {
+                shiftDetails = shiftDetails.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+                model.ShiftDetailList = shiftDetails;
+                model.ShiftDate = date;
+            }
+            return model;
+        }
+
+        public async Task<CreateNewShift> CreateMyShift(string email)
+        {
+            List<Region> regions = await _context.Regions.ToListAsync();
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (regions != null)
+            {
+                CreateNewShift model = new CreateNewShift()
+                {
+                    RegionList = regions,
+                    PhysicianId = physician!.PhysicianId,
+                };
+                return model;
+            }
+            return new CreateNewShift();
         }
     }
 }

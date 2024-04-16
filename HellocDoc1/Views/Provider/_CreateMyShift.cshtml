@@ -1,0 +1,126 @@
+﻿@model Services.Models.CreateNewShift
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border border-0 rounded-3">
+            <form asp-action="CreateShift" method="post" id="myForm">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="staticBackdropLabel">Create Shift</h5>
+                    <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class=" gap-2">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PhysicianId" value="@Model.PhysicianId" hidden/>
+                            <select asp-for="RegionId" class="form-select text-secondary regionData" id="floatingSelect" aria-label="Floating label select example">
+                                <option value="" selected disabled>Select Region</option>
+                                @foreach (var item in Model.RegionList)
+                                {
+                                    <option value="@item.RegionId">@item.Name</option>
+                                }
+                            </select>
+                            <label for="floatingSelect">Narrow Search By Region</label>
+                            <span asp-validation-for="RegionId" class="text-danger"></span>
+
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="date" asp-for="ShiftDate" class="form-control" id="floatingInput" placeholder="shift date" />
+                            <label for="floatingInput" class="">ShiftDate</label>
+                            <span asp-validation-for="ShiftDate" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class=" form-floating mb-3">
+                                    <input asp-for="Start" type="time" class="form-control" id="floatingInput" placeholder="shift date" />
+                                    <label for="floatingInput" class="">Start</label>
+                                    <span asp-validation-for="Start" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="End" type="time" class="form-control" id="floatingInput" placeholder="shift date" />
+                                    <label for="floatingInput" class="">End</label>
+                                    <span asp-validation-for="End" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row gap-4 mb-3">
+                            <span>Repeat</span>
+                            <div class="ps-4 form-check form-switch">
+                                <input class="form-check-input shadow-none" type="checkbox" id="flexSwitchCheckChecked">
+                            </div>
+                        </div>
+                        <div class="repeatdays">
+                            <div>Repeate Days</div>
+                            <div class="d-flex align-items-center flex-wrap gap-3 pb-2 mb-2">
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="0" />
+                                    <label class="m-0">Every Sunday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="1" />
+                                    <label class="m-0">Every monday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="3" />
+                                    <label class="m-0">Every wendsday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="4" />
+                                    <label class="m-0">Every thursday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="5" />
+                                    <label class="m-0">Every friday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="6" />
+                                    <label class="m-0">Every saterday</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3 repeatend">
+                            <select asp-for="RepeatEnd"  class="form-select text-secondary py-1" id="repeat" aria-label="Floating label select example">
+                                <option value="0" selected>Repeat End</option>
+                                <option value="2">2-times</option>
+                                <option value="3">3-times</option>
+                                <option value="4">4-times</option>
+                                <option value="5">5-times</option>
+                            </select>
+                            <label for="repeat"></label>
+                            <span asp-validation-for="RepeatEnd" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn bg-info text-white assign">Save</button>
+                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+
+    $('.repeatdays').css('display', 'none');    
+    $('.repeatend').css('display', 'none');
+
+    $('#flexSwitchCheckChecked').change(function () {
+        if ($(this).is(':checked')) {
+            $('.repeatdays').css('display', 'block');
+            $('.repeatend').css('display', 'block');
+        } else {
+            $('.repeatdays').css('display', 'none');
+            $('.repeatend').css('display', 'none');
+        }
+    });
+
+</script>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

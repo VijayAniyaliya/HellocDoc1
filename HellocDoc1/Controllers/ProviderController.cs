@@ -174,13 +174,59 @@ namespace HellocDoc1.Controllers
                 RequestId = request_id,
             };
             return PartialView("_HouseCall", model);
+        }    
+
+        [HttpPost]
+        public IActionResult DownloadEncounter(int request_id)
+        {
+            HouseCallViewModel model = new HouseCallViewModel()
+            {
+                RequestId = request_id,
+            };
+            return PartialView("_DownloadEncounter", model);
         }
 
         public async Task<IActionResult> Consult(int request_id)
-        {
+        {               
             await _providerServices.Consult(request_id);
             return NoContent();
+        }     
+
+        public async Task<IActionResult> HouseCall(int request_id)
+        {
+            await _providerServices.HouseCall(request_id);
+            return NoContent();
         }    
+
+        public async Task<IActionResult> Housecalling(int request_id)
+        {
+            await _providerServices.Housecalling(request_id);
+            return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Encounter(int request_id)
+        {
+            var data = await _adminServices.EncounterForm(request_id);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitEncounterForm(EncounterFormViewModel model, int request_id)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.SubmitEncounterForm(model, request_id, email);
+            TempData["Success"] = "Encounter form succefully submitted";
+            return RedirectToAction("ProviderDashboard");   
+        }    
+
+        [HttpPost]
+        public async Task<IActionResult> finalize(int request_id)
+        {
+            await _providerServices.finalize(request_id);
+            TempData["Success"] = "Encounter form succefully finalized";
+            return RedirectToAction("ProviderDashboard");   
+        }
 
         public async Task<IActionResult> ConcludeCare(int request_id)
         {
@@ -193,13 +239,42 @@ namespace HellocDoc1.Controllers
         {
             await _providerServices.UploadDocuments(model, request_id);
             return RedirectToAction("ConcludeCare", new { request_id = request_id });
-        }    
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ConcludeCase(ConcludeCareViewModel model, int request_id)
-        //{
-        //    await _providerServices.ConcludeCase(model, request_id);
-        //    return RedirectToAction("ProviderDashboard");
-        //}
+        public async Task<IActionResult> ConcludeCase(ConcludeCareViewModel model)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _providerServices.ConcludeCase(model, email);
+            TempData["Success"] = "Case concluded Successfully";
+            return RedirectToAction("ProviderDashboard");
+        }
+
+        public IActionResult MySchedulle()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> MonthWiseMySchedule(DateTime date)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var data = await _providerServices.MonthWiseMySchedule(date, email);
+            return PartialView("_MonthWiseMySchedulle", data);
+        }
+
+        public async Task<IActionResult> CreateMyShiftView()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var data = await _providerServices.CreateMyShift(email);
+            return PartialView("_CreateMyShift", data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateShift(CreateNewShift model, List<int> repeatdays)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.CreateShift(model, email, repeatdays);
+            TempData["Success"] = "Shift Created Successfully";
+            return RedirectToAction("MySchedulle");
+        }
     }
 }

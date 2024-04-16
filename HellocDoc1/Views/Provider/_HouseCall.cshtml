@@ -45,8 +45,10 @@
 
     function redirect() {
         if (buttonId === 'button1') {
-            location.assign('SubmitInformationMe');
-        }
+            location.assign('HouseCall?request_id=' + @Model.RequestId);
+            $("#cancel").click();
+            $('#pills-active-tab').click();
+        }   
         else if (buttonId === 'button2') {
             location.assign('Consult?request_id=' + @Model.RequestId);
             $("#cancel").click();

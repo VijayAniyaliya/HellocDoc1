@@ -898,9 +898,12 @@ namespace Services.Implementation
             return new EncounterFormViewModel();
         }
 
-        public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id)
+        public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id , string email)
         {
             EncounterForm? encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
+            Physician? physician= await _context.Physicians.FirstOrDefaultAsync(a=>a.Email == email);
+
 
             if (encounter == null)
             {
@@ -931,10 +934,11 @@ namespace Services.Implementation
                     MedicationsDispensed = model.MedicationDispnsed,
                     Procedures = model.Procedure,
                     FollowUp = model.FollowUp,
+                    PhysicianId = physician != null ? physician.PhysicianId : (int?)null,
+                    AdminId = admin != null ? admin.AdminId : (int?)null,
                 };
-                await _context.EncounterForms.AddAsync(encounterForm);
+                await _context.EncounterForms.AddAsync(encounterForm);  
             }
-
             else
             {
                 encounter.HistoryOfPresentIllnessOrInjury = model.HistoryOfPatient;

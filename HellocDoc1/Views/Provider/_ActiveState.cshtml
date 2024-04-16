@@ -53,9 +53,9 @@
                     }
                 </td>
                 <td>@item.Street @item.City @item.State</td>
-                @if(item.Request.Status == (int)Common.Enum.RequestStatus.MdOnSite)
+                @if (item.Request.Status == (int)Common.Enum.RequestStatus.MdOnSite)
                 {
-                    <td><button type="button" class="btn rounded-3 text-white" style="background:#02cdf7;">House Call</button></td>
+                    <td><button onclick="Housecalling(@item.RequestId)" type="button" class="btn rounded-3 text-white" style="background:#02cdf7;">House Call</button></td>
                 }
                 else
                 {
@@ -71,7 +71,18 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
-                            <li><a class="dropdown-item ps-3" onclick="housecall(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            @if (item.Request.Status == (int)RequestStatus.MdEnRoute)
+                            {
+                                <li><a class="dropdown-item ps-3" onclick="housecall(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            }
+                            else if (item.Request.EncounterForms.Any(a => a.IsFinalize == true))
+                            {
+                                <li><a class="dropdown-item ps-3" onclick="downloadEncounter(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            }
+                            else if (item.Request.Status == (int)RequestStatus.MdOnSite)
+                            {
+                                <li><a class="dropdown-item ps-3" asp-action="Encounter" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            }
                         </ul>
                     </div>
                 </td>
@@ -150,14 +161,28 @@
                         <a asp-action="ViewUploads" asp-route-request_id="@item.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                     </div>
                     <div class="col-6 p-0  pb-2">
-                        <a onclick="housecall(@item.Request.RequestId)" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        @if (item.Request.Status == (int)RequestStatus.MdEnRoute)
+                        {
+                            <a onclick="housecall(@item.Request.RequestId)" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        }
+                        else if (item.Request.EncounterForms.Any(a => a.IsFinalize == true))
+                        {
+                            <a onclick="downloadEncounter(@item.Request.RequestId)" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        }
+                        else if (item.Request.Status == (int)RequestStatus.MdOnSite)
+                        {
+                            <a asp-action="Encounter" asp-route-request_id="@item.Request.RequestId" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        }
                     </div>
                     <div class="col-6 p-0 pr-3 pb-2">
                         <a asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId" class="btn w-100  bg-warning text-white rounded-pill p-1 btn-sm">Orders</a>
                     </div>
-                    <div class="col-6 p-0  pb-2">
-                        <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm">House Call</a>
-                    </div>
+                    @if (item.Request.Status == (int)Common.Enum.RequestStatus.MdOnSite)
+                    {
+                        <div class="col-6 p-0  pb-2">
+                            <a onclick="Housecalling(@item.RequestId)" class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm">House Call</a>
+                        </div>
+                    }           
                     <div class="col-6 p-0 pr-3">
                         <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                     </div>
@@ -208,6 +233,42 @@ else
                 $("#housecall").html(data);
                 const myModal = new bootstrap.Modal("#staticBackdrop", {});
                 myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#housecall").html('An error has occurred');
+            }
+        });
+    };
+
+    function downloadEncounter(request_id) {
+        $.ajax({
+            url: "/Provider/DownloadEncounter/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (data) {
+                $("#housecall").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#housecall").html('An error has occurred');
+            }
+        });
+    };
+
+    function Housecalling(request_id) {
+        $.ajax({
+            url: "/Provider/Housecalling/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (response) {
+                $('#pills-active-tab').html($(response).find('#pills-active-tab').html());
+                $('#pills-conclude-tab').html($(response).find('#pills-conclude-tab').html());
+                toastr.success('Request successfully Concluded');
             },
             error: function () {
                 alert("No Projects Found");

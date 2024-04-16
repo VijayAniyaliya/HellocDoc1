@@ -3,13 +3,13 @@
 
 @{
     ViewData["Title"] = "EncounterForm";
-    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_ProviderDashboardLayout.cshtml";
 }
 
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
         <h4>Encounter Form</h4>
-        <a asp-area="" asp-action="AdminDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+        <a asp-area="" asp-action="ProviderDashboard" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
             &lt;  Back
         </a>
 
@@ -276,6 +276,7 @@
             </div>
             <div class="text-end mt-2">
                 <button type="submit" class="btn bg-info text-white h5">Save Changes</button>
+                <button type="button" onclick="finalize(@Model.RequestId)" class="btn text-white h5" style="background:#6a09ff">Finalize</button>
                 <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
             </div>
         </form>
@@ -288,7 +289,24 @@
 <br />
 <br />
 <br />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    function finalize(request_id) {
+        $.ajax({
+            url: "/Provider/finalize/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (data) {
+            },
+            error: function () {
+                console("No Projects Found");
+            }
+        });
+    };
+
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
         utilsScript:

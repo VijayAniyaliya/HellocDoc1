@@ -1,0 +1,160 @@
+﻿@model Services.Models.SchedullingViewModel
+
+@{
+    ViewData["Title"] = "Schedulling";
+    Layout = "~/Views/Shared/_ProviderDashboardLayout.cshtml";
+}
+
+
+<div class="container">
+    <div class="d-flex justify-content-between pt-3">
+        <div class="h4">My Schedule</div>
+        <a asp-area="" asp-action="Provider" class="btn border-2 border-info text-info p-2 px-3 fw-bold">
+            &lt;  Back
+        </a>
+
+    </div>
+    <div class="h6 fw-bold mt-3">
+        Schedule for: <span id="showDate">@(DateTime.Now.ToString("MMM dd yyyy"))</span>
+    </div>
+    <div class="d-flex justify-content-md-between flex-column flex-md-row mt-4">
+        <div class="d-flex align-items-center justify-md-content justify-content-center">
+            <button onclick="prev()" type="button" id="prev" class="btn btn-info fw-bold" style="border-radius:25px;"><i class="bi bi-chevron-left fw-bold"></i></button>
+            <i class="bi bi-calendar3 mx-2"></i>
+            <button onclick="next()" type="button" id="next" class="btn btn-info fw-bold" style="border-radius:25px;"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div class="d-flex flex-column m-md-0 mt-3">
+            <div class="text-center">
+                <button type="button" class="btn px-4 pb-2 pt-3" style="background: #ec7ce5; border-radius:9px;"></button>
+                <span>Pending Shifts</span>
+                <button type="button" class="btn px-4 pb-2 pt-3" style="background: #93dc9e; border-radius:9px;"></button>
+                <span>Active Shifts</span>
+            </div>
+            <div class="d-flex justify-content-md-end justify-content-center gap-2 mt-3">
+                <a onclick="newshift()" class="px-3 py-2 bg-info  text-white  rounded-3 fw-bold" style="cursor:pointer;">
+                    Add New Shift
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table table-responsive mt-4" id="tableContent">
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+</div>
+<div id="shift"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+<script>
+    var url;
+    var RequestedDate = new Date();
+
+    let date = new Date();
+    let daysInMonth = new Date(date.getFullYear(), date.getMonth()).getDate();
+    date.setDate(1);
+    date.setMonth(date.getMonth());
+    date.setDate(date.getDate() + daysInMonth);
+    let firstDay = new Date(date.getFullYear(), date.getMonth());
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    let requestedDate = firstDay.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ' - ' + lastDay.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    $('#showDate').html(requestedDate);
+
+    console.log(date);
+    function prev() {
+        if (url == "/Provider/MonthWiseMySchedule") {
+            let daysInMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+            date.setDate(1);
+            date.setMonth(date.getMonth() - 1);
+            RequestedDate = date;
+            date.setDate(date.getDate() + daysInMonth - 1);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            let requestedDate = firstDay.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ' - ' + lastDay.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            $('#showDate').html(requestedDate);
+            Month();
+        }
+    }
+
+    function next() {
+        if (url == "/Provider/MonthWiseMySchedule") {
+            let daysInMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+            date.setDate(1);
+            date.setMonth(date.getMonth() + 1);
+            RequestedDate = date;
+            date.setDate(date.getDate() + daysInMonth + 1);
+            let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            let requestedDate = firstDay.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + ' - ' + lastDay.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            $('#showDate').html(requestedDate);
+            Month();
+        }
+    }
+
+    function newshift() {
+        $.ajax({
+            url: "/Provider/CreateMyShiftView/",
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#shift").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#shift").html('An error has occurred');
+            }
+        });
+    };
+
+    let shiftDate = RequestedDate.toISOString().split("T")[0];
+
+    $(document).ready(function () {
+        let dateString = RequestedDate.toISOString().split("T")[0];
+        $.ajax({
+            url: "/Provider/MonthWiseMySchedule",
+            type: "POST",
+            data: { "date": dateString },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+                url = "/Provider/MonthWiseMySchedule";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function Month() {
+        let monthOfDate = RequestedDate.toISOString().split("T")[0];
+        $.ajax({
+            url: "/Provider/MonthWiseMySchedule",
+            type: "POST",
+            data: { "date": monthOfDate },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+                url = "/Provider/MonthWiseMySchedule";
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+</script>
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

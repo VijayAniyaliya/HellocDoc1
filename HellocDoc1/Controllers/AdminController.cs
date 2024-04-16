@@ -251,8 +251,10 @@ namespace HellocDoc1.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitEncounterForm(EncounterFormViewModel model, int request_id)
         {
-            await _adminServices.SubmitEncounterForm(model, request_id);
-            return NoContent();
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.SubmitEncounterForm(model, request_id, email);
+            TempData["Success"] = "Encounter form succefully submitted";
+            return RedirectToAction("AdminDashboard");
         }
 
         [HttpGet]

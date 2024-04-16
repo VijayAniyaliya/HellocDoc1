@@ -44,7 +44,7 @@ namespace Services.Contracts
         Task SaveCloseCase(CloseCaseViewModel model, int request_id);
         Task CloseCaseRequest(int request_id);
 		Task<EncounterFormViewModel> EncounterForm(int request_id);
-        Task SubmitEncounterForm(EncounterFormViewModel model, int request_id);
+        Task SubmitEncounterForm(EncounterFormViewModel model, int request_id, string email);
 		Task<AdminProfileViewModel> ProfileData(string email);
         Task ResetPassword(string email, string password);
         Task UpdateAdminstrator(ProfileData model, string email);
