@@ -202,7 +202,7 @@ namespace Services.Implementation
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Agreement Video", $"Watch Aggreement Viedo Agreement Video</a>");
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Agreement Video", $"Watch Aggreement Video");
             }
             await _context.SaveChangesAsync();
         }
@@ -243,6 +243,7 @@ namespace Services.Implementation
             {
                 data.Status = (int)RequestStatus.Unassigned;
                 data.PhysicianId = null;
+                data.ModifiedDate= DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
@@ -525,6 +526,14 @@ namespace Services.Implementation
                 return model;
             }
             return new PhysicianAccountViewModel();
+        }
+
+        public async Task RequestToAdmin(int PhysicianId, string message)
+        {
+            if (PhysicianId != 0)
+            {
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", $"Edit My Profile {PhysicianId}", $"{message}");
+            }
         }
     }
 }

@@ -73,11 +73,11 @@
                             <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
                             @if (item.Request.Status == (int)RequestStatus.MdEnRoute)
                             {
-                                <li><a class="dropdown-item ps-3" onclick="housecall(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                                <li><a class="dropdown-item ps-3" onclick="housecall(@item.Request.RequestId)" style="cursor:pointer;"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                             }
                             else if (item.Request.EncounterForms.Any(a => a.IsFinalize == true))
                             {
-                                <li><a class="dropdown-item ps-3" onclick="downloadEncounter(@item.Request.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                                <li><a class="dropdown-item ps-3" onclick="downloadEncounter(@item.Request.RequestId)" style="cursor:pointer;"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
                             }
                             else if (item.Request.Status == (int)RequestStatus.MdOnSite)
                             {

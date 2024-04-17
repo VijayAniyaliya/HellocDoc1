@@ -174,7 +174,7 @@ namespace HellocDoc1.Controllers
                 RequestId = request_id,
             };
             return PartialView("_HouseCall", model);
-        }    
+        }
 
         [HttpPost]
         public IActionResult DownloadEncounter(int request_id)
@@ -187,16 +187,16 @@ namespace HellocDoc1.Controllers
         }
 
         public async Task<IActionResult> Consult(int request_id)
-        {               
+        {
             await _providerServices.Consult(request_id);
             return NoContent();
-        }     
+        }
 
         public async Task<IActionResult> HouseCall(int request_id)
         {
             await _providerServices.HouseCall(request_id);
             return NoContent();
-        }    
+        }
 
         public async Task<IActionResult> Housecalling(int request_id)
         {
@@ -217,15 +217,15 @@ namespace HellocDoc1.Controllers
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _adminServices.SubmitEncounterForm(model, request_id, email);
             TempData["Success"] = "Encounter form succefully submitted";
-            return RedirectToAction("ProviderDashboard");   
-        }    
+            return RedirectToAction("ProviderDashboard");
+        }
 
         [HttpPost]
         public async Task<IActionResult> finalize(int request_id)
         {
             await _providerServices.finalize(request_id);
             TempData["Success"] = "Encounter form succefully finalized";
-            return RedirectToAction("ProviderDashboard");   
+            return RedirectToAction("ProviderDashboard");
         }
 
         public async Task<IActionResult> ConcludeCare(int request_id)
@@ -237,7 +237,7 @@ namespace HellocDoc1.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadEncounter(ConcludeCareViewModel model, int request_id)
         {
-            await _providerServices.UploadDocuments(model, request_id);
+            await _providerServices.UploadDocuments(model, request_id); 
             return RedirectToAction("ConcludeCare", new { request_id = request_id });
         }
 
@@ -288,6 +288,47 @@ namespace HellocDoc1.Controllers
         {
             await _adminServices.ResetAccountPass(PhysicianId, password);
             return NoContent();
+        }
+
+        public IActionResult RequestToAdminDetails(int PhysicianId)
+        {
+            TransferCaseViewModel model = new TransferCaseViewModel()
+            {
+                PhysicianId = PhysicianId,
+            };
+            return PartialView("_RequestToAdmin", model); ;
+        }
+
+        public async Task<IActionResult> RequestToAdmin(int PhysicianId, string message)
+         {
+            await _providerServices.RequestToAdmin(PhysicianId, message);
+            return NoContent();
+        }
+
+        public IActionResult SendMailDetails()
+        {
+            return PartialView("_SendLinkByProvider");
+        }
+
+        public async Task SendLink(SendLinkViewModel model)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            await _adminServices.SendLink(model, email);
+        }
+
+        public IActionResult CreateRequestByProvider()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)
+        {
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+            var role = roles.FirstOrDefault();
+            await _adminServices.SubmitRequest(model, role);
+            TempData["success"] = "Request Submitted Successfully";
+            return RedirectToAction("ProviderDashboard");
         }
     }
 }

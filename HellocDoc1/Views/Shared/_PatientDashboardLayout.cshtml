@@ -11,9 +11,9 @@
     <title>@ViewData["Title"] - HellocDoc1</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+   @*  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous"></script> *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <!-- Option 1: Include in HTML -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -60,14 +60,15 @@
         <div class="shadow">
 
             <div class="mb-3 py-2 mx-auto h5 canvas-content" style="width:95%">
-                @if (Context.Request.Path.Equals("/Patient/Patient_Dashboard") && (Context.Request.Path.StartsWithSegments("/Patient/Patient_Document")))
+
+                @if ((Context.Request.Path.Equals("/Patient/Patient_Dashboard")) || (Context.Request.Path.StartsWithSegments("/Patient/Patient_Document")))
                 {
-                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 dashaboard px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
+                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none  text-info mr-3 px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Dashboard</a>
                 }
                 else
                 {
-                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none mr-3 dashaboard px-2" style="color:black;">Dashboard</a>
-                }       
+                    <a asp-controller="Patient" asp-action="Patient_Dashboard" class="text-decoration-none mr-3  px-2" style="color:black;">Dashboard</a>
+                }           
                 @if (Context.Request.Path.Equals("/Patient/Patient_Profile"))
                 {
                     <a asp-controller="Patient" asp-action="Patient_Profile" class="text-decoration-none text-info profile px-2" style="padding-bottom: 4px;border-bottom: 4px solid #17a2b8!important;">Profile</a>
@@ -132,6 +133,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     @* @await RenderSectionAsync("Scripts", required: false) *@
 
 </body>

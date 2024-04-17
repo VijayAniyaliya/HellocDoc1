@@ -50,7 +50,7 @@ namespace Services.Contracts
         Task UpdateAdminstrator(ProfileData model, string email);
         Task UpdateBillInfo(BillingData model, string email);
 		Task SendLink(SendLinkViewModel model, string email);
-        Task SubmitRequest(CreateRequestViewModel model);
+        Task SubmitRequest(CreateRequestViewModel model, string role);
         Task<ProviderViewModel> PhysicianData(int region, int requestedPage);
 		Task SendMessage(int PhysicianId, string message);
 		Task StopNotification(int PhysicianId);
@@ -102,5 +102,6 @@ namespace Services.Contracts
         Task<BlockHistoryViewModel> BlockHistoryData(BlockHistoryViewModel obj);
         Task UnblockCase(int requestid);
         Task<LogsDataViewModel> EmailLogs();
+        Task<List<UserAccessViewModel>> UserAccessData(int accounttype);
     }
 }

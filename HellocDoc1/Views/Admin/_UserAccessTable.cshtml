@@ -1,4 +1,4 @@
-﻿
+﻿@model Services.Models.UserAccessViewModel
 
 <div class="table-responsive mt-2 d-md-block d-none">
     <table class="table">
@@ -14,8 +14,10 @@
             </tr>
         </thead>
         <tbody>
+            @foreach(var item in Model)
+            {  
             <tr>
-                <td>Name</td>
+                <td>@item.</td>     
                 <td>AccountType</td>
                 <td>AccountType</td>
                 <td>AccountType</td>
@@ -24,6 +26,7 @@
                     <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
                 </td>
             </tr>
+            }
         </tbody>
     </table>
 </div>

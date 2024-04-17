@@ -1,7 +1,6 @@
 ﻿@{
-    var claims = User.Identities.ElementAtOrDefault(1)?.Claims;
-    var firstName = claims?.FirstOrDefault(a => a.Type == "firstname")?.Value;
-    var lastName = claims?.FirstOrDefault(a => a.Type == "lastname")?.Value;
+    var claims = User.Identities.ElementAtOrDefault(1)?.Claims; 
+    var username = claims?.FirstOrDefault(a => a.Type == "userName")?.Value;
 }
 
 
@@ -36,7 +35,7 @@
             <div class="d-flex align-items-center ">
                 <span class="d-none d-md-block">
                     Welcome
-                    <span class="fw-bold">@firstName @lastName</span>
+                    <span class="fw-bold">@username</span>
                 </span>
             </div>
             <div>
@@ -55,7 +54,7 @@
     <hr class="my-0 d-none d-md-block" />
     <div class="shadow px-lg-5 px-2 my-2">
         <div class=" h6 d-none d-md-flex gap-4 ">
-            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/Encounter")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
+            @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequestByProvider")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/Encounter")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewUploads")))
             {
                 <a asp-action="ProviderDashboard" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Dashboard</a>
             }
@@ -93,7 +92,7 @@
         <div class="offcanvas-body px-0" id="offcanvasWithBackdropLabel">
             <div>
                 <span>
-                    <span class="fw-bold ps-3">Welcome @firstName @lastName</span>
+                    <span class="fw-bold ps-3">Welcome @username</span>
                 </span>
                 <div class="d-flex flex-column gap-3 h6 mt-2" style="">
 

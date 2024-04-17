@@ -8,7 +8,7 @@ namespace Services.Contracts
     {
         Task ChangePassword(string email, ChangePassViewModel model);
 
-        Task<List<Request>> DashboardService(string Email);
+        Task<PatientDashboardViewModel> DashboardData(int requestedPage);
 
         Task<PatientServiceModel> DocumentService(int Requestid);
 
@@ -18,7 +18,7 @@ namespace Services.Contracts
 
         Task<User> ProfileService(string Email);
 
-        Task ResetPassword(string email);
+        Task<LoginResponseViewModel> ResetPassword(LoginViewModel model);
 
         Task SubmitInformationSomeone(SubmitInfoViewModel model);
         Task UploadDocument(PatientServiceModel model, int request_id);

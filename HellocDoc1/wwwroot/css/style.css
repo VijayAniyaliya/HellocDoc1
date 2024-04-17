@@ -78,9 +78,28 @@ body {
     margin: auto;
 }
 
-@media only screen and (max-width:900px) {
+.loginicn {
+    position: relative;
+    bottom: 25px;
+    right: 75px;
+}
+
+.passicn {
+    position: relative;
+    bottom: 25px;
+    right: 57px;
+}
+
+@media only screen and (max-width:992px) {
     .inputs {
         width: 300px;
+    }
+
+    .loginicn {
+        right: 50px;
+    }
+    .passicn{
+        right:40px;
     }
 }
 
@@ -129,6 +148,7 @@ body {
     .btn-2 {
         width: 50%;
     }
+
     .btn-3 {
         width: 50%;
     }
@@ -142,6 +162,7 @@ body {
     .btn-2 {
         width: 60%;
     }
+
     .btn-3 {
         width: 60%;
     }
@@ -155,6 +176,7 @@ body {
     .btn-2 {
         width: 80%;
     }
+
     .btn-3 {
         width: 80%;
     }
@@ -171,6 +193,7 @@ body {
     position: relative;
     height: 7vh;
 }
+
     .submit-request-btn:hover {
         background: transparent;
     }
@@ -296,6 +319,7 @@ body {
     height: 4%;
 }
 
+
 .dark-mode {
     background-color: black;
     color: white;
@@ -324,5 +348,3 @@ body {
     bottom: 25px;
     right: 75px;*/
 }
-
-

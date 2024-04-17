@@ -14,6 +14,9 @@
 
     </div>
     <div class="px-3 pt-4 shadow rounded-3 Document-content mt-3" style="">
+        <div class="text-end">
+            <button type="button" onclick="requesttoadmin(@Model.PhysicianId)" id="request" class="btn border-2 fw-bold border-info text-info h5">Request To Admin</button>
+        </div>
         <div class="h4 mb-4">Account Information</div>
         <div class="row">
             <form class="row">
@@ -63,10 +66,10 @@
                     </div>
                 </div>
                 <div class="text-end mt-4">
-@*                     <button type="button" id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
+                    @*                     <button type="button" id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
                     <button type="button" onclick="updateuser()" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyuser">Save Changes</button>
                     <button type="reset" id="cancel" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifyuser">Cancel</button> *@
-                    <button type="button" onclick="resetpass()" id="reset" class="btn border-info text-info h5">Reset Password</button>
+                    <button type="button" onclick="resetpass()" id="reset" class="btn border-2 fw-bold border-info text-info h5">Reset Password</button>
 
                 </div>
             </form>
@@ -151,7 +154,7 @@
                     }
                 </div>
                 <div class="text-end mt-2">
-@*                     <button type="button" id="editaccount" class="btn bg-info text-white px-4 h5">Edit</button>
+                    @*                     <button type="button" id="editaccount" class="btn bg-info text-white px-4 h5">Edit</button>
                     <button type="button" onclick="updatedata()" id="savedata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modify">Save Changes</button>
                     <button type="reset" id="cancelaccount" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modify">Cancel</button> *@
 
@@ -215,7 +218,7 @@
                     </div>
                 </div>
                 <div class="text-end mt-2">
-@*                     <button type="button" id="editbill" class="btn bg-info text-white h5 px-4">Edit</button>
+                    @*                     <button type="button" id="editbill" class="btn bg-info text-white h5 px-4">Edit</button>
                     <button type="button" onclick="updatebill()" id="Billingdata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifybill">Save Changes</button>
                     <button type="reset" id="cancelbill" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modifybill">Cancel</button> *@
 
@@ -297,9 +300,9 @@
                     </div>
                 </div>
                 <div class="text-end mt-2">
-                    <button type="button" id="editprofile" class="btn bg-info text-white h5 px-4">Edit</button>
+                    @*                     <button type="button" id="editprofile" class="btn bg-info text-white h5 px-4">Edit</button>
                     <button type="button" id="" onclick="profiledata()" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyprofile">Save Changes</button>
-                    <button type="reset" id="cancelprofile" class="btn bg-white text-info border-2 border-info rounded-3 fw-bold h5 modifyprofile">Cancel</button>
+                    <button type="reset" id="cancelprofile" class="btn bg-white text-info border-2 border-info rounded-3 fw-bold h5 modifyprofile">Cancel</button> *@
 
                 </div>
             </form>
@@ -342,7 +345,10 @@
                 Upload
                 <input type="file" id="HipaaDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewhipaa" class="btn bg-info text-white h5 mb-0 view">View</button>
+            @if (Model.AggrementDoc == true)
+            {
+                <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
+            }
         </div>
         <div class="d-flex align-items-center mb-3">
             <span class="" style="width:30%;">Non-disclosure Agreement</span>
@@ -371,7 +377,7 @@
         <hr />
         <div class="text-end">
 
-@*             <button type="button" onclick="docdata()" id="edit" class="btn bg-info text-white h5 px-4 d-inline-block mb-0 mr-3">Save</button>
+            @*             <button type="button" onclick="docdata()" id="edit" class="btn bg-info text-white h5 px-4 d-inline-block mb-0 mr-3">Save</button>
             <button type="button" onclick="deleteraccount(@Model.PhysicianId)" id="delete" class="btn bg-danger text-white h5 d-inline-block mb-0">Delete Account</button> *@
         </div>
         <br />
@@ -379,6 +385,7 @@
 
     </div>
 </div>
+<div id="requesttoadmin"></div>
 <br />
 <br />
 <br />
@@ -388,24 +395,49 @@
 
 <script>
 
+    function requesttoadmin(physicianid) {
+        $.ajax({
+            url: "/Provider/RequestToAdminDetails/",
+            data: { "PhysicianId": physicianid },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#requesttoadmin").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                console.log("No Projects Found");
+            }
+        });
+    };
 
     function resetpass() {
         var password = $('#password').val();
         var PhysicianId = @Model.PhysicianId;
-        $.ajax({
-            url: "/Provider/ResetAccountPass/",
-            type: "POST",
-            async: false,
-            data: { "PhysicianId": PhysicianId, "password": password },
-            dataType: "html",
-            success: function (data) {
-                toastr.success('Password reset successfully');
-            },
-            error: function () {
-                alert("No Projects Found");
-                console.log('error');
-            }
-        });
+        if (password == "") {
+            $('#passwarn').html("Please enter password")
+        }
+        if (password == '@Model.Password') {
+            toastr.error('Please modify the password');
+        }
+        else if (password != "") {
+            $.ajax({
+                url: "/Provider/ResetAccountPass/",
+                type: "POST",
+                async: false,
+                data: { "PhysicianId": PhysicianId, "password": password },
+                dataType: "html",
+                success: function (data) {
+                    toastr.success('Password reset successfully');
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    console.log('error');
+                }
+            });
+            $('#passwarn').html("")
+        }
     };
 
     function updateuser() {

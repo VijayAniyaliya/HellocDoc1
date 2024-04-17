@@ -15,7 +15,7 @@ namespace Services.Models
         public string? AdditionalNotes { get; set; }
 
         public int RequestId { get; set; }
-    }
+    }   
 
     public class TransferNote
     {

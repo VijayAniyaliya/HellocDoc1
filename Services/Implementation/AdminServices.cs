@@ -5,6 +5,7 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -255,6 +256,7 @@ namespace Services.Implementation
                 model.PhoneNumber = data?.PhoneNumber!;
                 model.Email = data?.Email!;
                 model.Region = data?.City!;
+                model.ConfirmationNo = data?.Request.ConfirmationNumber!;
                 model.Address = data?.City + " " + data?.State + " " + data?.ZipCode;
                 model.RequestId = request_id;
                 model.RequestTypeId = data.Request.RequestTypeId;
@@ -283,7 +285,7 @@ namespace Services.Implementation
                         };
                         model.TransferNotes.Add(transferNotes);
                     }
-                }           
+                }
                 model.PhysicianNotes = data1?.PhysicianNotes;
                 model.AdminNotes = data1?.AdminNotes;
                 model.RequestId = request_id;
@@ -782,7 +784,7 @@ namespace Services.Implementation
                 };
 
                 foreach (var item in data.Request.RequestWiseFiles)
-                {   
+                {
                     DocumentDetails documentDetail = new DocumentDetails()
                     {
                         DocumentId = item.RequestWiseFileId,
@@ -898,11 +900,11 @@ namespace Services.Implementation
             return new EncounterFormViewModel();
         }
 
-        public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id , string email)
+        public async Task SubmitEncounterForm(EncounterFormViewModel model, int request_id, string email)
         {
             EncounterForm? encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
-            Physician? physician= await _context.Physicians.FirstOrDefaultAsync(a=>a.Email == email);
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
 
 
             if (encounter == null)
@@ -937,7 +939,7 @@ namespace Services.Implementation
                     PhysicianId = physician != null ? physician.PhysicianId : (int?)null,
                     AdminId = admin != null ? admin.AdminId : (int?)null,
                 };
-                await _context.EncounterForms.AddAsync(encounterForm);  
+                await _context.EncounterForms.AddAsync(encounterForm);
             }
             else
             {
@@ -1094,7 +1096,7 @@ namespace Services.Implementation
             }
         }
 
-        public async Task SubmitRequest(CreateRequestViewModel model)
+        public async Task SubmitRequest(CreateRequestViewModel model, string role)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -1150,8 +1152,8 @@ namespace Services.Implementation
                         Status = (int)Common.Enum.RequestStatus.Unassigned,
                         CreatedDate = DateTime.Now,
                         IsUrgentEmailSent = new BitArray(1),
-                        ConfirmationNumber = regiondata.Abbreviation + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
-                                             + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) +
+                        ConfirmationNumber = regiondata.Abbreviation.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
+                                             + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2).ToUpper() + model.FirstName.Substring(0, 2).ToUpper() +
                                              (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
                     };
                     await _context.Requests.AddAsync(request);
@@ -1177,10 +1179,17 @@ namespace Services.Implementation
                     RequestNote requestNote = new RequestNote()
                     {
                         RequestId = request.RequestId,
-                        AdminNotes = model.Notes,
                         CreatedBy = "Admin",
                         CreatedDate = DateTime.Now,
                     };
+                    if (role == "Admin")
+                    {
+                        requestNote.AdminNotes = model.Notes;
+                    }
+                    else
+                    {
+                        requestNote.PhysicianNotes = model.Notes;
+                    }
                     await _context.RequestNotes.AddAsync(requestNote);
                     request.RequestClients.Add(requestclient);
                     await _context.RequestClients.AddAsync(requestclient);
@@ -1683,6 +1692,55 @@ namespace Services.Implementation
             }
             await _context.SaveChangesAsync();
         }
+
+        //public async Task<List<UserAccessViewModel>> UserAccessData(int accounttype)
+        //{
+        //    UserAccessViewModel model = new UserAccessViewModel();
+        //    if (accounttype == 1)
+        //    {
+        //        var admin = from admins in _context.Admins
+        //                    join role in _context.Roles on admins.RoleId equals role.RoleId
+        //                    orderby admins.CreatedDate
+        //                    select new UserAccessData
+        //                    {
+        //                        fname = admins.FirstName,
+        //                        lname = admins.LastName,
+        //                        accType = role.AccountType,
+        //                        phone = admins.Mobile,
+        //                        status = admins.Status.Value,
+        //                        openReq = _context.Requests.Where(i => (i.Status != 10)).Count(),
+        //                    };
+        //        var result1 = admin.ToList();
+        //        model.userAccessDatas = result1;
+        //        return new List<UserAccessViewModel> { model };
+        //    }
+        //    else if (accounttype == 2)
+        //    {
+        //        var physician = from phy in _context.Physicians
+        //                        join role in _context.Roles on phy.RoleId equals role.RoleId
+        //                        orderby phy.CreatedDate
+        //                        select new UserAccessData
+        //                        {
+        //                            fname = phy.FirstName,
+        //                            lname = phy.LastName,
+        //                            accType = role.AccountType,
+        //                            phone = phy.Mobile,     
+        //                            status = phy.Status.Value,
+        //                            openReq = _context.Requests.Where(i => i.PhysicianId == phy.PhysicianId && new int[] { 1, 2, 4, 5, 6 }.Contains(i.Status)).Count()
+        //                        };
+        //        var result2 = physician.ToList();
+        //        model.userAccessDatas = result2;
+        //        return new List<UserAccessViewModel> { model };
+        //    }
+        //    else
+        //    {
+        //        var r1Data = (await UserAccessData(1)).userAccessDatas;
+        //        var r2Data = (await UserAccessData(2)).userAccessDatas;
+        //        var r3 = r1Data.Select(x => x).Union(r2Data.Select(x => x)).ToList();
+        //        model.userAccessDatas = r3;
+        //        return new List<UserAccessViewModel> { model };
+        //    }
+        //}
 
         public async Task<CreateAccessViewModel> FilterByAccountType(int accounttype, int role_id)
         {

@@ -78,15 +78,21 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Reset_password(AspNetUser user)
+        public async Task<IActionResult> Reset_password(LoginViewModel model)
         {
-            var aspuser = _context.AspNetUsers.FirstOrDefault(x => x.Email == user.Email);
-            if (aspuser != null)
+            LoginResponseViewModel? result =  await patientServices.ResetPassword(model);
+            if (result.Status == ResponseStatus.Success)
             {
-                await patientServices.ResetPassword(aspuser.Email);
+                TempData["success"] = "Reset Password link sent to your email";
+                return RedirectToAction("Login", "Patient");
             }
+            else
+            {
+                ModelState.AddModelError("", result.Message);
+                TempData["Error"] = result.Message;
+                return View();
 
-            return RedirectToAction("Login", "Patient");
+            }
         }
 
         [HttpGet("[controller]/[action]/{email}")]
@@ -248,12 +254,17 @@ namespace HellocDoc1.Controllers
 
         [CustomAuthorize("User")]
 
-        public async Task<IActionResult> Patient_Dashboard()
+        public IActionResult Patient_Dashboard()
         {
-            var email = HttpContext.Session.GetString("Email");
-            var data = await patientServices.DashboardService(email);
+            return View();
+        }
 
-            return View(data);
+        [CustomAuthorize("User")]
+
+        public async Task<IActionResult> DashboardData(int requestedPage)
+        {
+            var data = await patientServices.DashboardData(requestedPage);
+            return PartialView("_DashboardData",data);
         }
 
         [CustomAuthorize("User")]

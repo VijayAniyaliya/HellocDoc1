@@ -15,6 +15,7 @@ namespace Services.Models
         public DateTime DOB { get; set; }
 
         public string PhoneNumber { get; set; }
+        public string ConfirmationNo { get; set; }
 
         public string Email { get; set; }
 

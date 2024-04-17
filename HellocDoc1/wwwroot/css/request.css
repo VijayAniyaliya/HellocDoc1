@@ -22,7 +22,33 @@ body {
     width: 80px;
 }
 
+.icn::before {
+    border: 2px solid #0dcaf0;
+    border-radius: 50%;
+    line-height: 1;
+    font-size: 13px;
+    padding: 3px;
+}
 
+.icns::before {
+    font-weight: 900 !important;
+}
+
+.page-active {
+    border-radius: 50%;
+    background: #17a2b8;
+    color: white;
+}
+
+    .page-active:hover {
+        color: white;
+    }
+
+.page::before {
+    font-size: 20px;
+    font-weight: 900 !important;
+    margin-top: 2px;
+}
 
 .dark-mode {
     background-color: black;

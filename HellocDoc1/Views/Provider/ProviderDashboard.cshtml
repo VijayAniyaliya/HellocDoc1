@@ -61,7 +61,7 @@
                     <i class="bi bi-reply h5 mr-1"></i>
                     <span class="link-text">Send Link</span>
                 </a>
-                <a asp-action="CreateRequest" class="bg-info text-white rounded-3 p-2 text-decoration-none" style="cursor:pointer;">
+                <a asp-action="CreateRequestByProvider" class="bg-info text-white rounded-3 p-2 text-decoration-none" style="cursor:pointer;">
                     <i class="bi bi-pencil-square  mr-1"></i>
                     <span class="link-text">Create Requests</span>
                 </a>
@@ -318,22 +318,22 @@
         });
     });
 
-    // function sendmail() {
-    //     $.ajax({
-    //         url: "/Admin/SendMailDetails",
-    //         type: "POST",
-    //         data: {},
-    //         dataType: "html",
-    //         success: function (data) {
-    //             $("#mail").html(data);
-    //             const myModal = new bootstrap.Modal("#staticBackdrop", {});
-    //             myModal.show();
-    //         },
-    //         error: function () {
-    //             alert("No Projects Found");
-    //         }
-    //     });
-    // };
+    function sendmail() {
+        $.ajax({
+            url: "/Provider/SendMailDetails",
+            type: "POST",
+            data: {},
+            dataType: "html",
+            success: function (data) {
+                $("#mail").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+            }
+        });
+    };
 
     // $('#exportbtn').click(function () {
     //     if (typeof (filterdata.patientname == "undefined")) {

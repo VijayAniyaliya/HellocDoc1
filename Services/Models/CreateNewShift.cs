@@ -23,6 +23,9 @@ namespace Services.Models
         public string PhysicianName { get; set; }
 
         [Required(ErrorMessage = "ShiftDate is required")]
+        [Display(Name = "Shift Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime ShiftDate { get; set; }
 
         [Required(ErrorMessage = "StartTime is required")]

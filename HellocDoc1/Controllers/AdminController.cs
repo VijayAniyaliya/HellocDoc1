@@ -11,7 +11,7 @@ using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace HellocDoc1.Controllers
+namespace HellocDoc1.Controllers    
 {
     [Route("[controller]/[action]")]
     [CustomAuthorize("Admin")]
@@ -419,7 +419,10 @@ namespace HellocDoc1.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)
         {
-            await _adminServices.SubmitRequest(model);
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+            var role= roles.FirstOrDefault();
+            await _adminServices.SubmitRequest(model, role);
+            TempData["success"] = "Request Submitted Successfully";
             return RedirectToAction("AdminDashboard");
         }
 
@@ -539,7 +542,15 @@ namespace HellocDoc1.Controllers
         public IActionResult UserAccess()
         {
             return View();
-        }
+        }    
+
+        //public async Task<IActionResult> UserAccessData(int accounttype)
+        //{
+        //    var data = await _adminServices.UserAccessData(accounttype);
+        //    return PartialView("UserAccessTable", data);
+        //}
+
+
         public async Task<IActionResult> Schedulling()
         {
             var data = await _adminServices.Schedulling();

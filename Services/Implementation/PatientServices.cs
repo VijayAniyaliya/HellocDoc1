@@ -13,6 +13,7 @@ using System.Collections;
 using Common.Enum;
 using Services.Models;
 using HalloDoc.Utility;
+using Common.Helpers;
 
 namespace HellocDoc1.Services
 {
@@ -37,14 +38,26 @@ namespace HellocDoc1.Services
             _environment = environment;
 
         }
-        public async Task<List<Request>> DashboardService(string Email)
+        public async Task<PatientDashboardViewModel> DashboardData(int requestedPage)
         {
-            var user= await _context.Users.Where(a=> a.Email == Email).FirstOrDefaultAsync();
-            string lastName = user.FirstName + " " + user.LastName;
-            HttpContextAccessor.HttpContext.Session.Set("username", Encoding.UTF8.GetBytes((string)lastName));
-            List<Request> data = _context.Requests.Where(x => x.User.Email == Email).Include(a => a.RequestWiseFiles).ToList();
-            return data;
+            List<Request> requests = await _context.Requests.Include(a=>a.RequestWiseFiles).Include(a=>a.Physician).ToListAsync();
+            List<DashboardData> obj = requests.Select(a => new DashboardData() { RequestId = a.RequestId, CreatedDate = a.CreatedDate,Status= a.Status, FileCount = a.RequestWiseFiles.Count(), ProviderName= a.Physician?.FirstName+" "+a.Physician?.LastName }).ToList();
 
+            if (requests != null)
+            {
+                int count = obj!.Count();
+                int TotalPage = (int)Math.Ceiling(count / (double)5);
+                obj = obj!.Skip((requestedPage - 1) * 5).Take(5).ToList();
+
+                PatientDashboardViewModel model = new PatientDashboardViewModel()
+                {
+                    dashboardDatas = obj,
+                    CurrentPage = requestedPage,
+                    TotalPage=TotalPage,
+                };
+                return model;
+            }
+            return new PatientDashboardViewModel();
         }
 
         public async Task<PatientServiceModel> DocumentService(int request_id)
@@ -64,9 +77,9 @@ namespace HellocDoc1.Services
 
         }
 
-        public async Task UploadDocument(PatientServiceModel model,int request_id)
+        public async Task UploadDocument(PatientServiceModel model, int request_id)
         {
-            IEnumerable<IFormFile>upload = model.Doc;
+            IEnumerable<IFormFile> upload = model.Doc;
             foreach (var item in upload)
             {
 
@@ -79,12 +92,12 @@ namespace HellocDoc1.Services
                 RequestWiseFile requestWiseFile = new RequestWiseFile()
                 {
                     FileName = uniqueFileName,
-                    CreatedDate= DateTime.Now,
-                    
+                    CreatedDate = DateTime.Now,
+
                 };
                 _context.RequestWiseFiles.Add(requestWiseFile);
                 requestWiseFile.RequestId = request_id;
-                
+
             }
             await _context.SaveChangesAsync();
         }
@@ -234,14 +247,18 @@ namespace HellocDoc1.Services
                 await _context.SaveChangesAsync();
             };
         }
-
-        public async Task ResetPassword(string email)
+        public async Task<LoginResponseViewModel> ResetPassword(LoginViewModel model)
         {
-            var user = await _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefaultAsync();
 
-            if (user != null)
+            if (user == null)
             {
-                EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{email}\">Reset</a>");
+                return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
+            }
+            else
+            {
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{model.Email}\">Reset</a>");
+                return new LoginResponseViewModel() { Status = ResponseStatus.Success };
             }
         }
 

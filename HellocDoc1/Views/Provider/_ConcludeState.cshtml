@@ -3,6 +3,7 @@
 }
 
 @model Services.Models.AdminDashboardViewModel
+@using Common.Enum
 
 
 <table class="table d-md-table d-none">
@@ -62,7 +63,14 @@
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="Encounter" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-richtext"></i> Encounter</a></li>
+                            @if (item.Request.EncounterForms.Any(a => a.IsFinalize == true))
+                            {
+                                <li><a class="dropdown-item ps-3" onclick="downloadEncounter(@item.Request.RequestId)" style="cursor:pointer;"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            }
+                            else if (item.Request.Status == (int)RequestStatus.Concluded)
+                            {
+                                <li><a class="dropdown-item ps-3" asp-action="Encounter" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            }
                         </ul>
                     </div>
                 </td>
@@ -161,6 +169,7 @@
         }
     </div>
 </div>
+<div id="housecall"></div>
 
 @if (Model.TotalPage > 1)
 {
@@ -189,3 +198,24 @@ else
 }
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    function downloadEncounter(request_id) {
+        $.ajax({
+            url: "/Provider/DownloadEncounter/",
+            type: "POST",
+            data: { "request_id": request_id },
+            dataType: "html",
+            success: function (data) {
+                $("#housecall").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#housecall").html('An error has occurred');
+            }
+        });
+    };
+</script>

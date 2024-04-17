@@ -1,5 +1,4 @@
-﻿@model List<Data.Entity.Request>
-
+﻿
 @{
     ViewData["Title"] = "Patient_Dashboard";
     Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
@@ -33,108 +32,62 @@
 <div class="align-items-center justify-content-center pt-5">
     <div class=" mx-auto" style="width:95%">
         <h4 class="">Medical History</h4>
-        <div class="px-2 shadow dashboard-content" style="">
+        <div class=" shadow" style="">
 
             <button type="button"
-                    class="btn text-info border-1 border-info float-end my-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    class="btn text-info d-md-block d-none border-1 border-info float-end my-2 mr-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 Create New Request
-            </button>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Created Date ↓</th>
-                            <th scope="col">Current Status</th>
-                            <th scope="col">Document</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-
-                            <tr>
-                                <td>@item.CreatedDate</td>
-                                <td>
-                                    @switch (item.Status)
-                                    {
-                                        case 1:
-                                            <p>new</p>
-                                            break;
-                                        case 2:
-                                            <p>pending</p>
-                                            break;
-                                        case 3:
-                                            <p>active</p>
-                                            break;
-                                        case 4:
-                                            <p>conclude</p>
-                                            break;
-                                        case 5:
-                                            <p>to close</p>
-                                            break;
-                                        case 6:
-                                            <p>unpaid</p>
-                                            break;
-                                        default:
-                                            <p>clear</p>
-                                            break;
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-controller="Patient" asp-route-request_id="@item.RequestId" asp-action="Patient_Document" class="btn text-info border-1 border-info">(@item.RequestWiseFiles.Count) Document</a>
-                                </td>
-                            </tr>
-
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-
-        </div>
-        <br />
-        <br />
-        <br />
-        <div class="px-2 shadow dashboard-content-aco" style="">
-
+            </button>      
             <button type="button"
-                    class="btn text-info border-1 border-info float-end my-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                <span class="h5 fw-bold">+</span>
-
+                    class="btn text-info d-md-none d-block border border-info rounded-3 float-end my-2 mr-2 pt-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-plus h3"></i>
             </button>
-            <div class="accordion accordion-flush" id="accordionFlushExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="flush-headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Created Date
-                        </button>
-                    </h2>
-                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
-                    </div>
-                </div>
-
+            <div class="table-responsive" id="tableContent">
             </div>
 
 
-
         </div>
+
     </div>
 </div>
 
 
 
-@if (TempData["Success"] != null)
-{
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script type="text/javascript">
-        toastr.success('@TempData["Success"]');
-    </script>
-}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+
+    var requestedPage = 1;
+    $(document).ready(function () {
+        $.ajax({
+            url: "/Patient/DashboardData",
+            type: "POST",
+            data: { "requestedPage": requestedPage },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    function changepage(CurrentPage) {
+        $.ajax({
+            url: "/Patient/DashboardData",
+            type: "POST",
+            data: { "requestedPage": CurrentPage },
+            dataType: "html",
+            success: function (data) {
+                $("#tableContent").html(data);
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    }
+
+
     let buttonId = null;
 
     function passId(event) {
@@ -166,3 +119,12 @@
         }
     }
 </script>
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

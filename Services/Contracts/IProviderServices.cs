@@ -20,6 +20,7 @@ namespace Services.Contracts
         Task<AdminDashboardViewModel> NewState(AdminDashboardViewModel obj, string email);
         Task<AdminDashboardViewModel> PendingState(AdminDashboardViewModel obj, string email);
         Task<AdminDashboardViewModel> ProviderDashboard(string email);
+        Task RequestToAdmin(int PhysicianId, string message);
         Task TransferCaseToAdmin(int request_id, string reason, string email);
         Task UploadDocuments(ConcludeCareViewModel model, int request_id);
     }

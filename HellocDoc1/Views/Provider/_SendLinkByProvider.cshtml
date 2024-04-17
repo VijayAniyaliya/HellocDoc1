@@ -52,15 +52,15 @@
     $('#firstname').on('focus', function () {
         $('#firstname').css('border', '');
         $('.first').html('');
-    });  
+    });
     $('#lastname').on('focus', function () {
         $('#lastname').css('border', '');
         $('.last').html('');
-    });  
+    });
     $('#email').on('focus', function () {
         $('#email').css('border', '');
         $('.email').html('');
-    }); 
+    });
     $('#phone').on('focus', function () {
         $('#phone').css('border', '');
         $('.phone').html('');
@@ -74,7 +74,7 @@
             Email: $('#email').val(),
             Phonenumber: $('#phone').val(),
         }
-        console.log("email"+ linkdata)
+        console.log("email" + linkdata)
         // if (linkdata.Firstname == "") {
         //     $('#firstname').css('border', '1px solid red');
         //     $('.first').html('Please enter first name');
@@ -90,7 +90,7 @@
         if ((linkdata.Email == "") && (linkdata.Firstname == "") && (linkdata.Lastname == "") && (linkdata.Phonenumber == "")) {
             console.log("email");
             $('#email').css('border', '1px solid red');
-            $('.email').html('Please enter email');       
+            $('.email').html('Please enter email');
             $('#firstname').css('border', '1px solid red');
             $('.first').html('Please enter firstname');
             $('#lastname').css('border', '1px solid red');
@@ -100,7 +100,7 @@
         }
         else {
             $.ajax({
-                url: '/Admin/SendLink',
+                url: '/Provider/SendLink',
                 type: "post",
                 data: linkdata,
                 success: function () {
@@ -108,7 +108,7 @@
                     toastr.success('Link Sent Successfully');
                 },
                 error: function (error) {
-                    
+
                     console.error(error);
                 }
             });

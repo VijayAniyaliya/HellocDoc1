@@ -87,6 +87,7 @@
                 <label for="provider" class="">
                     Provider Notes
                 </label>
+                <span class="text-danger" id="notes"></span>
             </div>
         </div>
         <div class="text-end">
@@ -118,7 +119,10 @@
         if (@Model.IsFinalize == 0) {
             toastr.error('Please First finalize the encounter form');
         }
-        else {
+        else if(filterdata.ProviderNotes == ""){
+            $("#notes").html('Please Enter Notes');
+        }
+        else if(filterdata.ProviderNotes != "") {
             $.ajax({
                 url: "/Provider/ConcludeCase/",
                 type: "POST",
