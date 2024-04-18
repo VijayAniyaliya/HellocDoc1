@@ -14,9 +14,9 @@ namespace Services.Contracts
 
         Task<byte[]> DownloadFilesForRequest(int request_id);
 
-        Task Editing(string Email, User model);
+        Task Editing(string Email, ProfileViewModel model);
 
-        Task<User> ProfileService(string Email);
+        Task<ProfileViewModel> ProfileService(string Email);
 
         Task<LoginResponseViewModel> ResetPassword(LoginViewModel model);
 

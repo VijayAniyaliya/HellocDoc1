@@ -1,5 +1,8 @@
-﻿@using Microsoft.AspNetCore.Http;
-@inject IHttpContextAccessor HttpContextAccessor
+﻿@{
+    var claims = User.Identities.ElementAtOrDefault(1)?.Claims;
+    var firstName = claims?.FirstOrDefault(a => a.Type == "firstname")?.Value;
+    var lastName = claims?.FirstOrDefault(a => a.Type == "lastname")?.Value;
+}
 
 
 
@@ -39,7 +42,7 @@
                 <div class="d-flex align-items-center ">
                     <span class="canvas-content">
                         Welcome
-                        <span class="fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("username")</span>
+                        <span class="fw-bold">@firstName @lastName</span>
                     </span>
                 </div>
                 <div>
@@ -97,7 +100,7 @@
             <div class="offcanvas-body">
                 <div>
                     <span>
-                        <span class="fw-bold">@HttpContextAccessor.HttpContext.Session.GetString("username")</span>
+                        <span class="fw-bold">@firstName @lastName</span>
                     </span>
                     <div class="d-flex flex-column gap-2 h6 mt-2" style="">
 
@@ -119,7 +122,7 @@
             utilsScript:
                 "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
         });
-
+            
         }
         catch{
 

@@ -1,6 +1,8 @@
 ﻿using Data.Context;
 using Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Services.Implementation;
 using Services.Models;
 using System.Collections;
@@ -96,6 +98,88 @@ namespace Services.Contracts
                 return model;
             }
             return new SearchRecordsViewModel();
+        }
+
+        public async Task<byte[]> DownloadExcle(SearchRecordsViewModel model)
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                ISheet sheet = workbook.CreateSheet("FilteredRecord");
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue("Sr No.");
+                headerRow.CreateCell(1).SetCellValue("Request Id");
+                headerRow.CreateCell(2).SetCellValue("Patient Name");
+                headerRow.CreateCell(3).SetCellValue("Date Of Services");
+                headerRow.CreateCell(4).SetCellValue("RequestorName");
+                headerRow.CreateCell(5).SetCellValue("Close Case Date");
+                headerRow.CreateCell(6).SetCellValue("PatientPhone");
+                headerRow.CreateCell(7).SetCellValue("Zip");
+                headerRow.CreateCell(8).SetCellValue("Phone");
+                headerRow.CreateCell(9).SetCellValue("Email");
+                headerRow.CreateCell(10).SetCellValue("RequestStatus");
+                headerRow.CreateCell(11).SetCellValue("Physician");
+                headerRow.CreateCell(12).SetCellValue("PhysicianNotes");
+                headerRow.CreateCell(13).SetCellValue("AdminNotes");
+                headerRow.CreateCell(14).SetCellValue("PatientNotes");
+
+                for (int i = 0; i < model.requestClients.Count; i++)
+                {
+                    var reqclient = model.requestClients.ElementAt(i);
+                    var type = "";
+                    if (reqclient.Request.RequestTypeId == 1)
+                    {
+                        type = "Patient";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 2)
+                    {
+                        type = "Family";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 3)
+                    {
+                        type = "Business";
+                    }
+                    else if (reqclient.Request.RequestTypeId == 4)
+                    {
+                        type = "Concierge";
+                    }
+                    IRow row = sheet.CreateRow(i + 1);
+                    row.CreateCell(0).SetCellValue(i + 1);
+                    row.CreateCell(1).SetCellValue(reqclient.Request.RequestId);
+                    row.CreateCell(2).SetCellValue(reqclient.FirstName + " " + reqclient.LastName);
+                    if (reqclient.Request.AcceptedDate.HasValue)
+                    {
+                    row.CreateCell(3).SetCellValue(reqclient.Request.AcceptedDate.Value.ToString("MMM dd yyyy"));
+                    }
+                    else
+                    {
+                    row.CreateCell(3).SetCellValue("");
+                    }
+
+
+                    row.CreateCell(4).SetCellValue(type);
+                    var createdDate = reqclient.Request.RequestStatusLogs.FirstOrDefault(a => a.Status == 8)?.CreatedDate;
+                    row.CreateCell(5).SetCellValue(createdDate != null ? createdDate.ToString() : ""); 
+                    row.CreateCell(6).SetCellValue(reqclient.PhoneNumber);
+                    row.CreateCell(7).SetCellValue(reqclient.ZipCode);
+                    row.CreateCell(8).SetCellValue(reqclient.PhoneNumber);
+                    row.CreateCell(9).SetCellValue(reqclient.Email);
+                    row.CreateCell(10).SetCellValue(reqclient.Request.Status);
+                    row.CreateCell(11).SetCellValue(reqclient.Request.Physician.FirstName);
+                    var physicianNotes = reqclient.Request.RequestNotes.FirstOrDefault()?.PhysicianNotes;
+                    row.CreateCell(12).SetCellValue(physicianNotes != null ? physicianNotes : "");
+
+                    var adminNotes = reqclient.Request.RequestNotes.FirstOrDefault()?.AdminNotes;
+                    row.CreateCell(13).SetCellValue(adminNotes != null ? adminNotes : "");
+                    row.CreateCell(14).SetCellValue(reqclient.Notes);
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream);
+                    var content = stream.ToArray();
+                    return content;
+                }
+            }
         }
 
         public async Task<LogsDataViewModel> EmailLogs()

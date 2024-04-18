@@ -294,14 +294,14 @@ namespace HellocDoc1.Controllers
         [CustomAuthorize("User")]
 
         public async Task<IActionResult> Patient_Profile()
-        {
+            {
             var email = HttpContext.Session.GetString("Email");
             var data = await patientServices.ProfileService(email);
             return View(data);
         }
 
         [CustomAuthorize("User")]
-        public async Task<IActionResult> Editing(User model)
+        public async Task<IActionResult> Editing(ProfileViewModel model)
         {
             var email = HttpContext.Session.GetString("Email");
             await patientServices.Editing(email, model);

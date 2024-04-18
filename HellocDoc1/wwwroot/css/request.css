@@ -10,6 +10,17 @@ body {
     border-radius: 1%;
 }
 
+.checks {
+    height: 20px;
+    width: 20px;
+    box-shadow:none;
+}
+
+    .checks:checked {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
 .back-btn {
     width: 80px;
 }

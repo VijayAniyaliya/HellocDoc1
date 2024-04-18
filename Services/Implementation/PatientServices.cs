@@ -14,6 +14,7 @@ using Common.Enum;
 using Services.Models;
 using HalloDoc.Utility;
 using Common.Helpers;
+using System.Globalization;
 
 namespace HellocDoc1.Services
 {
@@ -40,8 +41,8 @@ namespace HellocDoc1.Services
         }
         public async Task<PatientDashboardViewModel> DashboardData(int requestedPage)
         {
-            List<Request> requests = await _context.Requests.Include(a=>a.RequestWiseFiles).Include(a=>a.Physician).ToListAsync();
-            List<DashboardData> obj = requests.Select(a => new DashboardData() { RequestId = a.RequestId, CreatedDate = a.CreatedDate,Status= a.Status, FileCount = a.RequestWiseFiles.Count(), ProviderName= a.Physician?.FirstName+" "+a.Physician?.LastName }).ToList();
+            List<Request> requests = await _context.Requests.Include(a => a.RequestWiseFiles).Include(a => a.Physician).ToListAsync();
+            List<DashboardData> obj = requests.Select(a => new DashboardData() { RequestId = a.RequestId, CreatedDate = a.CreatedDate, Status = a.Status, FileCount = a.RequestWiseFiles.Count(), ProviderName = a.Physician?.FirstName + " " + a.Physician?.LastName }).ToList();
 
             if (requests != null)
             {
@@ -53,7 +54,7 @@ namespace HellocDoc1.Services
                 {
                     dashboardDatas = obj,
                     CurrentPage = requestedPage,
-                    TotalPage=TotalPage,
+                    TotalPage = TotalPage,
                 };
                 return model;
             }
@@ -139,23 +140,39 @@ namespace HellocDoc1.Services
 
         }
 
-        public async Task<User> ProfileService(string Email)
+        public async Task<ProfileViewModel> ProfileService(string Email)
         {
-            User data = await _context.Users.Where(x => x.Email == Email).FirstOrDefaultAsync();
-            return data;
-
+            User? data = await _context.Users.Where(x => x.Email == Email).FirstOrDefaultAsync();
+            if (data != null)
+            {
+                int month = (int)Enum.Parse(typeof(Month), data.StrMonth!);
+                ProfileViewModel model = new ProfileViewModel()
+                {
+                    UserId = data.UserId,
+                    FirstName = data.FirstName,
+                    LastName = data.LastName!,
+                    phone = data.Mobile!,
+                    Email= data.Email,
+                    DOB = DateTime.ParseExact($"{data.IntYear}-{month}-{data.IntDate}", "yyyy-M-d", CultureInfo.InvariantCulture),
+                    Street = data.Street!,
+                    City = data.City!,
+                    State = data.State!,
+                    ZipCode = data.ZipCode!,
+                };
+                return model;
+            }
+            return new ProfileViewModel();
         }
 
-        public async Task Editing(string email, User model)
+        public async Task Editing(string email, ProfileViewModel model)
         {
-            User userdata = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
+            User? userdata = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
-            if (userdata.Email == model.Email)
+            if (userdata!.Email ==  model.Email)
             {
-
                 userdata.FirstName = model.FirstName;
                 userdata.LastName = model.LastName;
-                userdata.Mobile = model.Mobile;
+                userdata.Mobile = model.phone;
                 userdata.Email = model.Email;
                 userdata.Street = model.Street;
                 userdata.City = model.City;
@@ -164,22 +181,19 @@ namespace HellocDoc1.Services
                 userdata.ModifiedDate = DateTime.Now;
 
                 _context.Users.Update(userdata);
-
+            }
+            else
+            {
+                AspNetUser aspnetuser = new AspNetUser()
+                {
+                    UserName = model.FirstName + " " + model.LastName,
+                    Email = model.Email,
+                    PhoneNumber = model.phone,
+                    ModifiedDate = DateTime.Now,
+                };
+                _context.AspNetUsers.Add(aspnetuser);
                 await _context.SaveChangesAsync();
             }
-            //else
-            //{
-            //    AspNetUser aspnetuser = new AspNetUser()
-            //    {
-            //        UserName = model.FirstName + " " + model.LastName,
-            //        Email = model.Email,
-            //        PhoneNumber = model.Mobile,
-            //        ModifiedDate = DateTime.Now,
-
-            //    };
-
-            //    _context.AspNetUsers.Add(aspnetuser);
-            //}
         }
 
         public async Task SubmitInformationSomeone(SubmitInfoViewModel model)

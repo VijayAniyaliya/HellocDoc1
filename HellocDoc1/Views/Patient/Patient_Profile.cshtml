@@ -1,4 +1,4 @@
-﻿@model Data.Entity.User
+﻿@model Services.Models.ProfileViewModel
 
 @{
     ViewData["Title"] = "Patient_Profile";
@@ -28,6 +28,8 @@
                             <div class="form-floating mb-3">
                                 <input type="text" asp-for="FirstName" class="form-control update" id="floatingInput" placeholder="first name" disabled />
                                 <label for="floatingInput" class="">First Name</label>
+                                <span asp-validation-for="FirstName" class="text-danger profile"></span>
+
                             </div>
 
                         </div>
@@ -35,12 +37,16 @@
                             <div class="form-floating mb-3">
                                 <input type="text" asp-for="LastName" class="form-control update" id="floatingInput" placeholder="last name" disabled />
                                 <label for="floatingInput" class="">Last Name</label>
+                                <span asp-validation-for="LastName" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="date" asp-for="ModifiedDate" class="form-control update" id="floatingInput" placeholder="last name" disabled />
+                                <input type="date" asp-for="DOB" class="form-control update" id="floatingInput" max="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="last name" disabled />
                                 <label for="floatingInput" class="">Date of Birth</label>
+                                <span asp-validation-for="DOB" class="text-danger profile"></span>
+
                             </div>
                         </div>
                     </div>
@@ -54,21 +60,25 @@
                             <div class="form-floating mb-3">
                                 <select class="form-select update" id="floatingSelect" aria-label="Floating label select example" disabled>
                                     <option selected value="1">Mobile</option>
-                                    <option value="2">Telephone</option>
+                                    <option value="0">Telephone</option>
                                 </select>
                                 <label for="floatingSelect">Type</label>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating  mb-3">
-                                <input type="tel" asp-for="Mobile" class="form-control pt-3 pb-3 update" id="phone" disabled>
+                                <input type="tel" asp-for="phone" class="form-control pt-3 pb-3 update" id="phone" disabled>
+                                <span asp-validation-for="phone" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                                       placeholder="abc@gmail.com" readonly />
+                                <input type="email" asp-for="Email" class="form-control update" id="floatingInput"
+                                       placeholder="abc@gmail.com" disabled />
                                 <label for="floatingInput" class="">Email</label>
+                                <span asp-validation-for="Email" class="text-danger profile"></span>
+
                             </div>
                         </div>
                     </div>
@@ -83,24 +93,32 @@
                                 <input type="text" asp-for="Street" class="form-control update" id="floatingInput"
                                        placeholder="street address" disabled />
                                 <label for="floatingInput" class="">Street</label>
+                                <span asp-validation-for="Street" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <input type="text" asp-for="City" class="form-control update" id="floatingInput" placeholder="city" disabled />
                                 <label for="floatingInput" class="">City</label>
+                                <span asp-validation-for="City" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <input type="text" asp-for="State" class="form-control update" id="floatingInput" placeholder="state" disabled />
                                 <label for="floatingInput" class="">State</label>
+                                <span asp-validation-for="State" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating mb-3">
                                 <input type="text" asp-for="ZipCode" class="form-control update" id="floatingInput" placeholder="zip codes" disabled />
                                 <label for="floatingInput" class="">Zip Code</label>
+                                <span asp-validation-for="ZipCode" class="text-danger profile"></span>
+
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -144,7 +162,7 @@
         for (var i = 0; i < update.length; i++) {
             update[i].removeAttribute('disabled');
         }
-    });
+    }); 
     document.getElementById('cancel').addEventListener('click', function () {
         var element = document.getElementById('Editbtn');
         var modify = document.getElementsByClassName('modify');
@@ -155,7 +173,9 @@
         }   
         for (var i = 0; i < update.length; i++) {
             update[i].setAttribute('disabled', 'disabled');
-        }
+            update[i].style.border = '1px solid #ced4da';
+        }       
+        $(".profile").html('');
     });
 </script>
 

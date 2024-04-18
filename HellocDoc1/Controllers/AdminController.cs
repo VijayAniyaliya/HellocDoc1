@@ -736,6 +736,19 @@ namespace HellocDoc1.Controllers
             return PartialView("_SearchRecordsData", data);
         }
 
+        public async Task<IActionResult> ExportSearchData(SearchRecordsViewModel obj)
+        {
+            int CurrentPage = 0;
+            int PageSize = 5;
+            SearchRecordsViewModel model = new SearchRecordsViewModel();
+            model = await _recordsServices.SearchRecords(obj);
+            var record = await _recordsServices.DownloadExcle(model);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{model.PatientName}_{strDate}.xlsx";
+            return File(record, contentType, filename);
+        }
+
         public async Task<IActionResult> EmailLogs()
         {
             var data = await _recordsServices.EmailLogs();

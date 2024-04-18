@@ -13,5 +13,6 @@ namespace Services.Implementation
         Task<LogsDataViewModel> EmailLogs();
 
         Task UnblockCase(int requestid);
+        Task<byte[]> DownloadExcle(SearchRecordsViewModel model);
     }
 }
