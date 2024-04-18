@@ -23,11 +23,18 @@
     <tbody>
         @foreach (var item in Model.requestClients)
         {
-
+                
             <tr>
                 <td>@item.FirstName, @item.LastName</td>
                 <td>@Enum.Parse(typeof(Common.Enum.RequestType), @item.Request.RequestTypeId.ToString())</td>
-                <td>Date Of Service</td>
+                @if (item.Request.AcceptedDate.HasValue)
+                {
+                    <td>@item.Request.AcceptedDate.Value.ToString("MMM dd yyyy")</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
                 <td>@item.Request.RequestStatusLogs.FirstOrDefault(a=> a.Status == 6)?.CreatedDate.ToString("MMM dd yyyy")</td>
                 <td>@item.Email</td>
                 <td>@item.PhoneNumber</td>

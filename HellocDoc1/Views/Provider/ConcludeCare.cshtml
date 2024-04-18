@@ -25,7 +25,7 @@
 
         <div class="py-3 px-3 h5 fw-bold d-flex justify-content-between">
             <div>Encounter Forms</div>
-            <form asp-action="UploadEncounter" asp-controller="Provider" id="uploadForm" method="post" enctype="multipart/form-data">
+            <form asp-action="UploadDocuments" asp-controller="Provider" id="uploadForm" method="post" enctype="multipart/form-data">
                 <input asp-for="RequestId" value="@Model.RequestId" hidden />
                 <div class="file btn text-info border-info mr-3">
                     <i class="bi bi-cloud-arrow-up"></i>
@@ -55,10 +55,6 @@
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>No Documents Found</tr>
                     }
                 </tbody>
             </table>

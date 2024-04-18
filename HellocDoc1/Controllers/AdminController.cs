@@ -19,11 +19,12 @@ namespace HellocDoc1.Controllers
     public class AdminController : Controller
     {
         private readonly IAdminServices _adminServices;
+        private readonly IRecordsServices _recordsServices;
 
-        public AdminController(IAdminServices adminServices)
+        public AdminController(IAdminServices adminServices, IRecordsServices recordsServices)
         {
             _adminServices = adminServices;
-
+            _recordsServices = recordsServices;
         }
 
         public async Task<IActionResult> AdminDashboard()
@@ -538,17 +539,18 @@ namespace HellocDoc1.Controllers
             await _adminServices.CreateAdminAccount(model, regionselected);
             return RedirectToAction("Access");
         }
-
+            
         public IActionResult UserAccess()
         {
-            return View();
-        }    
+            return View();  
+        }
 
-        //public async Task<IActionResult> UserAccessData(int accounttype)
-        //{
-        //    var data = await _adminServices.UserAccessData(accounttype);
-        //    return PartialView("UserAccessTable", data);
-        //}
+        [HttpGet]
+        public IActionResult ShowUserAccess(int selectedValue)
+        {
+            var obj = _adminServices.FetchAccess(selectedValue);
+            return PartialView("_UserAccessTable", obj);
+        }   
 
 
         public async Task<IActionResult> Schedulling()
@@ -713,13 +715,13 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> PatientHistoryData(PatientHistoryViewModel model)
         {
-            var data = await _adminServices.PatientHistory(model);
+            var data = await _recordsServices.PatientHistory(model);
             return PartialView("_PatientHistoryData", data);
         }
 
         public async Task<IActionResult> PatientRecords(int userid)
         {
-            var data = await _adminServices.PatientRecords(userid);
+            var data = await _recordsServices.PatientRecords(userid);
             return View(data);
         }
 
@@ -730,30 +732,30 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> SearchRecordsData(SearchRecordsViewModel model)
         {
-            var data = await _adminServices.SearchRecords(model);
+            var data = await _recordsServices.SearchRecords(model);
             return PartialView("_SearchRecordsData", data);
         }
 
         public async Task<IActionResult> EmailLogs()
         {
-            var data = await _adminServices.EmailLogs();
+            var data = await _recordsServices.EmailLogs();
             return View(data);
         }
 
         public async Task<IActionResult> EmailLogsData(LogsDataViewModel model)
         {
-            var data = await _adminServices.EmailLogsData(model);
+            var data = await _recordsServices.EmailLogsData(model);
             return PartialView("_EmailLogsData", data);
         }
 
         public async Task<IActionResult> SMSLogs()
         {
-            var data = await _adminServices.EmailLogs();
+            var data = await _recordsServices.EmailLogs();
             return View(data);
         }
         public async Task<IActionResult> SMSLogsData(LogsDataViewModel model)
         {
-            var data = await _adminServices.SMSLogsData(model);
+            var data = await _recordsServices.SMSLogsData(model);
             return PartialView("_SMSLogsData", data);
         }
 
@@ -764,13 +766,13 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> BlockHistoryData(BlockHistoryViewModel model)
         {
-            var data = await _adminServices.BlockHistoryData(model);
+            var data = await _recordsServices.BlockHistoryData(model);
             return PartialView("_BlockHistoryData", data);
         }
 
         public async Task<IActionResult> UnblockCase(int requestid)
         {
-            await _adminServices.UnblockCase(requestid);
+            await _recordsServices.UnblockCase(requestid);
             return NoContent();
         }
     }

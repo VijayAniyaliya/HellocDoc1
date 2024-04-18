@@ -2,6 +2,8 @@
 using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -243,7 +245,7 @@ namespace Services.Implementation
             {
                 data.Status = (int)RequestStatus.Unassigned;
                 data.PhysicianId = null;
-                data.ModifiedDate= DateTime.Now;
+                data.ModifiedDate = DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
@@ -265,12 +267,14 @@ namespace Services.Implementation
             if (request != null)
             {
                 request.Status = (int)RequestStatus.Concluded;
+                request.ModifiedDate = DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
                     Status = (int)RequestStatus.Concluded,
                     CreatedDate = DateTime.Now,
                 };
+                _context.Requests.Update(request);
                 _context.RequestStatusLogs.Add(requestStatusLog);
                 await _context.SaveChangesAsync();
             }
@@ -282,12 +286,14 @@ namespace Services.Implementation
             if (request != null)
             {
                 request.Status = (int)RequestStatus.MdOnSite;
+                request.ModifiedDate = DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
                     Status = (int)RequestStatus.MdOnSite,
                     CreatedDate = DateTime.Now,
                 };
+                _context.Requests.Update(request);
                 _context.RequestStatusLogs.Add(requestStatusLog);
                 await _context.SaveChangesAsync();
             }
@@ -299,12 +305,14 @@ namespace Services.Implementation
             if (request != null)
             {
                 request.Status = (int)RequestStatus.Concluded;
+                request.ModifiedDate = DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,
                     Status = (int)RequestStatus.Concluded,
                     CreatedDate = DateTime.Now,
                 };
+                _context.Requests.Update(request);
                 _context.RequestStatusLogs.Add(requestStatusLog);
                 await _context.SaveChangesAsync();
             }
@@ -320,6 +328,99 @@ namespace Services.Implementation
                 _context.EncounterForms.Update(encounterForm);
             }
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IActionResult> DownloadEncounter(int request_id)
+        {
+            var request = await _context.RequestClients.Include(u => u.Request).FirstOrDefaultAsync(U => U.RequestId == request_id);
+            var encounter = await _context.EncounterForms.FirstOrDefaultAsync(x => x.RequestId == request!.RequestId);
+            EncounterFormViewModel model = new EncounterFormViewModel();
+            if (request != null)
+            {
+                model.RequestId = request.RequestId;
+                model.FirstName = request.FirstName;
+                model.LastName = request.LastName;
+            }
+            model.Dateofbirth = request.StrMonth + " " + request.IntDate + " " + request.IntYear;
+            model.PhoneNumber = request.PhoneNumber;
+            model.Email = request.Email;
+            model.Location = request.Address;
+
+            if (encounter != null)
+            {
+                model.HistoryOfPatient = encounter.HistoryOfPresentIllnessOrInjury;
+                model.MedicalHistory = encounter.MedicalHistory;
+                model.Medications = encounter.Medications;
+                model.Allergies = encounter.Allergies;
+                model.Temp = encounter.Temp;
+                model.HeartRate = encounter.Hr;
+                model.RespiratoryRate = encounter.Rr;
+                model.BloodPressure = encounter.BloodPressureSystolic;
+                model.BloodPressure1 = encounter.BloodPressureDiastolic;
+                model.O2 = encounter.O2;
+                model.Pain = encounter.Pain;
+                model.Heent = encounter.Heent;
+                model.CV = encounter.Cv;
+                model.Chest = encounter.Chest;
+                model.ABD = encounter.Abd;
+                model.Extr = encounter.Extremeties;
+                model.Skin = encounter.Skin;
+                model.Neuro = encounter.Neuro;
+                model.Other = encounter.Other;
+                model.Disgnosis = encounter.Diagnosis;
+                model.TreatmentPlan = encounter.TreatmentPlan;
+                model.MedicationDispnsed = encounter.MedicationsDispensed;
+                model.Procedure = encounter.Procedures;
+                model.FollowUp = encounter.FollowUp;
+                model.IsFinalize = encounter.IsFinalize;
+            }
+            var pdf = new iTextSharp.text.Document();
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = PdfWriter.GetInstance(pdf, memoryStream);
+                pdf.Open();
+
+                // Add content to the PDF here. For example:
+                pdf.Add(new Paragraph($"First Name: {model.FirstName}"));
+                pdf.Add(new Paragraph($"Last Name: {model.LastName}"));
+                pdf.Add(new Paragraph($"DOB: {model.Dateofbirth}"));
+                pdf.Add(new Paragraph($"Mobile: {model.PhoneNumber}"));
+                pdf.Add(new Paragraph($"Email: {model.Email}"));
+                pdf.Add(new Paragraph($"Location: {model.Location}"));
+                pdf.Add(new Paragraph($"History Of Illness: {model.HistoryOfPatient}"));
+                pdf.Add(new Paragraph($"Medical History: {model.MedicalHistory}"));
+                pdf.Add(new Paragraph($"Medication: {model.Medications}"));
+                pdf.Add(new Paragraph($"Allergies: {model.Allergies}"));
+                pdf.Add(new Paragraph($"Temp: {model.Temp}"));
+                pdf.Add(new Paragraph($"HR: {model.HeartRate}"));
+                pdf.Add(new Paragraph($"RR: {model.RespiratoryRate}"));
+                pdf.Add(new Paragraph($"BPs: {model.BloodPressure}"));
+                pdf.Add(new Paragraph($"BPd: {model.BloodPressure1}"));
+                pdf.Add(new Paragraph($"O2: {model.O2}"));
+                pdf.Add(new Paragraph($"Pain: {model.Pain}"));
+                pdf.Add(new Paragraph($"Heent: {model.Heent}"));
+                pdf.Add(new Paragraph($"CV: {model.CV}"));
+                pdf.Add(new Paragraph($"Chest: {model.Chest}"));
+                pdf.Add(new Paragraph($"ABD: {model.ABD}"));
+                pdf.Add(new Paragraph($"Extr: {model.Extr}"));
+                pdf.Add(new Paragraph($"Skin: {model.Skin}"));
+                pdf.Add(new Paragraph($"Neuro: {model.Neuro}"));
+                pdf.Add(new Paragraph($"Other: {model.Other}"));
+                pdf.Add(new Paragraph($"Diagnosis: {model.Disgnosis}"));
+                pdf.Add(new Paragraph($"Treatment Plan: {model.TreatmentPlan}"));
+                pdf.Add(new Paragraph($"Medications Dispended: {model.MedicationDispnsed}"));
+                pdf.Add(new Paragraph($"Procedure: {model.Procedure}"));
+                pdf.Add(new Paragraph($"Followup: {model.FollowUp}"));
+                pdf.Add(new Paragraph($"Is Finaled: {model.IsFinalize}"));
+
+                pdf.Close();
+                writer.Close();
+
+                var bytes = memoryStream.ToArray();
+                var result = new FileContentResult(bytes, "application/pdf");
+                result.FileDownloadName = "Encounter_" + model.FirstName + " " + model.LastName + ".pdf";
+                return result;
+            }
         }
 
         public async Task<ConcludeCareViewModel> ConcludeCare(int request_id)

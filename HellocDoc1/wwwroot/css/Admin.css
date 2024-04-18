@@ -2,15 +2,34 @@
     height: 100vh;
 }
 
+
+/*
 .dark-mode {
     background-color: black;
     color: white;
-}
+}*/
 
 .canvas {
     display: none;
 }
 
+
+[data-bs-theme="dark"] .temp {
+    background-color: var(--bs-dark);
+    color: white;
+}
+
+
+[data-bs-theme="dark"] .BackTheme, [data-bs-theme="dark"] .iti-mobile, [data-bs-theme="dark"] .modal-body, [data-bs-theme="dark"] .form-control {
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+}
+
+[data-bs-theme="light"] .BackTheme, [data-bs-theme="light"] .iti-mobile {
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
+}
+            
 @media only screen and (max-width:768px) {
     .canvas {
         display: block;

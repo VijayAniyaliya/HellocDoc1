@@ -9,10 +9,13 @@ namespace Services.Models
     public class UserAccessViewModel
     {
 
-        public List<UserAccessData> userAccessDatas { get; set; }
+        public List<UserAccess> userAccessDatas { get; set; }
+        public int CurrentPage { get; set; }
+
+        public int TotalPage { get; set; }
 
     }
-    public class UserAccessData
+    public class UserAccess
     {
         public string fname { get; set; }
         public string lname { get; set; }
@@ -20,6 +23,8 @@ namespace Services.Models
         public string phone { get; set; }
         public short status { get; set; }
         public int openReq { get; set; }
+
+
 
     }
 }

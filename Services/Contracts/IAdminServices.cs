@@ -84,24 +84,20 @@ namespace Services.Contracts
         Task AddNewBusiness(AddBusinessViewModel model, int VendorId);
         Task DeleteBusiness(int VendorId);
 		Task<List<PhysicianLocation>> GetPhysicianlocations();
-		Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel model);
 		Task<SchedullingViewModel> MonthSchedullingData(int region, DateTime date);
-		Task<PatientHistoryViewModel> PatientRecords(int userid);
-		Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj);
+
         Task ReturnShift(int ShiftDetailId, string email);
         Task DeleteShift(int ShiftDetailId, string email);
         Task EditShift(CreateNewShift model, string email);
-        Task<LogsDataViewModel> EmailLogsData(LogsDataViewModel model);
-        Task<LogsDataViewModel> SMSLogsData(LogsDataViewModel model);
+
         Task<SchedullingViewModel> MdOnCall();
         Task<SchedullingViewModel> MdOnCallData(int region);
         Task<RequestedShiftViewModel> RequestedShifts();
         Task<RequestedShiftViewModel> RequestedShiftsData(int region, int requestedPage);
         Task DeleteSelectedShift(List<int> selectedShifts, string email);
         Task ApproveSelectedShift(List<int> selectedShifts, string email);
-        Task<BlockHistoryViewModel> BlockHistoryData(BlockHistoryViewModel obj);
-        Task UnblockCase(int requestid);
-        Task<LogsDataViewModel> EmailLogs();
-        Task<List<UserAccessViewModel>> UserAccessData(int accounttype);
+   
+      
+        UserAccessViewModel FetchAccess(int selectedValue);
     }
 }

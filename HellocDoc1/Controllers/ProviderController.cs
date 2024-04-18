@@ -226,6 +226,12 @@ namespace HellocDoc1.Controllers
             await _providerServices.finalize(request_id);
             TempData["Success"] = "Encounter form succefully finalized";
             return RedirectToAction("ProviderDashboard");
+        }     
+
+        public async Task<IActionResult> DownloadEncounterForm(int request_id)
+        {
+            await _providerServices.DownloadEncounter(request_id);
+            return NoContent();
         }
 
         public async Task<IActionResult> ConcludeCare(int request_id)

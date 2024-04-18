@@ -1,4 +1,5 @@
-﻿using Services.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Models;
 
 namespace Services.Contracts
 {
@@ -12,6 +13,7 @@ namespace Services.Contracts
         Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj, string email);
         Task Consult(int request_id);
         Task<CreateNewShift> CreateMyShift(string email);
+        Task<IActionResult> DownloadEncounter(int request_id);
         Task<PhysicianAccountViewModel> EditPhysician(string email);
         Task finalize(int request_id);
         Task HouseCall(int request_id);

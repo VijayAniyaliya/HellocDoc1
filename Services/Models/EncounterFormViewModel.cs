@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Services.Models
         public string LastName { get; set; }
         public string Location { get; set; }
         public DateTime DOB { get; set; }
+        public string Dateofbirth { get; set; }
         public DateTime Date { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
@@ -43,5 +45,6 @@ namespace Services.Models
         public string? MedicationDispnsed { get; set; }
         public string? Procedure { get; set; }
         public string? FollowUp { get; set; }
+        public bool? IsFinalize { get; set; }
     }
 }

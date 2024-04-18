@@ -16,6 +16,8 @@ builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConcirgeRequest, ConcirgeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IPatientServices, PatientServices>();
+builder.Services.AddTransient< IRecordsServices, RecordsServices>();
+builder.Services.AddTransient< ICaseServices ,CaseServices > ();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IAdminServices, AdminServices>();
 builder.Services.AddTransient<IProviderServices, ProviderServices>();

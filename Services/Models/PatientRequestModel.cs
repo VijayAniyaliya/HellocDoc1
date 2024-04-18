@@ -5,8 +5,8 @@ namespace HellocDoc1.Services.Models
 {
     public class PatientRequestModel
     {
-        public string? Symptoms { get; set; }
-
+        public string? Symptoms { get; set; }   
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
 

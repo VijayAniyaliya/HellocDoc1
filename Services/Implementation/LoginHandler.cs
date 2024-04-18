@@ -62,7 +62,7 @@ namespace HelloDoc1.Services
                 await _context.SaveChangesAsync();
 
                 User user1 = new User()
-                {
+                {               
                     UserId = 10,
                     AspNetUserId = aspNetUser.Id,
                     FirstName = user.FirstName,

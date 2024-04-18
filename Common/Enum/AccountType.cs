@@ -12,5 +12,5 @@ namespace Common.Enum
         Physician = 2,
         Patient = 3,
         All = 4,
-    }
+    }  
 }

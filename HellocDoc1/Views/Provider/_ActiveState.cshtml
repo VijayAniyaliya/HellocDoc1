@@ -241,23 +241,6 @@ else
         });
     };
 
-    function downloadEncounter(request_id) {
-        $.ajax({
-            url: "/Provider/DownloadEncounter/",
-            type: "POST",
-            data: { "request_id": request_id },
-            dataType: "html",
-            success: function (data) {
-                $("#housecall").html(data);
-                const myModal = new bootstrap.Modal("#staticBackdrop", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#housecall").html('An error has occurred');
-            }
-        });
-    };
 
     function Housecalling(request_id) {
         $.ajax({

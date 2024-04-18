@@ -1,4 +1,5 @@
-﻿@model Services.Models.UserAccessViewModel
+﻿@using Services.Models;
+@model UserAccessViewModel
 
 <div class="table-responsive mt-2 d-md-block d-none">
     <table class="table">
@@ -14,28 +15,86 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var item in Model)
-            {  
-            <tr>
-                <td>@item.</td>     
-                <td>AccountType</td>
-                <td>AccountType</td>
-                <td>AccountType</td>
-                <td>AccountType</td>
-                <td class="text-lg-center">
-                    <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
-                </td>
-            </tr>
+            @foreach (var item in Model.userAccessDatas)    
+            {
+                <tr class="align-middle">
+                    <td>
+                        @Enum.Parse( typeof(Common.Enum.AccountType), item.accType.ToString())
+                    </td>
+                    <td>
+                        @item.fname, @item.lname
+                    </td>
+                    <td>
+                        @item.phone
+                    </td>
+                    <td>
+                        @Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.status.ToString())
+                    </td>
+                    <td>
+                        @item.openReq
+                    </td>
+                    <td>
+                        <button type="button" class="btn  border-info text-info">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
-<div class="d-md-none d-block">
-    <hr />
-    <div class="mb-2 px-3">Name:</div>
-    <div class="mb-2 px-3">Account Type:</div>
-    <div class="px-3">
-        <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Edit</button>
+<div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+    <div class="accordion-item">
+        @foreach (var item in Model.userAccessDatas)
+        {
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed pb-4" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.phone" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+                    <div class="">@item.fname @item.lname</div>
+                    <div class="">@Enum.Parse( typeof(Common.Enum.AccountType), item.accType.ToString())</div>
+                </button>
+            </h2>
+            <div id="flush-collapseOne-@item.phone" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+
+                <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-telephone mr-1 icn"></i>Phone: <span class="fw-bold">@item.phone</span></div>
+                    <div><i class="bi bi-check text-info fw-bold mr-2 icn"></i>Status:  <span class="fw-bold">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), item.status.ToString())</span></div>
+                    <div><i class="bi bi-check text-info fw-bold mr-2 icn"></i>Open Requests:  <span class="fw-bold">@item.openReq</span></div>
+
+                </div>
+                <div class="d-flex justify-content-end align-items-center gap-2 pr-3 pb-2">
+                    <button type="button" class="btn  border-info text-info">
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <br />
+        }
     </div>
-    <hr />
 </div>
+
+
+@* @if (Model.TotalPage > 1)
+{
+    <div class="page-container">
+        <ul class="pagination justify-content-center d-flex page-list">
+            <li class="page-item @(Model.CurrentPage <= 1 ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage - 1)"><i class="bi bi-chevron-double-left text-info page"></i></a>
+            </li>
+            @for (int CurrentPage = 1; CurrentPage <= Model.TotalPage; CurrentPage++)
+            {
+                <li class="m-2 btn @(CurrentPage == Model.CurrentPage ? "page-active" : "")" onclick="changepage(@CurrentPage)"><a class="text-decoration-none text-black curent-page-index" data-page="@CurrentPage">@CurrentPage</a></li>
+            }
+            <li class="page-item  @(Model.CurrentPage == Model.TotalPage ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage + 1)"><i class="bi bi-chevron-double-right text-info page"></i></a>
+            </li>
+        </ul>
+
+    </div>
+}
+else if (Model.TotalPage == 1)
+{
+}
+else
+{
+    <div class="text-center text-danger fw-bold h5">No record found</div>
+} *@

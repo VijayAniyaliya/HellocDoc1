@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     var claims = User.Identities.ElementAtOrDefault(1)?.Claims;
     var firstName = claims?.FirstOrDefault(a => a.Type == "firstname")?.Value;
     var lastName = claims?.FirstOrDefault(a => a.Type == "lastname")?.Value;
@@ -24,9 +23,9 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="~/css/bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/Admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/HellocDoc1.styles.css" asp-append-version="true" /> *@
 </head>
-<body>
+<body class="temp">
     <button class="btn border py-0 canvas" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasWithBackdrop">
         <i class="bi bi-list h2"></i>
     </button>
@@ -40,7 +39,7 @@
             <div class="d-flex align-items-center ">
                 <span class="d-none d-md-block">
                     Welcome
-                    <span class="fw-bold">@firstName @lastName</span>           
+                    <span class="fw-bold">@firstName @lastName</span>
                 </span>
             </div>
             <div>
@@ -52,7 +51,7 @@
                 </a>
             </div>
             <div>
-                <img src="~/Images/light.png" onclick="myFunction()" height="40px" alt="" />
+                <img src="~/Images/light.png" id="darkbtn" onclick="darkMode()" height="40px" alt="" />
             </div>
         </div>
     </header>
@@ -106,7 +105,7 @@
             @if ((Context.Request.Path.Equals("/Admin/Vendors")) || (Context.Request.Path.Equals("/Admin/AddBusiness")))
             {
                 <a asp-action="Vendors" class="text-decoration-none text-info px-2" style="padding-bottom: 11px;border-bottom: 3px solid #17a2b8!important;">Partners</a>
-            }   
+            }
             else
             {
                 <a asp-action="Vendors" class="text-decoration-none px-2" style="color:black;">Partners</a>
@@ -158,8 +157,8 @@
         <a href="#" class="text-secondary my-auto"><span class="text-white mr-3">Privacy policy</span></a>
     </footer>
     <div class="offcanvas offcanvas-start canvas-body" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasWithBackdropLabel" style="width:215px; margin-top:61px; border-top: 1px solid #d3d0d0;">
-            <div class="offcanvas-body px-0" id="offcanvasWithBackdropLabel">
-                <div>
+        <div class="offcanvas-body px-0" id="offcanvasWithBackdropLabel">
+            <div>
                 <span>
                     <span class="fw-bold ps-3">Welcome  @firstName @lastName</span>
                 </span>
@@ -260,6 +259,24 @@
             </div>
         </div>
     </div>
+    <script>
+        function darkMode() {
+            if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+                localStorage.setItem("PageTheme", "light");
+                document.documentElement.setAttribute('data-bs-theme', 'light')
+            }
+            else {
+                localStorage.setItem("PageTheme", "dark");
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            }
+        }
+        if (localStorage.getItem("PageTheme") === "light") {
+            document.documentElement.setAttribute('data-bs-theme', 'light')
+        }
+        else {
+            document.documentElement.setAttribute('data-bs-theme', 'dark')
+        }
+    </script>
 
     <script src="~/js/custom.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
