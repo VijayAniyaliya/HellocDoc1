@@ -13,7 +13,7 @@ using Services.Models;
 using System.Collections;
 
 namespace Services.Implementation
-{
+{   
     public class ProviderServices : IProviderServices
     {
 
@@ -209,7 +209,7 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddNotes(ViewNotesViewModel model, int request_id, string email)
+        public async Task AddNotes(AddNotesViewModel model, int request_id, string email)
         {
             var data = await _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);

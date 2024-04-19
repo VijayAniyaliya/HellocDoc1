@@ -76,8 +76,8 @@ namespace HellocDoc1.Controllers
             ViewNotesViewModel data = await _adminServices.ViewNotes(request_id);
             return View(data);
         }
-
-        public async Task<IActionResult> AddNotes(ViewNotesViewModel model, int request_id)
+            
+        public async Task<IActionResult> AddNotes(AddNotesViewModel model, int request_id)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _providerServices.AddNotes(model, request_id, email);

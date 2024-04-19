@@ -16,8 +16,15 @@
     <div class="px-3 pt-4 shadow Document-content mt-3" style="">
 
         <div class="h6 text-secondary">Patient Name</div>
-        <div class="h5 text-info d-inline-block">@Model.Name</div>
-        <div class="h5 d-inline-block">(ConfirmationNumber)</div>
+        <div class="h5 text-info d-inline-block">
+            @Model.Name
+        </div>
+        <div class="h5 d-inline-block">
+            @if (Model.ConfirmationNo != null)
+            {       
+                @Model.ConfirmationNo
+            }
+        </div>
         <div class="h6 text-secondary mt-3">Check here to review and add files that you or the Client/Member attached Request</div>
 
         <form asp-action="UploadDocuments" asp-route-request_id="@Model.RequestId" method="post" enctype="multipart/form-data">
@@ -40,7 +47,7 @@
         <div class="d-flex justify-content-between pt-3">
             <h5>Documents</h5>
             <div class="d-flex gap-2">
-                <a onclick="downloadSelectedFiles()" class="btn d-md-block d-none text-info border-2 border-info fw-bold">
+                <a onclick="downloadSelectedFiles()" id="download" class="btn d-md-block d-none text-info border-2 border-info fw-bold ">
                     Download All
                 </a>
                 <a class="btn d-md-none d-block border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2">
@@ -132,20 +139,23 @@
             dataType: "html",
             success: function (data) {
                 window.location.reload();
-                console.log("success")
+                toastr.error('Document Deleted Successfully');
             },
             error: function () {
                 alert("No Projects Found");
             }
         });
     };
-    $("#delete-button").click(function () { 
+    $("#delete-button").click(function () {
         var selectedFiles = [];
         $("input[type='checkbox']:checked").each(function () {
             var id = $(this).data('id');
             selectedFiles.push(id);
         });
-        if (selectedFiles.length > 0) {
+        if (selectedFiles.length == 0) {
+            toastr.error('Please select files');
+        }
+        else if (selectedFiles.length > 0) {
             console.log(JSON.stringify(selectedFiles))
             console.log(selectedFiles)
             $.ajax({
@@ -156,7 +166,6 @@
                 contentType: "application/json",
                 success: function (result) {
                     window.location.reload();
-
                 }
             });
         }
@@ -168,7 +177,10 @@
             var id = $(this).data('id');
             selectedFiles.push(id);
         });
-        if (selectedFiles.length > 0) {
+        if (selectedFiles.length == 0) {
+            toastr.error('Please select files');
+        }
+        else if (selectedFiles.length > 0) {
             console.log(JSON.stringify(selectedFiles))
             console.log(selectedFiles)
             $.ajax({
@@ -179,12 +191,10 @@
                 contentType: "application/json",
                 success: function (result) {
                     window.location.reload();
-
                 }
             });
         }
     });
-
     $(document).ready(function () {
         $('#All').click(function () {
             $('.ChildCheck').prop('checked', this.checked);
@@ -202,23 +212,23 @@
 
         var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
         var fileUrls = [];
-
-
-        selectedFiles.forEach(function (checkbox) {
-            var row = checkbox.closest('tr');
-            var fileUrl = row.querySelector('a').getAttribute('href');
-            fileUrls.push(fileUrl);
-        });
-
-        fileUrls.forEach(function (url) {
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-
+        if (selectedFiles.length === 0) {
+            toastr.error('Please select files to download');
+        }
+        else {
+            selectedFiles.forEach(function (checkbox) {
+                var row = checkbox.closest('tr');
+                var fileUrl = row.querySelector('a').getAttribute('href');
+                fileUrls.push(fileUrl);
+            });
+            fileUrls.forEach(function (url) {
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = '';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
     }
 </script>

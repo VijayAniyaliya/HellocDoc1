@@ -1,6 +1,6 @@
 ﻿using Services.Models;
 
-namespace Services.Implementation
+namespace Services.Contracts
 {
     public interface IRecordsServices
     {

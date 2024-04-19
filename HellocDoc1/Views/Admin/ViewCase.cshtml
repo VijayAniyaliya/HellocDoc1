@@ -1,4 +1,6 @@
 ﻿@model Services.Models.ViewCaseViewModel
+@using Common.Enum
+
 @{
     ViewData["Title"] = "ViewCase";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
@@ -10,7 +12,14 @@
 
     <div class="d-flex justify-content-between pt-1">
         <div class="d-flex flex-row">
-            <h4 class="mr-3 fw-bold">New Request</h4>
+            @if (Model.Status == (int)RequestStatus.Unassigned)
+            {
+                <h4 class="mr-3 fw-bold">New Request</h4>
+            }
+            else
+            {
+                <h4 class="mr-3 fw-bold">View Reservation</h4>
+            }
             @switch (Model.RequestTypeId)
             {
                 case 1:
@@ -34,65 +43,73 @@
 
     </div>
     <div class="px-3 pt-4 mt-4 mb-5 pb-4 shadow rounded-3">
+        <form>
+            <div class="patient-info">
+                <div class="h5 mb-4 fw-bold">Patient Information</div>
+                <div class="d-flex flex-column my-3">
+                    <span class="text-secondary">Confirmation Number</span>
+                    <span class="text-info h4">@Model.ConfirmationNo</span>
+                </div>
+                <div class="row">
 
-        <div class="patient-info">
-            <div class="h5 mb-4 fw-bold">Patient Information</div>
-            <div class="d-flex flex-column my-3">
-                <span class="text-secondary">Confirmation Number</span>
-                <span class="text-info h4">@Model.ConfirmationNo</span>
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" asp-for="PatientNotes" placeholder="patient notes"
+                                      id="floatingTextarea2" style="height: 100px" disabled></textarea>
+                            <label for="floatingTextarea2" class="">
+                                Patient Notes
+                            </label>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" asp-for="FirstName" id="floatingInput"
+                                   placeholder="your first name" disabled />
+                            <label for="floatingInput" class="">Your First Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" asp-for="LastName" id="floatingInput" placeholder="last name" disabled />
+                            <label for="floatingInput" class="">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" asp-for="DOB" id="floatingInput" placeholder="date of birth" disabled />
+                            <label for="floatingInput" class="">Date of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-10 col-9">
+                        <div class="form-floating  mb-3">
+                            <input type="tel" class="form-control pt-3 pb-3 data" asp-for="PhoneNumber" id="phone" disabled />
+                            <span id="phonewarning" class="text-danger comman"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-2 col-3 p-0 ">
+
+                        <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-telephone h3 fw-bolder"></i></button>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control data" asp-for="Email" id="email"
+                                   placeholder="abc@gmail.com" disabled />
+                            <label for="email" class="">Email</label>
+                            <span id="emailwarning" class="text-danger comman"></span>
+                        </div>
+                    </div>
+                    @if (Model.Status != (int)RequestStatus.Unassigned)
+                    {
+                        <div class="col-md-3">
+                            <button type="button" id="editaccount" class="btn bg-info text-white px-4 h5">Edit</button>
+                            <button type="button" onclick="updatedata()" id="savedata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modify">Save Changes</button>
+                            <button type="reset" id="cancelaccount" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modify">Cancel</button>
+                        </div>
+                    }
+                </div>
             </div>
-            <div class="row">
-
-                <div class="col-12">
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" asp-for="PatientNotes" placeholder="patient notes"
-                                  id="floatingTextarea2" style="height: 100px" disabled></textarea>
-                        <label for="floatingTextarea2" class="">
-                            Patient Notes
-                        </label>
-                    </div>
-                    <hr />
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" asp-for="FirstName" id="floatingInput"
-                               placeholder="your first name" disabled />
-                        <label for="floatingInput" class="">Your First Name</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" asp-for="LastName" id="floatingInput" placeholder="last name" disabled />
-                        <label for="floatingInput" class="">Last Name</label>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="date" class="form-control" asp-for="DOB" id="floatingInput" placeholder="date of birth" disabled />
-                        <label for="floatingInput" class="">Date of Birth</label>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-10 col-9">
-                    <div class="form-floating  mb-3">
-                        <input type="tel" class="form-control pt-3 pb-3" asp-for="PhoneNumber" id="phone" disabled />
-                    </div>
-                </div>
-                <div class="col-md-1 col-sm-2 col-3 p-0 ">
-
-                    <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-telephone h3 fw-bolder"></i></button>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" asp-for="Email" id="floatingInput"
-                               placeholder="abc@gmail.com" disabled />
-                        <label for="floatingInput" class="">Email</label>
-                    </div>
-                </div>
-@*                 <div class="col-md-3">
-                    <button type="button" class="btn border-info text-info h5 p-3 px-4 m-0">Edit</button>
-                </div> *@
-            </div>
-        </div>
+        </form>
 
         <div class="location-info mt-3">
             <div class="h5 mb-4 fw-bold">Location Information</div>
@@ -114,7 +131,7 @@
                 <div class="col-md-1 col-sm-2 col-3 p-0 ">
                     <button type="button" class="btn border-2 border-info rounded-2 text-info pt-2 pb-2 "><i class="bi bi-geo-alt h3 fw-bolder"></i></button>
                 </div>
-                <div class="col-md-6">  
+                <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" asp-for="Room" id="floatingInput" placeholder="room" disabled />
                         <label for="floatingInput" class="">Room # / Suite (Optional)</label>
@@ -123,9 +140,16 @@
             </div>
         </div>
         <div class="text-end mb-4">
-            <button type="button" onclick="assign(@Model.RequestId)" class="btn bg-info text-white h5">Assign</button>
+            @if (Model.Status == (int)RequestStatus.Unassigned)
+            {
+                <button type="button" onclick="assign(@Model.RequestId)" class="btn bg-info text-white h5">Assign</button>
+            }
             <a class="btn bg-info text-white h5" asp-action="ViewNotes" asp-route-request_id="@Model.RequestId">View Notes</a>
-            <button type="button" onclick="cancel(@Model.RequestId)" class="btn bg-danger text-white h5">Cancel</button>
+            @if (Model.Status == (int)RequestStatus.Unassigned)
+            {
+                <button type="button" onclick="cancel(@Model.RequestId)" class="btn bg-danger text-white h5">Cancel</button>
+            }
+
         </div>
     </div>
 </div>
@@ -140,6 +164,83 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
+
+    $('.modify').each(function () {
+        $(this).css('display', 'none');
+    })
+    $('#editaccount').on('click', function () {
+        $('.data').each(function () {
+            $(this).prop('disabled', false);
+        })
+        $('.modify').each(function () {
+            $(this).css('display', 'inline-block');
+        })
+        $(this).css('display', 'none');
+    })
+    $('#cancelaccount').on('click', function () {
+        $('.data').each(function () {
+            $(this).prop('disabled', true);
+        })
+        $('.modify').each(function () {
+            $(this).css('display', 'none');
+        })
+        $('#editaccount').css('display', 'inline-block')
+        $('.comman').html('');
+    })
+    function updatedata() {
+        var formdata = {
+            RequestId: @Model.RequestId,
+            Email: $('#email').val(),
+            PhoneNumber: $('#phone').val(),
+        }
+        if ((formdata.Email == '@Model.Email') && (formdata.PhoneNumber == '@Model.PhoneNumber')) {
+            toastr.error('Please first modify the data');
+        }
+        else if ((formdata.Email != "") && (formdata.PhoneNumber != "")) {
+            $.ajax({
+                url: "/Admin/UpdateRequest/",
+                type: "POST",
+                data: formdata,
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    toastr.success('Data Successfully Updated');
+                    $('#editaccount').css('display', 'inline-block');
+                    $('.data').each(function () {
+                        $(this).prop('disabled', true);
+                    })
+                    $('.modify').each(function () {
+                        $(this).css('display', 'none');
+                    })
+                },
+                error: function (error) {
+                    alert("No Projects Found");
+                    console.log(error);
+                }
+            });
+            $('.common').html('');
+        }
+        else {
+            console.log("denied")
+        }
+    };
+
+    $('#email').on('input', function () {
+        if ($('#email').val() == "") {
+            $('#emailwarning').html("Please enter Email")
+        }
+        else {
+            $('#emailwarning').html("")
+        }
+    })
+    $('#phone').on('input', function () {
+        if ($('#phone').val() == "") {
+            $('#phonewarning').html("Please enter Phone Number")
+        }
+        else {
+            $('#phonewarning').html("")
+        }
+    })
 
     function cancel(request_id) {
         $.ajax({

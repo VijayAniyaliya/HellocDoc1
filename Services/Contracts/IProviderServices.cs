@@ -2,12 +2,12 @@
 using Services.Models;
 
 namespace Services.Contracts
-{
+{   
     public interface IProviderServices
     {
         Task AcceptCase(int request_id);
         Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj, string email);
-        Task AddNotes(ViewNotesViewModel model, int request_id, string email);
+        Task AddNotes(AddNotesViewModel model, int request_id, string email);
         Task<ConcludeCareViewModel> ConcludeCare(int request_id);
         Task ConcludeCase(ConcludeCareViewModel model, string email);
         Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj, string email);

@@ -14,7 +14,6 @@
             &lt; Back
         </a>
     </div>
-    <form asp-action="AddNotes" asp-route-request_id="@Model.RequestId" method="post">
         <div class="row mt-3">
             <div class="col-md-6">
                 <div class="d-flex flex-row shadow rounded-3 p-3 m-0">
@@ -50,24 +49,58 @@
                     <i class="bi bi-person mr-3 h4"></i>
                     <div class="d-flex flex-column">
                         <p class="m-0 mb-1 fw-bold">Admin Notes</p>
-                        <p class="m-0 text-secondary">@Model.AdminNotes</p>
+                        <p class="m-0 text-secondary" id="notes">@Model.AdminNotes</p>
                     </div>
                 </div>
             </div>
             <div class="col-12 mt-3">
                 <div class=" shadow rounded-3 p-3">
                     <div class="form-floating mb-3">
-                        <textarea class="form-control" asp-for="AdditionalNotes" placeholder="admin notes"
-                                  id="floatingTextarea2" style="height: 100px"></textarea>
+                    <textarea class="form-control additionalnotes" placeholder="admin notes"
+                                  id="additionalnotes" style="height: 100px"></textarea>
                         <label for="floatingTextarea2" class="">
                             Additional Notes
-                        </label>
+                        </label>    
+                        <span id="noteserror" class="text-danger"></span>
                     </div>
                     <div class="d-flex justify-content-end mt-3 mb-2">
-                        <button type="submit" class="btn bg-info text-white rounded-3">Save Changes</button>
+                    <button type="button" class="btn bg-info text-white rounded-3 send">Save Changes</button>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-</div>  
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+        $('.additionalnotes').on('focus', function () {
+            $('.additionalnotes').css('border', '');
+            $('#noteserror').html('');
+        });
+
+        $('.send').on('click', function () {
+            var filterdata = {  
+                RequestId: @Model.RequestId,
+                AdditionalNotes: $('.additionalnotes').val(),
+            }
+            if (filterdata.AdditionalNotes == "") {
+                $('.additionalnotes').css('border', '1px solid red');
+                $('#noteserror').html('Please Enter Notes');
+            }
+            else {
+                $.ajax({
+                    url: '/Admin/AddNotes',
+                    data: filterdata,
+                    success: function (response) {
+                        $("#notes").html(filterdata.AdditionalNotes);
+                        $('.additionalnotes').val('');
+                        toastr.success('Notes Added Successfully');
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+</script>

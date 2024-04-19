@@ -87,11 +87,11 @@
                     <i class="bi bi-reply-all  mr-1"></i>
                     <span class="link-text">Export</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                <a class="bg-info text-white rounded-3 p-2" id="exportbtnall" style="cursor:pointer;">
                     <i class="bi bi-reply-all  mr-1"></i>
                     <span class="link-text">Export All</span>
                 </a>
-                <a class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
+                <a onclick="requestsupport()" class="bg-info text-white rounded-3 p-2" style="cursor:pointer;">
                     <i class="bi bi-person-square  mr-1"></i>
                     <span class="link-text">Request DTY Support</span>
                 </a>
@@ -102,11 +102,10 @@
             <div class="px-2 row" style="">
                 <div class="form col-xl-3 col-md-6">
                     <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da;">
-                        <i class="bi bi-search my-1 ms-1 mr-2"></i>          
+                        <i class="bi bi-search my-1 ms-1 mr-2"></i>
                         <input id="searchpatient" onkeyup="searchpatient()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
                     </div>
-@*                     <input type="search" class="form-control form-input " id="searchpatient" onkeyup="searchpatient()" placeholder=" Search Patients">
- *@                </div>
+                </div>
                 <div class="form col-xl-3 col-md-6 mt-3 m-md-0">
                     <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da;">
                         <i class="bi bi-search my-1 ms-1 mr-2"></i>
@@ -183,7 +182,7 @@
     //         var status;
 
     //         switch (target) {
-    //             case '1':        
+    //             case '1':
     //                 status = '1';
     //                 url = '/Admin/NewState'
     //                 break;
@@ -512,6 +511,21 @@
                 alert("No Projects Found");
             }
         });
+    };  
+
+    function requestsupport() {
+        $.ajax({
+            url: "/Admin/RequestSupportDetails",
+            type: "POST",
+            success: function (data) {
+                $("#mail").html(data);
+                const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+            }
+        });
     };
 
     $('#exportbtn').click(function () {
@@ -520,6 +534,15 @@
         }
         var link = document.createElement('a');
         link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    $('#exportbtnall').click(function () {
+        var link = document.createElement('a');
+        link.href = '/Admin/ExportDataAll'
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();

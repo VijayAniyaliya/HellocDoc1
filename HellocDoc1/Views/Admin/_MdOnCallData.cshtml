@@ -11,7 +11,7 @@
     <div class="row">
         @{
             foreach (var item in Model.physicians)
-            {
+            {       
                 if (item.Shifts.Count != 0)
                 {
                     foreach (var shifts in item.Shifts)
@@ -42,7 +42,7 @@
     <div class="row">
         @foreach (var item in Model.physicians)
         {
-            if (item.Shifts.Count == 0)
+            if (item.Shifts.Count == 0)                 
             {
                 <div class="col-md-4 col-sm-6 mb-3">
                     @if (item.Photo == null)

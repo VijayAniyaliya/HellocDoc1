@@ -1,6 +1,7 @@
 ﻿using Common.Enum;
 using Common.Helpers;
 using Data.Entity;
+using HellocDoc1.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace HellocDoc1.Controllers    
+namespace HellocDoc1.Controllers
 {
     [Route("[controller]/[action]")]
     [CustomAuthorize("Admin")]
@@ -19,12 +20,14 @@ namespace HellocDoc1.Controllers
     public class AdminController : Controller
     {
         private readonly IAdminServices _adminServices;
+        private readonly IPatientServices _patientServices;
         private readonly IRecordsServices _recordsServices;
 
-        public AdminController(IAdminServices adminServices, IRecordsServices recordsServices)
+        public AdminController(IAdminServices adminServices, IRecordsServices recordsServices, IPatientServices patientServices)
         {
             _adminServices = adminServices;
             _recordsServices = recordsServices;
+            _patientServices = patientServices;
         }
 
         public async Task<IActionResult> AdminDashboard()
@@ -70,6 +73,12 @@ namespace HellocDoc1.Controllers
         {
             ViewCaseViewModel data = await _adminServices.ViewCase(request_id);
             return View(data);
+        }     
+            
+        public async Task<IActionResult> UpdateRequest(ViewCaseViewModel model)
+        {
+            await _adminServices.UpdateRequest(model);
+            return NoContent();
         }
 
         public async Task<IActionResult> ViewNotes(int request_id)
@@ -78,12 +87,12 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
 
-        [Route("{request_id}")]
-        public async Task<IActionResult> AddNotes(ViewNotesViewModel model, int request_id)
+        //[Route("{request_id}")]
+        public async Task<IActionResult> AddNotes(AddNotesViewModel model)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            await _adminServices.AddNotes(model, request_id, email);
-            return RedirectToAction("ViewNotes", new { request_id = request_id });
+            await _adminServices.AddNotes(model,email);
+            return NoContent();
         }
         [HttpPost("{request_id}")]
         public async Task<IActionResult> CancelDetails(int request_id)
@@ -133,9 +142,9 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> ViewUploads(int request_id)
         {
             var model = await _adminServices.ViewUploads(request_id);
-            return View(model);
+            return View(model); 
         }
-
+            
         [HttpPost]
         public async Task<IActionResult> UploadDocuments(ViewUploadsViewModel model, int request_id)
         {
@@ -152,6 +161,12 @@ namespace HellocDoc1.Controllers
         {
             await _adminServices.DeleteAll(DocumentId);
             return RedirectToAction("AdminDashboard");
+        }
+
+        public async Task<IActionResult> DownloadAll(int request_id)
+        {
+            var download = await _patientServices.DownloadFilesForRequest(request_id);
+            return File(download, "application/zip", "RequestFiles.zip");
         }
 
         public async Task<IActionResult> SendMail([FromBody] List<int> DocumentId)
@@ -264,9 +279,9 @@ namespace HellocDoc1.Controllers
         {
             return View();
         }
-
+            
         [HttpPost]
-        [AllowAnonymous]
+        [AllowAnonymous]    
         public async Task<IActionResult> AdminLogin(AdminLoginViewModel user)
         {
             if (ModelState.IsValid)
@@ -308,18 +323,52 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("AdminLogin");
         }
 
+        [AllowAnonymous]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> AdminForget(AdminLoginViewModel model)
+        {
+            LoginResponseViewModel? result = await _adminServices.ForgetPassword(model);
+            if (result.Status == ResponseStatus.Success)
+            {
+                TempData["Success"] = "Reset Password link sent to your email";
+                return RedirectToAction("AdminLogin", "Admin");
+            }
+            else
+            {
+                ModelState.AddModelError("", result.Message);
+                TempData["Error"] = result.Message;
+                return View("ForgetPassword");
+
+            }
+        }
+            
+        [AllowAnonymous]
+        [HttpGet("{email}")]
+        public IActionResult ResetYourPassword(string email)
+        {
+            ViewBag.Email = email;
+            return View();          
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswords(ChangePassViewModel model)
+        {
+            await _adminServices.ResetPassword(model);  
+            TempData["Success"] = "Password Reset Succefully";
+            return RedirectToAction("AdminLogin", "Admin");
+        }
+
         public async Task<IActionResult> AdminProfile()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var data = await _adminServices.ProfileData(email);
             return View(data);
-        }
-
-        public async Task<IActionResult> ResetPassword(string password)
-        {
-            var email = HttpContext.Session.GetString("Email");
-            await _adminServices.ResetPassword(email, password);
-            return NoContent();
         }
 
         [HttpPost]
@@ -328,7 +377,7 @@ namespace HellocDoc1.Controllers
             var email = HttpContext.Session.GetString("Email");
             await _adminServices.UpdateAdminstrator(model, email);
             return NoContent();
-        }
+        }   
 
         [HttpPost]
         public async Task<IActionResult> UpdateBillInfo(BillingData model)
@@ -415,13 +464,34 @@ namespace HellocDoc1.Controllers
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{obj.status}_{strDate}.xlsx";
             return File(record, contentType, filename);
+        }     
+
+        public async Task<IActionResult> ExportDataAll()
+        {
+            var data= await _adminServices.ExportAll();
+            var record = await _adminServices.DownloadExcle(data);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"Patient_Data.xlsx";
+            return File(record, contentType, filename);
         }
 
-        [HttpPost]
+        public IActionResult RequestSupportDetails()
+        {
+            return PartialView("_RequestSupport");
+        }
+
+        public async Task<IActionResult> RequestSupport(string message)
+        {   
+            await _adminServices.RequestSupport(message);
+            return NoContent();
+        }
+
+        [HttpPost]  
         public async Task<IActionResult> CreateRequest(CreateRequestViewModel model)
         {
             var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-            var role= roles.FirstOrDefault();
+            var role = roles.FirstOrDefault();
             await _adminServices.SubmitRequest(model, role);
             TempData["success"] = "Request Submitted Successfully";
             return RedirectToAction("AdminDashboard");
@@ -486,10 +556,10 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> AccessData(int requestedPage)
         {
             var data = await _adminServices.AccessData(requestedPage);
-            return PartialView("_AccountAccessData",data);
+            return PartialView("_AccountAccessData", data);
         }
         public IActionResult CreateAccess(int role_id)
-        {   
+        {
             var data = _adminServices.CreateAccess(role_id);
             return View(data);
         }
@@ -539,10 +609,10 @@ namespace HellocDoc1.Controllers
             await _adminServices.CreateAdminAccount(model, regionselected);
             return RedirectToAction("Access");
         }
-            
+
         public IActionResult UserAccess()
         {
-            return View();  
+            return View();
         }
 
         [HttpGet]
@@ -550,7 +620,7 @@ namespace HellocDoc1.Controllers
         {
             var obj = _adminServices.FetchAccess(selectedValue);
             return PartialView("_UserAccessTable", obj);
-        }   
+        }
 
 
         public async Task<IActionResult> Schedulling()

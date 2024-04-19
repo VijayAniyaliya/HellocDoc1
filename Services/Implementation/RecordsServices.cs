@@ -3,11 +3,11 @@ using Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using Services.Implementation;
+using Services.Contracts;
 using Services.Models;
 using System.Collections;
 
-namespace Services.Contracts
+namespace Services.Implementation
 {
 
     public class RecordsServices : IRecordsServices
@@ -76,8 +76,8 @@ namespace Services.Contracts
                 requestClients = requestClients.Where(a =>
 
                     (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
-                     (obj.FromDate == new DateTime() || DateOnly.FromDateTime(a.Request.AcceptedDate.Value) >= DateOnly.FromDateTime(obj.FromDate)) &&
-                      (obj.ToDate == new DateTime() || DateOnly.FromDateTime(a.Request.AcceptedDate.Value) <= DateOnly.FromDateTime(obj.ToDate)) &&
+                     (obj.FromDate == new DateTime() ||a.Request.AcceptedDate!.Value.Date >=obj.FromDate) &&
+                      (obj.ToDate == new DateTime() || a.Request.AcceptedDate!.Value.Date <= obj.ToDate )&&
                     (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
                     (obj.RequestType == 0 || a.Request.RequestTypeId == obj.RequestType) &&
                     (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
@@ -148,17 +148,17 @@ namespace Services.Contracts
                     row.CreateCell(2).SetCellValue(reqclient.FirstName + " " + reqclient.LastName);
                     if (reqclient.Request.AcceptedDate.HasValue)
                     {
-                    row.CreateCell(3).SetCellValue(reqclient.Request.AcceptedDate.Value.ToString("MMM dd yyyy"));
+                        row.CreateCell(3).SetCellValue(reqclient.Request.AcceptedDate.Value.ToString("MMM dd yyyy"));
                     }
                     else
                     {
-                    row.CreateCell(3).SetCellValue("");
+                        row.CreateCell(3).SetCellValue("");
                     }
 
 
                     row.CreateCell(4).SetCellValue(type);
                     var createdDate = reqclient.Request.RequestStatusLogs.FirstOrDefault(a => a.Status == 8)?.CreatedDate;
-                    row.CreateCell(5).SetCellValue(createdDate != null ? createdDate.ToString() : ""); 
+                    row.CreateCell(5).SetCellValue(createdDate != null ? createdDate.ToString() : "");
                     row.CreateCell(6).SetCellValue(reqclient.PhoneNumber);
                     row.CreateCell(7).SetCellValue(reqclient.ZipCode);
                     row.CreateCell(8).SetCellValue(reqclient.PhoneNumber);
@@ -208,12 +208,12 @@ namespace Services.Contracts
             {
                 List<LogsData> logs = emailLogs.Select(a => new LogsData()
                 {
-                    ReceiverName = a.RequestId == null ? (physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName) : (requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName),
+                    ReceiverName = a.RequestId == null ? physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName : requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName,
                     Email = a.EmailId!,
                     RoleId = a.RoleId!.Value,
                     CreatedDate = a.CreateDate,
                     SentDate = a.SentDate!.Value,
-                    ConfirmationNo = a.RequestId == null ? "" : (requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber)!,
+                    ConfirmationNo = a.RequestId == null ? "" : requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber!,
                     Action = a.SubjectName,
                     RoleName = roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
                     IsEmailSent = a.IsEmailSent!,
@@ -254,12 +254,12 @@ namespace Services.Contracts
             {
                 List<LogsData> logs = smslogs.Select(a => new LogsData()
                 {
-                    ReceiverName = a.RequestId == null ? (physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName) : (requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName),
+                    ReceiverName = a.RequestId == null ? physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName : requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName,
                     PhoneNumber = a.MobileNumber!,
                     CreatedDate = a.CreateDate,
                     RoleId = a.RoleId!.Value,
                     SentDate = a.SentDate!.Value,
-                    ConfirmationNo = a.RequestId == null ? "" : (requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber)!,
+                    ConfirmationNo = a.RequestId == null ? "" : requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber!,
                     RoleName = roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
                     IsEmailSent = a.IsSmssent!,
                     SentTries = a.SentTries,

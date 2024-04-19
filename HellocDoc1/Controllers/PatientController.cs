@@ -91,7 +91,6 @@ namespace HellocDoc1.Controllers
                 ModelState.AddModelError("", result.Message);
                 TempData["Error"] = result.Message;
                 return View();
-
             }
         }
 

@@ -16,7 +16,7 @@ namespace Services.Contracts
 		Task<AdminDashboardViewModel> UnpaidState(AdminDashboardViewModel obj);
         Task<ViewCaseViewModel>  ViewCase(int request_id);
         Task<ViewNotesViewModel> ViewNotes(int request_id);
-        Task AddNotes(ViewNotesViewModel model, int request_id, string email);
+        Task AddNotes(AddNotesViewModel model, string email);
         Task<CancelCaseViewModel> CancelDetails(int request_id);
         Task CancelCase(int request_id, int caseId, string cancelNote);
         Task<BlockCaseViewModel> BlockDetails(int request_id);
@@ -46,7 +46,6 @@ namespace Services.Contracts
 		Task<EncounterFormViewModel> EncounterForm(int request_id);
         Task SubmitEncounterForm(EncounterFormViewModel model, int request_id, string email);
 		Task<AdminProfileViewModel> ProfileData(string email);
-        Task ResetPassword(string email, string password);
         Task UpdateAdminstrator(ProfileData model, string email);
         Task UpdateBillInfo(BillingData model, string email);
 		Task SendLink(SendLinkViewModel model, string email);
@@ -98,6 +97,11 @@ namespace Services.Contracts
         Task ApproveSelectedShift(List<int> selectedShifts, string email);
    
       
-        UserAccessViewModel FetchAccess(int selectedValue);
+        UserAccessViewModel FetchAccess(int selectedValue); 
+        Task<LoginResponseViewModel> ForgetPassword(AdminLoginViewModel model);
+        Task ResetPassword(ChangePassViewModel model);
+        Task<AdminDashboardViewModel> ExportAll();
+        Task RequestSupport(string message);
+        Task UpdateRequest(ViewCaseViewModel model);
     }
 }

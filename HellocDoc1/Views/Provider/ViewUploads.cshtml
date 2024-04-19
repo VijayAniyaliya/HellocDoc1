@@ -17,7 +17,7 @@
 
         <div class="h6 text-secondary">Patient Name</div>
         <div class="h5 text-info d-inline-block">@Model.Name</div>
-        <div class="h5 d-inline-block">(ConfirmationNumber)</div>
+        <div class="h5 d-inline-block">@Model.ConfirmationNo</div>
         <div class="h6 text-secondary mt-3">Check here to review and add files that you or the Client/Member attached Request</div>
 
         <form asp-action="UploadDocuments" asp-route-request_id="@Model.RequestId" method="post" enctype="multipart/form-data">

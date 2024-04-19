@@ -5,16 +5,15 @@ using Data.Entity;
 using HalloDoc.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace Services.Implementation
 {
@@ -266,6 +265,19 @@ namespace Services.Implementation
             return model;
         }
 
+        public async Task UpdateRequest(ViewCaseViewModel model)
+        {
+            RequestClient? requestClient = await _context.RequestClients.FirstOrDefaultAsync(a => a.RequestId == model.RequestId);
+
+            if(requestClient != null)
+            {
+                requestClient.Email = model.Email;
+                requestClient.PhoneNumber = model.PhoneNumber;
+                _context.RequestClients.Update(requestClient);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ViewNotesViewModel> ViewNotes(int request_id)
         {
             List<RequestStatusLog> data = await _context.RequestStatusLogs.Where(a => a.RequestId == request_id).ToListAsync();
@@ -294,9 +306,9 @@ namespace Services.Implementation
             return model;
         }
 
-        public async Task AddNotes(ViewNotesViewModel model, int request_id, string email)
+        public async Task AddNotes(AddNotesViewModel model, string email)
         {
-            var data = await _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            var data = await _context.RequestNotes.Where(a => a.RequestId == model.RequestId).FirstOrDefaultAsync();
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
 
             if (data != null)
@@ -310,7 +322,7 @@ namespace Services.Implementation
             {
                 RequestNote requestNote = new RequestNote()
                 {
-                    RequestId = request_id,
+                    RequestId = model.RequestId,
                     AdminNotes = model.AdditionalNotes,
                     CreatedBy = aspNetUser!.Id,
                     CreatedDate = DateTime.Now,
@@ -352,13 +364,13 @@ namespace Services.Implementation
                 {
                     RequestId = request_id,
                     Status = (int)RequestStatus.Cancelled,
-                    Notes = cancelNote,
+                    Notes = cancelNote, 
                     CreatedDate = DateTime.Now,
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
             }
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();  
         }
 
         public async Task<AssignCaseViewModel> AssignDetails(int request_id)
@@ -467,12 +479,13 @@ namespace Services.Implementation
             Request? data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             ViewUploadsViewModel viewUploads = new ViewUploadsViewModel();
-            if (data != null)
+            if (data != null)   
             {
                 data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
-
+                                
                 viewUploads.RequestId = request_id;
                 viewUploads.Name = data.FirstName + " " + data.LastName;
+                viewUploads.ConfirmationNo = data.ConfirmationNumber!;
 
                 foreach (var item in data.RequestWiseFiles)
                 {
@@ -495,9 +508,9 @@ namespace Services.Implementation
             {
                 IEnumerable<IFormFile> upload = model.Upload;
                 foreach (var item in upload)
-                {
+                {       
                     var file = item.FileName;
-                    var uniqueFileName = GetUniqueFileName(file);
+                    var uniqueFileName = GetUniqueFileName(file);       
                     var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                     var filePath = Path.Combine(uploads, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -577,6 +590,34 @@ namespace Services.Implementation
             }
 
             return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Password does not match" };
+        }
+
+        public async Task<LoginResponseViewModel> ForgetPassword(AdminLoginViewModel model)
+        {
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
+            }
+            else
+            {
+                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Reset Password", $"Please <a href=\"https://localhost:7208/Admin/ResetYourPassword/{model.Email}\">Reset Your Password</a>");
+                return new LoginResponseViewModel() { Status = ResponseStatus.Success };
+            }
+        }
+
+        public async Task ResetPassword(ChangePassViewModel model)
+        {
+            var user = await _context.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                user.PasswordHash = model.Password;
+                user.ModifiedDate = DateTime.Now;
+                _context.AspNetUsers.Update(user);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<SendOrdersViewModel> SendOders(int request_id)
@@ -1005,18 +1046,6 @@ namespace Services.Implementation
             return new AdminProfileViewModel();
         }
 
-        public async Task ResetPassword(string email, string password)
-        {
-            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
-            if (aspNetUser != null)
-            {
-                aspNetUser.PasswordHash = password;
-                aspNetUser.ModifiedDate = DateTime.Now;
-                _context.AspNetUsers.Update(aspNetUser);
-            }
-            await _context.SaveChangesAsync();
-        }
-
         public async Task UpdateAdminstrator(ProfileData model, string email)
         {
             Admin? admin = await _context.Admins.Where(a => a.Email == email).FirstOrDefaultAsync();
@@ -1387,6 +1416,44 @@ namespace Services.Implementation
             }
         }
 
+        public async Task<AdminDashboardViewModel> ExportAll()
+        {
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ThenInclude(a => a.Physician).Include(a => a.Request.RequestStatusLogs).Include(a => a.Request.RequestNotes).ToListAsync();
+            requestClients = requestClients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+            if (requestClients != null)
+            {
+                AdminDashboardViewModel model = new AdminDashboardViewModel()
+                {
+                    requestClients = requestClients,
+                };
+                return model;
+            }
+            return new AdminDashboardViewModel();
+        }
+
+        public async Task RequestSupport(string message)
+        {
+            List<Physician> physicians = await _context.Physicians.Include(a => a.Shifts).ThenInclude(a => a.ShiftDetails).ToListAsync();
+            var currentTime = TimeOnly.FromDateTime(DateTime.Now);
+            var currentDate = DateOnly.FromDateTime(DateTime.Now);
+            foreach (var item in physicians)
+            {
+                foreach (var shifts in item.Shifts)
+                {
+                    foreach (var shiftDetail in shifts.ShiftDetails)
+                    {
+                        if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate)
+                        {
+                        }
+                        else
+                        {
+                            //await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", $"To all Unscheduled Physician", $"{message}");
+                        }
+                    }
+                }
+            }
+        }
+
 
         public async Task<PhysicianAccountViewModel> EditPhysician(int PhysicianId)
         {
@@ -1708,7 +1775,7 @@ namespace Services.Implementation
                                 lname = admins.LastName,
                                 accType = role.AccountType,
                                 phone = admins.Mobile,
-                                status = (short)admins.Status,              
+                                status = (short)admins.Status,
                                 openReq = _context.Requests.Where(i => (i.Status != 10)).Count(),
                             };
                 var result1 = admin.ToList();
