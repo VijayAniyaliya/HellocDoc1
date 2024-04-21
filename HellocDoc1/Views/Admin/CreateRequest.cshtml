@@ -7,24 +7,17 @@
 
 
 <div class="body-content container mb-3">
-
-
     <div class="mb-2 mr-1 d-flex justify-content-between">
         <span class="h5">Submit Information</span>
         <a asp-action="AdminDashboard" class="btn back-btn border border-info text-info p-2">
             &lt; Back
         </a>
     </div>
-
     <div class="main-content px-4 py-3 shadow-lg">
         <form asp-action="CreateRequest" method="post">
-
-
             <div class="patient-info">
                 <div class="h5 mb-4">Patient</div>
-
                 <div class="row">
-
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
                             <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" />
@@ -62,13 +55,9 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="location-info">
                 <div class="h5 mb-4 mt-4">Patient Location</div>
-
                 <div class="row">
-
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
                             <input type="text" asp-for="Street" class="form-control" id="floatingInput"
@@ -107,7 +96,6 @@
                 </div>
             </div>
             <div class="h5 mb-4 mt-4">Notes</div>
-
             <div class="row">
                 <div class="col-12">
                     <div class="form-floating mb-3">
@@ -119,10 +107,7 @@
                         </label>
                     </div>
                 </div>
-
-
             </div>
-
             <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
                 <button type="submit" class="btn submit-btn border border-info bg-info text-white px-4">
                     Save
@@ -131,14 +116,12 @@
                     Cancel
                 </button>
             </div>
-
-
         </form>
     </div>
 </div>
 <br />
 <br />
-<br />
+<br /> 
 
 <script>
     const phoneInputField = document.querySelector("#phone");

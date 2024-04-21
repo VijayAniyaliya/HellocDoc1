@@ -269,7 +269,7 @@ namespace Services.Implementation
         {
             RequestClient? requestClient = await _context.RequestClients.FirstOrDefaultAsync(a => a.RequestId == model.RequestId);
 
-            if(requestClient != null)
+            if (requestClient != null)
             {
                 requestClient.Email = model.Email;
                 requestClient.PhoneNumber = model.PhoneNumber;
@@ -338,7 +338,7 @@ namespace Services.Implementation
             List<CaseTagViewModel> obj = data.Select(a => new CaseTagViewModel() { CaseId = a.CaseTagId, CaseName = a.Name }).ToList();
             var data1 = _context.Requests.Where(a => a.RequestId == request_id).FirstOrDefault();
 
-            if (data != null && data1 != null)
+            if (data1 != null && obj != null)
             {
                 CancelCaseViewModel model = new CancelCaseViewModel()
                 {
@@ -348,7 +348,7 @@ namespace Services.Implementation
                 };
                 return model;
             }
-            return new CancelCaseViewModel();
+            return new CancelCaseViewModel() { ReasonForCancel = obj };
         }
 
         public async Task CancelCase(int request_id, int caseId, string cancelNote)
@@ -364,13 +364,13 @@ namespace Services.Implementation
                 {
                     RequestId = request_id,
                     Status = (int)RequestStatus.Cancelled,
-                    Notes = cancelNote, 
+                    Notes = cancelNote,
                     CreatedDate = DateTime.Now,
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
             }
-            await _context.SaveChangesAsync();  
+            await _context.SaveChangesAsync();
         }
 
         public async Task<AssignCaseViewModel> AssignDetails(int request_id)
@@ -463,7 +463,7 @@ namespace Services.Implementation
                     Email = data.Email,
                     Reason = reason,
                     RequestId = request_id.ToString(),
-                    IsActive = new BitArray(new[] { true }),
+                    IsActive = new BitArray(new[] { false }),
                     CreatedDate = DateTime.Now,
                 };
                 _context.Requests.Update(data);
@@ -479,10 +479,10 @@ namespace Services.Implementation
             Request? data = await _context.Requests.Include(a => a.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
 
             ViewUploadsViewModel viewUploads = new ViewUploadsViewModel();
-            if (data != null)   
+            if (data != null)
             {
                 data.RequestWiseFiles = data.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
-                                
+
                 viewUploads.RequestId = request_id;
                 viewUploads.Name = data.FirstName + " " + data.LastName;
                 viewUploads.ConfirmationNo = data.ConfirmationNumber!;
@@ -508,9 +508,9 @@ namespace Services.Implementation
             {
                 IEnumerable<IFormFile> upload = model.Upload;
                 foreach (var item in upload)
-                {       
+                {
                     var file = item.FileName;
-                    var uniqueFileName = GetUniqueFileName(file);       
+                    var uniqueFileName = GetUniqueFileName(file);
                     var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                     var filePath = Path.Combine(uploads, uniqueFileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -810,10 +810,10 @@ namespace Services.Implementation
         public async Task<CloseCaseViewModel> CloseCase(int request_id)
         {
             RequestClient? data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.RequestWiseFiles).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
-            data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
 
             if (data != null)
             {
+                data!.Request.RequestWiseFiles = data.Request.RequestWiseFiles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
                 CloseCaseViewModel model = new CloseCaseViewModel()
                 {
                     RequestId = request_id,
@@ -1293,7 +1293,7 @@ namespace Services.Implementation
             {
                 var email = data.Email;
             }
-            EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
+            await EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
         }
 
         public async Task StopNotification(int PhysicianId)

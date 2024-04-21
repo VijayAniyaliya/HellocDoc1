@@ -26,6 +26,7 @@ namespace HellocDoc1.Services
                 {
 
                     AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
+                    Region region = await _context.Regions.Where(a => a.RegionId == model.State).FirstOrDefaultAsync();
 
                     if (aspnetuser != null)
                     {
@@ -35,7 +36,7 @@ namespace HellocDoc1.Services
                         {
                             ConciergeName = model.FirstName + " " + model.LastName,
                             Street = model.Street,
-                            State = model.State,
+                            State = region.Name,
                             City = model.City,
                             ZipCode = model.ZipCode,
                             CreatedDate = DateTime.Now,

@@ -15,7 +15,6 @@
     <tbody>
         @foreach (var item in Model.blockRequests)
         {
-
             <tr>
                 <td>
                     @item.PatientName
@@ -26,10 +25,10 @@
                 <td>@item.Notes</td>
                 <th class="text-center">
                     <input class="form-check-input checks" id="isactive" type="checkbox"
-                    @if (item.IsActive![0] == true)
+                    @if (item.IsActive![0] == false)
                     {
                         @:checked
-                    }value="" />
+                    }value="" disabled/>
                 </th>
                 @if (item.IsActive[0] == true)
                 {
@@ -37,9 +36,9 @@
                         <a onclick="unblock(@item.BlockRequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Unblock</a>
                     </td>
                 }
-                else
+                else    
                 {
-                    <td class="text-center">Blocked</td>
+                    <td class="text-center">Unblocked</td>
                 }
             </tr>
         }

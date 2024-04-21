@@ -1,13 +1,9 @@
 ﻿using Common.Enum;
 using Common.Helpers;
 using Data.Context;
-using Data.Entity;
 using HellocDoc1.Services.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Services.Implementation;
 using Services.Models;
 
 namespace HellocDoc1.Controllers
@@ -80,7 +76,7 @@ namespace HellocDoc1.Controllers
         [HttpPost]
         public async Task<IActionResult> Reset_password(LoginViewModel model)
         {
-            LoginResponseViewModel? result =  await patientServices.ResetPassword(model);
+            LoginResponseViewModel? result = await patientServices.ResetPassword(model);
             if (result.Status == ResponseStatus.Success)
             {
                 TempData["success"] = "Reset Password link sent to your email";
@@ -263,7 +259,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> DashboardData(int requestedPage)
         {
             var data = await patientServices.DashboardData(requestedPage);
-            return PartialView("_DashboardData",data);
+            return PartialView("_DashboardData", data);
         }
 
         [CustomAuthorize("User")]
@@ -293,7 +289,7 @@ namespace HellocDoc1.Controllers
         [CustomAuthorize("User")]
 
         public async Task<IActionResult> Patient_Profile()
-            {
+        {
             var email = HttpContext.Session.GetString("Email");
             var data = await patientServices.ProfileService(email);
             return View(data);
@@ -303,6 +299,10 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> Editing(ProfileViewModel model)
         {
             var email = HttpContext.Session.GetString("Email");
+            if (model.Email != email)
+            {
+                HttpContext.Session.SetString("Email", model.Email);
+            }
             await patientServices.Editing(email, model);
             return RedirectToAction("Patient_Profile", "Patient");
         }

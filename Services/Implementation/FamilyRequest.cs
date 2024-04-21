@@ -68,7 +68,7 @@ namespace HellocDoc1.Services
                         Email = model.PatientEmail,
                         PhoneNumber = model.PatientPhoneNumber,
                         Street = model.PatientStreet,
-                        State = model.PatientState,
+                        State = regiondata.Name,
                         City = model.PatientCity,
                         ZipCode = model.PatientZipCode,
                         Notes = model.Symptoms,

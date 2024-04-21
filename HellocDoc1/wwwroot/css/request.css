@@ -85,6 +85,11 @@ body {
     background: transparent;
 }
 
+.form-floating > .form-select:focus {
+    border-color: #01bce9;
+    box-shadow: none;
+}
+
 #phone {
     /* background: transparent; */
 }

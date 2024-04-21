@@ -5,18 +5,14 @@
     Layout = "~/Views/Shared/_PatientDashboardLayout.cshtml";
 }
 
-
-
 <div class="container">
     <div class="d-flex justify-content-between pt-3">
         <h4>Documents</h4>
         <a asp-area="" asp-controller="Patient" asp-action="Patient_Dashboard" class="btn back-btn border border-info text-info p-2">
             &lt; Back
         </a>
-
     </div>
     <div class="px-3 pt-4 shadow Document-content mt-3" style="">
-
         <div class="h6 text-secondary">Patient Name</div>
         <div class="h5 text-info d-inline-block">@Model.requestClient.FirstName @Model.requestClient.LastName</div>
         <div class="h5 d-inline-block">
@@ -27,7 +23,6 @@
             }
         </div>
         <div class="h6 text-secondary mt-3">Check here for any files that you or the doctors of your subsequents have attached for you to review</div>
-
         <form asp-action="UploadDocument" asp-route-request_id="@Model.request.RequestId" asp-controller="Patient" method="post" enctype="multipart/form-data">
             <div class="input-group mb-3 mt-4 border rounded-3 d-flex justify-content-between flex-row">
                 <input type="file" class="form-control" asp-for="Doc" id="inputGroupFile02" hidden multiple>
@@ -53,10 +48,9 @@
             <a onclick="downloadSelectedFiles()" id="download" class="btn text-info border-1 border-info">
                 Download
             </a>
-
         </div>
         <div class="table-responsive mt-2">
-            <table class="table">
+            <table class="table d-md-block d-none">
                 <thead>
                     <tr>
                         <th class="text-center" style="width:8%; position:relative;bottom: 28px;"><input type="checkbox" class="form-check-input checks" id="All" /></th>
@@ -72,18 +66,42 @@
                         <tr>
                             <td><input type="checkbox" data-id="@item.RequestWiseFileId" class="ChildCheck form-check-input checks text-center" name="checkdoc" style="left: 25px; position:relative;" /></td>
                             <td><i class="bi bi-file-earmark-medical-fill mr-1 h5 fs-3" style="color:#f50707"></i>@item.FileName</td>
-                            <td>@item.Request.FirstName</td>
-                            <td>@item.CreatedDate</td>
+                            <td>
+                                @item.Request.FirstName @item.Request.LastName
+                            </td>
+                            <td>@item.CreatedDate.ToString("MMM dd yyyy")</td>
                             <td>
                                 <a href="~/uploads/@item.FileName" class="border border-info rounded-3 py-1 px-2" download="">
                                     <i class="bi bi-cloud-arrow-down text-info"></i>
                                 </a>
-
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+            <div class="d-md-none d-block">
+                <input type="checkbox" class="form-check-input checks" id="All" style="position: relative;left: 21px;"/>
+                @foreach (var item in Model.requestWiseFile)
+                {   
+                    <hr />
+                    <div>
+                        <input type="checkbox" data-id="@item.RequestWiseFileId" class="ChildCheck form-check-input checks text-center mr-2" name="checkdoc" style="left: 21px; position:relative;" />
+                        <span class="" style="left: 21px; position:relative;"><i class="bi bi-file-earmark-medical-fill mr-1 h5 fs-3" style="color:#f50707"></i>@item.FileName</span>
+                    </div>
+                    <div class="my-3">
+                        @item.Request.FirstName @item.Request.LastName
+                    </div>
+                    <div class="my-3">
+                        @item.CreatedDate.ToString("MMM dd yyyy")
+                    </div>
+                    <div class="">
+                        <a href="~/uploads/@item.FileName" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                            <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                        </a>
+                    </div>
+                    <hr />
+                }
+            </div>
         </div>
         <br />
         <br />
@@ -93,21 +111,21 @@
 <br />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function DownloadAll(request_id) {
-        $.ajax({
-            url: "/Admin/Delete",
-            data: { request_id: request_id },
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                window.location.reload();
-                console.log("success")
-            },
-            error: function () {
-                alert("No Projects Found");
-            }
-        });
-    };
+    // function DownloadAll(request_id) {
+    //     $.ajax({
+    //         url: "/Admin/Delete",
+    //         data: { request_id: request_id },
+    //         type: "POST",
+    //         dataType: "html",
+    //         success: function (data) {
+    //             window.location.reload();
+    //             console.log("success")
+    //         },
+    //         error: function () {
+    //             alert("No Projects Found");
+    //         }
+    //     });
+    // };
     $(document).ready(function () {
         $("#download").css('display', 'block');
         $(".downloadall").css('display', 'none');
@@ -115,7 +133,7 @@
             if ($(this).is(":checked")) {
                 $("#download").css('display', 'none');
                 $(".downloadall").css('display', 'block');
-            } else {
+            } else {    
                 $("#download").css('display', 'block');
                 $(".downloadall").css('display', 'none');
             }

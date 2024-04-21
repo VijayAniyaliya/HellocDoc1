@@ -4,7 +4,7 @@
 }
 
 @model HellocDoc1.Services.Models.PatientRequestModel
-
+@using Common.Enum
 
 <div class="body-content container mb-3">
 
@@ -31,6 +31,7 @@
                                 Enter Brief Details Of Symptoms
                                 (Optional)
                             </label>
+                            <span asp-validation-for="Symptoms" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -88,10 +89,11 @@
                     </div>
                     <div class="col-md-6 passDisplay" id="passwordFields2">
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="floatingInput"
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" id="floatingInput"
                                    placeholder="ConfirmPassword" />
                             <label for="floatingInput" class="">Confirm Password</label>
                             <i class="bi bi-eye eye-icon"></i>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -120,9 +122,15 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" />
-                            <label for="floatingInput" class="">State</label>
+                        <div class="form-floating">
+                            <select class="form-select py-0 text-secondary" asp-for="State" id="state" aria-label="Floating label select example">
+                                <option selected disabled>State</option>
+                                @foreach (var item in Enum.GetValues(typeof(Regions)))
+                                {
+                                    <option value="@((int)item)">@item.ToString()</option>
+                                }
+                            </select>
+                            <label for="state"></label>
                             <span asp-validation-for="State" class="text-danger"></span>
                         </div>
                     </div>

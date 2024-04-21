@@ -35,7 +35,7 @@ namespace Services.Models
 
         public string Email { get; set; }
         [Required(ErrorMessage = "Phone Number is required")]
-        [StringLength(17, MinimumLength = 9, ErrorMessage = "Invalid Phonenumber")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be 10 digits")]
         [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
         public string PhoneNumber { get; set; }
 
@@ -68,7 +68,7 @@ namespace Services.Models
 
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string zip { get; set; }
-        [StringLength(17, MinimumLength = 9, ErrorMessage = "Invalid Phonenumber")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be 10 digits")]
         [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
         public string? altphonenumber { get; set; }
         [Required(ErrorMessage = "Business Name is required")]

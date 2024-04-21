@@ -76,13 +76,15 @@ namespace Services.Implementation
                 requestClients = requestClients.Where(a =>
 
                     (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
-                     (obj.FromDate == new DateTime() ||a.Request.AcceptedDate!.Value.Date >=obj.FromDate) &&
-                      (obj.ToDate == new DateTime() || a.Request.AcceptedDate!.Value.Date <= obj.ToDate )&&
-                    (string.IsNullOrWhiteSpace(obj.PatientName) || a.FirstName.ToLower().Contains(obj.PatientName.ToLower()) || a.LastName.ToLower().Contains(obj.PatientName.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.PatientName) || (a.FirstName.ToLower()+", "+ a.LastName.ToLower()).Contains(obj.PatientName.ToLower())) &&
                     (obj.RequestType == 0 || a.Request.RequestTypeId == obj.RequestType) &&
                     (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
                     (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
                     (string.IsNullOrWhiteSpace(obj.PhoneNumber) || a.PhoneNumber.Contains(obj.PhoneNumber))
+                ).ToList();
+
+                requestClients = requestClients.Where(a =>
+                    (obj.FromDate.Date == new DateTime().Date || a.Request.AcceptedDate.Value.Date == obj.FromDate.Date)
                 ).ToList();
 
                 int count = requestClients.Count();

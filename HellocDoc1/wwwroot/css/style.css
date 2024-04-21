@@ -16,7 +16,10 @@ body {
 .container-fluid {
 }
 
-
+.icns::before {
+    font-weight: 900 !important;
+    line-height: 1.1;
+}
 
 .back-img {
     z-index: -1;

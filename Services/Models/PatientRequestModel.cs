@@ -5,11 +5,12 @@ namespace HellocDoc1.Services.Models
 {
     public class PatientRequestModel
     {
+        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
         public string? Symptoms { get; set; }   
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
-
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Last Name")]
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; }
 
@@ -18,21 +19,31 @@ namespace HellocDoc1.Services.Models
 
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
-
+        [Required]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must contain at least one uppercase, one lowercase letter, one digit, one special character, and be at least 8 characters long.")]
         public string? Password { get; set; }
 
+        [Compare("Password", ErrorMessage = "The password and confirm password must be same.")]
+        public string? ConfirmPassword { get; set; }
+
         [Required(ErrorMessage = "Phone Number is required")]
+        [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be 10 digits")]
         public string PhoneNumber { get; set; }
 
+
         [Required(ErrorMessage = "Street is required")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z0-9, ]+$", ErrorMessage = "Enter Valid Street")]
+
         public string Street { get; set; }
 
         [Required(ErrorMessage = " City name is required")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid City")]
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is required")]
-        public string State { get; set; }
-
+        public int State { get; set; }
+            
         [Required(ErrorMessage = "ZipCode is required")]
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string ZipCode { get; set; }

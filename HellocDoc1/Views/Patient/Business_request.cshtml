@@ -4,6 +4,8 @@
 }
 
 @model HellocDoc1.Services.Models.BusinessRequestModel
+@using Common.Enum
+
 
 <div class="body-content container">
 
@@ -17,176 +19,182 @@
     <div class="main-content  px-4 py-3 shadow-lg">
         <form asp-action="Business_request" method="post">
 
-        <div class="business-info">
-            <div class="h5 mb-4">Business Information</div>
+            <div class="business-info">
+                <div class="h5 mb-4">Business Information</div>
 
-            <div class="row">
+                <div class="row">
 
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="FirstName" class="form-control" id="floatingInput"
-                               placeholder="your first name" />
-                        <label for="floatingInput" class="">Your First Name</label>
+                                   placeholder="your first name" />
+                            <label for="floatingInput" class="">Your First Name</label>
                             <span asp-validation-for="FirstName" class="text-danger"></span>
-                            
+
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="LastName" class="form-control" id="floatingInput"
-                               placeholder="your last name" />
-                        <label for="floatingInput" class="">Your Last Name</label>
+                                   placeholder="your last name" />
+                            <label for="floatingInput" class="">Your Last Name</label>
                             <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating  mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating  mb-3">
                             <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone">
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                               placeholder="abc@gmail.com" />
-                        <label for="floatingInput" class="">Your Email</label>
+                                   placeholder="abc@gmail.com" />
+                            <label for="floatingInput" class="">Your Email</label>
                             <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PropertyName" class="form-control" id="floatingInput"
-                               placeholder="business/property name" />
-                        <label for="floatingInput" class="">Business/Property Name</label>
+                                   placeholder="business/property name" />
+                            <label for="floatingInput" class="">Business/Property Name</label>
                             <span asp-validation-for="PropertyName" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="CaseNumber" class="form-control" id="floatingInput" placeholder="case number" />
-                        <label for="floatingInput" class="">Case Number (Optional)</label>
+                            <label for="floatingInput" class="">Case Number (Optional)</label>
+                        </div>
                     </div>
+
                 </div>
-
             </div>
-        </div>
 
-        <div class="patient-info">
-            <div class="h5 mb-4 mt-4">Patient Information</div>
+            <div class="patient-info">
+                <div class="h5 mb-4 mt-4">Patient Information</div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-floating mb-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-floating mb-3">
                             <textarea asp-for="Symptoms" class="form-control" placeholder="enter patient information"
-                                  id="floatingTextarea2" style="height: 100px"></textarea>
-                        <label for="floatingTextarea2" class="">
-                            Enter Brief Details Of Symptoms
-                            (Optional)
-                        </label>
+                                      id="floatingTextarea2" style="height: 100px"></textarea>
+                            <label for="floatingTextarea2" class="">
+                                Enter Brief Details Of Symptoms
+                                (Optional)
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientFirstName" class="form-control" id="floatingInput" placeholder="first name" />
-                        <label for="floatingInput" class="">First Name</label>
+                            <label for="floatingInput" class="">First Name</label>
                             <span asp-validation-for="PatientFirstName" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientLastName" class="form-control" id="floatingInput" placeholder="last name" />
-                        <label for="floatingInput" class="">Last Name</label>
+                            <label for="floatingInput" class="">Last Name</label>
                             <span asp-validation-for="PatientLastName" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="date" asp-for="PatientDOB" class="form-control" id="floatingInput" placeholder="last name" />
-                        <label for="floatingInput" class="">Date of Birth</label>
+                            <label for="floatingInput" class="">Date of Birth</label>
                             <span asp-validation-for="PatientDOB" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
-        </div>
 
-        <div class="contact-info">
-            <div class="h5 mb-4 mt-4">Patient Contact Information</div>
+            <div class="contact-info">
+                <div class="h5 mb-4 mt-4">Patient Contact Information</div>
 
-            <div class="row">
+                <div class="row">
 
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="email" asp-for="PatientEmail" class="form-control" id="floatingInput"
-                               placeholder="abc@gmail.com" />
-                        <label for="floatingInput" class="">Email</label>
+                                   placeholder="abc@gmail.com" />
+                            <label for="floatingInput" class="">Email</label>
                             <span asp-validation-for="PatientEmail" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating  mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating  mb-3">
                             <input type="tel" asp-for="PatientPhoneNumber" class="form-control pt-3 pb-3" id="phone1">
                             <span asp-validation-for="PatientPhoneNumber" class="text-danger"></span>
+                        </div>
                     </div>
+
                 </div>
-
             </div>
-        </div>
 
-        <div class="location-info">
-            <div class="h5 mb-4 mt-4">Patient Location</div>
+            <div class="location-info">
+                <div class="h5 mb-4 mt-4">Patient Location</div>
 
-            <div class="row">
+                <div class="row">
 
-                <!-- <div class="row"> -->
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <!-- <div class="row"> -->
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientStreet" class="form-control" id="floatingInput"
-                               placeholder="street address" />
-                        <label for="floatingInput" class="text-muted">Street</label>
+                                   placeholder="street address" />
+                            <label for="floatingInput" class="text-muted">Street</label>
                             <span asp-validation-for="PatientStreet" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientCity" class="form-control" id="floatingInput" placeholder="city" />
-                        <label for="floatingInput" class="">City</label>
+                            <label for="floatingInput" class="">City</label>
                             <span asp-validation-for="PatientCity" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
-                            <input type="text" asp-for="PatientState" class="form-control" id="floatingInput" placeholder="state" />
-                        <label for="floatingInput" class="">State</label>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select py-0 text-secondary" asp-for="PatientState" id="state" aria-label="Floating label select example">
+                                <option selected disabled>State</option>
+                                @foreach (var item in Enum.GetValues(typeof(Regions)))
+                                {
+                                    <option value="@((int)item)">@item.ToString()</option>
+                                }
+                            </select>
+                            <label for="state"></label>
                             <span asp-validation-for="PatientState" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientZipCode" class="form-control" id="floatingInput" placeholder="zip codes" />
-                        <label for="floatingInput" class="">Zip Code</label>
+                            <label for="floatingInput" class="">Zip Code</label>
                             <span asp-validation-for="PatientZipCode" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3">
                             <input type="text" asp-for="PatientRoom" class="form-control" id="floatingInput" placeholder="room" />
-                        <label for="floatingInput" class="">Room # / Suite (Optional)</label>
+                            <label for="floatingInput" class="">Room # / Suite (Optional)</label>
+                        </div>
                     </div>
+                    <!-- </div> -->
                 </div>
-                <!-- </div> -->
             </div>
-        </div>
 
-        <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
-            <button type="submit" class="btn submit-btn border border-info bg-info text-white p-2">
-                Submit
-            </button>
-            <button type="reset" class="btn cancel-btn border border-info text-info p-2">
-                Cancel
-            </button>
-        </div>
+            <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
+                <button type="submit" class="btn submit-btn border border-info bg-info text-white p-2">
+                    Submit
+                </button>
+                <button type="reset" class="btn cancel-btn border border-info text-info p-2">
+                    Cancel
+                </button>
+            </div>
 
         </form>
 

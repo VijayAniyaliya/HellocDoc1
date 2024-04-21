@@ -45,7 +45,7 @@
                 <td>@item.Request.RequestNotes.FirstOrDefault(a=> a.RequestId == item.Request.RequestId)?.PhysicianNotes</td>
                 <td>Cancel Notes</td>
                 <td>@item.Request.RequestNotes.FirstOrDefault(a=> a.RequestId == item.Request.RequestId)?.AdminNotes</td>
-                <td>@item.Notes?</td>
+                <td>@item.Notes</td>
                 <td class="text-center">
                     <a asp-action="" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</a>
                 </td>

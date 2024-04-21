@@ -33,7 +33,7 @@ namespace Common.Enum
     public enum Month
     {
         Jan = 1,
-        Feb = 2,    
+        Feb = 2,
         Mar = 3,
         Apr = 4,
         May = 5,
@@ -44,5 +44,12 @@ namespace Common.Enum
         Oct = 10,
         Nov = 11,
         Dec = 12
+    }
+
+    public enum Regions
+    {
+        rajkot = 1,
+        snagar = 2,
+        surat = 3,
     }
 }

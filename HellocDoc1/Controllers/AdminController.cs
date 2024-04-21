@@ -6,7 +6,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Services.Implementation;
+using Services.Implementation;  
 using Services.Models;
 using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
@@ -239,7 +239,7 @@ namespace HellocDoc1.Controllers
 
 
         public async Task<IActionResult> CloseCase(int request_id)
-        {
+        {   
             var data = await _adminServices.CloseCase(request_id);
             return View(data);
         }

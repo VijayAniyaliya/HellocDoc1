@@ -19,9 +19,12 @@
                     <div class="form-floating mb-3">
                         <select class="form-select text-secondary reason py-1" id="floatingSelect" aria-label="Floating label select example">
                             <option selected disabled value="">Reason for Cancellation</option>
-                            @foreach (var item in Model.ReasonForCancel)
+                            @if (Model.ReasonForCancel != null)
                             {
-                                <option value="@item.CaseId">@item.CaseName</option>
+                                @foreach (var item in Model.ReasonForCancel)
+                                {
+                                    <option value="@item.CaseId">@item.CaseName</option>
+                                }
                             }
                         </select>
                         <label for="floatingSelect"></label>
@@ -46,36 +49,33 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $('.reason').on('change', function () {
+        $('.reason').css('border', '1px solid #ced4da');
+        $('#error').html('');
+    });
 
-        $('.reason').on('change', function () {
-            $('.reason').css('border', '1px solid #ced4da');
-            $('#error').html('');
-        });
-
-        $('.cancel').on('click', function (e) {
-            var caseId = $('.reason').val();
-            console.log(caseId);
-            if (caseId == null) {
-                $('.reason').css('border', '1px solid red');
-                $('#error').html('Please select reason');
-            }
-            else {
-                var cancelNote = $('.cancelNote').val();
-                $.ajax({
-                    url: '/Admin/CancelCase',
-                    data: { "request_id": @Model.RequestId, "caseId": caseId, "cancelNote": cancelNote },
-                    success: function (response) {
-                        $("#cancel").click();
-                        $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
-                        $('#pills-toclose-tab').html($(response).find('#pills-toclose-tab').html());
-                        toastr.success('Case Cancel Successfully');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-        });
+    $('.cancel').on('click', function (e) {
+        var caseId = $('.reason').val();
+        console.log(caseId);
+        if (caseId == null) {
+            $('.reason').css('border', '1px solid red');
+            $('#error').html('Please select reason');
+        }
+        else {
+            var cancelNote = $('.cancelNote').val();
+            $.ajax({
+                url: '/Admin/CancelCase',
+                data: { "request_id": '@Model.RequestId', "caseId": caseId, "cancelNote": cancelNote },
+                success: function (response) {
+                    $("#cancel").click();
+                    $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
+                    $('#pills-toclose-tab').html($(response).find('#pills-toclose-tab').html());
+                    toastr.success('Case Cancel Successfully');
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
     });
 </script>

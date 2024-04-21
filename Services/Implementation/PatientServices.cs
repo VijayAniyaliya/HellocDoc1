@@ -1,20 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Services.Contracts;
+﻿using Common.Enum;
 using Data.Context;
 using Data.Entity;
-using HellocDoc1.Services.Models;
-using Newtonsoft.Json.Linq;
-using System.Text;
-using System.IO.Compression;
-using System;
-using Microsoft.AspNetCore.Hosting;
-using System.Collections;
-using Common.Enum;
-using Services.Models;
 using HalloDoc.Utility;
-using Common.Helpers;
+using HellocDoc1.Services.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Services.Contracts;
+using Services.Models;
+using System.Collections;
 using System.Globalization;
+using System.IO.Compression;
 
 namespace HellocDoc1.Services
 {
@@ -152,9 +148,10 @@ namespace HellocDoc1.Services
                     FirstName = data.FirstName,
                     LastName = data.LastName!,
                     phone = data.Mobile!,
-                    Email= data.Email,
+                    Email = data.Email,
                     DOB = DateTime.ParseExact($"{data.IntYear}-{month}-{data.IntDate}", "yyyy-M-d", CultureInfo.InvariantCulture),
                     Street = data.Street!,
+                    IsMobile = (data.IsMobile == null || data.IsMobile[0] == true) ? 1 : 0,
                     City = data.City!,
                     State = data.State!,
                     ZipCode = data.ZipCode!,
@@ -168,32 +165,33 @@ namespace HellocDoc1.Services
         {
             User? userdata = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
-            if (userdata!.Email ==  model.Email)
+            if (userdata.Email != model.Email)
+            {
+                AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
+                if (aspNetUser != null)
+                {
+                    aspNetUser.UserName = model.FirstName + " " + model.LastName;
+                    aspNetUser.Email = model.Email;
+                    aspNetUser.PhoneNumber = model.phone;
+                    aspNetUser.ModifiedDate = DateTime.Now;
+                }
+                _context.AspNetUsers.Update(aspNetUser);
+            }
+            if (userdata != null)
             {
                 userdata.FirstName = model.FirstName;
                 userdata.LastName = model.LastName;
                 userdata.Mobile = model.phone;
                 userdata.Email = model.Email;
+                userdata.IsMobile = (model.IsMobile == 1) ? new BitArray(new[] { true }) : (new BitArray(new[] { false }));
                 userdata.Street = model.Street;
                 userdata.City = model.City;
                 userdata.State = model.State;
                 userdata.ZipCode = model.ZipCode;
                 userdata.ModifiedDate = DateTime.Now;
-
                 _context.Users.Update(userdata);
             }
-            else
-            {
-                AspNetUser aspnetuser = new AspNetUser()
-                {
-                    UserName = model.FirstName + " " + model.LastName,
-                    Email = model.Email,
-                    PhoneNumber = model.phone,
-                    ModifiedDate = DateTime.Now,
-                };
-                _context.AspNetUsers.Add(aspnetuser);
-                await _context.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task SubmitInformationSomeone(SubmitInfoViewModel model)
@@ -203,8 +201,6 @@ namespace HellocDoc1.Services
 
             if (aspnetuser != null)
             {
-
-
                 Request request = new Request()
                 {
                     UserId = 6,
@@ -214,7 +210,7 @@ namespace HellocDoc1.Services
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
                     RelationName = model.RelationWithPatient,
-                    Status = 1,
+                    Status = (int)Common.Enum.RequestStatus.Unassigned,
                     IsUrgentEmailSent = new BitArray(1),
                     CreatedDate = DateTime.Now
 
@@ -353,8 +349,6 @@ namespace HellocDoc1.Services
                     transaction.Rollback();
                 }
             }
-
         }
-
     }
 }

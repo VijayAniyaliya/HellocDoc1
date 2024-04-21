@@ -71,7 +71,7 @@ namespace HellocDoc1.Services
                             Notes = model.Symptoms,
                             Street = model.PatientStreet,
                             City = model.PatientCity,
-                            State = model.PatientState,
+                            State = regiondata.Name,
                             ZipCode = model.PatientZipCode,
                             RegionId = regiondata.RegionId,
 
