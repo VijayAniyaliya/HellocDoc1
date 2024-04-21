@@ -78,6 +78,8 @@ namespace Services.Models
 
         public string BusinessWeb { get; set; }
         [Required(ErrorMessage = "please upload Photo")]
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
 
         public IFormFile Photo { get; set; }
         [Required(ErrorMessage = "Admin Notes is required")]

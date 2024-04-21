@@ -12,8 +12,6 @@ using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
-using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
-using static iTextSharp.text.pdf.AcroFields;
 
 namespace Services.Implementation
 {
@@ -39,10 +37,10 @@ namespace Services.Implementation
         {
             var requestCount1 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).Count();
             var requestCount2 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 2).Count();
-            var requestCount3 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 3).Count();
-            var requestCount4 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 4).Count();
-            var requestCount5 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 5).Count();
-            var requestCount6 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6).Count();
+            var requestCount3 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count();
+            var requestCount4 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6).Count();
+            var requestCount5 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).Count();
+            var requestCount6 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 9).Count();
             List<Region> regions = await _context.Regions.ToListAsync();
 
             AdminDashboardViewModel model = new AdminDashboardViewModel()
@@ -1936,12 +1934,16 @@ namespace Services.Implementation
                     aspNetUser.Roles.Add(role);
                     await _context.SaveChangesAsync();
 
-
-                    var file = model.Photo.FileName;
-                    var uniqueFileName = GetUniqueFileName(file);
-                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                    var filePath = Path.Combine(uploads, uniqueFileName);
-                    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    var filename = "";
+                    if (model.Photo != null)
+                    {
+                        var file = model.Photo.FileName;
+                        var uniqueFileName = GetUniqueFileName(file);
+                        filename = uniqueFileName;
+                        var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                        var filePath = Path.Combine(uploads, uniqueFileName);
+                        model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
 
                     Physician physician = new Physician()
                     {
@@ -1957,14 +1959,14 @@ namespace Services.Implementation
                         City = model.city,
                         Zip = model.zip,
                         AltPhone = model.altphonenumber,
-                        CreatedBy = "21c57981-a679-4b62-8eee-57c1ce429643",
+                        CreatedBy = aspNetUser.Id,
                         CreatedDate = DateTime.Now,
                         BusinessName = model.BusinessName,
                         BusinessWebsite = model.BusinessWeb,
                         Npinumber = model.NPI,
-                        Photo = uniqueFileName,
+                        Photo = filename,
                         RegionId = model.state,
-                        Status = (int)Common.Enum.PhysicianStatus.NotActive,
+                        Status = (int)PhysicianStatus.NotActive,
                         RoleId = model.role,
                         IsAgreementDoc = new BitArray(new[] { false }),
                         IsBackgroundDoc = new BitArray(new[] { false }),
@@ -2034,8 +2036,9 @@ namespace Services.Implementation
 
         private void DocumentMethod(IFormFile item, string uniquefileName)
         {
+            string extension = Path.GetExtension(item.FileName);
             var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-            var photoPath = Path.Combine(uploads, uniquefileName);
+            var photoPath = Path.Combine(uploads, uniquefileName + extension);
             item.CopyTo(new FileStream(photoPath, FileMode.Create));
         }
 

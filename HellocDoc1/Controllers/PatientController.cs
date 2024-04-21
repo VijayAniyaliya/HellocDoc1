@@ -110,33 +110,29 @@ namespace HellocDoc1.Controllers
             int requestId = int.Parse(HashingServices.Decrypt(request_id));
             CreateAccountViewModel model = new CreateAccountViewModel()
             {
-                RequestId = int.Parse(request_id),
+                RequestId = requestId,
             };
             return View(model);
         }
 
         public async Task<IActionResult> CreatePatientAccount(CreateAccountViewModel model)
         {
-            if (ModelState.IsValid)
+            LoginResponseViewModel? result = await loginHandler.CreateNewAccount(model);
+            if (result.Status == ResponseStatus.Success)
             {
-                LoginResponseViewModel? result = await loginHandler.CreateNewAccount(model);
-                if (result.Status == ResponseStatus.Success)
-                {
-                    TempData["Success"] = "Account Created Successfully";
-                    return RedirectToAction("Login", "Patient");
-                }
-                else
-                {
-                    CreateAccountViewModel model1 = new CreateAccountViewModel()
-                    {
-                        RequestId = model.RequestId,
-                    };
-                    ModelState.AddModelError("", result.Message);
-                    TempData["Error"] = result.Message;
-                    return View(model1);
-                }
+                TempData["Success"] = "Account Created Successfully";
+                return RedirectToAction("Login", "Patient");
             }
-            return View();
+            else
+            {
+                CreateAccountViewModel model1 = new CreateAccountViewModel()
+                {
+                    RequestId = model.RequestId,
+                };
+                ModelState.AddModelError("", result.Message);
+                TempData["Error"] = result.Message;
+                return View(model1);
+            }
         }
 
 

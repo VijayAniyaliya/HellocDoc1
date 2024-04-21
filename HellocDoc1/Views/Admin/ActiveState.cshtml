@@ -44,33 +44,39 @@
                         break;
                 }
                 <td>@item.Request.Physician?.FirstName,  @item.Request.Physician?.LastName</td>
-                <td>@item.Request.CreatedDate</td>
-
+                @if (item.Request.AcceptedDate.HasValue)
+                {
+                    <td>@item.Request.AcceptedDate.Value.ToString("MMM dd yyyy")</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
                 <td>
                     @switch (item.Request.RequestTypeId)
                     {
                         case 1:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
                             <div>Patient</div>
                             break;
                         case 2:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Family/Friend</div>
 
                             break;
                         case 3:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Business</div>
 
                             break;
                         case 4:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Concierge</div>
 
                             break;
@@ -164,10 +170,36 @@
                     </a>
                 </div>
                 <div class="accordion-body d-flex flex-column gap-1">
+                    <div><i class="bi bi-calendar2-minus mr-1 icn"></i>Date of birth: @item.StrMonth @item.IntDate, @item.IntYear</div>
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div>
-                        <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.Request.PhoneNumber
+                        <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.PhoneNumber
                     </div>
+                    <div>
+                        <i class="bi bi-card-text mr-1 icn"></i>Transfer Notes:
+                        @foreach (var obj in item.Request.RequestStatusLogs)
+                        {
+                            if (obj.Notes != null)
+                            {
+                                <span class="mb-2">
+                                    @obj.Notes on @obj.CreatedDate.ToString("MM/dd/yyyy")  at  @obj.CreatedDate.ToString("h:mm tt")
+                                </span>
+                            }
+                        }
+                    </div>
+                    <div>
+                        <i class="bi bi-calendar2-minus mr-1 icn"></i>Date of service:
+                        @if (item.Request.AcceptedDate.HasValue)
+                        {
+                            <span>@item.Request.AcceptedDate.Value.ToString("MMM dd yyyy")</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Requestor: @item.Request.FirstName, @item.Request.LastName</div>
                 </div>
                 <div class="row mx-3">
                     <div class="col-6 ps-0 pr-3 pb-2">

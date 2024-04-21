@@ -40,7 +40,7 @@
                         break;
                     case 3:
                         <td>Business @item.Request.FirstName, @item.Request.LastName</td>
-                        break;       
+                        break;
                     case 4:
                         <td>Concierge @item.Request.FirstName, @item.Request.LastName</td>
                         break;
@@ -62,23 +62,23 @@
                             <div>Patient</div>
                             break;
                         case 2:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Family/Friend</div>
 
                             break;
                         case 3:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Business</div>
 
                             break;
                         case 4:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
-                            <div>Patient</div>
                             <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <div>Patient</div>
+                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
                             <div>Concierge</div>
 
                             break;
@@ -115,7 +115,15 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            @if (item.Request.PhysicianId == null)
+                            {
+                                <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assign(@item.RequestId)"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            }
+                            else
+                            {
+                                <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="assigned()"><i class="bi bi-list-check mr-1"></i> Assign Case</a></li>
+                            }
+
                             <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
                             <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
@@ -170,7 +178,7 @@
                                     <span>Concierge</span>
                                     <i class="bi bi-circle-fill text-primary h6"></i>
                                     break;
-                            }
+                            }   
 
                         </div>
                         <div>
@@ -195,14 +203,22 @@
                     <div><i class="bi bi-envelope mr-1 icn"></i>Email: @item.Request.Email</div>
                     <div>
                         <i class="bi bi-telephone mr-1 icn"></i>Patient: @item.Request.PhoneNumber
-
                     </div>
                     <div><i class="bi bi-person mr-1 icn"></i>Requestor: @item.Request.FirstName, @item.Request.LastName</div>
                 </div>
                 <div class="row mx-3">
+                    @if (item.Request.PhysicianId == null)
+                    {
                     <div class="col-6 ps-0 pr-3 pb-2">
                         <a onclick="assign(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
-                    </div>
+                        </div>         
+                    }
+                    else
+                    {
+                        <div class="col-6 ps-0 pr-3 pb-2">
+                        <a onclick="assigned()" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                        </div>
+                    }
                     <div class="col-6 p-0 pb-2 pb-2">
                         <a onclick="cancel(@item.RequestId)" class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
                     </div>
@@ -269,6 +285,9 @@ else
             }
         });
     };
+    function assigned() {
+        toastr.error('Case is already assigned');
+    }
     function assign(request_id) {
         $.ajax({
             url: "/Admin/assignDetails/" + request_id,
@@ -296,11 +315,9 @@ else
                 myModal.show();
             },
             error: function () {
-                alert("No Projects Found");
+                alert("No Projects Found"); 
                 $("#blockCase").html('An error has occurred');
             }
         });
     };
-    console.log(status);
-
 </script>

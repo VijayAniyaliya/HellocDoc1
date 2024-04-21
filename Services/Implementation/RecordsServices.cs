@@ -166,7 +166,7 @@ namespace Services.Implementation
                     row.CreateCell(8).SetCellValue(reqclient.PhoneNumber);
                     row.CreateCell(9).SetCellValue(reqclient.Email);
                     row.CreateCell(10).SetCellValue(reqclient.Request.Status);
-                    row.CreateCell(11).SetCellValue(reqclient.Request.Physician.FirstName);
+                    row.CreateCell(11).SetCellValue(reqclient.Request.Physician != null ? reqclient.Request.Physician?.FirstName: "");
                     var physicianNotes = reqclient.Request.RequestNotes.FirstOrDefault()?.PhysicianNotes;
                     row.CreateCell(12).SetCellValue(physicianNotes != null ? physicianNotes : "");
 

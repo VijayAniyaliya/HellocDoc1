@@ -33,7 +33,6 @@
     <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\js\NewFolder\" />
-    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>

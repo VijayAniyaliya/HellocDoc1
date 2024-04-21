@@ -15,26 +15,33 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.logsDatas)
+        @if (Model.logsDatas != null)
         {
-            <tr>
-                <td>@item.ReceiverName</td>
-                <td>@item.Action</td>
-                <td>@item.RoleName</td>
-                <td>@item.Email</td>
-                <td>@item.CreatedDate.ToString("MMM dd, yyyy h:mm tt")</td>
-                <td>@(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</td>
-                @if (item.IsEmailSent[0] == true)
-                {
-                    <td>Yes</td>
-                }
-                else
-                {
-                    <td>No</td>
-                }
-                <td>@item.SentTries</td>
-                <td>@item.ConfirmationNo</td>
-            </tr>
+            @foreach (var item in Model.logsDatas)
+            {
+                <tr>
+                    <td>@item.ReceiverName</td>
+                    <td>@item.Action</td>
+                    <td>@item.RoleName</td>
+                    <td>@item.Email</td>
+                    <td>@item.CreatedDate.ToString("MMM dd, yyyy h:mm tt")</td>
+                    <td>@(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</td>
+                    @if (item.IsEmailSent[0] == true)
+                    {
+                        <td>Yes</td>
+                    }
+                    else
+                    {
+                        <td>No</td>
+                    }
+                    <td>@item.SentTries</td>
+                    <td>@item.ConfirmationNo</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <div>No records found</div>
         }
     </tbody>
 </table>
@@ -62,7 +69,7 @@
                     <div><i class="bi bi-calendar2-minus mr-2 icn text-info"></i>Created Date: >@item.CreatedDate.ToString("MMM dd, yyyy h:mm tt")</div>
                     <div><i class="bi bi-calendar2-minus mr-2 icn text-info"></i>Sent Date: @(((DateTime)item.SentDate!).ToString("MMM dd, yyyy"))</div>
                     <div>
-                        <i class="bi bi-check2 mr-2 icn text-info"></i>Sent:     
+                        <i class="bi bi-check2 mr-2 icn text-info"></i>Sent:
                         @if (item.IsEmailSent[0] == true)
                         {
                             <span>Yes</span>
@@ -71,7 +78,7 @@
                         {
                             <span>No</span>
                         }
-                    </div>          
+                    </div>
                     <div><i class="bi bi-envelope mr-2 icn text-info"></i>Sent Tries: @item.SentTries</div>
                     <div>
                         <i class="bi bi-check2 mr-2 icn text-info"></i>Confirmation Number: @item.ConfirmationNo

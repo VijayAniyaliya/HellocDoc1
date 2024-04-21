@@ -40,10 +40,9 @@ namespace HelloDoc1.Services
 
         public async Task<LoginResponseViewModel> CreateNewAccount(CreateAccountViewModel model)
         {
-            var user = await _context.RequestClients.Where(u => u.RequestId == model.RequestId).FirstOrDefaultAsync();
-            AspNetUser? aspnetuser = await _context.AspNetUsers.Where(a => a.Email == model.Email).FirstOrDefaultAsync();
+            RequestClient? user = await _context.RequestClients.Include(u => u.Request).Where(u => u.Email == model.Email).FirstOrDefaultAsync();
 
-            if (aspnetuser == null)
+            if (user == null)
             {
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "Please entered the email you used when submitting your request" };
             }
@@ -62,8 +61,7 @@ namespace HelloDoc1.Services
                 await _context.SaveChangesAsync();
 
                 User user1 = new User()
-                {               
-                    UserId = 10,
+                {
                     AspNetUserId = aspNetUser.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -72,7 +70,7 @@ namespace HelloDoc1.Services
                     Street = user.Street,
                     City = user.City,
                     State = user.State,
-                    RegionId = 3,
+                    RegionId = user.RegionId,
                     ZipCode = user.ZipCode,
                     IntDate = user.IntDate,
                     IntYear = user.IntYear,
@@ -81,9 +79,11 @@ namespace HelloDoc1.Services
                     CreatedDate = DateTime.Now,
                 };
                 _context.Users.Add(user1);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();  
+
+                user.Request.UserId = user1.UserId;
+                return new LoginResponseViewModel() { Status = ResponseStatus.Success, Message = "" };
             }
-            return new LoginResponseViewModel();
         }
     }
 }

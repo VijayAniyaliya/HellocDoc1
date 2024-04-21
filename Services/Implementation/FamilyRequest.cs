@@ -106,7 +106,7 @@ namespace HellocDoc1.Services
                     {
                         string requestId = HashingServices.Encrypt(request.RequestId.ToString());
                         await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{requestId}\">Create Account</a>");
-
+                            
                         EmailLog emailLog = new EmailLog()
                         {
                             EmailTemplate = "https://localhost:7208/Patient/CreatePatientAccount/",

@@ -59,7 +59,7 @@ namespace HellocDoc1.Services
 
         public async Task<PatientServiceModel> DocumentService(int request_id)
         {
-            Request data = await _context.Requests.Where(x => x.RequestId == request_id).FirstOrDefaultAsync();
+            Request? data = await _context.Requests.Where(x => x.RequestId == request_id).FirstOrDefaultAsync();
             RequestClient requestClient = _context.RequestClients.Where(x => x.RequestId == request_id).FirstOrDefault()!;
             List<RequestWiseFile> requestWiseFile = _context.RequestWiseFiles.Where(x => x.RequestId == request_id).ToList();
 

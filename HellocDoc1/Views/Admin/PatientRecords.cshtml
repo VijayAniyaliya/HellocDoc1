@@ -44,7 +44,12 @@
                             <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">View</button>
                         </td>
                         <td class="text-center">
-                            <button type="button" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Actions</button>
+                            <button type="button" class="btn text-info border-2 border-info fw-bold dropdown-toggle rounded-3 px-2 h5 " data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
+                                <li><a class="dropdown-item ps-3" id="chat"><i class="bi bi-x-circle mr-1"></i>Chat</a></li>
+                                <li style="cursor:pointer;"><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-slash-circle mr-1" style="cursor:pointer;"></i>@item.Request.RequestWiseFiles.ToList().Count() Documents</a></li>
+                            </ul>
                         </td>
                     </tr>
                 }

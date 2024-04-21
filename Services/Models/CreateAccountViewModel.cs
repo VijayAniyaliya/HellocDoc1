@@ -15,6 +15,8 @@ namespace Services.Models
         public string Email { get; set; }
 
         [Required]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must contain at least one uppercase, one lowercase letter, one digit, one special character, and be at least 8 characters long.")]
+
         public string Password { get; set; }
 
         [Required]

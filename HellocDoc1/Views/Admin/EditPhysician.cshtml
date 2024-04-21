@@ -319,8 +319,8 @@
             </div>
             @if(Model.AggrementDoc == true) 
             {   
-                var fileName = @Model.PhysicianId + "_Aggrement";
-                <a href="~/uploads/MVC (1)_5bd7d7.pdf" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
+                var fileName = @Model.PhysicianId + "_Aggrement"+ ".pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <div class="d-flex align-items-center mb-3">

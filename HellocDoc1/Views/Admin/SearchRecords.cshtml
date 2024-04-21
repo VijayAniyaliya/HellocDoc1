@@ -132,6 +132,17 @@
         filterdata.requestedPage = 1;
         AjaxAll();
     }
+    $('#exportbtn').click(function () {
+        if (typeof (filterdata.patientname == "undefined")) {
+            filterdata.patientname = ""
+        }
+        var link = document.createElement('a');
+        link.href = '/Admin/ExportSearchData?RequestStatus=' + filterdata.requesttype + "&PatientName=" + filterdata.patientname + "&RequestType=" + filterdata.requesttype + "&FromDate=" + filterdata.FromDate + "&ToDate=" + filterdata.ToDate + "&ProviderName=" + filterdata.ProviderName + "&Email=" + filterdata.Email + "&PhoneNumber=" + filterdata.PhoneNumber
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 
     $("#clear").on("click", function () {
         $.ajax({
@@ -175,17 +186,6 @@
         });
     }
 
-    $('#exportbtn').click(function () {
-        if (typeof (filterdata.patientname == "undefined")) {
-            filterdata.pa = ""
-        }
-        var link = document.createElement('a');
-        link.href = '/Admin/ExportSearchData?RequestStatus=' + filterdata.requesttype + "&PatientName=" + filterdata.patientname + "&RequestType=" + filterdata.requesttype + "&FromDate=" + "" + "&ToDate=" + "" + "&ProviderName=" + "" + "&Email=" + "" + "&PhoneNumber=" + ""
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    });
 
 
 </script>

@@ -179,7 +179,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.EmailLogId).HasName("EmailLog_pkey");
 
-            entity.Property(e => e.EmailLogId).ValueGeneratedNever();
+            entity.Property(e => e.EmailLogId).UseIdentityAlwaysColumn();
         });
 
         modelBuilder.Entity<EncounterForm>(entity =>
@@ -432,7 +432,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.SmslogId).HasName("SMSLog_pkey");
 
-            entity.Property(e => e.SmslogId).ValueGeneratedNever();
+            entity.Property(e => e.SmslogId).UseIdentityAlwaysColumn();
         });
 
         modelBuilder.Entity<User>(entity =>
