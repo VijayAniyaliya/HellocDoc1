@@ -79,7 +79,7 @@ namespace HellocDoc1.Controllers
             LoginResponseViewModel? result = await patientServices.ResetPassword(model);
             if (result.Status == ResponseStatus.Success)
             {
-                TempData["success"] = "Reset Password link sent to your email";
+                TempData["Success"] = "Reset Password link sent to your email";
                 return RedirectToAction("Login", "Patient");
             }
             else
@@ -107,6 +107,7 @@ namespace HellocDoc1.Controllers
         [HttpGet("[controller]/[action]/{request_id}")]
         public IActionResult CreatePatientAccount(string request_id)
         {
+            int requestId = int.Parse(HashingServices.Decrypt(request_id));
             CreateAccountViewModel model = new CreateAccountViewModel()
             {
                 RequestId = int.Parse(request_id),

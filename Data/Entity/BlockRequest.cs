@@ -24,7 +24,7 @@ public partial class BlockRequest
     [Column(TypeName = "character varying")]
     public string? Reason { get; set; }
 
-    [StringLength(50)]
+    [Column(TypeName = "character varying")]
     public string RequestId { get; set; } = null!;
 
     [Column("IP")]

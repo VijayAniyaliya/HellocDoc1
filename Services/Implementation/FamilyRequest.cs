@@ -1,4 +1,5 @@
-﻿using Data.Context;
+﻿using Common.Helpers;
+using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
 using HellocDoc1.Services.Models;
@@ -36,20 +37,21 @@ namespace HellocDoc1.Services
             {
                 try
                 {
-                    AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
+                    AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.PatientEmail).FirstOrDefaultAsync();
                     User? user = await _context.Users.Where(a => a.Email == model.PatientEmail).FirstOrDefaultAsync(); 
-                    Region regiondata = await _context.Regions.FirstOrDefaultAsync(a => a.RegionId == 1);
+                    Region? regiondata = await _context.Regions.FirstOrDefaultAsync(a => a.RegionId == model.PatientState);
                     List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Today).ToListAsync();
                   
                     Request request = new Request()
                     {
-                        RequestTypeId = 2,
+                        RequestTypeId = (int)Common.Enum.RequestType.FamilyFriend,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
+                        UserId= user != null ? user.UserId : null,
                         PhoneNumber = model.PhoneNumber,
                         Email = model.Email,
                         RelationName = model.RelationWithPatient,
-                        Status = 1,
+                        Status = (int)Common.Enum.RequestStatus.Unassigned,
                         IsUrgentEmailSent = new BitArray(1),
                         CreatedDate = DateTime.Now,
                         ConfirmationNumber = regiondata?.Abbreviation?.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
@@ -68,11 +70,11 @@ namespace HellocDoc1.Services
                         Email = model.PatientEmail,
                         PhoneNumber = model.PatientPhoneNumber,
                         Street = model.PatientStreet,
-                        State = regiondata.Name,
+                        State = regiondata?.Name,
                         City = model.PatientCity,
                         ZipCode = model.PatientZipCode,
                         Notes = model.Symptoms,
-                        RegionId = regiondata.RegionId,
+                        RegionId = regiondata?.RegionId,
                     };
 
                     if (model.Doc != null)
@@ -101,8 +103,9 @@ namespace HellocDoc1.Services
                     await _context.SaveChangesAsync();
 
                     if (aspnetuser == null)
-                    {   
-                        await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{request.RequestId}\">Create Account</a>");
+                    {
+                        string requestId = HashingServices.Encrypt(request.RequestId.ToString());
+                        await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{requestId}\">Create Account</a>");
 
                         EmailLog emailLog = new EmailLog()
                         {

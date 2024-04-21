@@ -53,7 +53,7 @@ namespace HelloDoc1.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = user.FirstName + user.LastName,
-                    PasswordHash = model.Password,
+                    PasswordHash = HashingServices.Encrypt(model.Password),
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     CreatedDate = DateTime.Now,

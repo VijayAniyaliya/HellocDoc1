@@ -16,7 +16,7 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Admin> Admins { get; set; }    
+    public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<AdminRegion> AdminRegions { get; set; }
 
@@ -88,7 +88,7 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        =>  optionsBuilder.UseNpgsql("User ID = postgres;Password=123456;Server=localhost;Port=5432;Database=HalloDocMVC;Integrated Security=true;Pooling=true;");
+        => optionsBuilder.UseNpgsql("User ID = postgres;Password=123456;Server=localhost;Port=5432;Database=HalloDocMVC;Integrated Security=true;Pooling=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -178,6 +178,8 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<EmailLog>(entity =>
         {
             entity.HasKey(e => e.EmailLogId).HasName("EmailLog_pkey");
+
+            entity.Property(e => e.EmailLogId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<EncounterForm>(entity =>
@@ -429,13 +431,15 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<Smslog>(entity =>
         {
             entity.HasKey(e => e.SmslogId).HasName("SMSLog_pkey");
+
+            entity.Property(e => e.SmslogId).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("User_pkey");
 
-            entity.Property(e => e.UserId).ValueGeneratedNever();
+            entity.Property(e => e.UserId).UseIdentityAlwaysColumn();
 
             entity.HasOne(d => d.AspNetUser).WithMany(p => p.Users).HasConstraintName("User_AspNetUserId_fkey");
         });

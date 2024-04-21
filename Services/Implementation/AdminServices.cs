@@ -2075,7 +2075,7 @@ namespace Services.Implementation
 
                     var role = _context.AspNetRoles.FirstOrDefault(a => a.Name == "Admin");
                     aspNetUser.Roles.Add(role);
-                    /*await _context.SaveChangesAsync();*/
+                    await _context.SaveChangesAsync();
 
                     Admin admin = new Admin()
                     {

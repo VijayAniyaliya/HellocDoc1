@@ -45,7 +45,7 @@ namespace HellocDoc1.Services.Models
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string ZipCode { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Symptoms")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
         public string? Symptoms { get; set; }
 
         [Required(ErrorMessage = "First name is required")]

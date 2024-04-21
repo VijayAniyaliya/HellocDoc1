@@ -32,7 +32,7 @@ namespace HellocDoc1.Services.Models
 
         public string? CaseNumber { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Symptoms")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
 
         public string? Symptoms { get; set; }
 

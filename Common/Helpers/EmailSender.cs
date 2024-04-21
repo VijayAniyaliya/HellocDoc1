@@ -26,7 +26,7 @@ namespace HalloDoc.Utility
             }
         }
 
-        public static async Task SendMailOnGmail(string Toemail, string subject, string message, List<string> Attachments, string uploads)
+        public static async Task SendGmail(string Toemail, string subject, string message)
         {
             try
             {
@@ -43,6 +43,39 @@ namespace HalloDoc.Utility
                 {
                     From = new MailAddress(email)
 ,
+                    Subject = subject,
+                    Body = message,
+                    IsBodyHtml = true,
+                };
+
+                mailContent.To.Add(Toemail);
+                await client.SendMailAsync(mailContent);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+        }
+
+
+        public static async Task SendMailOnGmail(string Toemail, string subject, string message, List<string> Attachments, string uploads)
+        {
+            try
+            {
+                var email = "tatva.dotnet.vijayaniyaliya@outlook.com";
+                var Password = "Vijay010803";
+
+                var client = new SmtpClient("smtp.office365.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(email, Password)
+                };
+
+                var mailContent = new MailMessage
+                {
+                    From = new MailAddress(email)
+    ,
                     Subject = subject,
                     Body = message,
                     IsBodyHtml = true,
@@ -69,4 +102,5 @@ namespace HalloDoc.Utility
 
         }
     }
+
 }

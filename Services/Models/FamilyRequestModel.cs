@@ -26,7 +26,7 @@ namespace HellocDoc1.Services.Models
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Relation")]
         public string RelationWithPatient { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Symptoms")]
+        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
         public string? Symptoms { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
