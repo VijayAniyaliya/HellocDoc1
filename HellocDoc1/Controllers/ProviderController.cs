@@ -230,8 +230,8 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> DownloadEncounterForm(int request_id)
         {
-            await _providerServices.DownloadEncounter(request_id);
-            return NoContent();
+            var file= await _providerServices.DownloadEncounter(request_id);
+            return file;
         }
 
         public async Task<IActionResult> ConcludeCare(int request_id)

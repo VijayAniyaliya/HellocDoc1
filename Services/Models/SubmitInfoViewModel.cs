@@ -35,7 +35,7 @@ namespace HellocDoc1.Services.Models
         public string City { get; set; }
         [Required(ErrorMessage = "State is required")]
 
-        public string State { get; set; }
+        public int State { get; set; }
         [Required(ErrorMessage = "ZipCode is required")]
 
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
@@ -43,6 +43,6 @@ namespace HellocDoc1.Services.Models
 
         public int? Room { get; set; }
 
-        public IFormFile Doc { get; set; }
+        public IEnumerable<IFormFile>? Doc { get; set; }
     }
 }

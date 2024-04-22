@@ -24,7 +24,9 @@
         {
             <tr class="style_@item.Request.RequestTypeId">
                 <td scope="row">@item.FirstName, @item.LastName</td>
-                <td><i class="bi bi-envelope h5"></i></td>
+                <td class="text-white">
+                    <a href="mailto:@item.Email" class="text-decoration-none text-white">  <i class="bi bi-envelope"></i></a>
+                </td>
                 <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
                 <td>@item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</td>
                 @if (item.Request.AcceptedDate.HasValue)
@@ -73,12 +75,11 @@
                             Actions
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-x-circle mr-1"></i> Orders</a></li>
-                            <li><a class="dropdown-item ps-3" href="#"><i class="bi bi-slash-circle mr-1"></i> Doctor Note</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-slash-circle mr-1"></i> Encounter</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="SendOrders" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-cart-check"></i> Orders</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="EncounterForm" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-medical-fill"></i> Encounter</a></li>
                         </ul>
                     </div>
                 </td>

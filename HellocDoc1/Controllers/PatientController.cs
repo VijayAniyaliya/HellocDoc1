@@ -5,6 +5,7 @@ using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.Models;
+using System.Security.Claims;
 
 namespace HellocDoc1.Controllers
 {
@@ -16,9 +17,8 @@ namespace HellocDoc1.Controllers
         private readonly IConcirgeRequest concirgeRequest;
         private readonly IBusinessRequest businessRequest;
         private readonly IPatientServices patientServices;
-        private readonly ApplicationDbContext _context;
 
-        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices, ApplicationDbContext context)
+        public PatientController(ILoginHandler loginHandler, IPatientRequest patientRequest, IFamilyRequest familyRequest, IConcirgeRequest concirgeRequest, IBusinessRequest businessRequest, IPatientServices patientServices)
         {
             this.loginHandler = loginHandler;
             this.patientRequest = patientRequest;
@@ -26,7 +26,6 @@ namespace HellocDoc1.Controllers
             this.concirgeRequest = concirgeRequest;
             this.businessRequest = businessRequest;
             this.patientServices = patientServices;
-            _context = context;
         }
 
         [HttpGet]
@@ -168,10 +167,10 @@ namespace HellocDoc1.Controllers
         [HttpGet]
         public IActionResult CheckEmail(string email)
         {
-            var emailExists = _context.AspNetUsers.Any(u => u.Email == email);
+            var emailExists =patientServices.CheckEmail(email);
             return Json(new { exists = emailExists });
         }
-
+            
         public IActionResult Family_request()
         {
             return View();
@@ -225,9 +224,11 @@ namespace HellocDoc1.Controllers
 
         [CustomAuthorize("User")]
 
-        public IActionResult SubmitInformationMe()
+        public async Task<IActionResult> SubmitInformationMe()
         {
-            return View();
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var data = await patientServices.SubmitInformationMe(email);
+            return View(data);
         }
 
         public IActionResult SubmitInformationSomeone()
@@ -304,7 +305,7 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("Patient_Profile", "Patient");
         }
 
-        //[CustomAuthorize("User")]
+        [CustomAuthorize("User")]
         [HttpGet("[controller]/[action]/{request_id}")]
         public async Task<IActionResult> ReviewAgreement(string request_id)
         {

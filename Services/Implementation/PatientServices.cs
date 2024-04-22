@@ -1,16 +1,20 @@
 ﻿using Common.Enum;
+using Common.Helpers;
 using Data.Context;
 using Data.Entity;
 using HalloDoc.Utility;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Models;
+using System;
 using System.Collections;
 using System.Globalization;
 using System.IO.Compression;
+using System.Security.Claims;
 
 namespace HellocDoc1.Services
 {
@@ -194,68 +198,121 @@ namespace HellocDoc1.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<PatientRequestModel> SubmitInformationMe(string email)
+        {
+            User? user = await _context.Users.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (user != null)
+            {
+                PatientRequestModel model = new PatientRequestModel();
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName!;
+                model.Email = user.Email;
+                model.PhoneNumber = user.Mobile!;
+                return model;
+            }
+            return new PatientRequestModel();
+        }
+
         public async Task SubmitInformationSomeone(SubmitInfoViewModel model)
         {
-
-            AspNetUser aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-
-            if (aspnetuser != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                Request request = new Request()
+                try
                 {
-                    UserId = 6,
-                    RequestTypeId = 2,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.Email,
-                    RelationName = model.RelationWithPatient,
-                    Status = (int)Common.Enum.RequestStatus.Unassigned,
-                    IsUrgentEmailSent = new BitArray(1),
-                    CreatedDate = DateTime.Now
+                    AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
+                    User? user = await _context.Users.Where(a => a.Email == model.Email).FirstOrDefaultAsync();
+                    Region? regiondata = await _context.Regions.FirstOrDefaultAsync(a => a.RegionId == model.State);
+                    List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Today).ToListAsync();
 
-                };
-                _context.Requests.Add(request);
+                    Request request = new Request()
+                    {
+                        RequestTypeId = (int)Common.Enum.RequestType.FamilyFriend,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        UserId = user != null ? user.UserId : null,
+                        PhoneNumber = model.PhoneNumber,
+                        Email = model.Email,
+                        RelationName = model.RelationWithPatient,
+                        Status = (int)Common.Enum.RequestStatus.Unassigned,
+                        IsUrgentEmailSent = new BitArray(1),
+                        CreatedDate = DateTime.Now,
+                        ConfirmationNumber = regiondata?.Abbreviation?.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
+                                         + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2).ToUpper() + model.FirstName.Substring(0, 2).ToUpper() +
+                                         (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
+                    };
+                    await _context.Requests.AddAsync(request);
 
-                RequestClient requestclient = new RequestClient()
+                    RequestClient requestclient = new RequestClient()
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        IntDate = model.DOB.Day,
+                        IntYear = model.DOB.Year,
+                        StrMonth = model.DOB.ToString("MMM"),
+                        Email = model.Email,
+                        PhoneNumber = model.PhoneNumber,
+                        Street = model.Street,
+                        State = regiondata?.Name,
+                        City = model.City,
+                        ZipCode = model.ZipCode,
+                        Notes = model.Symptoms,
+                        RegionId = regiondata?.RegionId,
+                    };
+
+                    if (model.Doc != null)
+                    {
+                        foreach (var item in model.Doc)
+                        {
+                            var file = item.FileName;
+                            var uniqueFileName = GetUniqueFileName(file);
+                            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                            var filePath = Path.Combine(uploads, uniqueFileName);
+                            item.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                            RequestWiseFile requestWiseFile = new RequestWiseFile()
+                            {
+                                Request = request,
+                                FileName = uniqueFileName,
+                                CreatedDate = DateTime.Now,
+
+                            };
+                            await _context.RequestWiseFiles.AddAsync(requestWiseFile);
+
+                        }
+                    }
+                    request.RequestClients.Add(requestclient);
+                    await _context.RequestClients.AddAsync(requestclient);
+                    await _context.SaveChangesAsync();
+
+                    if (aspnetuser == null)
+                    {
+                        string requestId = HashingServices.Encrypt(request.RequestId.ToString());
+                        await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{requestId}\">Create Account</a>");
+
+                        EmailLog emailLog = new EmailLog()
+                        {
+                            EmailTemplate = "https://localhost:7208/Patient/CreatePatientAccount/",
+                            SubjectName = "Create Your Account",
+                            EmailId = requestclient.Email,
+                            ConfirmationNumber = request.ConfirmationNumber,
+                            RequestId = request.RequestId,
+                            CreateDate = DateTime.Now,
+                            SentDate = DateTime.Now,
+                            SentTries = 1,
+                            IsEmailSent = new BitArray(new[] { true }),
+                        };
+                        _context.EmailLogs.Add(emailLog);
+                        await _context.SaveChangesAsync();
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    IntDate = model.DOB.Day,
-                    IntYear = model.DOB.Year,
-                    StrMonth = (model.DOB.Month).ToString(),
-                    Email = model.Email,
-                    PhoneNumber = model.PhoneNumber,
-                    Street = model.Street,
-                    State = model.State,
-                    City = model.City,
-                    ZipCode = model.ZipCode,
-                    Notes = model.Symptoms
-                    //Request= request,
-                };
+                    transaction.Rollback();
+                }
 
-                var file = model.Doc;
-                var uniqueFileName = GetUniqueFileName(file.FileName);
-                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                file.CopyTo(new FileStream(filePath, FileMode.Create));
-
-                RequestWiseFile requestWiseFile = new RequestWiseFile()
-                {
-                    Request = request,
-                    FileName = uniqueFileName,
-                    CreatedDate = DateTime.Now,
-
-                };
-
-                _context.RequestWiseFiles.Add(requestWiseFile);
-
-
-
-                request.RequestClients.Add(requestclient);
-                _context.RequestClients.Add(requestclient);
-                await _context.SaveChangesAsync();
-            };
+            }
         }
         public async Task<LoginResponseViewModel> ResetPassword(LoginViewModel model)
         {
@@ -267,9 +324,15 @@ namespace HellocDoc1.Services
             }
             else
             {
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{model.Email}\">Reset</a>");
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{model.Email}\">Reset</a>");
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success };
             }
+        }
+
+        public async Task<bool> CheckEmail(string email)
+        {
+            var emailExists = await _context.AspNetUsers.AnyAsync(u => u.Email == email);
+            return emailExists;
         }
 
         public async Task ChangePassword(string email, ChangePassViewModel model)

@@ -20,10 +20,10 @@
             <th class="text-center" scope="col">Delete Permanently</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="temp">
         @foreach (var item in Model.requestClients)
         {
-                
+
             <tr>
                 <td>@item.FirstName, @item.LastName</td>
                 <td>@Enum.Parse(typeof(Common.Enum.RequestType), @item.Request.RequestTypeId.ToString())</td>
@@ -47,7 +47,7 @@
                 <td>@item.Request.RequestNotes.FirstOrDefault(a=> a.RequestId == item.Request.RequestId)?.AdminNotes</td>
                 <td>@item.Notes</td>
                 <td class="text-center">
-                    <a asp-action="" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</a>
+                    <a onclick="deleterecord(@item.Request.RequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</a>
                 </td>
             </tr>
         }
@@ -130,4 +130,19 @@ else
         filterdata.requestedPage = CurrentPage;
         AjaxAll();
     }
+    function deleterecord(RequestId) {
+        $.ajax({
+            url: "/Admin/DeleteRecord/",
+            type: "POST",
+            data: { "RequestId": RequestId },
+            dataType: "html",
+            success: function (data) {
+                AjaxAll();
+                toastr.success('Record Deleted Sucessfully');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    };
 </script>

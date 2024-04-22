@@ -12,13 +12,28 @@
 
     </div>      
     <div class=" pt-4 shadow Document-content mt-3" style="">
-        <div class="d-flex rounded-3 h-100 ms-3" style="border: 1px solid #ced4da; width:250px;">
-            <i class="bi bi-search my-1 ms-1 mr-2"></i>
-            <select class="form-select text-secondary border-0" id="accounttype" style="box-shadow:none;">
-                <option value="4" selected>All</option>
-                    <option value="1">Admin</option>
-                    <option value="2">Physician</option>
-            </select>
+
+        <div class="row pr-3 mb-4 px-3">
+            <div class="col-md-8 m-md-0">
+                <div class="d-flex rounded-3 h-100" style="border: 1px solid #ced4da; width:250px;">
+                    <i class="bi bi-search my-1 ms-1 mr-2"></i>
+                    <select class="form-select text-secondary select-region border-0" id="accounttype" style="box-shadow:none;">
+                        <option value="4" selected>All</option>
+                        <option value="1">Admin</option>
+                        <option value="2">Physician</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-12 mt-md-0 mt-2 text-lg-end pr-0 pr-3" id="physician">
+                <a asp-action="CreatePhysician"  class="btn bg-info text-white  rounded-3 fw-bold">
+                    Create Provider Account
+                </a>
+            </div>         
+            <div class="col-md-4 col-12 mt-md-0 mt-2 text-lg-end pr-0 pr-3" id="admin">
+                <a asp-action="CreateAdmin" class="btn bg-info text-white  rounded-3 fw-bold">
+                    Create Admin Account
+                </a>
+            </div>
         </div>
 
         <div class="table-responsive mt-2" id="tableContent">
@@ -34,16 +49,33 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+
+    $('#physician').css('display', 'none');
+    $('#admin').css('display', 'none');
     var accounttypes = 4;
     var requestedPage = 1;
     $('#accounttype').on('change', function () {    
         accounttypes = $(this).val();
-        console.log(accounttypes);
+        if (accounttypes ==1) {
+            $('#admin').css('display', 'inline-block');
+            $('#physician').css('display', 'none');
+
+        }
+        else if (accounttypes ==2) {
+            $('#physician').css('display', 'inline-block');
+            $('#admin').css('display', 'none');
+
+        }
+        else{
+            $('#physician').css('display', 'none');
+            $('#admin').css('display', 'none');
+        }
         AjaxAll();
     })
 
     function changepage(CurrentPage) {
         requestedPage = CurrentPage;
+
         AjaxAll();
     }
     $(document).ready(function () { 

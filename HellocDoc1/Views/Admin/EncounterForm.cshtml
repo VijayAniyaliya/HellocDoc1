@@ -243,6 +243,7 @@
                         <label for="floatingTextarea2" class="">
                             Treatment plan
                         </label>
+                        <span asp-validation-for="TreatmentPlan" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -253,6 +254,8 @@
                             Medication
                             dispensed
                         </label>
+                        <span asp-validation-for="MedicationDispnsed" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -260,8 +263,10 @@
                         <textarea asp-for="Procedure" class="form-control" placeholder="Procedures"
                                   id="floatingTextarea2" style="height: 80px"></textarea>
                         <label for="floatingTextarea2" class="">
-                            Procedures
+                            Procedures  
                         </label>
+                        <span asp-validation-for="Procedure" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-12">
@@ -271,6 +276,8 @@
                         <label for="floatingTextarea2" class="">
                             Follow-up
                         </label>
+                        <span asp-validation-for="FollowUp" class="text-danger"></span>
+
                     </div>
                 </div>
             </div>

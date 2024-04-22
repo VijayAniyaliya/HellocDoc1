@@ -18,8 +18,34 @@
     background-color: var(--bs-dark);
     color: white;
 }
+[data-bs-theme="dark"] .select-region {
+    background-color: var(--bs-dark);
+    color: white;
+}
 
+[data-bs-theme="dark"] .form-floating > .form-control:disabled {
+    background-color: #191b1c !important;
+}
 
+[data-bs-theme="dark"] .form-floating > .form-select:disabled {
+    background-color: #191b1c !important;
+}
+
+[data-bs-theme="dark"] .phonetel:disabled {
+    background-color: #191b1c !important;
+}
+
+.phonetel {
+    background: transparent !important;
+}
+
+.dark-mode {
+    background-color: black;
+    color: white;
+}
+[data-bs-theme="dark"] .phonetel:disabled {
+    background-color: #191b1c !important;
+}
 [data-bs-theme="dark"] .BackTheme, [data-bs-theme="dark"] .iti-mobile, [data-bs-theme="dark"] .modal-body, [data-bs-theme="dark"] .form-control {
     background-color: var(--bs-dark);
     color: var(--bs-light);
@@ -329,11 +355,13 @@
 .iti {
     display: inline-block;
     width: 100%;
-}
+}       
 
 .iti__country-list {
     max-width: 360px;
+    background: transparent !important;
 }
+
 
 .form-floating > .form-control {
     background: transparent;

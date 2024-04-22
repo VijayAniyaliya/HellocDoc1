@@ -1,4 +1,5 @@
-﻿using Data.Context;
+﻿using Common.Enum;
+using Data.Context;
 using Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
@@ -64,7 +65,10 @@ namespace Services.Implementation
 
         public async Task<SearchRecordsViewModel> SearchRecords(SearchRecordsViewModel obj)
         {
-            //obj.requestedPage = 1;
+            if (obj.requestedPage == 0)
+            {
+                obj.requestedPage = 1;
+            }
             List<RequestClient> requestClients = await _context.RequestClients
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
@@ -73,10 +77,12 @@ namespace Services.Implementation
 
             if (requestClients != null)
             {
+                requestClients = requestClients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 requestClients = requestClients.Where(a =>
 
                     (obj.RequestStatus == 0 || a.Request.Status == obj.RequestStatus) &&
-                    (string.IsNullOrWhiteSpace(obj.PatientName) || (a.FirstName.ToLower()+", "+ a.LastName.ToLower()).Contains(obj.PatientName.ToLower())) &&
+                    (string.IsNullOrWhiteSpace(obj.PatientName) || (a.FirstName.ToLower() + ", " + a.LastName.ToLower()).Contains(obj.PatientName.ToLower())) &&
                     (obj.RequestType == 0 || a.Request.RequestTypeId == obj.RequestType) &&
                     (string.IsNullOrWhiteSpace(obj.ProviderName) || a.Request.PhysicianId != null && a.Request.Physician.FirstName.ToLower().Contains(obj.ProviderName.ToLower())) &&
                     (string.IsNullOrWhiteSpace(obj.Email) || a.Email.ToLower().Contains(obj.Email.ToLower())) &&
@@ -84,7 +90,8 @@ namespace Services.Implementation
                 ).ToList();
 
                 requestClients = requestClients.Where(a =>
-                    (obj.FromDate.Date == new DateTime().Date || a.Request.AcceptedDate.Value.Date == obj.FromDate.Date)
+                    (obj.FromDate.Date == new DateTime().Date || (a.Request.AcceptedDate.HasValue && a.Request.AcceptedDate.Value.Date >= obj.FromDate.Date)) &&
+                    (obj.ToDate.Date == new DateTime().Date || (a.Request.AcceptedDate.HasValue && a.Request.AcceptedDate.Value.Date <= obj.ToDate.Date))
                 ).ToList();
 
                 int count = requestClients.Count();
@@ -100,6 +107,18 @@ namespace Services.Implementation
                 return model;
             }
             return new SearchRecordsViewModel();
+        }
+
+        public async Task DeleteRecord(int RequestId)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.RequestId == RequestId);
+
+            if (request != null)
+            {
+                request.IsDeleted = new BitArray(new[] { true });
+                _context.Requests.Update(request);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<byte[]> DownloadExcle(SearchRecordsViewModel model)
@@ -166,7 +185,7 @@ namespace Services.Implementation
                     row.CreateCell(8).SetCellValue(reqclient.PhoneNumber);
                     row.CreateCell(9).SetCellValue(reqclient.Email);
                     row.CreateCell(10).SetCellValue(reqclient.Request.Status);
-                    row.CreateCell(11).SetCellValue(reqclient.Request.Physician != null ? reqclient.Request.Physician?.FirstName: "");
+                    row.CreateCell(11).SetCellValue(reqclient.Request.Physician != null ? reqclient.Request.Physician?.FirstName : "");
                     var physicianNotes = reqclient.Request.RequestNotes.FirstOrDefault()?.PhysicianNotes;
                     row.CreateCell(12).SetCellValue(physicianNotes != null ? physicianNotes : "");
 
@@ -212,14 +231,13 @@ namespace Services.Implementation
                 {
                     ReceiverName = a.RequestId == null ? physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.FirstName + " " + physicians.FirstOrDefault(x => x.PhysicianId == a.PhysicianId)?.LastName : requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.FirstName + " " + requestClients.FirstOrDefault(x => x.RequestId == a.RequestId)?.LastName,
                     Email = a.EmailId!,
-                    RoleId = a.RoleId!.Value,
                     CreatedDate = a.CreateDate,
+                    RoleId = (a.RoleId!.HasValue) ? a.RoleId.Value : 0,
                     SentDate = a.SentDate!.Value,
                     ConfirmationNo = a.RequestId == null ? "" : requestClients.FirstOrDefault(x => x.Request.RequestId == a.RequestId)!.Request.ConfirmationNumber!,
-                    Action = a.SubjectName,
-                    RoleName = roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
+                    RoleName = roles.FirstOrDefault(x => a.RoleId == x.RoleId) is null ? "" : roles.FirstOrDefault(x => x.RoleId == a.RoleId)!.Name,
                     IsEmailSent = a.IsEmailSent!,
-                    SentTries = a.SentTries!.Value,
+                    SentTries = a.SentTries.Value,
                 }).ToList();
 
                 logs = logs.Where(a =>
@@ -334,7 +352,7 @@ namespace Services.Implementation
                 return model;
             }
             return new BlockHistoryViewModel();
-        }
+        }       
 
         public async Task UnblockCase(int requestid)
         {
@@ -345,7 +363,7 @@ namespace Services.Implementation
             {
                 blockRequest.IsActive = new BitArray(new[] { false });
                 blockRequest.ModifiedDate = DateTime.Now;
-                request!.Status = 1;
+                request!.Status = (int)RequestStatus.Unassigned;
             }
             _context.BlockRequests.Update(blockRequest!);
             _context.Requests.Update(request!);

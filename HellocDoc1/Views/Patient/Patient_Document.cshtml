@@ -45,22 +45,25 @@
             <a asp-controller="Patient" onclick="DownloadAll" asp-action="DownloadAll" asp-route-request_id="@Model.request.RequestId" class="btn downloadall text-info border-1 border-info">
                 Download All
             </a>
-            <a onclick="downloadSelectedFiles()" id="download" class="btn text-info border-1 border-info">
+            <a onclick="downloadSelectedFiles()" id="download" class="btn text-info d-md-block d-none border-1 border-info">
+                Download
+            </a>         
+            <a onclick="downloadSelectedFile()" id="download" class="btn text-info d-md-none d-block border-1 border-info">
                 Download
             </a>
         </div>
         <div class="table-responsive mt-2">
-            <table class="table d-md-block d-none">
+            <table class="table d-md-table d-none">
                 <thead>
                     <tr>
-                        <th class="text-center" style="width:8%; position:relative;bottom: 28px;"><input type="checkbox" class="form-check-input checks" id="All" /></th>
+                        <th class="text-center"><input type="checkbox" class="form-check-input checks" id="All" style="left: 18px; position:relative" /></th>
                         <th scope="col"></th>
                         <th scope="col">Uploader</th>
                         <th scope="col">Upload Date</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="dash">
                     @foreach (var item in Model.requestWiseFile)
                     {
                         <tr>
@@ -80,12 +83,11 @@
                 </tbody>
             </table>
             <div class="d-md-none d-block">
-                <input type="checkbox" class="form-check-input checks" id="All" style="position: relative;left: 21px;"/>
                 @foreach (var item in Model.requestWiseFile)
                 {   
                     <hr />
                     <div>
-                        <input type="checkbox" data-id="@item.RequestWiseFileId" class="ChildCheck form-check-input checks text-center mr-2" name="checkdoc" style="left: 21px; position:relative;" />
+                        <input type="checkbox" data-ids="@item.RequestWiseFileId" class="ChildCheck form-check-input checks text-center mr-2" name="checkdocs" style="left: 21px; position:relative;" />
                         <span class="" style="left: 21px; position:relative;"><i class="bi bi-file-earmark-medical-fill mr-1 h5 fs-3" style="color:#f50707"></i>@item.FileName</span>
                     </div>
                     <div class="my-3">
@@ -126,6 +128,29 @@
     //         }
     //     });
     // };
+    function downloadSelectedFile() {
+        var selectedFiles = document.querySelectorAll('input[name="checkdocs"]:checked');
+        var fileUrls = [];
+
+        if (selectedFiles.length === 0) {
+            toastr.error('Please select files to download');
+            return;
+        }
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
+
+        fileUrls.forEach(function (url) {
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
     $(document).ready(function () {
         $("#download").css('display', 'block');
         $(".downloadall").css('display', 'none');

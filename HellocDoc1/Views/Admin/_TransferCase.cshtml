@@ -104,7 +104,7 @@
                     data: { "request_id": @Model.RequestId, "physicianid": physicianid, "description": description },
                     success: function (response) {
                         $("#cancel").click();
-                        $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                        AjaxAll();
                         toastr.success('Case Successfully Transfered');
                     },
                     error: function (xhr, status, error) {

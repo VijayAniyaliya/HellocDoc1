@@ -37,8 +37,8 @@
             url: '/Admin/ClearCase',
             data: { "request_id": @Model.RequestId },
             success: function (response) {
-                $("#cancel").click();   
-                $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                $("#cancel").click();
+                window.location.reload();
                 toastr.success('Case Successfully Cleared');
             },
             error: function (xhr, status, error) {

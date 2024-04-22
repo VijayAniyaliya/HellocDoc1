@@ -4,6 +4,7 @@
 }
 
 @model HellocDoc1.Services.Models.PatientRequestModel
+@using Common.Enum
 
 <div class="body-content container mb-3">
 
@@ -36,14 +37,14 @@
                     <!-- <div class="row"> -->
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" />
+                            <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="first name" readonly />
                             <label for="floatingInput" class="">First Name</label>
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
-                            <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="last name" />
+                            <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="last name" readonly />
                             <label for="floatingInput" class="">Last Name</label>
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
@@ -68,14 +69,14 @@
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
                             <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                                   placeholder="abc@gmail.com" />
+                                   placeholder="abc@gmail.com" readonly/>
                             <label for="floatingInput" class="">Email</label>
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating  mb-3">
-                            <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone">
+                            <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone" readonly>
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
                     </div>
@@ -105,9 +106,15 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" />
-                            <label for="floatingInput" class="">State</label>
+                        <div class="form-floating">
+                            <select class="form-select py-0 text-secondary" asp-for="State" id="state" aria-label="Floating label select example">
+                                <option selected disabled>State</option>
+                                @foreach (var item in Enum.GetValues(typeof(Regions)))
+                                {
+                                    <option value="@((int)item)">@item.ToString()</option>
+                                }
+                            </select>
+                            <label for="state"></label>
                             <span asp-validation-for="State" class="text-danger"></span>
                         </div>
                     </div>

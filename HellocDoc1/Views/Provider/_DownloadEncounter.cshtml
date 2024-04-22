@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <p class="text-secondary">Encounter form is finalized successfully!</p>
                 <div class="d-flex justify-content-center mt-1 mb-3">
-                    <a id="button1" onclick="downloadEncounter(@Model.RequestId)" class="btn call bg-info text-white rounded-3 fw-bold me">Download</a>
+                    <a id="button1" asp-action="DownloadEncounterForm" asp-route-request_id="@Model.RequestId" class="btn call bg-info text-white rounded-3 fw-bold me">Download</a>
                 </div>
             </div>
         </div>
@@ -19,19 +19,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    function downloadEncounter(request_id) {
-        $.ajax({
-            url: "/Provider/DownloadEncounterForm/",
-            type: "POST",
-            data: { "request_id": request_id },
-            success: function () {
-                $("#cancel").click();
-                toastr.success('Download Encounter form successfully');
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#housecall").html('An error has occurred');
-            }
-        });
-    };
+    $("#button1").click(function () {
+        $("#cancel").click();
+    })
 </script>

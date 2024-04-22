@@ -12,6 +12,10 @@ using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+using System.Reflection;
+using Twilio.Types;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace Services.Implementation
 {
@@ -242,7 +246,7 @@ namespace Services.Implementation
 
         public async Task<ViewCaseViewModel> ViewCase(int request_id)
         {
-            var data = await _context.RequestClients.Include(a => a.Request).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            var data = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             ViewCaseViewModel model = new ViewCaseViewModel();
 
             if (data != null)
@@ -259,6 +263,7 @@ namespace Services.Implementation
                 model.RequestId = request_id;
                 model.RequestTypeId = data.Request.RequestTypeId;
                 model.Status = data.Request.Status;
+                model.PhysicianId = (data.Request.Physician == null) ? 0 : data.Request.Physician.PhysicianId;
             }
             return model;
         }
@@ -600,7 +605,7 @@ namespace Services.Implementation
             }
             else
             {
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Reset Password", $"Please <a href=\"https://localhost:7208/Admin/ResetYourPassword/{model.Email}\">Reset Your Password</a>");
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Reset Password", $"Please <a href=\"https://localhost:7208/Admin/ResetYourPassword/{model.Email}\">Reset Your Password</a>");
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success };
             }
         }
@@ -798,9 +803,29 @@ namespace Services.Implementation
 
         public async Task SendAgreement(string request_id)
         {
-            if (request_id != null)
+            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).FirstOrDefaultAsync();
+            if (requestClient != null)
             {
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Hello", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
+
+                if (request_id != null)
+                {
+                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Agreement", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{request_id}\">Agreement</a>");
+                }
+
+                EmailLog emailLog = new EmailLog()
+                {
+                    EmailTemplate = "https://localhost:7208/Patient/CreatePatientAccount/",
+                    SubjectName = "Agreeemtnt",
+                    EmailId = requestClient.Email!,
+                    ConfirmationNumber = requestClient.Request.ConfirmationNumber,
+                    RequestId = requestClient.RequestId,
+                    CreateDate = DateTime.Now,
+                    SentDate = DateTime.Now,
+                    SentTries = 1,
+                    IsEmailSent = new BitArray(new[] { true }),
+                };
+                _context.EmailLogs.Add(emailLog);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -861,11 +886,12 @@ namespace Services.Implementation
 
                     if (obj != null)
                     {
-                        obj.Status = 6;
+                        obj.Status = (int)RequestStatus.Unpaid;
+                        obj.ModifiedDate = DateTime.Now;
                         RequestStatusLog requestStatusLog = new RequestStatusLog()
                         {
                             RequestId = request_id,
-                            Status = 6,
+                            Status = (int)RequestStatus.Unpaid,
                             CreatedDate = DateTime.Now,
                         };
                         await _context.RequestStatusLogs.AddAsync(requestStatusLog);
@@ -907,6 +933,11 @@ namespace Services.Implementation
                     PhoneNumber = data.PhoneNumber,
                     Email = data.Email,
                 };
+
+                if (obj == null)
+                {
+                    model.IsEncounter = 1;
+                }
 
                 if (obj != null)
                 {
@@ -1012,6 +1043,19 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
+        public async Task ResetAdminPassword(string email, string password)
+        {
+            AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
+
+            if (aspNetUser != null)
+            {
+                aspNetUser.PasswordHash = password;
+                aspNetUser.ModifiedDate = DateTime.Now;
+                _context.AspNetUsers.Update(aspNetUser);
+            }
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<AdminProfileViewModel> ProfileData(string email)
         {
             AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == email).FirstOrDefaultAsync();
@@ -1102,25 +1146,8 @@ namespace Services.Implementation
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
             if (requestClient != null && admin != null)
             {
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Submit Your request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Submit Request</a>")!;
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Submit Your request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Submit Request</a>")!;
 
-                //EmailLog emailLog = new EmailLog()
-                //{
-                //    EmailLogId = 10,
-                //    EmailTemplate = "Submit_request_screen",
-                //    SubjectName = "Submit Your Request",
-                //    EmailId = model.Email,
-                //    AdminId = admin.AdminId,
-                //    RoleId = admin.RoleId,
-                //    ConfirmationNumber = requestClient.Request.ConfirmationNumber,
-                //    RequestId = requestClient.Request.RequestId,
-                //    CreateDate = DateTime.Now,
-                //    SentDate = DateTime.Now,
-                //    IsEmailSent = new BitArray(new[] { true }),
-                //    SentTries = 1,
-                //};
-                //_context.EmailLogs.Add(emailLog);
-                //await _context.SaveChangesAsync();
             }
         }
 
@@ -1290,8 +1317,19 @@ namespace Services.Implementation
             if (data != null)
             {
                 var email = data.Email;
+
+                var accountSid = "ACb1649d2de77478095803e8dccd2c11c1";
+                var authToken = "229465e45455a95bb761246bdc369b9d";
+                TwilioClient.Init(accountSid, authToken);
+
+                var messageOptions = new CreateMessageOptions(
+                new PhoneNumber("+916353664814"));
+                messageOptions.From = new PhoneNumber("+13203907230");
+                messageOptions.Body = message;
+
+                MessageResource messageResource = MessageResource.Create(messageOptions);                
             }
-            await EmailSender.SendEmail("vijay.iya@etatvasoft.com", "Message send by admin", $"{message}");
+            await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
         }
 
         public async Task StopNotification(int PhysicianId)
@@ -1434,20 +1472,31 @@ namespace Services.Implementation
             List<Physician> physicians = await _context.Physicians.Include(a => a.Shifts).ThenInclude(a => a.ShiftDetails).ToListAsync();
             var currentTime = TimeOnly.FromDateTime(DateTime.Now);
             var currentDate = DateOnly.FromDateTime(DateTime.Now);
+
             foreach (var item in physicians)
             {
+                bool hasScheduledShift = false;
+
                 foreach (var shifts in item.Shifts)
                 {
                     foreach (var shiftDetail in shifts.ShiftDetails)
                     {
                         if (shiftDetail.StartTime <= currentTime && shiftDetail.EndTime >= currentTime && DateOnly.FromDateTime(shiftDetail.ShiftDate) == currentDate)
                         {
-                        }
-                        else
-                        {
-                            //await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", $"To all Unscheduled Physician", $"{message}");
+                            // Physician has a scheduled shift for the current time and date
+                            hasScheduledShift = true;
+                            break; // No need to check further shifts
                         }
                     }
+
+                    if (hasScheduledShift)
+                        break; // No need to check further shifts for this physician
+                }
+
+                // If the physician has no scheduled shift for the current time and date, send email
+                if (!hasScheduledShift)
+                {
+                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", $"To all Unscheduled Physician", $"{message}");
                 }
             }
         }
@@ -1791,6 +1840,7 @@ namespace Services.Implementation
                                     accType = role.AccountType,
                                     phone = phy.Mobile,
                                     status = (short)phy.Status,
+                                    PhysicianId = phy.PhysicianId,
                                     openReq = _context.Requests.Where(i => i.PhysicianId == phy.PhysicianId && new int[] { 1, 2, 4, 5, 6 }.Contains(i.Status)).Count(),
                                 };
                 var result2 = physician.ToList();

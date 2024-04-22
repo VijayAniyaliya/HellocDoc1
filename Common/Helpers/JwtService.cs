@@ -26,7 +26,7 @@ namespace Common.Helpers
             }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("UHJHSANIVA787FVGHMJYAERvlkuytnbf"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(60);
+            var expires = DateTime.UtcNow.AddMinutes(120);
 
             var token = new JwtSecurityToken(
 

@@ -22,6 +22,9 @@
             border: 1px solid red;
         }
 
+        .form-floating > .form-control {
+            background: transparent;
+        }
         .content {
             height: 80vh;
             display: flex;
@@ -57,17 +60,13 @@
                             <path fill-rule="evenodd"
                                   d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
                         </svg>
-                    </div>
+                    </div>  
                     <span asp-validation-for="Email" class="text-danger loginicn"></span>
                     <div class="form-floating inputs mb-0">
-                        <input type="password" class="form-control patient-input" id="floatingPassword"
+                        <input type="password" class="form-control patient-input" id="password"
                                placeholder="Password" asp-for="Password">
-                        <label for="floatingPassword" class="label">Password</label>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-eye input-icon" viewBox="0 0 16 16">
-                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                        </svg>
+                        <label for="password" class="label">Password</label>
+                        <i class="bi bi-eye-slash-fill input-icon " onclick="fun()" id="eye"></i>
                     </div>
                     <span asp-validation-for="Password" class="text-danger d-block passicn"></span>
                     <button type="submit" class="btn bg-info text-white fw-bold inputs py-3">Log in</button>
@@ -93,6 +92,24 @@
     <div class="back-img">
         <img src="~/images/11116016_415.jpg" width="100%" alt="">
     </div>
+    <script>
+        const path = document.getElementById("eye");
+        const password = document.getElementById('password')
+        function fun() {
+            if (password.type === "password") {
+                path.classList.remove("bi-eye-slash-fill");
+                path.classList.add("bi-eye-fill");
+                password.type = "text";
+            }
+            else {
+                path.classList.remove("bi-eye-fill");
+                path.classList.add("bi-eye-slash-fill");
+                password.type = "password";
+
+            }
+        }
+
+    </script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

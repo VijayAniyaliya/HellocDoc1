@@ -204,7 +204,7 @@ namespace Services.Implementation
                 };
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", "Agreement Video", $"Watch Aggreement Video");
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Agreement Video", $"Watch Aggreement Video");
             }
             await _context.SaveChangesAsync();
         }
@@ -633,7 +633,7 @@ namespace Services.Implementation
         {
             if (PhysicianId != 0)
             {
-                await EmailSender.SendEmail("vijay.aniyaliya@etatvasoft.com", $"Edit My Profile {PhysicianId}", $"{message}");
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", $"Edit My Profile {PhysicianId}", $"{message}");
             }
         }
     }

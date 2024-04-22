@@ -251,10 +251,9 @@ namespace HellocDoc1.Controllers
             return RedirectToAction("CloseCase", new { request_id });
         }
 
-        public async Task<IActionResult> CloseCaseRequest(int request_id)
+        public async Task CloseCaseRequest(int request_id)
         {
             await _adminServices.CloseCaseRequest(request_id);
-            return RedirectToAction("AdminDashboard");
         }
 
         [HttpGet]
@@ -354,7 +353,7 @@ namespace HellocDoc1.Controllers
             ViewBag.Email = email;
             return View();          
         }
-
+            
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ResetPasswords(ChangePassViewModel model)
@@ -369,6 +368,13 @@ namespace HellocDoc1.Controllers
             var email = User.FindFirstValue(ClaimTypes.Email);
             var data = await _adminServices.ProfileData(email);
             return View(data);
+        }
+
+        public async Task<IActionResult> ResetAdminPassword(string password)
+        {
+            var email = HttpContext.Session.GetString("Email");
+            await _adminServices.ResetAdminPassword(email, password);
+            return NoContent();
         }
 
         [HttpPost]
@@ -804,6 +810,12 @@ namespace HellocDoc1.Controllers
         {
             var data = await _recordsServices.SearchRecords(model);
             return PartialView("_SearchRecordsData", data);
+        }
+
+        public async Task<IActionResult> DeleteRecord(int RequestId)    
+        {
+            await _recordsServices.DeleteRecord(RequestId);
+            return NoContent();
         }
 
         public async Task<IActionResult> ExportSearchData(SearchRecordsViewModel obj)

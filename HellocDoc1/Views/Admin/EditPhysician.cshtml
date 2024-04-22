@@ -150,7 +150,7 @@
                         </div>
                     }
                 </div>
-                <div class="text-end mt-2"> 
+                <div class="text-end mt-2">
                     <button type="button" id="editaccount" class="btn bg-info text-white px-4 h5">Edit</button>
                     <button type="button" onclick="updatedata()" id="savedata" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modify">Save Changes</button>
                     <button type="reset" id="cancelaccount" class="btn bg-white text-info border-2  border-info rounded-3 fw-bold h5 modify">Cancel</button>
@@ -280,7 +280,7 @@
                         <img src="~/uploads/@Model.Photo" style="height:150px;" />
                     }
                 </div>
-                <div class="col-md-6 text-center">  
+                <div class="col-md-6 text-center">
                     <img src="~/uploads/@Model.Sign" style="height:150px;" />
 
                 </div>
@@ -317,9 +317,9 @@
                 Upload
                 <input type="file" id="AggrementDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            @if(Model.AggrementDoc == true) 
-            {   
-                var fileName = @Model.PhysicianId + "_Aggrement"+ ".pdf";
+            @if (Model.AggrementDoc == true)
+            {
+                var fileName = @Model.PhysicianId + "_Agreement.pdf";
                 <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
@@ -333,7 +333,8 @@
             </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
 
         </div>
@@ -345,7 +346,7 @@
                 Upload
                 <input type="file" id="HipaaDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            <button type="button" id="viewhipaa" class="btn bg-info text-white h5 mb-0 view">View</button>
+            <button type="button" id="viewhipaa" class="btn bg-info text-white h5 mb-0 view" hidden>View</button>
         </div>
         <div class="d-flex align-items-center mb-3">
             <input type="checkbox" id="checkdisclosure" class="checks mr-4" disabled />
@@ -357,7 +358,8 @@
             </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewdisclosure" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <div class="d-flex align-items-center">
@@ -370,7 +372,8 @@
             </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewlicense" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_License.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <hr />
@@ -397,20 +400,28 @@
     function resetpass() {
         var password = $('#password').val();
         var PhysicianId = @Model.PhysicianId;
-        $.ajax({
-            url: "/Admin/ResetAccountPass/",
-            type: "POST",
-            async: false,
-            data: { "PhysicianId": PhysicianId, "password": password },
-            dataType: "html",
-            success: function (data) {
-                console.log("reset password")
-            },
-            error: function () {
-                alert("No Projects Found");
-                console.log('error');
-            }
-        });
+        if (password == "") {
+            $('#passwarn').html("Please enter password")
+        }
+        if (password == '@Model.Password') {
+            toastr.error('Please modify the password');
+        }
+        else if (password != "") {
+            $.ajax({
+                url: "/Admin/ResetAccountPass/",
+                type: "POST",
+                async: false,
+                data: { "PhysicianId": PhysicianId, "password": password },
+                dataType: "html",
+                success: function (data) {
+                    toastr.success('Password reset successfully');
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    console.log('error');
+                }
+            });
+        }
     };
 
     function updateuser() {
@@ -568,8 +579,6 @@
             synchroemail: $('#syncroemail').val(),
             RegionSelected: RegionSelected,
         }
-        console.log(formdata);
-        console.log(formdata.RegionSelected);
         if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && (formdata.mediliencense != "") && (formdata.npi != "")) {
 
             $.ajax({
@@ -665,7 +674,6 @@
             data.append(key, profileinfo[key]);
         }
 
-        console.log(data);
         if ((profileinfo.businessname != "") && (profileinfo.businessweb != "") && (profileinfo.adminnotes != "")) {
 
             $.ajax({
@@ -676,8 +684,7 @@
                 contentType: false,
                 async: false,
                 success: function (data) {
-                    console.log("profile info");
-
+                    window.location.reload();
                 },
                 error: function (error) {
                     alert("No Projects Found");
@@ -693,7 +700,6 @@
 
         }
         else {
-            console.log("denied")
         }
 
     };
@@ -787,7 +793,6 @@
             data: { "PhysicianId": PhysicianId },
             success: function (data) {
                 window.location.href('/Admin/Provider')
-                console.log("form data")
             },
             error: function (error) {
                 console.log(error);

@@ -26,6 +26,7 @@ namespace Services.Models
         public string Room { get; set; }
 
         public int RequestId { get; set; }
+        public int PhysicianId { get; set; }
         public int RequestTypeId { get; set; }
 
         public int Status { get; set; }

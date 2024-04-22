@@ -243,6 +243,8 @@
                         <label for="floatingTextarea2" class="">
                             Treatment plan
                         </label>
+                        <span asp-validation-for="TreatmentPlan" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -253,6 +255,8 @@
                             Medication
                             dispensed
                         </label>
+                        <span asp-validation-for="MedicationDispnsed" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -262,6 +266,8 @@
                         <label for="floatingTextarea2" class="">
                             Procedures
                         </label>
+                        <span asp-validation-for="Procedure" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-12">
@@ -271,6 +277,8 @@
                         <label for="floatingTextarea2" class="">
                             Follow-up
                         </label>
+                        <span asp-validation-for="FollowUp" class="text-danger"></span>
+
                     </div>
                 </div>
             </div>
@@ -294,8 +302,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     function finalize(request_id) {
+        debugger;
+        if (@Model.IsEncounter == 1) {
+            toastr.error('Please First make the encounter form');
+        }
+        else{
+
         $.ajax({
-            url: "/Provider/finalize/",
+            url: "/Provider/finalize/", 
             type: "POST",
             data: { "request_id": request_id },
             dataType: "html",
@@ -305,6 +319,7 @@
                 console("No Projects Found");
             }
         });
+        }
     };
 
     const phoneInputField = document.querySelector("#phone");

@@ -1,3 +1,7 @@
+function myFunction() {
+    var element = document.body;
+    element.classList.toggle("dark-mode");
+}
 
 
 try {
@@ -9,7 +13,7 @@ try {
         console.log('hello');
         if (this.files.length == 1) {
             file.textContent = this.files[0].name
-            elements.removeAttribute('disabled');
+            elements.removeAttribute('disabled');           
         }
         else {
             file.textContent = this.files.length + " File Selected";

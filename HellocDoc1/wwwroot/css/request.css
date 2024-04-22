@@ -21,6 +21,15 @@ body {
         border-color: #17a2b8;
     }
 
+[data-bs-theme="dark"] .temp {
+    background-color: var(--bs-dark);
+    color: white;
+
+}
+[data-bs-theme="dark"] .dash {
+    color: white;
+}
+
 .back-btn {
     width: 80px;
 }
@@ -45,6 +54,7 @@ body {
     font-weight: 900 !important;
 }
 
+
 .page-active {
     border-radius: 50%;
     background: #17a2b8;
@@ -61,8 +71,9 @@ body {
     margin-top: 2px;
 }
 
+
 .dark-mode {
-    background-color: black;
+    background-color: var(--bs-dark);
     color: white;
 }
 
@@ -78,16 +89,36 @@ body {
 
 .iti__country-list {
     max-width: 360px;
-    /* background: transparent; */
+     background: transparent; 
 }
 
 .form-floating > .form-control {
     background: transparent;
 }
+.form-floating > .form-select {
+    background: transparent;
+}
+.phonetel {
+    background: transparent;
+}
+
+    .form-floating > .form-select:disabled {
+        background-color: #e9ecef;
+        opacity: 1;
+    }
 
 .form-floating > .form-select:focus {
     border-color: #01bce9;
     box-shadow: none;
+}
+[data-bs-theme="dark"] .form-floating > .form-control:disabled {
+    background-color: #191b1c;
+}
+[data-bs-theme="dark"] .form-floating > .form-select:disabled {
+    background-color: #191b1c;
+}
+[data-bs-theme="dark"] .phonetel:disabled {
+    background-color: #191b1c;
 }
 
 #phone {
@@ -145,7 +176,7 @@ label {
     display: none;
 }
 
-@media only screen and (max-width:425px) {
+@media only screen and (max-width:600px) {
     .dashboard-content {
         display: none;
     }
@@ -163,7 +194,7 @@ label {
     display: none;
 }
 
-@media only screen and (max-width:505px) {
+@media only screen and (max-width:600px) {
     .canvas {
         display: block;
         position: absolute;
@@ -174,9 +205,15 @@ label {
     .canvas-content {
         display: none;
     }
-
     .doc-img {
         margin-left: 14%;
+    }
+}
+
+@media only screen and (min-width:600px) {
+    .canvas-body {
+        width: 0;
+        display: none;
     }
 }
 

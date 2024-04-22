@@ -34,7 +34,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <div class="form-floating">
-                    <select class="form-select account" asp-for="Status" id="floatingSelect" aria-label="Floating label select example" disabled>
+                    <select class="form-select account text-secondary" asp-for="Status" id="floatingSelect" aria-label="Floating label select example" disabled>
                         <option selected>Active</option>
                         <option value="1">UnActive</option>
                         <option value="2">UnAvailable</option>
@@ -44,7 +44,7 @@
             </div>
             <div class="col-md-6">
                 <div class="form-floating">
-                    <select class="form-select account" asp-for="Role" id="floatingSelect" aria-label="Floating label select example" disabled>
+                    <select class="form-select account text-secondary" asp-for="Role" id="floatingSelect" aria-label="Floating label select example" disabled>
                         <option selected>Master Admin</option>
                         <option value="1">Admin</option>
                     </select>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
-                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3 administrator" id="phone" disabled>
+                        <input type="tel" asp-for="PhoneNumber" class="form-control phonetel pt-3 pb-3 administrator" id="phone" disabled>
                         <span id="phonewarning" class="text-danger common"></span>
 
                     </div>
@@ -170,7 +170,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
-                        <input type="tel" asp-for="AltPhoneNumber" class="form-control pt-3 pb-3 billing" id="phone1" disabled>
+                        <input type="tel" asp-for="AltPhoneNumber" class="form-control phonetel pt-3 pb-3 billing" id="phone1" disabled>
                         <span id="phone1warning" class="text-danger billwarning"></span>
 
                     </div>
@@ -202,27 +202,26 @@
 
     function resetpass() {
         var password = $('#password').val();
-        if(password == ""){
+        if (password == "") {
             $('#passwarn').html("Please enter password")
         }
         else {
             $.ajax({
-            url: "/Admin/ResetPassword/",
-            type: "POST",
-            async: false,
-            data: { "password": password },
-            dataType: "html",
-            success: function (data) {
-                toastr.success('Password Reset Successfully');
-                $('#password').val("")
-            },
-            error: function () {
-                alert("No Projects Found");
-                console.log('error');
-            }
-        });
-        $('#passwarn').html("")
-      }
+                url: "/Admin/ResetAdminPassword/",
+                type: "POST",
+                async: false,
+                data: { "password": password },
+                dataType: "html",
+                success: function (data) {
+                    toastr.success('Password Reset Successfully');
+                    $('#password').val("")
+                },
+                error: function () {
+                    alert("No Projects Found");
+                }
+            });
+            $('#passwarn').html("")
+        }
     };
 
 
@@ -284,17 +283,18 @@
         $('.data:checked').each(function () {
             RegionSelected.push($(this).val());
         });
-        console.log(RegionSelected);
         var formdata = {
             firstname: $('#firstname').val(),
             lastname: $('#lastname').val(),
             email: $('#email').val(),
+            confirmaemail: $('#confirmemail').val(),
             phonenumber: $('#phone').val(),
             RegionSelected: RegionSelected,
         }
-        console.log(formdata);
-        console.log(formdata.RegionSelected);
-        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "")) {
+        if (formdata.confirmaemail == "") {
+            $('#confirmemailwarning').html("Please enter Confirm Email");
+        } 
+        if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && ((formdata.confirmaemail == formdata.email))) {
 
             $.ajax({
                 url: "/Admin/UpdateAdminstrator/",
@@ -320,7 +320,6 @@
                 },
                 error: function (error) {
                     alert("No Projects Found");
-                    console.log(error);
                 }
             });
             $('#firstwarning').html("");
@@ -329,7 +328,6 @@
             $('#phonewarning').html("");
         }
         else {
-            console.log("denied")
         }
     };
     function billingdata() {
@@ -341,7 +339,6 @@
             altphonenumber: $('#phone1').val(),
 
         }
-        console.log(billdata);
         if ((billdata.address1 != "") && (billdata.address2 != "") && (billdata.city != "") && (billdata.zip != "") && (billdata.altphonenumber != "")) {
 
             $.ajax({

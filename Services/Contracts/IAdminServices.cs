@@ -103,5 +103,6 @@ namespace Services.Contracts
         Task<AdminDashboardViewModel> ExportAll();
         Task RequestSupport(string message);
         Task UpdateRequest(ViewCaseViewModel model);
+        Task ResetAdminPassword(string email, string password);
     }
 }

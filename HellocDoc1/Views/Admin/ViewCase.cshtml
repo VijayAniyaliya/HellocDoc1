@@ -142,7 +142,14 @@
         <div class="text-end mb-4">
             @if (Model.Status == (int)RequestStatus.Unassigned)
             {
+                @if (Model.PhysicianId == 0)
+                {
                 <button type="button" onclick="assign(@Model.RequestId)" class="btn bg-info text-white h5">Assign</button>
+                }
+                else
+                {
+                    <button type="button" onclick="assigned()" class="btn bg-info text-white h5">Assign</button>
+                }
             }
             <a class="btn bg-info text-white h5" asp-action="ViewNotes" asp-route-request_id="@Model.RequestId">View Notes</a>
             @if (Model.Status == (int)RequestStatus.Unassigned)
@@ -164,6 +171,10 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
+
+    function assigned() {
+        toastr.error('Case is already assigned');
+    }
 
     $('.modify').each(function () {
         $(this).css('display', 'none');

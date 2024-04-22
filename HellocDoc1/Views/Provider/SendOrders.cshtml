@@ -18,7 +18,7 @@
         <form asp-action="SendOrderDetails" asp-route-request_id="@Model.RequestId" method="post">
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6">  
                     <div class="form-floating mb-3">
                         <select class="form-select text-secondary py-0 profession" id="floatingSelect" aria-label="Floating label select example">
                             <option selected disabled>Select Profession</option>
@@ -94,7 +94,8 @@
                 <a asp-action="ProviderDashboard" class="btn border border-info text-info">Cancel</a>
             </div>
         </form>
-
+        <br />
+        <br />
     </div>
     <br />
     <br />
@@ -105,7 +106,6 @@
     <script>
         $('.profession').on('change', function (e) {
             var ProfessionId = $(this).val();
-            console.log(ProfessionId);
 
             $.ajax({
                 url: '/Provider/FilterDataByProfession',
@@ -118,7 +118,6 @@
                         value: "",
                         text: "Business"
                     }))
-                    console.log(response);
 
                     response.business.forEach(function (item) {
                         console.log(item);
@@ -128,7 +127,6 @@
                                 value: item.businessId,
                                 text: item.businessName
                             }));
-                        console.log("fetch success");
                     });
                 },
                 error: function (xhr, status, error) {
@@ -137,8 +135,7 @@
             });
         });
         $('.Business').on('change', function (e) {
-            var businessid = $(this).val();
-            console.log(businessid);
+            var businessid = $(this).val(); 
 
             $.ajax({
                 url: '/Provider/FilterDataByBusiness',

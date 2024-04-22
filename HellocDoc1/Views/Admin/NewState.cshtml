@@ -27,7 +27,9 @@
 
             <tr class="style_@item.Request.RequestTypeId ">
                 <td scope="row">@item.FirstName, @item.LastName</td>
-                <td><i class="bi bi-envelope h5"></i></td>
+                <td class="text-white">
+                    <a href="mailto:@item.Email" class="text-decoration-none text-white">  <i class="bi bi-envelope"></i></a>
+                </td>
                 <td>@item.StrMonth @item.IntDate, @item.IntYear</td>
                 @* @DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(Int32.Parse(@item.StrMonth)) *@
                 @switch (item.Request.RequestTypeId)
@@ -125,8 +127,8 @@
                             }
 
                             <li><button class="dropdown-item ps-3" id="cancelcase" onclick="cancel(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Cancel Case</button></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Notes</a></li>
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="block(@item.RequestId)"><i class="bi bi-slash-circle mr-1" style="cursor:pointer;"></i> Block Patient</a></li>
                         </ul>
                     </div>
@@ -208,7 +210,7 @@
                 </div>
                 <div class="row mx-3">
                     @if (item.Request.PhysicianId == null)
-                    {
+                    {   
                     <div class="col-6 ps-0 pr-3 pb-2">
                         <a onclick="assign(@item.RequestId)" class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
                         </div>         

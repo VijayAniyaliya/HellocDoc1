@@ -102,7 +102,7 @@ namespace HellocDoc1.Services
                     await _context.RequestClients.AddAsync(requestclient);
                     await _context.SaveChangesAsync();
 
-                    if (aspnetuser == null)
+                    if (aspnetuser == null)         
                     {
                         string requestId = HashingServices.Encrypt(request.RequestId.ToString());
                         await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{requestId}\">Create Account</a>");

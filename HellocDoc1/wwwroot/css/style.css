@@ -185,6 +185,10 @@ body {
     }
 }
 
+
+.form-floating > .form-control {
+    background: transparent;
+}
 .back-button {
     border-radius: 8px;
     position: absolute;

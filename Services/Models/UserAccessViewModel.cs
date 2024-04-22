@@ -23,6 +23,7 @@ namespace Services.Models
         public string phone { get; set; }
         public short status { get; set; }
         public int openReq { get; set; }
+        public int PhysicianId { get; set; }
 
 
 

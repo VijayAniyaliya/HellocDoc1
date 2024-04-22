@@ -27,5 +27,7 @@ namespace Services.Contracts
 
         Task AcceptAgreement(int request_id);
         Task CancelAgreement(int request_id, string reason);
+        Task<bool> CheckEmail(string email);
+        Task<PatientRequestModel> SubmitInformationMe(string email);
     }
 }

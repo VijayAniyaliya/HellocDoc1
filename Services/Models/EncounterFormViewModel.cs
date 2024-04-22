@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,10 +42,19 @@ namespace Services.Models
         public string? Neuro { get; set; }
         public string? Other { get; set; }
         public string? Disgnosis { get; set; }
-        public string? TreatmentPlan { get; set; }
-        public string? MedicationDispnsed { get; set; }
-        public string? Procedure { get; set; }
-        public string? FollowUp { get; set; }
+
+        [Required]
+        public string TreatmentPlan { get; set; }
+        [Required]
+
+        public string MedicationDispnsed { get; set; }
+        [Required]
+
+        public string Procedure { get; set; }
+        [Required]
+
+        public string FollowUp { get; set; }
         public bool? IsFinalize { get; set; }
+        public int IsEncounter { get; set; }    
     }
 }

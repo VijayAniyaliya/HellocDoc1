@@ -39,32 +39,6 @@
 
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <select class="form-select account mb-3" id="status" aria-label="Floating label select example" disabled>
-                            <option selected>@Enum.Parse(typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
-                            @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))
-                            {
-                                <option value="@i">@Enum.Parse(typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
-                            }
-
-                        </select>
-                        <label for="status">Status</label>
-
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <select class="form-select account" id="role" aria-label="Floating label select example" disabled>
-                            <option selected>@Model.rolename</option>
-                            @foreach (var item in Model.Role)
-                            {
-                                <option value="@item.RoleId">@item.Name</option>
-                            }
-                        </select>
-                        <label for="role">Role</label>
-                    </div>
-                </div>
                 <div class="text-end mt-4">
                     @*                     <button type="button" id="edit" class="btn bg-info text-white px-4 mr-2 h5">Edit</button>
                     <button type="button" onclick="updateuser()" id="save" class="btn bg-info text-white rounded-3  fw-bold px-4 h5 modifyuser">Save Changes</button>
@@ -314,72 +288,41 @@
         <div class="h5">Onboarding</div>
         <div class="d-flex align-items-center mb-3">
             <span class="" style="width:30%;">Independent Contractor Agreement</span>
-            <div class="file btn btn-info mr-3">
-                <i class="bi bi-cloud-arrow-up"></i>
-                Upload
-                <input type="file" id="AggrementDoc" class="selectfile" accept=".pdf,.png" />
-            </div>
             @if (Model.AggrementDoc == true)
             {
-                var fileName = @Model.PhysicianId + "_Aggrement";
-                <a href="~/uploads/MVC (1)_5bd7d7.pdf" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
+                var fileName = @Model.PhysicianId + "_Agreement.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <div class="d-flex align-items-center mb-3">
             <span class="" style="width:30%;">Background Check</span>
-            <div class="file btn btn-info mr-3">
-                <i class="bi bi-cloud-arrow-up"></i>
-                Upload
-                <input type="file" id="BackgoundDoc" class="selectfile" accept=".pdf,.png" />
-            </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
 
         </div>
         <div class="d-flex align-items-center mb-3">
             <span class="" style="width:30%;">HIPAA Compliance</span>
-            <div class="file btn btn-info mr-3">
-                <i class="bi bi-cloud-arrow-up"></i>
-                Upload
-                <input type="file" id="HipaaDoc" class="selectfile" accept=".pdf,.png" />
-            </div>
-            @if (Model.AggrementDoc == true)
-            {
-                <button type="button" id="viewback" class="btn bg-info text-white h5 mb-0 view">View</button>
-            }
         </div>
         <div class="d-flex align-items-center mb-3">
             <span class="" style="width:30%;">Non-disclosure Agreement</span>
-            <div class="file btn btn-info mr-3">
-                <i class="bi bi-cloud-arrow-up"></i>
-                Upload
-                <input type="file" id="DisclosureDoc" class="selectfile" accept=".pdf,.png" />
-            </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewdisclosure" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <div class="d-flex align-items-center">
             <span class="" style="width:30%;">Liencense Agreement</span>
-            <div class="file btn btn-info mr-3">
-                <i class="bi bi-cloud-arrow-up"></i>
-                Upload
-                <input type="file" id="LicenseDoc" class="selectfile" accept=".pdf,.png" />
-            </div>
             @if (Model.AggrementDoc == true)
             {
-                <button type="button" id="viewlicense" class="btn bg-info text-white h5 mb-0 view">View</button>
+                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
         <hr />
-        <div class="text-end">
-
-            @*             <button type="button" onclick="docdata()" id="edit" class="btn bg-info text-white h5 px-4 d-inline-block mb-0 mr-3">Save</button>
-            <button type="button" onclick="deleteraccount(@Model.PhysicianId)" id="delete" class="btn bg-danger text-white h5 d-inline-block mb-0">Delete Account</button> *@
-        </div>
         <br />
         <br />
 

@@ -14,7 +14,7 @@
 
             </tr>
         </thead>
-        <tbody>
+        <tbody class="temp">
             @foreach (var item in Model.userAccessDatas)    
             {
                 <tr class="align-middle">
@@ -34,9 +34,19 @@
                         @item.openReq
                     </td>
                     <td>
-                        <button type="button" class="btn  border-info text-info">
+                        @if(item.PhysicianId != 0)
+                        {
+                            <a asp-action="EditPhysician" asp-route-PhysicianId="@item.PhysicianId" class="btn  border-info text-info">
                             Edit
-                        </button>
+                            </a>
+                        }
+                        else
+                        {
+                        <a  class="btn  border-info text-info">
+                            Edit
+                        </a>
+                            
+                        }
                     </td>
                 </tr>
             }
