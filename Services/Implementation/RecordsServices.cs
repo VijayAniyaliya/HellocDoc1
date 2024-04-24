@@ -1,12 +1,14 @@
 ﻿using Common.Enum;
 using Data.Context;
 using Data.Entity;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Services.Contracts;
 using Services.Models;
 using System.Collections;
+using System.IO.Compression;
 
 namespace Services.Implementation
 {
@@ -14,10 +16,12 @@ namespace Services.Implementation
     public class RecordsServices : IRecordsServices
     {
         private ApplicationDbContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public RecordsServices(ApplicationDbContext context)
+        public RecordsServices(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _environment = hostingEnvironment;
         }
 
         public async Task<PatientHistoryViewModel> PatientHistory(PatientHistoryViewModel obj)
@@ -361,13 +365,50 @@ namespace Services.Implementation
 
             if (blockRequest != null)
             {
-                blockRequest.IsActive = new BitArray(new[] { false });
+                blockRequest.IsActive = new BitArray(new[] { true });
                 blockRequest.ModifiedDate = DateTime.Now;
                 request!.Status = (int)RequestStatus.Unassigned;
             }
             _context.BlockRequests.Update(blockRequest!);
             _context.Requests.Update(request!);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<byte[]> DownloadFilesForRequest(int request_id)
+        {
+
+            var zipName = $"RequestFiles-{request_id}-{DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss")}.zip";
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
+                {
+                    var filesForRequest = await _context.RequestWiseFiles
+                        .Where(file => file.RequestId == request_id)
+                        .ToListAsync();
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    foreach (var file in filesForRequest)
+                    {
+                        var filepath = Path.Combine(uploads, file.FileName);
+
+                        if (!string.IsNullOrEmpty(filepath) && System.IO.File.Exists(filepath))
+                        {
+                            var entry = zip.CreateEntry(Path.GetFileName(filepath));
+
+                            using (var entryStream = entry.Open())
+                            using (var fileStream = System.IO.File.OpenRead(filepath))
+                            {
+                                await fileStream.CopyToAsync(entryStream);
+                            }
+                        }
+                    }
+                }
+
+
+
+                return (ms.ToArray());
+            }
+
         }
     }
 }

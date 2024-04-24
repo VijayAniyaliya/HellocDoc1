@@ -165,7 +165,7 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> DownloadAll(int request_id)
         {
-            var download = await _patientServices.DownloadFilesForRequest(request_id);
+            var download = await _recordsServices.DownloadFilesForRequest(request_id);
             return File(download, "application/zip", "RequestFiles.zip");
         }
 
@@ -350,7 +350,8 @@ namespace HellocDoc1.Controllers
         [HttpGet("{email}")]
         public IActionResult ResetYourPassword(string email)
         {
-            ViewBag.Email = email;
+            string Email = HashingServices.Decrypt(email);
+            ViewBag.Email = Email;
             return View();          
         }
             
@@ -359,7 +360,6 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> ResetPasswords(ChangePassViewModel model)
         {
             await _adminServices.ResetPassword(model);  
-            TempData["Success"] = "Password Reset Succefully";
             return RedirectToAction("AdminLogin", "Admin");
         }
 

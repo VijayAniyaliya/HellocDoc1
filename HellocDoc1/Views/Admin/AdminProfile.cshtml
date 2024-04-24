@@ -199,13 +199,25 @@
 
 <script>
 
+    $('#password').on('input', function () {
+        if ($('#password').val() == "") {
+            $('#passwarn').html("*Please enter password")
+        }
+        else {
+            var regex = /(?=.*\d.*)(?=.*[a-zA-Z].*)(?=.*[!#\$%&\?].*).{8,20}/
+
+            if (!regex.test($('#password').val())) {
+                $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+
+            } else {
+                $('#passwarn').html("");
+            }
+        }
+    })
 
     function resetpass() {
         var password = $('#password').val();
-        if (password == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        else {
+        if ($('#passwarn').text() == "" && $('#password').val() != "") {
             $.ajax({
                 url: "/Admin/ResetAdminPassword/",
                 type: "POST",
@@ -214,13 +226,16 @@
                 dataType: "html",
                 success: function (data) {
                     toastr.success('Password Reset Successfully');
-                    $('#password').val("")
+                    $('#password').val("");
+                    $('#passwarn').html("");
                 },
                 error: function () {
                     alert("No Projects Found");
                 }
             });
-            $('#passwarn').html("")
+        }
+        else {
+            $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
         }
     };
 
@@ -293,7 +308,7 @@
         }
         if (formdata.confirmaemail == "") {
             $('#confirmemailwarning').html("Please enter Confirm Email");
-        } 
+        }
         if ((formdata.firstname != "") && (formdata.lastname != "") && (formdata.email != "") && (formdata.phonenumber != "") && ((formdata.confirmaemail == formdata.email))) {
 
             $.ajax({
@@ -348,15 +363,13 @@
                 async: false,
                 dataType: "html",
                 success: function (data) {
-                    console.log("billing info");
 
                 },
                 error: function (error) {
                     alert("No Projects Found");
-                    console.log(error);
                 }
             });
-            $('#Billingdata').css('display', 'flex');
+            $('#editbill').css('display', 'flex');
             $('.modifybill').css('display', 'none');
             $('.billing').each(function () {
                 $(this).prop('disabled', true);
@@ -368,20 +381,19 @@
             $('#altphonenumberwarning').html("");
         }
         else {
-            console.log("denied")
         }
 
     };
 
 
-    $('#password').on('input', function () {
-        if ($('#password').val() == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        else {
-            $('#passwarn').html("")
-        }
-    })
+    // $('#password').on('input', function () {
+    //     if ($('#password').val() == "") {
+    //         $('#passwarn').html("Please enter password")
+    //     }
+    //     else {
+    //         $('#passwarn').html("")
+    //     }
+    // })
     $('#firstname').on('input', function () {
         if ($('#firstname').val() == "") {
             $('#firstwarning').html("Please enter First name")

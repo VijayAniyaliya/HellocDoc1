@@ -120,7 +120,6 @@
                     }))
 
                     response.business.forEach(function (item) {
-                        console.log(item);
 
                         business.append(
                             $('<option>', {
@@ -145,7 +144,6 @@
                     var email = document.getElementById("email");
                     var faxnumber = document.getElementById("faxnumber");
 
-                    console.log(response.business);
                     contact.value = response.business[0].contact;
                     email.value = response.business[0].email;
                     faxnumber.value = response.business[0].faxNumber;

@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" asp-for="Password" class="form-control" id="password"
+                        <input type="text" class="form-control" id="password"
                                placeholder="password" />
                         <label for="password" class="">Password</label>
                         <span id="passwarn" class="text-danger"></span>
@@ -355,16 +355,26 @@
         });
     };
 
+    $('#password').on('input', function () {
+        if ($('#password').val() == "") {
+            $('#passwarn').html("*Please enter password")
+        }
+        else {
+            var regex = /(?=.*\d.*)(?=.*[a-zA-Z].*)(?=.*[!#\$%&\?].*).{8,20}/
+
+            if (!regex.test($('#password').val())) {
+                $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+
+            } else {
+                $('#passwarn').html("");
+            }
+        }
+    })
+
     function resetpass() {
         var password = $('#password').val();
         var PhysicianId = @Model.PhysicianId;
-        if (password == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        if (password == '@Model.Password') {
-            toastr.error('Please modify the password');
-        }
-        else if (password != "") {
+        if ($('#passwarn').text() == "" && $('#password').val() != "") {
             $.ajax({
                 url: "/Provider/ResetAccountPass/",
                 type: "POST",
@@ -372,14 +382,17 @@
                 data: { "PhysicianId": PhysicianId, "password": password },
                 dataType: "html",
                 success: function (data) {
+                    $('#password').val("");
+
                     toastr.success('Password reset successfully');
                 },
                 error: function () {
                     alert("No Projects Found");
-                    console.log('error');
                 }
             });
-            $('#passwarn').html("")
+        }
+        else {
+            $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
         }
     };
 
@@ -527,7 +540,6 @@
         $('.data:checked').each(function () {
             RegionSelected.push($(this).val());
         });
-        console.log(RegionSelected);
         var formdata = {
             PhysicianId: @Model.PhysicianId,
             firstname: $('#firstname').val(),
@@ -766,14 +778,14 @@
         });
     }
 
-    $('#password').on('input', function () {
-        if ($('#password').val() == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        else {
-            $('#passwarn').html("")
-        }
-    })
+    // $('#password').on('input', function () {
+    //     if ($('#password').val() == "") {
+    //         $('#passwarn').html("Please enter password")
+    //     }
+    //     else {
+    //         $('#passwarn').html("")
+    //     }
+    // })
     $('#username').on('input', function () {
         if ($('#username').val() == "") {
             $('#userwarn').html("Please enter username")

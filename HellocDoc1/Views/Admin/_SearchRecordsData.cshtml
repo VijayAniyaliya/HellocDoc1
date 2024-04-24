@@ -35,16 +35,16 @@
                 {
                     <td>-</td>
                 }
-                <td>@item.Request.RequestStatusLogs.FirstOrDefault(a=> a.Status == 6)?.CreatedDate.ToString("MMM dd yyyy")</td>
+                <td>@item.Request.RequestStatusLogs.FirstOrDefault(a => a.Status == 6)?.CreatedDate.ToString("MMM dd yyyy")</td>
                 <td>@item.Email</td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.Street, @item.City, @item.State</td>
                 <td>@item.ZipCode</td>
                 <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.RequestTypeId.ToString())</td>
                 <td>@item.Request.Physician?.FirstName</td>
-                <td>@item.Request.RequestNotes.FirstOrDefault(a=> a.RequestId == item.Request.RequestId)?.PhysicianNotes</td>
+                <td>@item.Request.RequestNotes.FirstOrDefault(a => a.RequestId == item.Request.RequestId)?.PhysicianNotes</td>
                 <td>Cancel Notes</td>
-                <td>@item.Request.RequestNotes.FirstOrDefault(a=> a.RequestId == item.Request.RequestId)?.AdminNotes</td>
+                <td>@item.Request.RequestNotes.FirstOrDefault(a => a.RequestId == item.Request.RequestId)?.AdminNotes</td>
                 <td>@item.Notes</td>
                 <td class="text-center">
                     <a onclick="deleterecord(@item.Request.RequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Delete</a>
@@ -130,19 +130,33 @@ else
         filterdata.requestedPage = CurrentPage;
         AjaxAll();
     }
+
     function deleterecord(RequestId) {
-        $.ajax({
-            url: "/Admin/DeleteRecord/",
-            type: "POST",
-            data: { "RequestId": RequestId },
-            dataType: "html",
-            success: function (data) {
-                AjaxAll();
-                toastr.success('Record Deleted Sucessfully');
-            },
-            error: function () {
-                console.log('error');
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to Delete Record!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/Admin/DeleteRecord/",
+                    type: "POST",
+                    data: { "RequestId": RequestId },
+                    dataType: "html",
+                    success: function (data) {
+                        AjaxAll();
+                        toastr.success('Record Deleted Sucessfully');
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                });
             }
         });
-    };
+    }
+
 </script>

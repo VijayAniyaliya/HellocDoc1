@@ -47,7 +47,7 @@
                 <div class="h3 mt-3">Create account</div>
 
                 <form asp-action="CreatePatientAccount" method="post">
-                    <input asp-for="RequestId" value="@Model.RequestId" hidden/>
+                    <input asp-for="RequestId" value="@Model.RequestId" hidden />
                     <div class="form-floating inputs mb-1 mt-4">
                         <input type="email" class="form-control patient-input" id="floatingInput"
                                placeholder="name@example.com" asp-for="Email">
@@ -61,17 +61,23 @@
                         <label for="password" class="label">Password</label>
                         <i class="bi bi-eye-slash-fill input-icon" onclick="fun()" id="eye"></i>
                     </div>
-                    <span asp-validation-for="Password" class="text-danger d-block " style="position:relative; bottom:25px; right:65px;"></span>                    <div class="form-floating inputs mb-0">
+                    <div style="    width: 361px; margin: 0 38%;">
+                    <span asp-validation-for="Password" class="text-danger d-block " style="position:relative; bottom:25px; right:65px;"></span>               
+                    </div>
+                    <div class="form-floating inputs mb-0">
                         <input type="password" class="form-control patient-input" id="confirpassword"
                                placeholder="Password" asp-for="ConfirmPassword">
                         <label for="confirpassword" class="label">Confirm Password</label>
                         <i class="bi bi-eye-slash-fill input-icon" onclick="confirmPassword()" id="eyes"></i>
                     </div>
+                    <div style=" width: 108%;">
+
                     <span asp-validation-for="ConfirmPassword" class="text-danger d-block " style="position:relative; bottom:25px; right:40px;"></span>
+                    </div>
 
 
                     <button type="submit" class="btn bg-info inputs py-3">Create</button>
-                </form> 
+                </form>
             </div>
         </div>
 
@@ -103,7 +109,6 @@
         const path = document.getElementById("eye");
         const password = document.getElementById('password')
         function fun() {
-            console.log(password);
             if (password.type === "password") {
                 path.classList.remove("bi-eye-slash-fill");
                 path.classList.add("bi-eye-fill");
@@ -120,7 +125,6 @@
         const eyes = document.getElementById("eyes");
         const confirmpassword = document.getElementById('confirpassword')
         function confirmPassword() {
-            console.log(password);
             if (confirmpassword.type === "password") {
                 eyes.classList.remove("bi-eye-slash-fill");
                 eyes.classList.add("bi-eye-fill");

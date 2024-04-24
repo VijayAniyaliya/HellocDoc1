@@ -71,8 +71,6 @@
 
         $('.sendmsg').on('click', function (e) {
             var message = $('.message').val();
-            console.log(message);
-            console.log(message);
             if (message == "") {
                 $('.message').css('border', '1px solid red');
                 $('#error').html('Please enter message');
@@ -87,7 +85,7 @@
                     data: { "PhysicianId": @Model.physicianId , "message": message},
                     success: function (data) {
                         $("#cancel").click();
-
+                        toastr.success('Message Sent Successfully');
                     },
                     error: function (error) {
                         console.error(error);

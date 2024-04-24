@@ -15,5 +15,6 @@ namespace Services.Contracts
         Task UnblockCase(int requestid);
         Task<byte[]> DownloadExcle(SearchRecordsViewModel model);
         Task DeleteRecord(int RequestId);
+        Task<byte[]> DownloadFilesForRequest(int request_id);
     }
 }

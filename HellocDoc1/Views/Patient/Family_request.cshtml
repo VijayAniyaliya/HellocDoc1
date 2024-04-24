@@ -207,10 +207,10 @@
             </div>
 
             <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
-                <button type="submit" class="btn submit-btn border border-info bg-info text-white p-2">
+                <button type="submit" id="submit" class="btn submit-btn border border-info bg-info text-white p-2">
                     Submit
                 </button>
-                <button type="reset" class="btn cancel-btn border border-info text-info p-2">
+                <button type="reset" id="cancel" class="btn cancel-btn border border-info text-info p-2">
                     Cancel
                 </button>
             </div>
@@ -222,4 +222,16 @@
 
 
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+    $('#cancel').on('click', function () {
+        $('form span').hide();
+    })
+
+
+    $('#submit').on('click', function () {
+        $('form span').show();
+    })
+</script>
 

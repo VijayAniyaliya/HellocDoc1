@@ -25,12 +25,12 @@
                 <td>@item.Notes</td>
                 <th class="text-center">
                     <input class="form-check-input checks" id="isactive" type="checkbox"
-                    @if (item.IsActive![0] == false)
+                    @if (item.IsActive![0] == true)
                     {
                         @:checked
                     }value="" disabled/>
                 </th>
-                @if (item.IsActive[0] == true)
+                @if (item.IsActive[0] == false)
                 {
                     <td class="text-center">
                         <a onclick="unblock(@item.BlockRequestId)" class="btn text-info border-2 border-info fw-bold rounded-3 px-2 h5 ">Unblock</a>

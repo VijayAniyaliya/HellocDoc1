@@ -42,21 +42,18 @@
         </form>
         <div class="d-flex justify-content-between pt-3">
             <h5>Documents</h5>
-            <a asp-controller="Patient" onclick="DownloadAll" asp-action="DownloadAll" asp-route-request_id="@Model.request.RequestId" class="btn downloadall text-info border-1 border-info">
+            <a asp-controller="Patient" asp-action="DownloadAll" asp-route-request_id="@Model.request.RequestId" class="btn data text-info border-1 border-info d-md-none d-block">
                 Download All
             </a>
             <a onclick="downloadSelectedFiles()" id="download" class="btn text-info d-md-block d-none border-1 border-info">
-                Download
-            </a>         
-            <a onclick="downloadSelectedFile()" id="download" class="btn text-info d-md-none d-block border-1 border-info">
-                Download
+                Download All
             </a>
         </div>
         <div class="table-responsive mt-2">
             <table class="table d-md-table d-none">
                 <thead>
                     <tr>
-                        <th class="text-center"><input type="checkbox" class="form-check-input checks" id="All" style="left: 18px; position:relative" /></th>
+                        <th class="text-center"><input type="checkbox" class="form-check-input checks" id="All" style="left: 21px; position:relative" /></th>
                         <th scope="col"></th>
                         <th scope="col">Uploader</th>
                         <th scope="col">Upload Date</th>
@@ -84,10 +81,9 @@
             </table>
             <div class="d-md-none d-block">
                 @foreach (var item in Model.requestWiseFile)
-                {   
+                {
                     <hr />
                     <div>
-                        <input type="checkbox" data-ids="@item.RequestWiseFileId" class="ChildCheck form-check-input checks text-center mr-2" name="checkdocs" style="left: 21px; position:relative;" />
                         <span class="" style="left: 21px; position:relative;"><i class="bi bi-file-earmark-medical-fill mr-1 h5 fs-3" style="color:#f50707"></i>@item.FileName</span>
                     </div>
                     <div class="my-3">
@@ -113,7 +109,13 @@
 <br />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+
+    // var DocumentSelected = [];
+
     // function DownloadAll(request_id) {
+    //     $('.data:checked').each(function () {
+    //         RegionSelected.push($(this).val());
+    //     });
     //     $.ajax({
     //         url: "/Admin/Delete",
     //         data: { request_id: request_id },
@@ -128,41 +130,8 @@
     //         }
     //     });
     // };
-    function downloadSelectedFile() {
-        var selectedFiles = document.querySelectorAll('input[name="checkdocs"]:checked');
-        var fileUrls = [];
 
-        if (selectedFiles.length === 0) {
-            toastr.error('Please select files to download');
-            return;
-        }
-        selectedFiles.forEach(function (checkbox) {
-            var row = checkbox.closest('tr');
-            var fileUrl = row.querySelector('a').getAttribute('href');
-            fileUrls.push(fileUrl);
-        });
-
-        fileUrls.forEach(function (url) {
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-    }
     $(document).ready(function () {
-        $("#download").css('display', 'block');
-        $(".downloadall").css('display', 'none');
-        $("#All").change(function () {
-            if ($(this).is(":checked")) {
-                $("#download").css('display', 'none');
-                $(".downloadall").css('display', 'block');
-            } else {    
-                $("#download").css('display', 'block');
-                $(".downloadall").css('display', 'none');
-            }
-        });
         $('#All').click(function () {
             $('.ChildCheck').prop('checked', this.checked);
         });
@@ -192,5 +161,9 @@
             link.click();
             document.body.removeChild(link);
         });
+        selectedFiles.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+        $('#All').prop('checked', $('.ChildCheck:checked').length === $('.ChildCheck').length);
     }
 </script>

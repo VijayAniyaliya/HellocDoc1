@@ -77,11 +77,11 @@ namespace HellocDoc1.Controllers
             return View(data);
         }
             
-        public async Task<IActionResult> AddNotes(AddNotesViewModel model, int request_id)
+        public async Task<IActionResult> AddNotes(AddNotesViewModel model)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            await _providerServices.AddNotes(model, request_id, email);
-            return RedirectToAction("ViewNotes", new { request_id = request_id });
+            await _providerServices.AddNotes(model, email);
+            return NoContent();
         }
 
         public async Task<IActionResult> ViewUploads(int request_id)
@@ -241,6 +241,13 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> UploadDocs(ConcludeCareViewModel model)
+        {
+            await _providerServices.UploadDocs(model);
+            return RedirectToAction("ConcludeCare", new { request_id = model.RequestId });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> UploadEncounter(ConcludeCareViewModel model, int request_id)
         {
             await _providerServices.UploadDocuments(model, request_id); 
@@ -251,9 +258,10 @@ namespace HellocDoc1.Controllers
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _providerServices.ConcludeCase(model, email);
-            TempData["Success"] = "Case concluded Successfully";
-            return RedirectToAction("ProviderDashboard");
+            return Ok();
         }
+
+
 
         public IActionResult MySchedulle()
         {

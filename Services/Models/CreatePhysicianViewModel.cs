@@ -16,10 +16,10 @@ namespace Services.Models
 
         public string Username { get; set; }
         [Required(ErrorMessage = "Password is required")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must contain at least one uppercase, one lowercase letter, one digit, one special character, and be at least 8 characters long.")]
 
         public string Password { get; set; }
         [Required(ErrorMessage = "role is required")]
-
         public int role { get; set; }
         public List<Role> Role { get; set; }
         [Required(ErrorMessage = "First name is required")]
@@ -55,8 +55,9 @@ namespace Services.Models
         [Required(ErrorMessage = "address1 is required")]
 
         public string address1 { get; set; }
+        [Required(ErrorMessage = "address2 is required")]
 
-        public string? address2 { get; set; }
+        public string address2 { get; set; }
         [Required(ErrorMessage = "city is required")]
 
         public string city { get; set; }
@@ -85,10 +86,10 @@ namespace Services.Models
         [Required(ErrorMessage = "Admin Notes is required")]
 
         public string AdminNotes { get; set; }
-        public IFormFile AggrementDoc { get; set; }
-        public IFormFile BackgoundDoc { get; set; }
-        public IFormFile HipaaDoc { get; set; }
-        public IFormFile DisclosureDoc { get; set; }
+        public IFormFile? AggrementDoc { get; set; }
+        public IFormFile? BackgoundDoc { get; set; }
+        public IFormFile? HipaaDoc { get; set; }
+        public IFormFile? DisclosureDoc { get; set; }
 
     }
 }

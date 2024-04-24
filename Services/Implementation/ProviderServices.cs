@@ -209,9 +209,9 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddNotes(AddNotesViewModel model, int request_id, string email)
+        public async Task AddNotes(AddNotesViewModel model, string email)
         {
-            var data = await _context.RequestNotes.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
+            var data = await _context.RequestNotes.Where(a => a.RequestId == model.RequestId).FirstOrDefaultAsync();
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
 
             if (data != null)
@@ -225,7 +225,7 @@ namespace Services.Implementation
             {
                 RequestNote requestNote = new RequestNote()
                 {
-                    RequestId = request_id,
+                    RequestId = model.RequestId,
                     PhysicianNotes = model.AdditionalNotes,
                     CreatedBy = aspNetUser!.Id,
                     CreatedDate = DateTime.Now,
@@ -532,6 +532,34 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
+        }
+
+        public async Task UploadDocs(ConcludeCareViewModel model)
+        {
+            if (model.Upload != null)
+            {
+                IEnumerable<IFormFile> upload = model.Upload;
+                foreach (var item in upload)
+                {
+                    var file = item.FileName;
+                    var uniqueFileName = GetUniqueFileName(file);
+                    var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await item.CopyToAsync(fileStream);
+                    }
+
+                    RequestWiseFile requestWiseFile = new RequestWiseFile()
+                    {
+                        FileName = uniqueFileName,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _context.RequestWiseFiles.Add(requestWiseFile);
+                    requestWiseFile.RequestId = model.RequestId;
+                }
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task<SchedullingViewModel> MonthWiseMySchedule(DateTime date, string email)

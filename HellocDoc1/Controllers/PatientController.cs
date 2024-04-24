@@ -1,6 +1,7 @@
 ﻿using Common.Enum;
 using Common.Helpers;
 using Data.Context;
+using Data.Entity;
 using HellocDoc1.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
@@ -78,7 +79,6 @@ namespace HellocDoc1.Controllers
             LoginResponseViewModel? result = await patientServices.ResetPassword(model);
             if (result.Status == ResponseStatus.Success)
             {
-                TempData["Success"] = "Reset Password link sent to your email";
                 return RedirectToAction("Login", "Patient");
             }
             else
@@ -92,14 +92,15 @@ namespace HellocDoc1.Controllers
         [HttpGet("[controller]/[action]/{email}")]
         public IActionResult ChangePassword(string email)
         {
-            ViewBag.Email = email;
+            string Email= HashingServices.Decrypt(email);
+            ViewBag.Email = Email;
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePassViewModel model)
         {
             await patientServices.ChangePassword(model.Email, model);
-            return View();
+            return RedirectToAction("Login", "Patient");
         }
 
 
@@ -165,10 +166,18 @@ namespace HellocDoc1.Controllers
 
         [Route("/Patient/Patient_request/checkmail/{email}")]
         [HttpGet]
-        public IActionResult CheckEmail(string email)
+        public async Task<bool> CheckEmail(string email)
         {
-            var emailExists =patientServices.CheckEmail(email);
-            return Json(new { exists = emailExists });
+            User user = await patientServices.CheckEmail(email);
+
+            if (user != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
             
         public IActionResult Family_request()
@@ -297,10 +306,6 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> Editing(ProfileViewModel model)
         {
             var email = HttpContext.Session.GetString("Email");
-            if (model.Email != email)
-            {
-                HttpContext.Session.SetString("Email", model.Email);
-            }
             await patientServices.Editing(email, model);
             return RedirectToAction("Patient_Profile", "Patient");
         }

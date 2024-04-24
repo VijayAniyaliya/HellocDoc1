@@ -29,7 +29,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" asp-for="Password" class="form-control" id="password"
+                        <input type="text" class="form-control" id="password"
                                placeholder="password" />
                         <label for="password" class="">Password</label>
                         <span id="passwarn" class="text-danger"></span>
@@ -39,10 +39,10 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select account mb-3" id="status" aria-label="Floating label select example" disabled>
-                            <option selected>@Enum.Parse( typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
+                            <option selected>@Enum.Parse(typeof(Common.Enum.PhysicianStatus), Model.StatusCode.ToString())</option>
                             @foreach (int i in Enum.GetValues(typeof(Common.Enum.PhysicianStatus)))
                             {
-                                <option value="@i">@Enum.Parse( typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
+                                <option value="@i">@Enum.Parse(typeof(Common.Enum.PhysicianStatus), @i.ToString())</option>
                             }
 
                         </select>
@@ -396,17 +396,26 @@
 
 <script>
 
+    $('#password').on('input', function () {
+        if ($('#password').val() == "") {
+            $('#passwarn').html("*Please enter password")
+        }
+        else {
+            var regex = /(?=.*\d.*)(?=.*[a-zA-Z].*)(?=.*[!#\$%&\?].*).{8,20}/
+
+            if (!regex.test($('#password').val())) {
+                $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+
+            } else {
+                $('#passwarn').html("");
+            }
+        }
+    })
 
     function resetpass() {
         var password = $('#password').val();
         var PhysicianId = @Model.PhysicianId;
-        if (password == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        if (password == '@Model.Password') {
-            toastr.error('Please modify the password');
-        }
-        else if (password != "") {
+        if ($('#passwarn').text() == "" && $('#password').val() != "") {
             $.ajax({
                 url: "/Admin/ResetAccountPass/",
                 type: "POST",
@@ -414,6 +423,8 @@
                 data: { "PhysicianId": PhysicianId, "password": password },
                 dataType: "html",
                 success: function (data) {
+                    $('#password').val("");
+
                     toastr.success('Password reset successfully');
                 },
                 error: function () {
@@ -421,6 +432,9 @@
                     console.log('error');
                 }
             });
+        }
+        else {
+            $('#passwarn').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
         }
     };
 
@@ -786,28 +800,46 @@
 
     };
 
+
+
     function deleteraccount(PhysicianId) {
-        $.ajax({
-            url: "/Admin/DeleteAccount/",
-            type: "POST",
-            data: { "PhysicianId": PhysicianId },
-            success: function (data) {
-                window.location.href('/Admin/Provider')
-            },
-            error: function (error) {
-                console.log(error);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to Delete Account!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    method: "POST",
+                    url: "/Admin/DeleteAccount/",
+                    data: { "PhysicianId": PhysicianId },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success("Deleted  Successfully");
+                            window.location.href = '/Admin/Provider'; // Changed from window.location.href('/Admin/Provider') to window.location.href = '/Admin/Provider';
+                        }
+                    },
+                    error: function () {
+                        toastr.error("Error While Delete Account");
+                    }
+                });
             }
         });
     }
 
-    $('#password').on('input', function () {
-        if ($('#password').val() == "") {
-            $('#passwarn').html("Please enter password")
-        }
-        else {
-            $('#passwarn').html("")
-        }
-    })
+
+    // $('#password').on('input', function () {
+    //     if ($('#password').val() == "") {
+    //         $('#passwarn').html("Please enter password")
+    //     }
+    //     else {
+    //         $('#passwarn').html("")
+    //     }
+    // })
     $('#username').on('input', function () {
         if ($('#username').val() == "") {
             $('#userwarn').html("Please enter username")

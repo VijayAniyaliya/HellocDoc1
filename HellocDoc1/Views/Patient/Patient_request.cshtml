@@ -80,19 +80,19 @@
                     </div>
                     <div class="col-md-6 passDisplay" id="passwordFields1">
                         <div class="form-floating mb-3">
-                            <input type="password" asp-for="Password" class="form-control" id="floatingInput"
+                            <input type="password" asp-for="Password" class="form-control" id="password"
                                    placeholder="Password" />
-                            <label for="floatingInput" class="">Password</label>
-                            <i class="bi bi-eye eye-icon"></i>
+                            <label for="password" class="">Password</label>
+                            <i class="bi bi-eye eye-icon" id="eye" onclick="fun()"></i>
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6 passDisplay" id="passwordFields2">
                         <div class="form-floating mb-3">
-                            <input type="password" asp-for="ConfirmPassword" class="form-control" id="floatingInput"
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" id="cpassword"
                                    placeholder="ConfirmPassword" />
-                            <label for="floatingInput" class="">Confirm Password</label>
-                            <i class="bi bi-eye eye-icon"></i>
+                            <label for="cpassword" class="">Confirm Password</label>
+                            <i class="bi bi-eye eye-icon" id="eye2" onclick="fun2()"></i>
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
@@ -173,10 +173,10 @@
             </div>
 
             <div class="mb-1 mt-4 d-flex justify-content-end gap-3">
-                <button type="submit" class="btn submit-btn border border-info bg-info text-white p-2">
+                <button type="submit" id="submit" class="btn submit-btn border border-info bg-info text-white p-2">
                     Submit
                 </button>
-                <button type="reset" class="btn cancel-btn border border-info text-info p-2">
+                <button type="reset" id="cancel" class="btn cancel-btn border border-info text-info p-2">
                     Cancel
                 </button>
             </div>
@@ -186,30 +186,65 @@
     </div>
 </div>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <script>
     function checkEmailExists() {
 
         var email = document.getElementById("patientEmail").value;
-
-        console.log("heelo");
         fetch('/Patient/patient_request/checkmail/' + email)
             .then(response => response.json())
             .then(data => {
                 var patientPassword = document.getElementById('passwordFields1');
                 var patientConfirmPassword = document.getElementById('passwordFields2');
-                if (data.exists) {
+                if (data) {
                     patientPassword.style.display = 'none';
                     patientConfirmPassword.style.display = 'none';
-                    console.log("exist ");
                 }
                 else {
                     patientPassword.style.display = 'block';
                     patientConfirmPassword.style.display = 'block';
-                    console.log(" not exist ");
                 }
             })
         // .catch(error => console.error('Error:', error));
+    }
+
+    $('#cancel').on('click', function () {
+        $('form span').hide();
+    })
+
+
+    $('#submit').on('click', function () {
+        $('form span').show();
+    })
+
+    const path = document.getElementById("eye");
+    const password = document.getElementById('password')
+    const cpassword = document.getElementById('cpassword')
+    const eye2 = document.getElementById("eye2");
+    function fun() {
+        if (password.type === "password") {
+            path.classList.remove("bi-eye-slash-fill");
+            path.classList.add("bi-eye-fill");
+            password.type = "text";
+        }
+        else {
+            path.classList.remove("bi-eye-fill");
+            path.classList.add("bi-eye-slash-fill");
+            password.type = "password";
+        }
+    }
+    function fun2() {
+        if (cpassword.type === "password") {
+            eye2.classList.remove("bi-eye-slash-fill");
+            eye2.classList.add("bi-eye-fill");
+            cpassword.type = "text";
+        }
+        else {
+            eye2.classList.remove("bi-eye-fill");
+            eye2.classList.add("bi-eye-slash-fill");
+            cpassword.type = "password";
+        }
     }
 </script>
 

@@ -47,8 +47,8 @@ namespace HellocDoc1.Services
             if (requests != null)
             {
                 int count = obj!.Count();
-                int TotalPage = (int)Math.Ceiling(count / (double)5);
-                obj = obj!.Skip((requestedPage - 1) * 5).Take(5).ToList();
+                int TotalPage = (int)Math.Ceiling(count / (double)10);
+                obj = obj!.Skip((requestedPage - 1) * 10).Take(10).ToList();
 
                 PatientDashboardViewModel model = new PatientDashboardViewModel()
                 {
@@ -67,15 +67,18 @@ namespace HellocDoc1.Services
             RequestClient requestClient = _context.RequestClients.Where(x => x.RequestId == request_id).FirstOrDefault()!;
             List<RequestWiseFile> requestWiseFile = _context.RequestWiseFiles.Where(x => x.RequestId == request_id).ToList();
 
-            PatientServiceModel patientService = new PatientServiceModel()
+            if (data != null && requestClient != null)
             {
-                request = data,
-                requestWiseFile = requestWiseFile,
-                requestClient = requestClient!
+                PatientServiceModel patientService = new PatientServiceModel()
+                {
+                    request = data,
+                    requestWiseFile = requestWiseFile,
+                    requestClient = requestClient!
 
-            };
-            return patientService;
-
+                };
+                return patientService;
+            }
+            return new PatientServiceModel();
         }
 
         public async Task UploadDocument(PatientServiceModel model, int request_id)
@@ -112,9 +115,11 @@ namespace HellocDoc1.Services
             {
                 using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
                 {
+
                     var filesForRequest = await _context.RequestWiseFiles
                         .Where(file => file.RequestId == request_id)
                         .ToListAsync();
+
                     var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                     foreach (var file in filesForRequest)
                     {
@@ -169,28 +174,18 @@ namespace HellocDoc1.Services
         {
             User? userdata = await _context.Users.Where(x => x.Email == email).FirstOrDefaultAsync();
 
-            if (userdata.Email != model.Email)
-            {
-                AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == email);
-                if (aspNetUser != null)
-                {
-                    aspNetUser.UserName = model.FirstName + " " + model.LastName;
-                    aspNetUser.Email = model.Email;
-                    aspNetUser.PhoneNumber = model.phone;
-                    aspNetUser.ModifiedDate = DateTime.Now;
-                }
-                _context.AspNetUsers.Update(aspNetUser);
-            }
             if (userdata != null)
             {
                 userdata.FirstName = model.FirstName;
                 userdata.LastName = model.LastName;
                 userdata.Mobile = model.phone;
-                userdata.Email = model.Email;
                 userdata.IsMobile = (model.IsMobile == 1) ? new BitArray(new[] { true }) : (new BitArray(new[] { false }));
                 userdata.Street = model.Street;
                 userdata.City = model.City;
                 userdata.State = model.State;
+                userdata.IntDate = model.DOB.Day;
+                userdata.IntYear = model.DOB.Year;
+                userdata.StrMonth = model.DOB.ToString("MMM");
                 userdata.ZipCode = model.ZipCode;
                 userdata.ModifiedDate = DateTime.Now;
                 _context.Users.Update(userdata);
@@ -324,25 +319,36 @@ namespace HellocDoc1.Services
             }
             else
             {
-                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{model.Email}\">Reset</a>");
+                string email = HashingServices.Encrypt(model.Email);
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Hello", $"Please <a href=\"https://localhost:7208/Patient/ChangePassword/{email}\">Reset</a>");
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success };
             }
         }
 
-        public async Task<bool> CheckEmail(string email)
+        public async Task<User> CheckEmail(string email)
         {
-            var emailExists = await _context.AspNetUsers.AnyAsync(u => u.Email == email);
-            return emailExists;
+            User? user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (user == null)
+            {
+                return null;
+            }
+            else
+            {
+                return user;
+            }
         }
 
         public async Task ChangePassword(string email, ChangePassViewModel model)
         {
             var user = await _context.AspNetUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
 
-            user.PasswordHash = model.Password;
+            if (user != null)
+            {
+                user.PasswordHash = HashingServices.Encrypt(model.Password);
 
-            _context.AspNetUsers.Update(user);
-            await _context.SaveChangesAsync();
+                _context.AspNetUsers.Update(user);
+                await _context.SaveChangesAsync();
+            }
 
         }
 

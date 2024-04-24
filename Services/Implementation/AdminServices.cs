@@ -305,8 +305,9 @@ namespace Services.Implementation
                 model.PhysicianNotes = data1?.PhysicianNotes;
                 model.AdminNotes = data1?.AdminNotes;
                 model.RequestId = request_id;
+                return model;
             }
-            return model;
+            return new ViewNotesViewModel();
         }
 
         public async Task AddNotes(AddNotesViewModel model, string email)
@@ -605,7 +606,8 @@ namespace Services.Implementation
             }
             else
             {
-                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Reset Password", $"Please <a href=\"https://localhost:7208/Admin/ResetYourPassword/{model.Email}\">Reset Your Password</a>");
+                string Email = HashingServices.Encrypt(model.Email);
+                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Reset Password", $"Please <a href=\"https://localhost:7208/Admin/ResetYourPassword/{Email}\">Reset Your Password</a>");
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success };
             }
         }
@@ -616,11 +618,11 @@ namespace Services.Implementation
 
             if (user != null)
             {
-                user.PasswordHash = model.Password;
+                user.PasswordHash = HashingServices.Encrypt(model.Password);
                 user.ModifiedDate = DateTime.Now;
                 _context.AspNetUsers.Update(user);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         public async Task<SendOrdersViewModel> SendOders(int request_id)
@@ -1049,7 +1051,7 @@ namespace Services.Implementation
 
             if (aspNetUser != null)
             {
-                aspNetUser.PasswordHash = password;
+                aspNetUser.PasswordHash = HashingServices.Encrypt(password);
                 aspNetUser.ModifiedDate = DateTime.Now;
                 _context.AspNetUsers.Update(aspNetUser);
             }
@@ -1204,7 +1206,7 @@ namespace Services.Implementation
                         LastName = model.LastName,
                         Email = model.Email,
                         PhoneNumber = model.PhoneNumber,
-                        Status = (int)Common.Enum.RequestStatus.Unassigned,
+                        Status = (int)RequestStatus.Unassigned,
                         CreatedDate = DateTime.Now,
                         IsUrgentEmailSent = new BitArray(1),
                         ConfirmationNumber = regiondata.Abbreviation.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
@@ -1327,7 +1329,7 @@ namespace Services.Implementation
                 messageOptions.From = new PhoneNumber("+13203907230");
                 messageOptions.Body = message;
 
-                MessageResource messageResource = MessageResource.Create(messageOptions);                
+                MessageResource messageResource = MessageResource.Create(messageOptions);
             }
             await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
         }
@@ -1506,7 +1508,7 @@ namespace Services.Implementation
         {
             Physician? physician = await _context.Physicians.Include(x => x.Role).FirstOrDefaultAsync(a => a.PhysicianId == PhysicianId);
             AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
-            List<Role> role = await _context.Roles.ToListAsync();
+            List<Role> role = await _context.Roles.Where(a => a.AccountType == (int)AccountType.Physician).ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
             List<PhysicianRegion> physicianRegions = await _context.PhysicianRegions.Where(a => a.PhysicianId == physician.PhysicianId).ToListAsync();
 
@@ -1571,7 +1573,7 @@ namespace Services.Implementation
             if (physician != null)
             {
                 AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Id == physician.AspNetUserId).FirstOrDefaultAsync();
-                aspNetUser!.PasswordHash = password;
+                aspNetUser!.PasswordHash = HashingServices.Encrypt(password);
                 aspNetUser.ModifiedDate = DateTime.Now;
                 _context.AspNetUsers.Update(aspNetUser);
             }
@@ -1948,7 +1950,7 @@ namespace Services.Implementation
 
         public async Task<CreatePhysicianViewModel> CreatePhysician()
         {
-            List<Role> role = await _context.Roles.ToListAsync();
+            List<Role> role = await _context.Roles.Where(a => a.AccountType == 2).ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
 
             if (role != null && regions != null)
@@ -1973,7 +1975,7 @@ namespace Services.Implementation
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.Username,
-                        PasswordHash = model.Password,
+                        PasswordHash = HashingServices.Encrypt(model.Password),
                         Email = model.Email,
                         PhoneNumber = model.PhoneNumber,
                         CreatedDate = DateTime.Now,
@@ -2049,14 +2051,17 @@ namespace Services.Implementation
                     _context.Physicians.Update(physician);
                     await _context.SaveChangesAsync();
 
-                    foreach (var item in regionselected)
+                    if (regionselected.Count() > 0)
                     {
-                        PhysicianRegion physicianRegion = new PhysicianRegion();
-                        physicianRegion.PhysicianId = physician.PhysicianId;
-                        physicianRegion.RegionId = item;
-                        _context.PhysicianRegions.Add(physicianRegion);
+                        foreach (var item in regionselected)
+                        {
+                            PhysicianRegion physicianRegion = new PhysicianRegion();
+                            physicianRegion.PhysicianId = physician.PhysicianId;
+                            physicianRegion.RegionId = item;
+                            _context.PhysicianRegions.Add(physicianRegion);
+                        }
+                        await _context.SaveChangesAsync();
                     }
-                    await _context.SaveChangesAsync();
 
                     PhysicianNotification physicianNotification = new PhysicianNotification()
                     {
@@ -2066,15 +2071,6 @@ namespace Services.Implementation
                     _context.PhysicianNotifications.Add(physicianNotification);
                     await _context.SaveChangesAsync();
 
-                    //PhysicianLocation physicianLocation = new PhysicianLocation()
-                    //{
-                    //    PhysicianId = physician.PhysicianId,
-                    //    PhysicianName = model.FirstName + " " + model.LastName,
-                    //    Address = model.address1,
-                    //    CreatedDate = DateTime.Now,
-                    //};
-                    //_context.PhysicianLocations.Add(physicianLocation);
-                    //await _context.SaveChangesAsync();
                     transaction.Commit();
                 }
                 catch
@@ -2094,7 +2090,7 @@ namespace Services.Implementation
 
         public async Task<CreateAdminViewModel> CreateAdmin()
         {
-            List<Role> role = await _context.Roles.ToListAsync();
+            List<Role> role = await _context.Roles.Where(a => a.AccountType == 1).ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
 
             if (role != null && regions != null)
@@ -2119,7 +2115,7 @@ namespace Services.Implementation
                     {
                         Id = Guid.NewGuid().ToString(),
                         UserName = model.Username,
-                        PasswordHash = model.Password,
+                        PasswordHash = HashingServices.Encrypt(model.Password),
                         Email = model.Email,
                         PhoneNumber = model.PhoneNumber,
                         CreatedDate = DateTime.Now,

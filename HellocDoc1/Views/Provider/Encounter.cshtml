@@ -302,7 +302,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     function finalize(request_id) {
-        debugger;
         if (@Model.IsEncounter == 1) {
             toastr.error('Please First make the encounter form');
         }
@@ -313,7 +312,9 @@
             type: "POST",
             data: { "request_id": request_id },
             dataType: "html",
-            success: function (data) {
+            success: function () {
+                    toastr.success('finalized succefully');
+
             },
             error: function () {
                 console("No Projects Found");

@@ -16,6 +16,7 @@ namespace Services.Models
 
         public string Username { get; set; }
         [Required(ErrorMessage = "Password is required")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must contain at least one uppercase, one lowercase letter, one digit, one special character, and be at least 8 characters long.")]
 
         public string Password { get; set; }
         [Required(ErrorMessage = "role is required")]
@@ -57,8 +58,9 @@ namespace Services.Models
         [Required(ErrorMessage = "address1 is required")]
 
         public string address1 { get; set; }
+        [Required(ErrorMessage = "address2 is required")]
 
-        public string? address2 { get; set; }
+        public string address2 { get; set; }
         [Required(ErrorMessage = "city is required")]
 
         public string city { get; set; }

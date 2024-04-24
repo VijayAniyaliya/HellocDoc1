@@ -39,14 +39,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <select class="form-select" asp-for="role" id="role" aria-label="Floating label select example">
-                            <option selected>Select Role</option>
+                        <select class="form-select py-0" asp-for="role" id="role" aria-label="Floating label select example">
+                            <option value="" selected disabled></option>
                             @foreach (var item in Model.Role)
                             {
                                 <option value="@item.RoleId">@item.Name</option>
                             }
                         </select>
-                        <label for="floatingSelect">Role</label>
+                        <label for="floatingSelect">Select Role</label>
                         <span asp-validation-for="role" class="text-danger"></span>
                     </div>
                 </div>
@@ -85,7 +85,6 @@
                     <div class="form-floating  mb-3">
                         <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone">
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-
                     </div>
                 </div>
                 <div class="col-md-6">

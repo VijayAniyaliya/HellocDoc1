@@ -7,7 +7,7 @@ namespace Services.Contracts
     {
         Task AcceptCase(int request_id);
         Task<AdminDashboardViewModel> ActiveState(AdminDashboardViewModel obj, string email);
-        Task AddNotes(AddNotesViewModel model, int request_id, string email);
+        Task AddNotes(AddNotesViewModel model, string email);
         Task<ConcludeCareViewModel> ConcludeCare(int request_id);
         Task ConcludeCase(ConcludeCareViewModel model, string email);
         Task<AdminDashboardViewModel> ConcludeState(AdminDashboardViewModel obj, string email);
@@ -24,6 +24,7 @@ namespace Services.Contracts
         Task<AdminDashboardViewModel> ProviderDashboard(string email);
         Task RequestToAdmin(int PhysicianId, string message);
         Task TransferCaseToAdmin(int request_id, string reason, string email);
+        Task UploadDocs(ConcludeCareViewModel model);
         Task UploadDocuments(ConcludeCareViewModel model, int request_id);
     }
 }
