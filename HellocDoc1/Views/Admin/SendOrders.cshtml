@@ -32,7 +32,7 @@
                 </div>      
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <select class="form-select text-secondary py-0 Business select-region" id="business" aria-label="Floating label select example">
+                        <select class="form-select text-secondary py-0 Business select-region" asp-for="VendorId" id="business" aria-label="Floating label select example">
                             <option selected disabled>Business</option>
                         </select>
                         <label for="business"></label>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="contact"
+                        <input type="text" class="form-control" asp-for="Contact" id="contact"
                                placeholder="business contact" />
                         <label for="contact" class="">Business Contact</label>
                         <span asp-validation-for="Contact" class="text-danger order"></span>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email"
+                        <input type="email" class="form-control" asp-for="Email" id="email"
                                placeholder="abc@gmail.com" />
                         <label for="email" class="">Email</label>
                         <span asp-validation-for="Email" class="text-danger order"></span>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="faxnumber"
+                        <input type="text" class="form-control" asp-for="FaxNumber" id="faxnumber"
                                placeholder="fax number" />
                         <label for="faxnumber" class="">Fax Number</label>
                         <span asp-validation-for="FaxNumber" class="text-danger order"></span>
@@ -88,7 +88,7 @@
                         </select>
                         <label for="floatingSelect">Number Of Refil</label>
                     </div>
-                </div>
+                </div>  
             </div>
             <div class="footer mt-5 mb-4 text-end">
                 <button type="submit" class="btn bg-info text-white">Submit</button>

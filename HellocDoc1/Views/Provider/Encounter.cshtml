@@ -305,21 +305,22 @@
         if (@Model.IsEncounter == 1) {
             toastr.error('Please First make the encounter form');
         }
-        else{
+        else {
 
-        $.ajax({
-            url: "/Provider/finalize/", 
-            type: "POST",
-            data: { "request_id": request_id },
-            dataType: "html",
-            success: function () {
+            $.ajax({
+                url: "/Provider/finalize/",
+                type: "POST",
+                data: { "request_id": request_id },
+                dataType: "html",
+                success: function () {
+                    window.location.href = "@Url.Action("ProviderDashboard", "Provider")";
                     toastr.success('finalized succefully');
 
-            },
-            error: function () {
-                console("No Projects Found");
-            }
-        });
+                },
+                error: function () {
+                    console("No Projects Found");
+                }
+            });
         }
     };
 

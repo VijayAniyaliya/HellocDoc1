@@ -29,7 +29,7 @@ namespace HelloDoc1.Services
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "User Not Found" };
             if (user.PasswordHash == null)
                 return new LoginResponseViewModel() { Status = ResponseStatus.Failed, Message = "There is no Password with this Account" };
-            if (user.PasswordHash == model.Password)
+            if (HashingServices.Decrypt(user.PasswordHash) == model.Password)
             {
                 var jwtToken = JwtService.GetJwtToken(user);
 

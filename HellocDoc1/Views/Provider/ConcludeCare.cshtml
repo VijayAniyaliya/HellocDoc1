@@ -20,7 +20,7 @@
                 <div class="h6 text-secondary">Patient Name</div>
                 <div class="h5 text-info d-inline-block">@Model.PatientName</div>
             </div>
-        </div>  
+        </div>
 
 
         <div class="py-3 px-3 h5 fw-bold d-flex justify-content-between">
@@ -77,7 +77,7 @@
         <div class="h5 ps-3">Provider Notes</div>
         <div class="col-12">
             <div class="form-floating mb-3">
-                <textarea class="form-control"  placeholder="Provider Notes"
+                <textarea class="form-control" placeholder="Provider Notes"
                           id="provider" style="height: 100px"></textarea>
                 <label for="provider" class="">
                     Provider Notes
@@ -106,6 +106,15 @@
 
 <script>
 
+    $('#provider').on('input', function () {
+        if ($('#provider').val() == "") {
+            $('#notes').html("Please enter notes")
+        }
+        else {
+            $('#notes').html("");
+        }
+    })
+
     function conclude() {
         var filterdata = {
             RequestId: @Model.RequestId,
@@ -114,17 +123,18 @@
         if (@Model.IsFinalize == 0) {
             toastr.error('Please First finalize the encounter form');
         }
-        else if(filterdata.ProviderNotes == ""){
+        else if (filterdata.ProviderNotes == "") {
             $("#notes").html('Please Enter Notes');
         }
-        else if(filterdata.ProviderNotes != "") {
+        else if ($('#notes').text() == "" && $('#provider').val() != "") {
+            $("#notes").html('');
             $.ajax({
                 url: "/Provider/ConcludeCase/",
                 type: "POST",
                 data: filterdata,
                 dataType: "html",
                 success: function () {
-                    window.location.href('/Admin/ProviderDashboard')
+                    window.location.href = "@Url.Action("ProviderDashboard", "Provider")";
                     toastr.success('concluded succefully');
 
                 },
