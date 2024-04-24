@@ -1,0 +1,62 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.hospital {
+    background: #4282e1;
+}
+
+.addpatient {
+    background: #93b9f1;
+}
+
+#patient{
+    margin-right:10px;
+}
+
+.save {
+    background: #393cbf;
+}
+
+.gender {
+    font-size: 13px;
+}
+
+.page-active {
+    border-radius: 50%;
+    background: #4282e1;
+    color: white;
+}
+
+.input-validation-error {
+    border: 1px solid red;
+}
+
+.form-floating > .form-select:focus {
+    border-color: #4282e1;
+    box-shadow: none;
+}
+
+.form-floating > .form-control:focus {
+    border-color: #4282e1;
+    box-shadow: none;
+}

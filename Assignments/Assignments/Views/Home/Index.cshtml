@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="text-end py-2 pr-5" id="addpatient" style="background: #93b9f1;">
+    <button type="button" onclick="patientform()" class="btn px-3 py-1 bg-white text-dark" id="patient">Add Patient</button>
+</div>
+
+<div class="mx-auto mt-4" style="width:85%;">    
+    <div class="form-floating mb-3">
+        <input type="text" onkeyup="SearchPatient()" class="form-control" id="searchpatient" placeholder="search">
+        <label for="search">Search</label>
+    </div>
+    <div class="table-responsive mt-4" id="tablecontent">
+
+    </div>
+</div>
+<div id="patientforms"></div>
+
+@section Scripts {
+    <script>
+
+        var formdata = {
+            PatientName: "",
+            requestedPage : 1,
+        }
+
+
+        function SearchPatient() {
+            formdata.PatientName = $("#searchpatient")[0].value;
+            AjaxAll();
+        }
+
+        function changepage(CurrentPage) {
+            formdata.requestedPage = CurrentPage;
+            AjaxAll();
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Home/PatientData",
+                type: "POST",
+                data: formdata,
+                dataType: "html",
+                success: function (data) {
+                    $("#tablecontent").html(data);
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        });
+        function AjaxAll() {
+            $.ajax({
+                url: "/Home/PatientData",
+                type: "POST",
+                data: formdata,
+                dataType: "html",
+                success: function (data) {
+                    $("#tablecontent").html(data);
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+
+        function patientform() {
+            $.ajax({
+                url: "/Home/PatientForm/",
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#patientforms").html(data);
+                    const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                    myModal.show();
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#patientforms").html('An error has occurred');
+                }
+            });
+        };    
+        function editpatientform(PatientId) {
+            $.ajax({
+                url: "/Home/EditPatientForm/",
+                type: "POST",
+                data: { "PatientId": PatientId },
+                dataType: "html",
+                success: function (data) {
+                    $("#patientforms").html(data);
+                    const myModal = new bootstrap.Modal("#staticBackdrop", {});
+                    myModal.show();
+                },
+                error: function () {
+                    alert("No Projects Found");
+                    $("#patientforms").html('An error has occurred');
+                }
+            });
+        };
+
+        function deleterecord(PatientId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to Delete Record!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/Home/DeleteRecord/",
+                        type: "POST",
+                        data: { "PatientId": PatientId },
+                        dataType: "html",
+                        success: function (data) {
+                            AjaxAll();
+                            toastr.success('Record Deleted Sucessfully');
+                        },
+                        error: function () {
+                            console.log('error');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+    }
+
+@if (TempData["Success"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.success('@TempData["Success"]');
+    </script>
+}

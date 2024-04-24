@@ -8,7 +8,7 @@ namespace Common.Enum
 {
     public enum AccountType
     {
-        Admin = 1,
+        Admin = 1,  
         Physician = 2,
         Patient = 3,
         All = 4,

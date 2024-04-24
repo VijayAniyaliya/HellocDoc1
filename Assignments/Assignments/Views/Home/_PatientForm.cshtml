@@ -1,0 +1,107 @@
+﻿@model Services.Model.PatientFormViewModel
+@using Comman.Enum
+
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border border-0 rounded-3">
+            <div class="modal-header hospital text-white">
+                <h5 class="modal-title hospital mt-4" id="staticBackdropLabel">Patient Form</h5>
+            </div>
+            <form asp-action="SubmitPatientForm" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" asp-for="FirstName" class="form-control" id="floatingInput" placeholder="firstname">
+                                <label for="floatingInput">First Name</label>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" asp-for="LastName" class="form-control" id="floatingInput" placeholder="lastname">
+                                <label for="floatingInput">Last Name</label>
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="email" asp-for="Email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                <label for="floatingInput">Email</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" asp-for="Age" class="form-control" id="floatingInput" placeholder="Age">
+                                <label for="floatingInput">Age</label>
+                                <span asp-validation-for="Age" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <span class="fw-bold mr-2">Gender</span>
+                                <input class="radios" type="radio" name="gender" value="1" id="flexRadioDefault1">
+                                <span class="mb-0 gender">
+                                    Male
+                                </span>
+                                <input class="radios" type="radio" name="gender" value="2" id="flexRadioDefault1">
+                                <span class="mb-0 gender">
+                                    Female
+                                </span>
+                                <input class="radios" type="radio" name="gender" value="0" id="flexRadioDefault1">
+                                <span class="mb-0 gender">
+                                    Other
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" asp-for="PhoneNumber" class="form-control" id="floatingInput" placeholder="phone number">
+                                <label for="floatingInput">Phone Number</label>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select asp-for="Disease" class="form-select text-secondary py-0 profession select-region" id="floatingSelect" aria-label="Floating label select example">
+                                    <option selected disabled>Disease</option>
+                                    @foreach (var item in Enum.GetValues(typeof(Disease)))
+                                    {
+                                        <option value="@((int)item)">@item.ToString()</option>
+                                    }
+                                </select>
+                                <label for="floatingSelect"></label>
+                                <span asp-validation-for="Disease" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" asp-for="Specialist" class="form-control" id="floatingInput" placeholder="specialist">
+                                <label for="floatingInput">Specialist</label>
+                                <span asp-validation-for="Specialist" class="text-danger"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 shadow mb-3">
+                            <button type="button" class="btn w-100 text-dark fw-bold" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn w-100 text-white fw-bold save">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>

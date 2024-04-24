@@ -1,0 +1,65 @@
+﻿@model Services.Model.PatientTableViewModel
+@using Comman.Enum
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Patient ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Age</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Dieases</th>
+            <th scope="col">Doctor</th>
+            <th scope="col" class="text-center">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.patientDatas)
+        {
+            <tr>
+                <td scope="row" class="text-center">@item.PatientId</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>@item.Age</td>
+                <td>@item.PhoneNumber</td>
+                <td>@Enum.Parse( typeof(Gender), item.Gender.ToString())</td>
+                <td>@Enum.Parse( typeof(Disease), item.Disease.ToString())</td>
+                <td>@item.Doctor</td>
+                <td class="text-center">
+                    <button type="button" onclick="editpatientform(@item.PatientId)" class="btn px-3 py-1 hospital text-white fw-bold mb-2 mb-xl-0" id="patient">Edit</button>
+                    <button type="button" onclick="deleterecord(@item.PatientId)" class="btn px-3 py-1 bg-danger text-white fw-bold" id="patient">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalPage > 1)
+{
+    <div class="page-container">
+        <ul class="pagination justify-content-center d-flex page-list">
+            <li class="page-item @(Model.CurrentPage <= 1 ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage - 1)"><i class="bi bi-chevron-double-left text-info page"></i></a>
+            </li>
+            @for (int CurrentPage = 1; CurrentPage <= Model.TotalPage; CurrentPage++)
+            {
+                <li class="m-2 btn @(CurrentPage == Model.CurrentPage ? "page-active" : "")" onclick="changepage(@CurrentPage)"><a class="text-decoration-none text-black curent-page-index" data-page="@CurrentPage">@CurrentPage</a></li>
+            }
+            <li class="page-item  @(Model.CurrentPage == Model.TotalPage ? "d-none" : "")">
+                <a class="page-link border-0 m-2" onclick="changepage(@Model.CurrentPage + 1)"><i class="bi bi-chevron-double-right text-info page"></i></a>
+            </li>
+        </ul>
+
+    </div>
+}
+else if (Model.TotalPage == 1)
+{
+}
+else
+{
+    <div class="text-center text-danger fw-bold h5">No record found</div>
+}

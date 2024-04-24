@@ -104,7 +104,7 @@ namespace Services.Implementation
 
                 SearchRecordsViewModel model = new SearchRecordsViewModel()
                 {
-                    requestClients = requestClients,
+                    requestClients = requestClients,    
                     CurrentPage = obj.requestedPage,
                     TotalPage = TotalPage,
                 };
