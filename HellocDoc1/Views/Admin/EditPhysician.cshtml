@@ -820,7 +820,7 @@
                     success: function (response) {
                         if (response.success) {
                             toastr.success("Deleted  Successfully");
-                            window.location.href = '/Admin/Provider'; // Changed from window.location.href('/Admin/Provider') to window.location.href = '/Admin/Provider';
+                            window.location.href = "@Url.Action("ProviderDashboard", "Provider")"; // Changed from window.location.href('/Admin/Provider') to window.location.href = '/Admin/Provider';
                         }
                     },
                     error: function () {
