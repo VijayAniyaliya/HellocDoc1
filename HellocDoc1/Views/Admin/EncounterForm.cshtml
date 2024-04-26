@@ -22,46 +22,60 @@
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" asp-for="FirstName" class="form-control" id="floatingInput"
-                               placeholder="first name" disabled />
+                               placeholder="first name" />
                         <label for="floatingInput" class="">First Name</label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="text" asp-for="LastName" class="form-control" id="floatingInput"
-                               placeholder="last name" disabled />
+                               placeholder="last name" />
                         <label for="floatingInput" class="">Last Name</label>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="form-floating mb-3">
                         <input type="text" asp-for="Location" class="form-control" id="floatingInput"
-                               placeholder="location" disabled />
+                               placeholder="location" />
                         <label for="floatingInput" class="">Location</label>
+                        <span asp-validation-for="Location" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date" asp-for="DOB" class="form-control" id="floatingInput" placeholder="date of birth" disabled />
+                        <input type="date" asp-for="DOB" class="form-control" id="floatingInput" placeholder="date of birth" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         <label for="floatingInput" class="">Date of Birth</label>
+                        <span asp-validation-for="DOB" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
-                        <input type="date" asp-for="Date" class="form-control" id="floatingInput" placeholder="date" disabled />
+                        <input type="date" asp-for="Date" class="form-control" id="floatingInput" placeholder="date" />
                         <label for="floatingInput" class="">Date</label>
+                        <span asp-validation-for="Date" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating  mb-3">
-                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone" disabled />
+                        <input type="tel" asp-for="PhoneNumber" class="form-control pt-3 pb-3" id="phone" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-floating mb-3">
                         <input type="email" asp-for="Email" class="form-control" id="floatingInput"
-                               placeholder="abc@gmail.com" disabled />
+                               placeholder="abc@gmail.com" />
                         <label for="floatingInput" class="">Email</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
                     </div>
                 </div>
 
@@ -282,8 +296,8 @@
                 </div>
             </div>
             <div class="text-end mt-2">
-                <button type="submit" class="btn bg-info text-white h5">Save Changes</button>
-                <button type="button" class="btn border-info rounded-3 text-info h5">Cancel</button>
+                <button type="submit" id="submit" class="btn bg-info text-white h5">Save Changes</button>
+                <button type="reset" id="cancel" class="btn border-info rounded-3 text-info h5">Cancel</button>
             </div>
         </form>
 
@@ -295,7 +309,19 @@
 <br />
 <br />
 <br />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
+    $('#cancel').on('click', function () {
+        $('form span').hide();
+    })
+
+
+    $('#submit').on('click', function () {
+        $('form span').show();
+    })
+
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
         utilsScript:

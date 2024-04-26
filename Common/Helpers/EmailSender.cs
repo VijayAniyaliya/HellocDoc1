@@ -31,7 +31,7 @@ namespace HalloDoc.Utility
             try
             {
                 var email = "tatva.dotnet.vijayaniyaliya@outlook.com";
-                var Password = "Vijay010803";
+                var Password = "Vijay@1803";
 
                 var client = new SmtpClient("smtp.office365.com", 587)
                 {
@@ -64,7 +64,7 @@ namespace HalloDoc.Utility
             try
             {
                 var email = "tatva.dotnet.vijayaniyaliya@outlook.com";
-                var Password = "Vijay010803";
+                var Password = "Vijay@1803";
 
                 var client = new SmtpClient("smtp.office365.com", 587)
                 {

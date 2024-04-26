@@ -38,8 +38,9 @@
             data: { "request_id": @Model.RequestId },
             success: function (response) {
                 $("#cancel").click();
-                window.location.reload();
+                $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
                 toastr.success('Case Successfully Cleared');
+                AjaxAll();
             },
             error: function (xhr, status, error) {
                 console.error(error);

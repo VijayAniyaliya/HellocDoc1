@@ -347,6 +347,7 @@
         });
         $('#pills-new-tab').click(function () {
             filterdata.status = 1;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/NewState",
                 type: "POST",
@@ -369,6 +370,7 @@
         });
         $('#pills-pending-tab').click(function () {
             filterdata.status = 2;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/PendingState",
                 type: "POST",
@@ -395,6 +397,7 @@
         });
         $('#pills-active-tab').click(function () {
             filterdata.status = 3;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/ActiveState",
                 type: "POST",
@@ -421,6 +424,7 @@
         });
         $('#pills-conclude-tab').click(function () {
             filterdata.status = 4;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/ConcludeState",
                 type: "POST",
@@ -447,6 +451,7 @@
         });
         $('#pills-close-tab').click(function () {
             filterdata.status = 5;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/ToCloseState",
                 type: "POST",
@@ -472,6 +477,7 @@
         });
         $('#pills-unpaid-tab').click(function () {
             filterdata.status = 6;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Admin/UnpaidState",
                 type: "POST",

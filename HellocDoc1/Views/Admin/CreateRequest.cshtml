@@ -4,6 +4,7 @@
     ViewData["Title"] = "CreateRequest";
     Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
 }
+@using Common.Enum
 
 
 <div class="body-content container mb-3">
@@ -74,9 +75,15 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-floating mb-3">
-                            <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="state" />
-                            <label for="floatingInput" class="">State</label>
+                        <div class="form-floating">
+                            <select class="form-select py-0 text-secondary" asp-for="State" id="state" aria-label="Floating label select example">
+                                <option selected disabled>State</option>
+                                @foreach (var item in Enum.GetValues(typeof(Regions)))
+                                {
+                                    <option value="@((int)item)">@item.ToString()</option>
+                                }
+                            </select>
+                            <label for="state"></label>
                             <span asp-validation-for="State" class="text-danger"></span>
                         </div>
                     </div>

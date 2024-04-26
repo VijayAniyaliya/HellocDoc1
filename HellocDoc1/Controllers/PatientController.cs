@@ -36,7 +36,6 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel user)
         {
             if (ModelState.IsValid)
@@ -92,7 +91,7 @@ namespace HellocDoc1.Controllers
         [HttpGet("[controller]/[action]/{email}")]
         public IActionResult ChangePassword(string email)
         {
-            string Email= HashingServices.Decrypt(email);
+            string Email = HashingServices.Decrypt(email);
             ViewBag.Email = Email;
             return View();
         }
@@ -153,15 +152,10 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Patient_request(PatientRequestModel model)
         {
-            if (ModelState.IsValid)
-            {
-                await patientRequest.Patient_request(model);
-                return RedirectToAction("Submit_request", "Patient");
-            }
-            return View();
+            await patientRequest.Patient_request(model);
+            return RedirectToAction("Submit_request", "Patient");
         }
 
         [Route("/Patient/Patient_request/checkmail/{email}")]
@@ -179,22 +173,17 @@ namespace HellocDoc1.Controllers
                 return false;
             }
         }
-            
+
         public IActionResult Family_request()
         {
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Family_request(FamilyRequestModel model)
         {
-            if (ModelState.IsValid)
-            {
-                await familyRequest.Family_request(model);
-                return RedirectToAction("Submit_request", "Patient");
-            }
-            return View();
+            await familyRequest.Family_request(model);
+            return RedirectToAction("Submit_request", "Patient");
         }
 
         public IActionResult Concierge_request()
@@ -203,15 +192,10 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Concierge_request(ConciergeRequestModel model)
         {
-            if (ModelState.IsValid)
-            {
-                await concirgeRequest.Concierge_request(model);
-                return RedirectToAction("Submit_request", "Patient");
-            }
-            return View();
+            await concirgeRequest.Concierge_request(model);
+            return RedirectToAction("Submit_request", "Patient");
         }
 
         public IActionResult Business_request()
@@ -220,15 +204,10 @@ namespace HellocDoc1.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Business_request(BusinessRequestModel model)
         {
-            if (ModelState.IsValid)
-            {
-                await businessRequest.Business_request(model);
-                return RedirectToAction("Submit_request", "Patient");
-            }
-            return View();
+            await businessRequest.Business_request(model);
+            return RedirectToAction("Submit_request", "Patient");
         }
 
         [CustomAuthorize("User")]
@@ -265,7 +244,8 @@ namespace HellocDoc1.Controllers
 
         public async Task<IActionResult> DashboardData(int requestedPage)
         {
-            var data = await patientServices.DashboardData(requestedPage);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var data = await patientServices.DashboardData(requestedPage, email);
             return PartialView("_DashboardData", data);
         }
 

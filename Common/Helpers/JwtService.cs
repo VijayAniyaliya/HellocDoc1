@@ -14,6 +14,7 @@ namespace Common.Helpers
             var claims = new List<Claim>
             {
                 new Claim("userName", aspnetuser.UserName),
+                new Claim("userId", aspnetuser.Id),
                 new Claim(ClaimTypes.Email, aspnetuser.Email??""),
                 new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
                 new Claim("firstname", aspnetuser.Users.FirstOrDefault()?.FirstName??""),

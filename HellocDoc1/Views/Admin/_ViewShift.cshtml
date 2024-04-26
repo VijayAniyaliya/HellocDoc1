@@ -4,7 +4,7 @@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border border-0 rounded-3">
-            <form  method="post">
+            <form method="post">
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title" id="staticBackdropLabel">View Shift</h5>
                     <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -25,22 +25,22 @@
                             <label for="physelect"></label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="date" asp-for="ShiftDate" class="form-control Editshift" id="shidtdate" placeholder="shift date" disabled />
+                            <input type="date" asp-for="ShiftDate" class="form-control Editshift" id="shidtdate" placeholder="shift date" disabled min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <label for="shidtdate" class=""></label>
                             <span asp-validation-for="ShiftDate" class="text-danger"></span>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class=" form-floating mb-3">
-                                    <input asp-for="Start" type="time" class="form-control Editshift" id="start" placeholder="start" disabled />
-                                    <label for="start" class="">Start</label>
-                                    <span asp-validation-for="Start" class="text-danger"></span>
+                                    <input asp-for="Start" type="time" class="form-control Editshift" id="starttime" placeholder="start" disabled />
+                                    <label for="starttime" class="">Start</label>
+                                    <span asp-validation-for="Start" class="text-danger" id="starterror"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
-                                    <input asp-for="End" type="time" class="form-control Editshift" id="end" placeholder="end" disabled />
-                                    <label for="end" class="">End</label>
+                                <div class="form-floating mb-3">    
+                                    <input asp-for="End" type="time" class="form-control Editshift" id="endtime" placeholder="end" disabled />
+                                    <label for="endtime" class="">End</label>
                                     <span asp-validation-for="End" class="text-danger"></span>
                                 </div>
                             </div>
@@ -48,9 +48,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" asp-action="ReturnShift" asp-route-ShiftDetailId="@Model.ShiftDetailId" class="btn bg-info text-white assign">Return</button>
-                    <button type="button" id="edit"  class="btn border border-info text-info">Edit</button>
-                    <button type="button" id="save"  class="btn bg-info text-white assign">Save</button>
+                    <a asp-action="ReturnShift" asp-route-ShiftDetailId="@Model.ShiftDetailId" class="btn bg-info text-white assign">Return</a>
+                    <button type="button" id="edit" class="btn border border-info text-info">Edit</button>
+                    <button type="button" id="save" class="btn bg-info text-white assign">Save</button>
                     <a asp-action="DeleteShift" asp-route-ShiftDetailId="@Model.ShiftDetailId" class="btn bg-danger text-white">Delete</a>
                 </div>
             </form>
@@ -71,29 +71,49 @@
         $(this).css('display', 'none');
     })
 
+    $("#starttime").on("change", function () {
+        validatidatetime();
+    })
+    $("#endtime").on("change", function () {
+        validatidatetime();
+    })      
+    function validatidatetime() {
+        if ($("#endtime").val() <= $("#starttime").val()) {
+            $("#starterror").html("start time not greater then end time");
+        }
+        else{
+            $("#starterror").html("");
+        }
+    }
+        
     $("#save").on("click", function () {
         var formdata = {
             ShiftDetailId: @Model.ShiftDetailId,
             ShiftDate: $('#shidtdate').val(),
-            Start: $('#start').val(),
-            End: $('#end').val(),
+            Start: $('#starttime').val(),
+            End: $('#endtime').val(),
         }
-        $.ajax({
-            url: "/Admin/EditShift",
-            type: "POST",
-            data: formdata,
-            success: function () {
-                Day();
-                window.location.reload();
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        });
-        $('.Editshift').each(function () {
-            $(this).prop('disabled', true);
-        })
-        $("#edit").css('display', 'inline-block');
-        $(this).css('display', 'none');
+        if ($('#starterror').text() == "") {
+            $.ajax({
+                url: "/Admin/EditShift",
+                type: "POST",
+                data: formdata,
+                success: function () {
+                    Day();
+                    window.location.reload();
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+            $('.Editshift').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $("#edit").css('display', 'inline-block');
+            $(this).css('display', 'none');
+        }
+        else{
+            $("#starterror").html("start time not greater then end time");
+        }
     })
 </script>

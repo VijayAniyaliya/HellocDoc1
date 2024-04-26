@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.Models
 {
-    public class CreateNewShift
+    public class CreateNewShift 
     {
         public List<Region>? RegionList { get; set; }
 

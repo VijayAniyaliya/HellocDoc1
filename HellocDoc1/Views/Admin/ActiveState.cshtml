@@ -58,27 +58,27 @@
                     @switch (item.Request.RequestTypeId)
                     {
                         case 1:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <a href="tel:@item.PhoneNumber" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</a>
                             <div>Patient</div>
                             break;
                         case 2:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <a href="tel:@item.PhoneNumber" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</a>
                             <div>Patient</div>
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <a href="tel:@item.Request.PhoneNumber"  class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</a>
                             <div>Family/Friend</div>
 
                             break;
                         case 3:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <a href="tel:@item.PhoneNumber" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</a>
                             <div>Patient</div>
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <a href="tel:@item.Request.PhoneNumber"  class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</a>
                             <div>Business</div>
 
                             break;
                         case 4:
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</button>
+                            <a href="tel:@item.PhoneNumber" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.PhoneNumber</a>
                             <div>Patient</div>
-                            <button type="button" class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</button>
+                            <a href="tel:@item.Request.PhoneNumber"  class="btn border rounded-3 text-white"><i class="bi bi-telephone"></i>@item.Request.PhoneNumber</a>
                             <div>Concierge</div>
 
                             break;
@@ -199,7 +199,7 @@
                             <span>-</span>
                         }
                     </div>
-                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician!.FirstName,  @item.Request.Physician.LastName</div>
+                    <div><i class="bi bi-person mr-1 icn"></i>Physician: @item.Request.Physician?.FirstName  @item.Request.Physician?.LastName</div>
                     <div><i class="bi bi-person mr-1 icn"></i>Requestor: @item.Request.FirstName, @item.Request.LastName</div>
                 </div>
                 <div class="row mx-3">

@@ -271,9 +271,8 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-center">
-                    @if (Model.Photo == null)
+                    @if (Model.Photo == "" || Model.Photo == null)
                     {
-                        <img src="/Images/doctorimage.png" style="height:150px;" />
                     }
                     else
                     {
@@ -281,7 +280,13 @@
                     }
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="~/uploads/@Model.Sign" style="height:150px;" />
+                    @if (Model.Sign == null || Model.Sign == "")
+                    {
+                    }
+                    else
+                    {
+                        <img src="~/uploads/@Model.Sign" style="height:150px;" />
+                    }
 
                 </div>
 
@@ -331,7 +336,7 @@
                 Upload
                 <input type="file" id="BackgoundDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            @if (Model.AggrementDoc == true)
+            @if (Model.BackgoundDoc == true)
             {
                 var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
                 <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
@@ -356,9 +361,9 @@
                 Upload
                 <input type="file" id="DisclosureDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            @if (Model.AggrementDoc == true)
+            @if (Model.DisclosureDoc == true)
             {
-                var fileName = @Model.PhysicianId + "_BackgroundDoc.pdf";
+                var fileName = @Model.PhysicianId + "_Disclosure.pdf";
                 <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
             }
         </div>
@@ -370,7 +375,7 @@
                 Upload
                 <input type="file" id="LicenseDoc" class="selectfile" accept=".pdf,.png" />
             </div>
-            @if (Model.AggrementDoc == true)
+            @if (Model.LicenseDoc == true)
             {
                 var fileName = @Model.PhysicianId + "_License.pdf";
                 <a href="~/uploads/@fileName" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
@@ -785,7 +790,7 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-
+                    window.location.reload();
                 },
                 error: function (error) {
                     alert("No Projects Found");
@@ -818,10 +823,9 @@
                     url: "/Admin/DeleteAccount/",
                     data: { "PhysicianId": PhysicianId },
                     success: function (response) {
-                        if (response.success) {
-                            toastr.success("Deleted  Successfully");
-                            window.location.href = "@Url.Action("ProviderDashboard", "Provider")"; // Changed from window.location.href('/Admin/Provider') to window.location.href = '/Admin/Provider';
-                        }
+                        toastr.success("Deleted  Successfully");
+                        window.location.href = "@Url.Action("Provider", "Admin")"; // Changed from window.location.href('/Admin/Provider') to window.location.href = '/Admin/Provider';
+
                     },
                     error: function () {
                         toastr.error("Error While Delete Account");

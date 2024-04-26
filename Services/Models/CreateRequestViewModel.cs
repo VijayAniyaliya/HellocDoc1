@@ -8,7 +8,7 @@ namespace Services.Models
         public string? Notes { get; set; }
 
         [Required (ErrorMessage ="First name is required")]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Symptoms")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
 
         public string FirstName { get; set; }
 
@@ -41,7 +41,7 @@ namespace Services.Models
         public string City { get; set; }
 
         [Required(ErrorMessage = "State is required")]
-        public string State { get; set; }
+        public int State { get; set; }
 
         [Required(ErrorMessage = "ZipCode is required")]
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]

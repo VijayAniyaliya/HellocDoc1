@@ -40,7 +40,7 @@
             <div id="flush-collapseOne-@item.RequestId" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
 
                 <div class="accordion-body d-flex flex-column gap-1">
-                    <div><i class="bi bi-person text-info fw-bold mr-2 icn"></i>Provider: <span class="fw-bold">provider</span></div>
+                    <div><i class="bi bi-person text-info fw-bold mr-2 icn"></i>Provider: <span class="fw-bold">@item.ProviderName</span></div>
                     <div><i class="bi bi-check text-info fw-bold mr-2 icn"></i>CurrentStatus:  <span class="fw-bold">@Enum.Parse( typeof(Common.Enum.RequestStatus), item.Status.ToString())</span></div>
 
                 </div>

@@ -27,7 +27,7 @@ namespace Services.Contracts
         Task<ViewUploadsViewModel> ViewUploads(int request_id);
 		Task UploadDocuments(ViewUploadsViewModel model, int request_id);
 		Task Delete(int DocumentId);
-		Task DeleteAll(List<int> DocumentId);
+		Task DeleteAll(int[] DocumentId);
 		Task SendMail(List<int> DocumentId);
 		Task<LoginResponseViewModel> AdminLogin(AdminLoginViewModel model);
 		Task<SendOrdersViewModel> SendOders(int request_id);
@@ -49,7 +49,7 @@ namespace Services.Contracts
         Task UpdateAdminstrator(ProfileData model, string email);
         Task UpdateBillInfo(BillingData model, string email);
 		Task SendLink(SendLinkViewModel model, string email);
-        Task SubmitRequest(CreateRequestViewModel model, string role);
+        Task SubmitRequest(CreateRequestViewModel model, string role, string Email);
         Task<ProviderViewModel> PhysicianData(int region, int requestedPage);
 		Task SendMessage(int PhysicianId, string message);
 		Task StopNotification(int PhysicianId);
@@ -75,7 +75,7 @@ namespace Services.Contracts
 		Task<SchedullingViewModel> SchedullingData(int region, DateTime date);
         Task DeleteRole(int RoleId);
 		Task<CreateNewShift> NewShift();
-        Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
+        Task<bool> CreateShift(CreateNewShift model, string Email, List<int> repeatdays);
 		Task<CreateNewShift> ViewShift(int PhysicianId);
 		Task<VendorsDetailsViewModel> VendorsData();
 		Task<VendorsDetailsViewModel> VendorMenu(int profession, string searchvendor, int requestedPage);

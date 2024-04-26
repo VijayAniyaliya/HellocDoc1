@@ -5,7 +5,6 @@ namespace HellocDoc1.Services.Models
 {
     public class PatientRequestModel
     {
-        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
         public string? Symptoms { get; set; }   
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "First name is required")]
@@ -19,12 +18,13 @@ namespace HellocDoc1.Services.Models
 
         [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
+        
         [Required]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "The password must contain at least one uppercase, one lowercase letter, one digit, one special character, and be at least 8 characters long.")]
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
         [Compare("Password", ErrorMessage = "The password and confirm password must be same.")]
-        public string? ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Phone Number is required")]
         [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]

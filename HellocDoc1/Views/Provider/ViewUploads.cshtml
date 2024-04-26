@@ -141,21 +141,22 @@
     };
     $("#delete-button").click(function () {
         var selectedFiles = [];
-        $("input[type='checkbox']:checked").each(function () {
+        $("input[name='checkdoc']:checked").each(function () {
             var id = $(this).data('id');
             selectedFiles.push(id);
         });
-        if (selectedFiles.length > 0) {
-            console.log(JSON.stringify(selectedFiles))
-            console.log(selectedFiles)
+        if (selectedFiles.length == 0) {
+            toastr.error('Please select files');
+        }
+        else if (selectedFiles.length > 0) {
             $.ajax({
                 url: "/Provider/DeleteAll",
                 type: "POST",
-                data: JSON.stringify(selectedFiles),
-                datatype: "json",
-                contentType: "application/json",
+                data: { DocumentId: selectedFiles },
+
                 success: function (result) {
                     window.location.reload();
+                    $("input[type='checkbox']:checked").prop("checked", false);
 
                 }
             });
@@ -164,21 +165,22 @@
 
     $("#send-mail").click(function () {
         var selectedFiles = [];
-        $("input[type='checkbox']:checked").each(function () {
+        $("input[name='checkdoc']:checked").each(function () {
             var id = $(this).data('id');
             selectedFiles.push(id);
         });
-        if (selectedFiles.length > 0) {
-            console.log(JSON.stringify(selectedFiles))
-            console.log(selectedFiles)
+        if (selectedFiles.length == 0) {
+            toastr.error('Please select files');
+        }
+        else if (selectedFiles.length > 0) {
             $.ajax({
                 url: "/Provider/SendMail",
                 type: "POST",
-                data: JSON.stringify(selectedFiles),
-                datatype: "json",
-                contentType: "application/json",
+                data: { DocumentId: selectedFiles },
+
                 success: function (result) {
-                    window.location.reload();
+                    toastr.success('Mail sent Successfully');
+                    $("input[type='checkbox']:checked").prop("checked", false);
 
                 }
             });
@@ -203,21 +205,27 @@
         var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
         var fileUrls = [];
 
+        if (selectedFiles.length === 0) {
+            toastr.error('Please select files to download');
+        }
+        else {
 
-        selectedFiles.forEach(function (checkbox) {
-            var row = checkbox.closest('tr');
-            var fileUrl = row.querySelector('a').getAttribute('href');
-            fileUrls.push(fileUrl);
-        });
+            selectedFiles.forEach(function (checkbox) {
+                var row = checkbox.closest('tr');
+                var fileUrl = row.querySelector('a').getAttribute('href');
+                fileUrls.push(fileUrl);
+            });
 
-        fileUrls.forEach(function (url) {
-            var link = document.createElement('a');
-            link.href = url;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+            fileUrls.forEach(function (url) {
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = '';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            $("input[type='checkbox']:checked").prop("checked", false);
+        }
 
 
     }

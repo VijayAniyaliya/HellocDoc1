@@ -38,8 +38,8 @@ namespace Services.Implementation
                 ).ToList();
 
                 int count = users.Count();
-                int TotalPage = (int)Math.Ceiling(count / (double)5);
-                users = users.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                int TotalPage = (int)Math.Ceiling(count / (double)10);
+                users = users.Skip((obj.requestedPage - 1) * 10).Take(10).ToList();
 
                 PatientHistoryViewModel model = new PatientHistoryViewModel()
                 {
@@ -54,10 +54,12 @@ namespace Services.Implementation
 
         public async Task<PatientHistoryViewModel> PatientRecords(int userid)
         {
-            List<RequestClient>? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.UserId == userid).ToListAsync();
+            List<RequestClient>? requestClient = await _context.RequestClients.Include(a => a.Request).Include(a=>a.Request.RequestStatusLogs).Include(a => a.Request.Physician).Where(a => a.Request.UserId == userid).ToListAsync();
 
             if (requestClient != null)
             {
+                requestClient = requestClient.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 PatientHistoryViewModel model = new PatientHistoryViewModel()
                 {
                     requestClients = requestClient!,
@@ -72,7 +74,7 @@ namespace Services.Implementation
             if (obj.requestedPage == 0)
             {
                 obj.requestedPage = 1;
-            }
+            } 
             List<RequestClient> requestClients = await _context.RequestClients
                 .Include(a => a.Request).Include(a => a.Request.Physician)
                 .Include(a => a.Request.RequestNotes)
@@ -99,8 +101,8 @@ namespace Services.Implementation
                 ).ToList();
 
                 int count = requestClients.Count();
-                int TotalPage = (int)Math.Ceiling(count / (double)5);
-                requestClients = requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
+                int TotalPage = (int)Math.Ceiling(count / (double)10);
+                requestClients = requestClients.Skip((obj.requestedPage - 1) * 10).Take(10).ToList();
 
                 SearchRecordsViewModel model = new SearchRecordsViewModel()
                 {
@@ -213,6 +215,8 @@ namespace Services.Implementation
 
             if (roles != null)
             {
+                roles = roles.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
                 LogsDataViewModel model = new LogsDataViewModel()
                 {
                     Roles = roles

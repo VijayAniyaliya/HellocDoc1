@@ -219,6 +219,7 @@
         });
         $('#pills-new-tab').click(function () {
             filterdata.status = 1;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Provider/NewState",
                 type: "POST",
@@ -241,6 +242,7 @@
         });
         $('#pills-pending-tab').click(function () {
             filterdata.status = 2;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Provider/PendingState",
                 type: "POST",
@@ -267,6 +269,7 @@
         });
         $('#pills-active-tab').click(function () {
             filterdata.status = 3;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Provider/ActiveState",
                 type: "POST",
@@ -293,6 +296,7 @@
         });
         $('#pills-conclude-tab').click(function () {
             filterdata.status = 4;
+            filterdata.requestedPage = 1;
             $.ajax({
                 url: "/Provider/ConcludeState",
                 type: "POST",

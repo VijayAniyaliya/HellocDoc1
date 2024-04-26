@@ -39,9 +39,9 @@ namespace HellocDoc1.Services
             _environment = environment;
 
         }
-        public async Task<PatientDashboardViewModel> DashboardData(int requestedPage)
+        public async Task<PatientDashboardViewModel> DashboardData(int requestedPage, string email)
         {
-            List<Request> requests = await _context.Requests.Include(a => a.RequestWiseFiles).Include(a => a.Physician).ToListAsync();
+            List<Request> requests = await _context.Requests.Include(a => a.RequestWiseFiles).Include(a => a.Physician).Where(a=> a.Email == email).ToListAsync();
             List<DashboardData> obj = requests.Select(a => new DashboardData() { RequestId = a.RequestId, CreatedDate = a.CreatedDate, Status = a.Status, FileCount = a.RequestWiseFiles.Count(), ProviderName = a.Physician?.FirstName + " " + a.Physician?.LastName }).ToList();
 
             if (requests != null)

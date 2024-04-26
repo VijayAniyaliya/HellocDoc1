@@ -99,7 +99,7 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.AspNetUser).WithMany(p => p.AdminAspNetUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Admin_AspNetUserId_fkey");
-
+                
             entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.AdminModifiedByNavigations).HasConstraintName("Admin_ModifiedBy_fkey");
         });
 

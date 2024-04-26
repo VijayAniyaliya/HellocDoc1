@@ -62,6 +62,7 @@
                         $("#cancel").click();
                         $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
                         toastr.success('Case Successfully Blocked');
+                        AjaxAll();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

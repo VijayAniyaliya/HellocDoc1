@@ -48,6 +48,8 @@ namespace HelloDoc1.Services
             }
             else
             {
+                AspNetRole? aspNetRole = await _context.AspNetRoles.FirstOrDefaultAsync(a => a.Id == "f352aa19-76b5-4342-8364-c509077c5ab1");
+
                 AspNetUser aspNetUser = new AspNetUser()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -78,8 +80,13 @@ namespace HelloDoc1.Services
                     CreatedBy = aspNetUser.Id,
                     CreatedDate = DateTime.Now,
                 };
+
+                aspNetUser.Roles.Add(aspNetRole);
+
                 _context.Users.Add(user1);
                 await _context.SaveChangesAsync();  
+
+
 
                 user.Request.UserId = user1.UserId;
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success, Message = "" };

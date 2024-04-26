@@ -40,7 +40,7 @@
                 <td>@item.PhoneNumber</td>
                 <td>@item.Street, @item.City, @item.State</td>
                 <td>@item.ZipCode</td>
-                <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.RequestTypeId.ToString())</td>
+                <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Status.ToString())</td>
                 <td>@item.Request.Physician?.FirstName</td>
                 <td>@item.Request.RequestNotes.FirstOrDefault(a => a.RequestId == item.Request.RequestId)?.PhysicianNotes</td>
                 <td>Cancel Notes</td>

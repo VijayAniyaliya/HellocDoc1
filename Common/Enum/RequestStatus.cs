@@ -20,6 +20,7 @@ namespace Common.Enum
         Closed = 8,
         Unpaid = 9,
         Clear = 10,
+        Blocked = 11,
     }
 
     public enum RequestType

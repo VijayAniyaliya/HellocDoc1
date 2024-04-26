@@ -25,22 +25,22 @@
 
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="date" asp-for="ShiftDate" class="form-control" id="floatingInput" placeholder="shift date" />
+                            <input type="date" asp-for="ShiftDate" class="form-control" id="floatingInput" placeholder="shift date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <label for="floatingInput" class="">ShiftDate</label>
                             <span asp-validation-for="ShiftDate" class="text-danger"></span>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class=" form-floating mb-3">
-                                    <input asp-for="Start" type="time" class="form-control" id="floatingInput" placeholder="shift date" />
-                                    <label for="floatingInput" class="">Start</label>
-                                    <span asp-validation-for="Start" class="text-danger"></span>
+                                    <input asp-for="Start" type="time" class="form-control" id="starttime" placeholder="start time" />
+                                    <label for="starttime" class="">Start</label>
+                                    <span class="text-danger" id="starterror"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
-                                    <input asp-for="End" type="time" class="form-control" id="floatingInput" placeholder="shift date" />
-                                    <label for="floatingInput" class="">End</label>
+                                    <input asp-for="End" type="time" class="form-control" id="endtime" placeholder="end time" />
+                                    <label for="endtime" class="">End</label>
                                     <span asp-validation-for="End" class="text-danger"></span>
                                 </div>
                             </div>
@@ -61,6 +61,10 @@
                                 <div class="d-flex align-items-center form-check">
                                     <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="1" />
                                     <label class="m-0">Every monday</label>
+                                </div>
+                                <div class="d-flex align-items-center form-check">
+                                    <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="2" />
+                                    <label class="m-0">Every tuesday</label>
                                 </div>
                                 <div class="d-flex align-items-center form-check">
                                     <input type="checkbox" name="repeatdays" id="check" class="checks form-check-input shadow-none mr-2" value="3" />
@@ -118,6 +122,27 @@
             $('.repeatdays').css('display', 'none');
             $('.repeatend').css('display', 'none');
         }
+    });
+
+    $(document).ready(function () {
+        $('#myForm').submit(function (e) {
+            return validatidatetime();
+        });
+        function validatidatetime() {
+            if ($("#endtime").val() > $("#starttime").val()) {
+                document.getElementById("starterror").innerHTML = "";
+                return true;
+            }
+            document.getElementById("starterror").innerHTML = "start time not greater then end time";
+
+            return false;
+        }
+        $("#starttime").on("change", function () {
+            validatidatetime();
+        })
+        $("#endtime").on("change", function () {
+            validatidatetime();
+        })
     });
 
 </script>

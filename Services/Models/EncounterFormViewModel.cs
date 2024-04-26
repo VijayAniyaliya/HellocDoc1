@@ -14,13 +14,36 @@ namespace Services.Models
 
         public int AdminID { get; set; }
 
+        [Required(ErrorMessage = "First name is required")]
+
         public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
+
         public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Location is required")]
+
         public string Location { get; set; }
+
+        [Required(ErrorMessage = "Date of Birth is required")]
+
         public DateTime DOB { get; set; }
+
         public string Dateofbirth { get; set; }
-        public DateTime Date { get; set; }
+
+        [Required(ErrorMessage = "Date of Services is required")]
+
+        public DateTime? Date { get; set; }
+
+        [Required(ErrorMessage = "Phone Number is required")]
+        [RegularExpression(@"^[+]?[0-9]*$", ErrorMessage = "Phone number should contain only numbers")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "Phone number must be 10 digits")]
+
         public string PhoneNumber { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+
         public string Email { get; set; }
         public string? HistoryOfPatient { get; set; }
         public string? MedicalHistory { get; set; }

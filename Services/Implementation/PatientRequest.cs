@@ -38,6 +38,7 @@ namespace HellocDoc1.Services
                     AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
                     User? user1 = await _context.Users.Where(a => a.Email == model.Email).FirstOrDefaultAsync();
                     Region? region = await _context.Regions.Where(a => a.RegionId == model.State).FirstOrDefaultAsync();
+                    AspNetRole? aspNetRole = await _context.AspNetRoles.FirstOrDefaultAsync(a => a.Id == "f352aa19-76b5-4342-8364-c509077c5ab1");
 
                     User user = new User();
 
@@ -69,6 +70,11 @@ namespace HellocDoc1.Services
                         user.StrMonth = model.DOB.ToString("MMM");
                         user.CreatedDate = DateTime.Now;
                         user.CreatedBy = aspnetuser1!.Id;
+
+
+                        aspnetuser1.Roles.Add(aspNetRole);
+                        await _context.SaveChangesAsync();
+
 
                         await _context.Users.AddAsync(user);
                         await _context.SaveChangesAsync();

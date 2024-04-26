@@ -38,13 +38,15 @@ namespace Services.Implementation
         public async Task<AdminDashboardViewModel> ProviderDashboard(string email)
         {
             Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ToListAsync();
+
 
             if (physician != null)
             {
-                var requestCount1 = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1 && a.Request.PhysicianId == physician!.PhysicianId).CountAsync();
-                var requestCount2 = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 2 && a.Request.PhysicianId == physician!.PhysicianId).CountAsync();
-                var requestCount3 = await _context.RequestClients.Include(a => a.Request).Where(a => (a.Request.Status == 4 || a.Request.Status == 5) && (a.Request.PhysicianId == physician!.PhysicianId)).CountAsync();
-                var requestCount4 = await _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6 && a.Request.PhysicianId == physician!.PhysicianId).CountAsync();
+                var requestCount1 = requestClients.Where(a => a.Request.Status == 1 && a.Request.PhysicianId == physician!.PhysicianId).Count();
+                var requestCount2 = requestClients.Where(a => a.Request.Status == 2 && a.Request.PhysicianId == physician!.PhysicianId).Count();
+                var requestCount3 = requestClients.Where(a => (a.Request.Status == 4 || a.Request.Status == 5) && (a.Request.PhysicianId == physician!.PhysicianId)).Count();
+                var requestCount4 = requestClients.Where(a => a.Request.Status == 6 && a.Request.PhysicianId == physician!.PhysicianId).Count();
 
                 AdminDashboardViewModel model = new AdminDashboardViewModel()
                 {
@@ -68,6 +70,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 model.requestClients = clients;
 
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
@@ -102,6 +106,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -135,6 +141,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -168,6 +176,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();

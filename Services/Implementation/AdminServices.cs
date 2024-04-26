@@ -16,6 +16,8 @@ using System.Reflection;
 using Twilio.Types;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNet.Identity;
 
 namespace Services.Implementation
 {
@@ -39,25 +41,33 @@ namespace Services.Implementation
 
         public async Task<AdminDashboardViewModel> AdminDashboard()
         {
-            var requestCount1 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 1).Count();
-            var requestCount2 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 2).Count();
-            var requestCount3 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count();
-            var requestCount4 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 6).Count();
-            var requestCount5 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).Count();
-            var requestCount6 = _context.RequestClients.Include(a => a.Request).Where(a => a.Request.Status == 9).Count();
+            List<RequestClient> requestClients = await _context.RequestClients.Include(a => a.Request).ToListAsync();
             List<Region> regions = await _context.Regions.ToListAsync();
 
-            AdminDashboardViewModel model = new AdminDashboardViewModel()
+            if (requestClients != null)
             {
-                newCount = requestCount1,
-                pendingCount = requestCount2,
-                activeCount = requestCount3,
-                concludeCount = requestCount4,
-                tocloseCount = requestCount5,
-                unpaidCount = requestCount6,
-                regions = regions,
-            };
-            return model;
+                requestClients = requestClients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
+                var requestCount1 = requestClients.Where(a => a.Request.Status == 1).Count();
+                var requestCount2 = requestClients.Where(a => a.Request.Status == 2).Count();
+                var requestCount3 = requestClients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count();
+                var requestCount4 = requestClients.Where(a => a.Request.Status == 6).Count();
+                var requestCount5 = requestClients.Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).Count();
+                var requestCount6 = requestClients.Where(a => a.Request.Status == 9).Count();
+
+                AdminDashboardViewModel model = new AdminDashboardViewModel()
+                {
+                    newCount = requestCount1,
+                    pendingCount = requestCount2,
+                    activeCount = requestCount3,
+                    concludeCount = requestCount4,
+                    tocloseCount = requestCount5,
+                    unpaidCount = requestCount6,
+                    regions = regions,
+                };
+                return model;
+            }
+            return new AdminDashboardViewModel();
         }
         public async Task<AdminDashboardViewModel> NewState(AdminDashboardViewModel obj)
         {
@@ -67,6 +77,7 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
                 model.requestClients = clients;
 
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
@@ -98,6 +109,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -109,7 +122,7 @@ namespace Services.Implementation
                 if (obj.region != 0)
                 {
                     model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-                }
+                }   
                 int count = model.requestClients.Count();
                 int TotalPage = (int)Math.Ceiling(count / (double)5);
                 model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
@@ -133,6 +146,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -163,6 +178,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -193,6 +210,8 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
                 {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
@@ -223,8 +242,10 @@ namespace Services.Implementation
 
             if (clients != null)
             {
+                clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
+
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
-                {
+                {   
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
                 }
                 if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
@@ -508,6 +529,8 @@ namespace Services.Implementation
 
         public async Task UploadDocuments(ViewUploadsViewModel model, int request_id)
         {
+            List<RequestWiseFile> list = new();
+
             if (model.Upload != null)
             {
                 IEnumerable<IFormFile> upload = model.Upload;
@@ -526,12 +549,19 @@ namespace Services.Implementation
                     {
                         FileName = uniqueFileName,
                         CreatedDate = DateTime.Now,
+                        RequestId = request_id
                     };
-                    _context.RequestWiseFiles.Add(requestWiseFile);
-                    requestWiseFile.RequestId = request_id;
-                }
+
+                    list.Add(requestWiseFile);
+                }   
             }
+            if (list.Count() < 0)
+                return;
+
+
+            _context.RequestWiseFiles.AddRange(list);
             await _context.SaveChangesAsync();
+            
         }
 
         public async Task Delete(int DocumentId)
@@ -545,18 +575,21 @@ namespace Services.Implementation
             }
         }
 
-        public async Task DeleteAll(List<int> DocumentId)
+        public async Task DeleteAll(int[] DocumentId)
         {
-            foreach (var item in DocumentId)
+            if (DocumentId != null)
             {
-                RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
-                if (data != null)
+                foreach (var item in DocumentId)
                 {
-                    data.IsDeleted = new BitArray(new[] { true });
-                    _context.RequestWiseFiles.Update(data);
+                    RequestWiseFile? data = await _context.RequestWiseFiles.FirstOrDefaultAsync(a => a.RequestWiseFileId == item);
+                    if (data != null)
+                    {
+                        data.IsDeleted = new BitArray(new[] { true });
+                        _context.RequestWiseFiles.Update(data);
+                    }
                 }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         public async Task SendMail(List<int> DocumentId)
@@ -571,10 +604,11 @@ namespace Services.Implementation
                     {
                         var file = data.FileName;
                         name.Add(file);
-                        var filepath = "C:\\Users\\pca70\\source\\repos\\HellocDoc1\\HellocDoc1\\wwwroot\\uploads";
-                        await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, filepath);
                     }
                 }
+                var docs = _environment.WebRootPath;
+                var documentpath = Path.Combine(docs, "uploads");
+                await EmailSender.SendMailOnGmail("aniyariyavijay441@gmail.com", "Your Documents", "Document", name, documentpath);
             }
         }
 
@@ -929,9 +963,9 @@ namespace Services.Implementation
                     RequestId = request_id,
                     FirstName = data.FirstName,
                     LastName = data.LastName,
-                    Location = data.Street + " " + data.City + " " + data.State + " " + data.ZipCode,
+                    Location = data.Location,
                     DOB = DateTime.Parse((data.IntDate).ToString() + "/" + data.StrMonth + "/" + (data.IntYear).ToString()),
-                    Date = data.Request.CreatedDate,
+                    Date = data.Request.AcceptedDate != null ? data.Request.AcceptedDate.Value : null,
                     PhoneNumber = data.PhoneNumber,
                     Email = data.Email,
                 };
@@ -978,8 +1012,20 @@ namespace Services.Implementation
             EncounterForm? encounter = await _context.EncounterForms.Where(a => a.RequestId == request_id).FirstOrDefaultAsync();
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
             Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).FirstOrDefaultAsync(a => a.RequestId == request_id);
 
-
+            if (requestClient != null)
+            {
+                requestClient.FirstName = model.FirstName;
+                requestClient.LastName = model.LastName;
+                requestClient.Location = model.Location;
+                requestClient.IntDate = model.DOB.Day;
+                requestClient.IntYear = model.DOB.Year;
+                requestClient.StrMonth = model.DOB.ToString("MMM");
+                requestClient.Request.AcceptedDate = model.Date;
+                requestClient.PhoneNumber = model.PhoneNumber;
+                requestClient.Email = model.Email;
+            }
             if (encounter == null)
             {
                 EncounterForm encounterForm = new EncounterForm()
@@ -1142,78 +1188,46 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
+
         public async Task SendLink(SendLinkViewModel model, string email)
         {
-            RequestClient? requestClient = await _context.RequestClients.Include(a => a.Request).Where(a => a.Email == model.Email).FirstOrDefaultAsync();
-            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == email);
-            if (requestClient != null && admin != null)
-            {
-                await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Submit Your request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Submit Request</a>")!;
 
-            }
+            await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Submit Your request", $" <a href=\"https://localhost:7208/Patient/Submit_request_screen/\">Submit Request</a>")!;
+
+
         }
 
-        public async Task SubmitRequest(CreateRequestViewModel model, string role)
+        public async Task SubmitRequest(CreateRequestViewModel model, string role, string Email)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
                     AspNetUser? aspnetuser = await _context.AspNetUsers.Where(x => x.Email == model.Email).FirstOrDefaultAsync();
-                    User user = new User();
-                    if (aspnetuser == null)
-                    {
-                        AspNetUser aspnetuser1 = new AspNetUser()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            UserName = model.FirstName + " " + model.LastName,
-                            Email = model.Email,
-                            PhoneNumber = model.PhoneNumber,
-                            CreatedDate = DateTime.Now
+                    User? user = await _context.Users.Where(a => a.Email == model.Email).FirstOrDefaultAsync();
+                    Region? regiondata = await _context.Regions.FirstOrDefaultAsync(a => a.RegionId == model.State);
+                    List<Request>? requestcount = await _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Today).ToListAsync();
+                    AspNetUser? aspNetUser = await _context.AspNetUsers.Where(a => a.Email == Email).FirstOrDefaultAsync();
+                    Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == Email);
 
-                        };
-                        await _context.AspNetUsers.AddAsync(aspnetuser1);
-
-                        user.AspNetUserId = aspnetuser1.Id;
-                        user.UserId = 9;
-                        user.FirstName = model.FirstName;
-                        user.LastName = model.LastName;
-                        user.Email = model.Email;
-                        user.Mobile = model.PhoneNumber;
-                        user.ZipCode = model.ZipCode;
-                        user.State = model.State;
-                        user.City = model.City;
-                        user.Street = model.Street;
-                        user.IntDate = model.DOB.Day;
-                        user.IntYear = model.DOB.Year;
-                        user.StrMonth = model.DOB.ToString("MMM");
-                        user.CreatedDate = DateTime.Now;
-                        user.CreatedBy = aspnetuser.UserName;
-                        await _context.Users.AddAsync(user);
-                    }
-                    else
-                    {
-                        user = _context.Users.Where(a => a.Email == model.Email).FirstOrDefault()!;
-                    }
-
-                    var regiondata = _context.Regions.Where(x => x.RegionId == user.RegionId).FirstOrDefault();
-                    var requestcount = _context.Requests.Where(a => a.CreatedDate.Date == DateTime.Now.Date && a.CreatedDate.Month == DateTime.Now.Month && a.CreatedDate.Year == DateTime.Now.Year && a.UserId == user.UserId).ToList();
                     Request request = new Request()
                     {
-                        UserId = 6,
-                        RequestTypeId = 1,
+                        RequestTypeId = (int)Common.Enum.RequestType.Patient,
+                        UserId = user != null ? user.UserId : null,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Email,
                         PhoneNumber = model.PhoneNumber,
-                        Status = (int)RequestStatus.Unassigned,
+                        Status = role == "Physician" ? (short)RequestStatus.Accepted : (short)RequestStatus.Unassigned,
+                        PhysicianId = role == "Physician" ? physician?.PhysicianId : null,
                         CreatedDate = DateTime.Now,
                         IsUrgentEmailSent = new BitArray(1),
-                        ConfirmationNumber = regiondata.Abbreviation.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
+                        ConfirmationNumber = regiondata?.Abbreviation?.ToUpper() + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0')
                                              + DateTime.Now.Year.ToString().Substring(2) + model.LastName.Substring(0, 2).ToUpper() + model.FirstName.Substring(0, 2).ToUpper() +
                                              (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
                     };
                     await _context.Requests.AddAsync(request);
+                    await _context.SaveChangesAsync();
 
                     RequestClient requestclient = new RequestClient()
                     {
@@ -1224,33 +1238,56 @@ namespace Services.Implementation
                         PhoneNumber = model.PhoneNumber,
                         IntDate = model.DOB.Day,
                         IntYear = model.DOB.Year,
+                        RequestId = request.RequestId,
                         StrMonth = model.DOB.ToString("MMM"),
-                        State = model.State,
+                        State = regiondata?.Name,
                         Street = model.Street,
                         City = model.City,
                         ZipCode = model.ZipCode,
-                        RegionId = regiondata.RegionId,
+                        RegionId = regiondata?.RegionId,
                     };
-                    await _context.SaveChangesAsync();
 
-                    RequestNote requestNote = new RequestNote()
+                    if (model.Notes != null)
                     {
-                        RequestId = request.RequestId,
-                        CreatedBy = "Admin",
-                        CreatedDate = DateTime.Now,
-                    };
-                    if (role == "Admin")
-                    {
-                        requestNote.AdminNotes = model.Notes;
+                        RequestNote requestNote = new RequestNote()
+                        {
+                            RequestId = request.RequestId,
+                            CreatedDate = DateTime.Now,
+                            CreatedBy = aspNetUser.Id
+                        };
+                        if (role == "Admin")
+                        {
+                            requestNote.AdminNotes = model.Notes;
+                        }
+                        else
+                        {
+                            requestNote.PhysicianNotes = model.Notes;
+                        }
+                        await _context.RequestNotes.AddAsync(requestNote);
                     }
-                    else
-                    {
-                        requestNote.PhysicianNotes = model.Notes;
-                    }
-                    await _context.RequestNotes.AddAsync(requestNote);
-                    request.RequestClients.Add(requestclient);
                     await _context.RequestClients.AddAsync(requestclient);
                     await _context.SaveChangesAsync();
+
+                    if (aspnetuser == null)
+                    {
+                        string requestId = HashingServices.Encrypt(request.RequestId.ToString());
+                        await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Create Your Account", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{requestId}\">Create Account</a>");
+
+                        EmailLog emailLog = new EmailLog()
+                        {
+                            EmailTemplate = "CreatePatientAccount",
+                            SubjectName = "Create Your Account",
+                            EmailId = requestclient.Email,
+                            ConfirmationNumber = request.ConfirmationNumber,
+                            RequestId = request.RequestId,
+                            CreateDate = DateTime.Now,
+                            SentDate = DateTime.Now,
+                            SentTries = 1,
+                            IsEmailSent = new BitArray(new[] { true }),
+                        };
+                        _context.EmailLogs.Add(emailLog);
+                        await _context.SaveChangesAsync();
+                    }
                     transaction.Commit();
                 }
                 catch (Exception ex)
@@ -1514,6 +1551,8 @@ namespace Services.Implementation
 
             if (physician != null && regions != null)
             {
+                role = role.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
                 PhysicianAccountViewModel model = new PhysicianAccountViewModel()
                 {
                     PhysicianId = PhysicianId,
@@ -1955,6 +1994,8 @@ namespace Services.Implementation
 
             if (role != null && regions != null)
             {
+                role = role.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
                 CreatePhysicianViewModel model = new CreatePhysicianViewModel()
                 {
                     Role = role,
@@ -2095,6 +2136,8 @@ namespace Services.Implementation
 
             if (role != null && regions != null)
             {
+                role = role.Where(x => x.IsDeleted == null || x.IsDeleted[0] == false).ToList();
+
                 CreateAdminViewModel model = new CreateAdminViewModel()
                 {
                     Role = role,
@@ -2285,7 +2328,7 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
+        public async Task<bool> CreateShift(CreateNewShift model, string Email, List<int> repeatdays)
         {
             AspNetUser? aspNetUser = await _context.AspNetUsers.FirstOrDefaultAsync(a => a.Email == Email);
 
@@ -2305,8 +2348,7 @@ namespace Services.Implementation
                             {
                                 if ((model.Start >= item.StartTime && model.Start <= item.EndTime) || (model.End >= item.StartTime && model.End <= item.EndTime))
                                 {
-                                    //TempData["error"] = "Shift is already assigned in this time";
-                                    //return RedirectToAction("Scheduling");
+                                    return false;
                                 }
                             }
                         }
@@ -2418,6 +2460,7 @@ namespace Services.Implementation
                     }
                 }
             }
+            return true;
         }
 
         public async Task<SchedullingViewModel> MonthSchedullingData(int region, DateTime date)

@@ -52,52 +52,69 @@
     $('#firstname').on('focus', function () {
         $('#firstname').css('border', '');
         $('.first').html('');
-    });  
+    });
     $('#lastname').on('focus', function () {
         $('#lastname').css('border', '');
         $('.last').html('');
-    });  
+    });
     $('#email').on('focus', function () {
         $('#email').css('border', '');
         $('.email').html('');
-    }); 
+    });
     $('#phone').on('focus', function () {
         $('#phone').css('border', '');
         $('.phone').html('');
     });
 
     $('.sendmail').on('click', function (e) {
-        console.log("send mail");
         var linkdata = {
             Firstname: $('#firstname').val(),
             Lastname: $('#lastname').val(),
             Email: $('#email').val(),
             Phonenumber: $('#phone').val(),
         }
-        console.log("email"+ linkdata)
-        // if (linkdata.Firstname == "") {
-        //     $('#firstname').css('border', '1px solid red');
-        //     $('.first').html('Please enter first name');
-        // }
-        // else if (linkdata.Lastname == "") {
-        //     $('#lastname').css('border', '1px solid red');
-        //     $('.last').html('Please enter last name');
-        // }
-        // else if (linkdata.Phonenumber == "") {
-        //     $('#phonenumber').css('border', '1px solid red');
-        //     $('.phone').html('Please enter phone number');
-        // }
-        if ((linkdata.Email == "") && (linkdata.Firstname == "") && (linkdata.Lastname == "") && (linkdata.Phonenumber == "")) {
+        if (linkdata.Email == "") {
             $('#email').css('border', '1px solid red');
-            $('.email').html('Please enter email');       
+            $('.email').html('Please enter email');
+        }
+        else {
+            var regecs= /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+            if (!regecs.test($('#email').val())) {
+                $('.email').html("*Enter valid Email");
+                $('#email').css('border', '1px solid red');
+
+            } else {
+                $('.email').html("");
+
+            }
+        }
+        if (linkdata.Firstname == "") {
             $('#firstname').css('border', '1px solid red');
             $('.first').html('Please enter firstname');
+        }
+        if (linkdata.Lastname == "") {
             $('#lastname').css('border', '1px solid red');
             $('.last').html('Please enter lastname');
+        }
+        if (linkdata.Phonenumber == "") {
             $('#phone').css('border', '1px solid red');
             $('.phone').html('Please enter phone number');
         }
+
         else {
+            var regex = /^[1-9][0-9]{9}$/
+                
+            if (!regex.test($('#phone').val())) {
+                $('.phone').html("*Enter valid number");
+                $('#phone').css('border', '1px solid red');
+
+            } else {
+                $('.phone').html("");
+
+            }
+        }
+
+        if (($('.email').text() == "") && ($('.first').text() == "") && ($('.last').text() == "") && ($('.phone').text() == "")) {
             $.ajax({
                 url: '/Admin/SendLink',
                 type: "post",
@@ -107,7 +124,7 @@
                     toastr.success('Link Sent Successfully');
                 },
                 error: function (error) {
-                    
+
                     console.error(error);
                 }
             });

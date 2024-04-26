@@ -1,5 +1,5 @@
 ﻿@{
-    var claims = User.Identities.ElementAtOrDefault(1)?.Claims; 
+    var claims = User.Identities.ElementAtOrDefault(1)?.Claims;
     var username = claims?.FirstOrDefault(a => a.Type == "userName")?.Value;
 }
 
@@ -62,7 +62,7 @@
             {
                 <a asp-action="ProviderDashboard" class="text-decoration-none px-2" style="color:black;">Dashboard</a>
             }
-            <a class="text-decoration-none px-lg-2 px-0" style="color:black;">Invoices</a>   
+            <a class="text-decoration-none px-lg-2 px-0" style="color:black;">Invoices</a>
 
             @if (Context.Request.Path.Equals("/Provider/MySchedulle"))
             {
@@ -96,39 +96,32 @@
                 </span>
                 <div class="d-flex flex-column gap-3 h6 mt-2" style="">
 
-                    @if ((Context.Request.Path.Equals("/Admin/AdminDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewUploads")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequest")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/EncounterForm")) || (Context.Request.Path.StartsWithSegments("/Provider/CloseCase")))
+                    @if ((Context.Request.Path.Equals("/Provider/ProviderDashboard")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewCase")) || (Context.Request.Path.StartsWithSegments("/Provider/ConcludeCare")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewNotes")) || (Context.Request.Path.StartsWithSegments("/Provider/CreateRequestByProvider")) || (Context.Request.Path.StartsWithSegments("/Provider/SendOrders")) || (Context.Request.Path.StartsWithSegments("/Provider/Encounter")) || (Context.Request.Path.StartsWithSegments("/Provider/ViewUploads")))
                     {
-                        <a asp-action="AdminDashboard" class="text-decoration-none text-info ps-3 py-2" style="    background: #cef6ff;">Dashboard</a>
+                        <a asp-action="ProviderDashboard" class="text-decoration-none text-info ps-3 py-2" style="    background: #cef6ff;">Dashboard</a>
                     }
                     else
                     {
-                        <a asp-action="AdminDashboard" class="text-decoration-none ps-3" style="color:black;">Dashboard</a>
+                        <a asp-action="ProviderDashboard" class="text-decoration-none ps-3" style="color:black;">Dashboard</a>
                     }
-                    @if (Context.Request.Path.Equals("/Admin/ProviderLocation"))
+                    <a class="text-decoration-none px-lg-2 ps-3" style="color:black;">Invoices</a>
+
+                    @if (Context.Request.Path.Equals("/Provider/MySchedulle"))
                     {
-                        <a asp-action="ProviderLocation" class="text-decoration-none text-info ps-3 py-2" style="background: #cef6ff;">Providers Location</a>
+                        <a asp-action="MySchedulle" class="text-decoration-none text-info px-lg-2 ps-3 py-2" style="    background: #cef6ff;">My Schedule</a>
                     }
                     else
                     {
-                        <a asp-action="ProviderLocation" class="text-decoration-none px-lg-2 ps-3" style="color:black;">Providers Location</a>
+                        <a asp-action="MySchedulle" class="text-decoration-none ps-3" style="color:black;">My Schedule</a>
 
                     }
-                    @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
+                    @if ((Context.Request.Path.Equals("/Provider/MyProfile")))
                     {
-                        <a asp-action="AdminProfile" class="text-decoration-none text-info px-lg-2 ps-3 py-2" style="    background: #cef6ff;">My Profile</a>
+                        <a asp-action="MyProfile" class="text-decoration-none text-info ps-3 py-2" style=" background: #cef6ff;">My Profile</a>
                     }
                     else
                     {
-                        <a asp-action="AdminProfile" class="text-decoration-none ps-3" style="color:black;">My Profile</a>
-
-                    }
-                    @if ((Context.Request.Path.Equals("/Admin/Vendors")) || (Context.Request.Path.Equals("/Admin/AddBusiness")))
-                    {
-                        <a asp-action="Vendors" class="text-decoration-none text-info ps-3 py-2" style=" background: #cef6ff;">Partners</a>
-                    }
-                    else
-                    {
-                        <a asp-action="Vendors" class="text-decoration-none ps-3" style="color:black;">Partners</a>
+                        <a asp-action="MyProfile" class="text-decoration-none ps-3" style="color:black;">My Profile</a>
                     }
 
                 </div>

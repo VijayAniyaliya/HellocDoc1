@@ -8,7 +8,7 @@ namespace Services.Contracts
     {
         Task ChangePassword(string email, ChangePassViewModel model);
 
-        Task<PatientDashboardViewModel> DashboardData(int requestedPage);
+        Task<PatientDashboardViewModel> DashboardData(int requestedPage, string email);
 
         Task<PatientServiceModel> DocumentService(int Requestid);
 
