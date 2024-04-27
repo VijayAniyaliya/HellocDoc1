@@ -7,9 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Compile Remove="Services\**" />
     <Compile Remove="Views\Shared\NewFolder\**" />
+    <Content Remove="Models\**" />
+    <Content Remove="Services\**" />
     <Content Remove="Views\Shared\NewFolder\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Services\**" />
     <EmbeddedResource Remove="Views\Shared\NewFolder\**" />
+    <None Remove="Models\**" />
+    <None Remove="Services\**" />
     <None Remove="Views\Shared\NewFolder\**" />
   </ItemGroup>
 
@@ -30,8 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Services\" />
     <Folder Include="wwwroot\js\NewFolder\" />
   </ItemGroup>
 

@@ -19,19 +19,19 @@
                 <div class="mb-3">
 
                     <div class="mb-2 d-flex align-items-center gap-2">  
-                        <input class="radios" type="radio" name="radios" id="flexRadioDefault1">
+                        <input class="radios" type="radio" name="radios" value="1" id="flexRadioDefault1">
                         <label class="mb-0" for="flexRadioDefault1">
                             SMS
                         </label>
                     </div>
                     <div class="mb-2 d-flex align-items-center gap-2">
-                        <input class="radios" type="radio" name="radios" id="flexRadioDefault2">
+                        <input class="radios" type="radio" name="radios" value="2" id="flexRadioDefault2">
                         <label class="mb-0" for="flexRadioDefault2">
                             Email
                         </label>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <input class="radios" type="radio" name="radios" id="flexRadioDefault2">
+                        <input class="radios" type="radio" name="radios" value="3" id="flexRadioDefault2">
                         <label class="mb-0" for="flexRadioDefault2">
                             Both
                         </label>
@@ -71,6 +71,7 @@
 
         $('.sendmsg').on('click', function (e) {
             var message = $('.message').val();
+            var type = $('input[name="radios"]:checked').val();
             if (message == "") {
                 $('.message').css('border', '1px solid red');
                 $('#error').html('Please enter message');
@@ -82,7 +83,7 @@
             else {
                 $.ajax({
                     url: '/Admin/SendMessage',
-                    data: { "PhysicianId": @Model.physicianId , "message": message},
+                    data: { "PhysicianId": @Model.physicianId , "message": message, "type": type},
                     success: function (data) {
                         $("#cancel").click();
                         toastr.success('Message Sent Successfully');

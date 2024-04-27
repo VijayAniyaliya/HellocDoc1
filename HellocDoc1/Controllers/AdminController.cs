@@ -29,7 +29,7 @@ namespace HellocDoc1.Controllers
             _patientServices = patientServices;
         }
 
-        [CustomAuthorize("Admin", "AdminDashboard")]
+        //[CustomAuthorize("Admin", "AdminDashboard")]
         public async Task<IActionResult> AdminDashboard()
         {
             AdminDashboardViewModel model = new AdminDashboardViewModel();
@@ -37,7 +37,7 @@ namespace HellocDoc1.Controllers
             return View(model);
         }
 
-        [CustomAuthorize("Admin", "AdminDashboard")]
+        //[CustomAuthorize("Admin", "AdminDashboard")]
 
         public async Task<IActionResult> NewState(AdminDashboardViewModel obj)
         {
@@ -545,9 +545,9 @@ namespace HellocDoc1.Controllers
 
         [CustomAuthorize("Admin", "Providers")]
 
-        public async Task<IActionResult> SendMessage(int PhysicianId, string message)
+        public async Task<IActionResult> SendMessage(int PhysicianId, string message, int type)
         {
-            await _adminServices.SendMessage(PhysicianId, message);
+            await _adminServices.SendMessage(PhysicianId, message, type);
             return Json("");
         }
 
@@ -718,14 +718,14 @@ namespace HellocDoc1.Controllers
             return Ok();
         }
 
-        [CustomAuthorize("Admin", "Access")]
+        //[CustomAuthorize("Admin", "Access")]
 
         public IActionResult Access()
         {
             return View();
         }
 
-        [CustomAuthorize("Admin", "Access")]
+        //[CustomAuthorize("Admin", "Access")]
 
         [HttpPost]
         public async Task<IActionResult> AccessData(int requestedPage)
@@ -734,7 +734,7 @@ namespace HellocDoc1.Controllers
             return PartialView("_AccountAccessData", data);
         }
 
-        [CustomAuthorize("Admin", "CreateAccess")]
+        //[CustomAuthorize("Admin", "CreateAccess")]
 
         public IActionResult CreateAccess(int role_id)
         {
@@ -743,7 +743,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "CreateAccess")]
+        //[CustomAuthorize("Admin", "CreateAccess")]
 
         public async Task<IActionResult> DeleteRole(int RoleId)
         {
@@ -752,7 +752,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "CreateAccess")]
+        //[CustomAuthorize("Admin", "CreateAccess")]
 
         public async Task<IActionResult> FilterByAccountType(int accounttype, int role_id)
         {
@@ -761,7 +761,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "CreateAccess")]
+        //[CustomAuthorize("Admin", "CreateAccess")]
 
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateAccessViewModel model)
@@ -791,7 +791,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "CreateAdmin")]
+        //[CustomAuthorize("Admin", "CreateAdmin")]
 
         public async Task<IActionResult> CreateAdmin()
         {
@@ -800,7 +800,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "CreateAdmin")]
+        //[CustomAuthorize("Admin", "CreateAdmin")]
 
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount(CreateAdminViewModel model, List<int> regionselected)
@@ -810,7 +810,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "UserAccess")]
+        //[CustomAuthorize("Admin", "UserAccess")]
 
         public IActionResult UserAccess()
         {
@@ -818,7 +818,7 @@ namespace HellocDoc1.Controllers
         }
 
 
-        [CustomAuthorize("Admin", "UserAccess")]
+        //[CustomAuthorize("Admin", "UserAccess")]
 
         [HttpGet]
         public IActionResult ShowUserAccess(int selectedValue)

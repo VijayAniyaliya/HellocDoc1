@@ -51,7 +51,7 @@ namespace Services.Contracts
 		Task SendLink(SendLinkViewModel model, string email);
         Task SubmitRequest(CreateRequestViewModel model, string role, string Email);
         Task<ProviderViewModel> PhysicianData(int region, int requestedPage);
-		Task SendMessage(int PhysicianId, string message);
+		Task SendMessage(int PhysicianId, string message, int type);
 		Task StopNotification(int PhysicianId);
 		Task<byte[]> DownloadExcle(AdminDashboardViewModel model);
 		Task<ProviderViewModel> provider();

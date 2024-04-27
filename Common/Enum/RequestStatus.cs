@@ -49,8 +49,9 @@ namespace Common.Enum
 
     public enum Regions
     {
-        rajkot = 1,
-        snagar = 2,
-        surat = 3,
+        Rajsthan = 2,
+        Maharashtra = 3,
+        Gujrat = 4,
+        Goa = 5,
     }
 }

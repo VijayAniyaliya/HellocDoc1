@@ -539,7 +539,7 @@
             filterdata.patientname = ""
         }
         var link = document.createElement('a');
-        link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&status=" + filterdata.status
+        link.href = '/Admin/ExportData?requesttype=' + filterdata.requesttype + "&patientname=" + filterdata.patientname + "&region=" + filterdata.region + "&status=" + filterdata.status
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();

@@ -122,7 +122,7 @@ namespace Services.Implementation
                 if (obj.region != 0)
                 {
                     model.requestClients = model.requestClients.Where(a => a.RegionId == obj.region).ToList();
-                }   
+                }
                 int count = model.requestClients.Count();
                 int TotalPage = (int)Math.Ceiling(count / (double)5);
                 model.requestClients = model.requestClients.Skip((obj.requestedPage - 1) * 5).Take(5).ToList();
@@ -245,7 +245,7 @@ namespace Services.Implementation
                 clients = clients.Where(x => x.Request.IsDeleted == null || x.Request.IsDeleted[0] == false).ToList();
 
                 if (!string.IsNullOrWhiteSpace(obj.patientname))
-                {   
+                {
                     model.requestClients = model.requestClients.Where(a => a.FirstName.ToLower().Contains(obj.patientname.ToLower()) || a.LastName.ToLower().Contains(obj.patientname.ToLower())).ToList();
                 }
                 if (obj.requesttype == 1 || obj.requesttype == 2 || obj.requesttype == 3 || obj.requesttype == 4)
@@ -448,8 +448,8 @@ namespace Services.Implementation
 
                 _context.Requests.Update(data);
                 await _context.RequestStatusLogs.AddAsync(requestStatusLog);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
         }
 
         public async Task<BlockCaseViewModel> BlockDetails(int request_id)
@@ -553,7 +553,7 @@ namespace Services.Implementation
                     };
 
                     list.Add(requestWiseFile);
-                }   
+                }
             }
             if (list.Count() < 0)
                 return;
@@ -561,7 +561,7 @@ namespace Services.Implementation
 
             _context.RequestWiseFiles.AddRange(list);
             await _context.SaveChangesAsync();
-            
+
         }
 
         public async Task Delete(int DocumentId)
@@ -845,7 +845,7 @@ namespace Services.Implementation
 
                 if (request_id != null)
                 {
-                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Agreement", $"<a href=\"https://localhost:7208/Patient/CreatePatientAccount/{request_id}\">Agreement</a>");
+                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Agreement", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
                 }
 
                 EmailLog emailLog = new EmailLog()
@@ -1349,7 +1349,7 @@ namespace Services.Implementation
         }
 
 
-        public async Task SendMessage(int PhysicianId, string message)
+        public async Task SendMessage(int PhysicianId, string message, int type)
         {
             Physician? data = await _context.Physicians.Where(a => a.PhysicianId == PhysicianId).FirstOrDefaultAsync();
 
@@ -1357,18 +1357,46 @@ namespace Services.Implementation
             {
                 var email = data.Email;
 
-                var accountSid = "ACb1649d2de77478095803e8dccd2c11c1";
-                var authToken = "229465e45455a95bb761246bdc369b9d";
-                TwilioClient.Init(accountSid, authToken);
+                if (type == 1)
+                {
+                    var accountSid = "ACb1649d2de77478095803e8dccd2c11c1";
+                    var authToken = "229465e45455a95bb761246bdc369b9d";
+                    TwilioClient.Init(accountSid, authToken);
 
-                var messageOptions = new CreateMessageOptions(
-                new PhoneNumber("+916353664814"));
-                messageOptions.From = new PhoneNumber("+13203907230");
-                messageOptions.Body = message;
+                    var messageOptions = new CreateMessageOptions(
+                    new PhoneNumber("+916353664814"));
+                    messageOptions.From = new PhoneNumber("+13203907230");
+                    messageOptions.Body = message;
 
-                MessageResource messageResource = MessageResource.Create(messageOptions);
+                    MessageResource messageResource = MessageResource.Create(messageOptions);
+
+                }
+                else if (type == 2)
+                {
+                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
+                }
+                else if (type == 3)
+                {
+                    var accountSid = "ACbeff51c0d1b9397c2f270a9f7d5f62bd";
+                    var authToken = "f5355bd47dca12fb114e38cdafb77b2f";
+                    TwilioClient.Init(accountSid, authToken);
+
+                    var messageOptions = new CreateMessageOptions(
+                    new PhoneNumber("+916353664814"));
+                    messageOptions.From = new PhoneNumber("+13203907230");
+                    messageOptions.Body = message;
+                    try
+                    {
+
+                    MessageResource messageResource = MessageResource.Create(messageOptions);
+                    }catch(Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                    }
+                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
+
+                }
             }
-            await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
         }
 
         public async Task StopNotification(int PhysicianId)
