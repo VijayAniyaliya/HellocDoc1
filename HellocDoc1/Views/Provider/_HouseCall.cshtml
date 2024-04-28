@@ -1,61 +1,81 @@
 ﻿@model Services.Models.HouseCallViewModel
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="staticBackdropLabel">Select Type Of Care</h5>
-                <button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-flex justify-content-center gap-2">
-                    <a id="button1" onclick="passId(event)" class="btn border call border-info text-info  me">HouseCall</a>
-                    <a id="button2" onclick="passId(event)" class="btn border call border-info text-info  someone">Consult</a>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn bg-info text-white" onclick="redirect()">Save</button>
-                <button type="button" id="cancel" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header bg-info text-white">
+				<h5 class="modal-title" id="staticBackdropLabel">Select Type Of Care</h5>
+				<button type="button" class="btn-close bg-black" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="d-flex justify-content-center gap-2">
+					<a id="button1" onclick="passId(event)" class="btn border call border-info text-info  me">HouseCall</a>
+					<a id="button2" onclick="passId(event)" class="btn border call border-info text-info  someone">Consult</a>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn bg-info text-white" onclick="redirect()">Save</button>
+				<button type="button" id="cancel" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
-    let buttonId = null;
-    function passId(event) {
-        buttonId = event.target.id;
-        var me = document.getElementById('button1');
-        var someone = document.getElementById('button2');
-        if (buttonId === 'button1') {
-            me.classList.add('btn-info', 'text-white');
-            me.classList.remove('text-info');
-            someone.classList.remove('btn-info');
-            someone.classList.add('text-info');
-        }
-        else if (buttonId === 'button2') {
-            someone.classList.add('btn-info', 'text-white');
-            someone.classList.remove('text-info');
-            me.classList.remove('btn-info');
-            me.classList.add('text-info');
-        }
-    }
+	let buttonId = null;
+	function passId(event) {
+		buttonId = event.target.id;
+		var me = document.getElementById('button1');
+		var someone = document.getElementById('button2');
+		if (buttonId === 'button1') {
+			me.classList.add('btn-info', 'text-white');
+			me.classList.remove('text-info');
+			someone.classList.remove('btn-info');
+			someone.classList.add('text-info');
+		}
+		else if (buttonId === 'button2') {
+			someone.classList.add('btn-info', 'text-white');
+			someone.classList.remove('text-info');
+			me.classList.remove('btn-info');
+			me.classList.add('text-info');
+		}
+	}
 
-    function redirect() {
-        if (buttonId === 'button1') {
-            location.assign('HouseCall?request_id=' + @Model.RequestId);
-            $("#cancel").click();
-            $('#pills-active-tab').click();
-        }   
-        else if (buttonId === 'button2') {
-            location.assign('Consult?request_id=' + @Model.RequestId);
-            $("#cancel").click();
-            $('#pills-active-tab').html($(response).find('#pills-active-tab').html());
-            toastr.success('Request successfully Concluded');
-        } else {
-            // Default redirection if buttonId is not set or unexpected
-        }
-    }
+	function redirect() {
+		if (buttonId === 'button1') {
+			$.ajax({
+				url: 'HouseCall?request_id=' + @Model.RequestId,
+				type: 'GET',
+				success: function (response) {
+					$("#cancel").click();
+					$('#pills-active-tab').html($(response).find('#pills-active-tab').html());
+					$('#pills-conclude-tab').html($(response).find('#pills-conclude-tab').html());
+					toastr.success('Request successfully Concluded');
+					AjaxAll();
+				},
+				error: function (xhr, status, error) {
+					// Handle error if needed
+				}
+			});
+		}
+		else if (buttonId === 'button2') {
+			$.ajax({
+				url: 'Consult?request_id=' + @Model.RequestId,
+				type: 'GET',
+				success: function (response) {
+					$("#cancel").click();
+					$('#pills-active-tab').html($(response).find('#pills-active-tab').html());
+					$('#pills-conclude-tab').html($(response).find('#pills-conclude-tab').html());
+					toastr.success('Request successfully Concluded');
+					AjaxAll();
+				},
+				error: function (xhr, status, error) {
+				}
+			});
+		} else {
+			// Default redirection if buttonId is not set or unexpected
+		}
+	}
 </script>

@@ -70,7 +70,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> AcceptCase(int request_id)
         {
             await _providerServices.AcceptCase(request_id);
-            return NoContent();
+            return RedirectToAction("ProviderDashboard");
         }
 
         public IActionResult Logout()
@@ -175,7 +175,7 @@ namespace HellocDoc1.Controllers
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             await _providerServices.TransferCaseToAdmin(request_id, reason, email!);
-            return RedirectToAction("PrviderDashboard");
+            return RedirectToAction("ProviderDashboard");
         }
 
         [CustomAuthorize("Physician", "SendOrders")]
@@ -241,7 +241,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> Consult(int request_id)
         {
             await _providerServices.Consult(request_id);
-            return NoContent();
+            return RedirectToAction("ProviderDashboard");
         }
 
         [CustomAuthorize("Physician", "ProviderDashboard")]
@@ -249,7 +249,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> HouseCall(int request_id)
         {
             await _providerServices.HouseCall(request_id);
-            return NoContent();
+            return RedirectToAction("ProviderDashboard");
         }
 
         [CustomAuthorize("Physician", "ProviderDashboard")]
@@ -257,7 +257,7 @@ namespace HellocDoc1.Controllers
         public async Task<IActionResult> Housecalling(int request_id)
         {
             await _providerServices.Housecalling(request_id);
-            return NoContent();
+            return RedirectToAction("ProviderDashboard");
         }
 
         [CustomAuthorize("Physician", "Encounter")]

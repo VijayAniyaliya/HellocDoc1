@@ -39,6 +39,8 @@
             success: function (response) {
                 $("#cancel").click();
                 $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                $('#pills-close-tab').html($(response).find('#pills-close-tab').html());
+
                 toastr.success('Case Successfully Cleared');
                 AjaxAll();
             },

@@ -60,9 +60,9 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="sendagreement(@item.RequestId)"><i class="bi bi-slash-circle mr-1"></i> Send Agreement</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-list-check mr-1"></i> View Uploads</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewUploads" asp-route-request_id="@item.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Uploads</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Notes</a></li>
                             <li style="cursor:pointer;"><a class="dropdown-item ps-3" onclick="transfer(@item.RequestId)"><i class="bi bi-x-circle mr-1"></i> Transfer</a></li>
                         </ul>
                     </div>

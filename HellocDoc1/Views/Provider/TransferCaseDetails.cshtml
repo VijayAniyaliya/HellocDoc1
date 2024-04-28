@@ -57,9 +57,11 @@
                         $("#cancel").click();
                         $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
                         toastr.success('Case Successfully Transfered To Admin');
+                        AjaxAll();
+
                     },
                     error: function (xhr, status, error) {
-                        console.error(error);
+                        console.error("yes");
                     }
                 });
             }

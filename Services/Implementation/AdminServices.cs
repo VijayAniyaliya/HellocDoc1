@@ -848,9 +848,9 @@ namespace Services.Implementation
                     await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Agreement", $"<a href=\"https://localhost:7208/Patient/ReviewAgreement/{request_id}\">Agreement</a>");
                 }
 
-                EmailLog emailLog = new EmailLog()
+                EmailLog emailLog = new EmailLog()  
                 {
-                    EmailTemplate = "https://localhost:7208/Patient/CreatePatientAccount/",
+                    EmailTemplate = "https://localhost:7208/Patient/ReviewAgreement/",
                     SubjectName = "Agreeemtnt",
                     EmailId = requestClient.Email!,
                     ConfirmationNumber = requestClient.Request.ConfirmationNumber,
@@ -1357,44 +1357,48 @@ namespace Services.Implementation
             {
                 var email = data.Email;
 
-                if (type == 1)
+                if (type == 1 || type == 3)
                 {
-                    var accountSid = "ACb1649d2de77478095803e8dccd2c11c1";
-                    var authToken = "229465e45455a95bb761246bdc369b9d";
+                    var accountSid = "AC92b8ebd971eb3104bb932aa7c86a4cdf";
+                    var authToken = "6e4ad32f2aedaa1faadb770087ac18bf";
                     TwilioClient.Init(accountSid, authToken);
 
                     var messageOptions = new CreateMessageOptions(
                     new PhoneNumber("+916353664814"));
-                    messageOptions.From = new PhoneNumber("+13203907230");
+                    messageOptions.From = new PhoneNumber("+12183953290");
                     messageOptions.Body = message;
 
                     MessageResource messageResource = MessageResource.Create(messageOptions);
 
+                    Smslog smslog = new Smslog()
+                    {
+                        Smstemplate = message,
+                        MobileNumber = data.Mobile,
+                        CreateDate = DateTime.Now,
+                        SentDate = DateTime.Now,
+                        SentTries = 1,
+                        IsSmssent = new BitArray(new[] { true }),
+                    };
+                    _context.Smslogs.Add(smslog);
+                    await _context.SaveChangesAsync();
+
                 }
-                else if (type == 2)
+                if (type == 2 || type == 3)
                 {
                     await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
-                }
-                else if (type == 3)
-                {
-                    var accountSid = "ACbeff51c0d1b9397c2f270a9f7d5f62bd";
-                    var authToken = "f5355bd47dca12fb114e38cdafb77b2f";
-                    TwilioClient.Init(accountSid, authToken);
 
-                    var messageOptions = new CreateMessageOptions(
-                    new PhoneNumber("+916353664814"));
-                    messageOptions.From = new PhoneNumber("+13203907230");
-                    messageOptions.Body = message;
-                    try
+                    EmailLog emailLog = new EmailLog()
                     {
-
-                    MessageResource messageResource = MessageResource.Create(messageOptions);
-                    }catch(Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                    }
-                    await EmailSender.SendGmail("aniyariyavijay441@gmail.com", "Message send by admin", $"{message}");
-
+                        EmailTemplate = "message by admin",
+                        SubjectName = message,
+                        EmailId = data.Email,
+                        CreateDate = DateTime.Now,
+                        SentDate = DateTime.Now,
+                        SentTries = 1,
+                        IsEmailSent = new BitArray(new[] { true }),
+                    };
+                    _context.EmailLogs.Add(emailLog);
+                    await _context.SaveChangesAsync();
                 }
             }
         }

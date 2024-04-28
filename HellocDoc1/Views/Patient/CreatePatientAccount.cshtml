@@ -47,7 +47,7 @@
                     <input asp-for="RequestId" value="@Model.RequestId" hidden />
 
                     <div class="form-floating mt-4">
-                        <input type="email" asp-for="Email" class="form-control" id="floatinginput" placeholder="name@example.com">
+                        <input type="email" asp-for="Email" class="form-control" id="floatinginput" placeholder="name@example.com" readonly>
                         <label for="floatinginput">Email</label>
                         <i class="bi bi-person-circle login-icon" style="position:relative; bottom:40px; left:93%;"></i>
                         <span asp-validation-for="Email" class="text-danger" style="position: absolute; left: 0px;"></span>

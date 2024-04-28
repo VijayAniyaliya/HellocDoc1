@@ -68,7 +68,7 @@
             type: "POST",
             dataType: "html",
             success: function (data) {
-                console.log("accept agreement")
+                window.location.href = "@Url.Action("Patient_Dashboard", "Patient")";
 
             },
             error: function () {
@@ -85,7 +85,6 @@
 
         $('.cancel').on('click', function (e) {
             var reason = $('.reason').val();
-            console.log(reason);
             if (reason == "") {
                 $('.reason').css('border', '1px solid red');
                 $('#error').html('Please enter reason');
@@ -95,7 +94,7 @@
                     url: '/Patient/CancelAgreement',
                     data: { "request_id": @Model.RequestId, "reason": reason },
                     success: function (response) {
-                        window.location.reload();
+                        window.location.href = "@Url.Action("Patient_Dashboard", "Patient")";
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

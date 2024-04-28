@@ -8,5 +8,6 @@ namespace Services.Contracts
     {
         Task<LoginResponseViewModel> CreateNewAccount(CreateAccountViewModel model);
         Task<LoginResponseViewModel> Login(LoginViewModel model);
+        Task<LoginResponseViewModel> patientaccount(int request_id);
     }
 }

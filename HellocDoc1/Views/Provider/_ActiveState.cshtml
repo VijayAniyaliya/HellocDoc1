@@ -269,6 +269,8 @@ else
                 $('#pills-active-tab').html($(response).find('#pills-active-tab').html());
                 $('#pills-conclude-tab').html($(response).find('#pills-conclude-tab').html());
                 toastr.success('Request successfully Concluded');
+                AjaxAll();
+
             },
             error: function () {
                 alert("No Projects Found");

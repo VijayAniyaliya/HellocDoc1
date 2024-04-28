@@ -5,11 +5,15 @@ namespace HellocDoc1.Services.Models
     public class ConciergeRequestModel
     {
         [Required(ErrorMessage = "First name is required")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "First Name leangth must be more then 2 and less then 20 character")]
+
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
 
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Last name is required")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Last Name leangth must be more then 2 and less then 20 character")]
+
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Last Name")]
 
         public string LastName { get; set; }
@@ -45,14 +49,17 @@ namespace HellocDoc1.Services.Models
         [RegularExpression(@"^[0-9]{6}|[0-9]{5}(?:[-\s][0-9]{4})?$", ErrorMessage = "ZipCode Format is Invalid")]
         public string ZipCode { get; set; }
 
-        [RegularExpression(@"^(?=.*[a-zA-Z])[a-zA-Z\s]+$", ErrorMessage = "Enter Valid Symptoms")]
         public string? Symptoms { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "First Name leangth must be more then 2 and less then 20 character")]
+
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid first Name")]
         public string PatientFirstName { get; set; }
 
         [Required(ErrorMessage = "Last name is required")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Last Name leangth must be more then 2 and less then 20 character")]
+
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Last Name")]
         public string PatientLastName { get; set; }
 

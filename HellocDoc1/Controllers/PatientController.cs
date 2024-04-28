@@ -62,8 +62,7 @@ namespace HellocDoc1.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("Email");
-
+            Response.Cookies.Delete("jwt");
             return RedirectToAction("Login", "Patient");
         }
 
@@ -104,14 +103,11 @@ namespace HellocDoc1.Controllers
 
 
         [HttpGet("[controller]/[action]/{request_id}")]
-        public IActionResult CreatePatientAccount(string request_id)
+        public async Task<IActionResult> CreatePatientAccount(string request_id)
         {
             int requestId = int.Parse(HashingServices.Decrypt(request_id));
-            CreateAccountViewModel model = new CreateAccountViewModel()
-            {
-                RequestId = requestId,
-            };
-            return View(model);
+            var data = await loginHandler.patientaccount(requestId);
+            return View(data);
         }
 
         public async Task<IActionResult> CreatePatientAccount(CreateAccountViewModel model)

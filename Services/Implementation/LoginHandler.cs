@@ -84,13 +84,29 @@ namespace HelloDoc1.Services
                 aspNetUser.Roles.Add(aspNetRole);
 
                 _context.Users.Add(user1);
-                await _context.SaveChangesAsync();  
+                await _context.SaveChangesAsync();
 
 
 
                 user.Request.UserId = user1.UserId;
                 return new LoginResponseViewModel() { Status = ResponseStatus.Success, Message = "" };
             }
+        }
+
+        public async Task<LoginResponseViewModel> patientaccount(int request_id)
+        {
+            RequestClient? user = await _context.RequestClients.Where(u => u.RequestId == request_id).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                CreateAccountViewModel model = new CreateAccountViewModel()
+                {
+                    RequestId = request_id,
+                    Email = user.Email,
+                };
+            }
+
+            return new LoginResponseViewModel();
         }
     }
 }

@@ -132,7 +132,7 @@
                 url: "/Provider/ConcludeCase/",
                 type: "POST",
                 data: filterdata,
-                dataType: "html",
+                dataType: "html",   
                 success: function () {
                     window.location.href = "@Url.Action("ProviderDashboard", "Provider")";
                     toastr.success('concluded succefully');

@@ -205,6 +205,7 @@ namespace Services.Implementation
             if (data != null)
             {
                 data.Status = (int)RequestStatus.Accepted;
+                data.AcceptedDate = DateTime.Now;
                 RequestStatusLog requestStatusLog = new RequestStatusLog()
                 {
                     RequestId = request_id,

@@ -8,8 +8,12 @@ namespace HellocDoc1.Services.Models
         public string? Symptoms { get; set; }   
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "First name is required")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "First Name leangth must be more then 2 and less then 20 character")]
+
         public string FirstName { get; set; }
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Last Name")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Last Name leangth must be more then 2 and less then 20 character")]
+
         [Required(ErrorMessage = "Last name is required")]
         public string LastName { get; set; }
 

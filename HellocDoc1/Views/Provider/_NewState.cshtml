@@ -68,8 +68,8 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li style="cursor:pointer;"><a onclick="accept(@item.Request.RequestId)" class="dropdown-item ps-3"><i class="bi bi-list-check mr-2"></i>Accept</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewCase"  asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Case</a></li>
-                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-list-check mr-1"></i> View Notes</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewCase" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Case</a></li>
+                            <li><a class="dropdown-item ps-3" asp-action="ViewNotes" asp-route-request_id="@item.Request.RequestId"><i class="bi bi-file-earmark-arrow-up"></i> View Notes</a></li>
                         </ul>
                     </div>
                 </td>
@@ -189,20 +189,32 @@ else
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     function accept(request_id) {
-        $.ajax({
-            url: "/Provider/AcceptCase/",
-            type: "POST",
-            data: { "request_id" : request_id},
-            dataType: "html",
-            success: function (response) {
-                $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
-                $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
-                toastr.success('Case Successfully Accepted');
-            },
-            error: function () {
-                console.log("No Projects Found");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to accept the case!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Accept it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/Provider/AcceptCase/",
+                    type: "POST",
+                    data: { "request_id": request_id },
+                    dataType: "html",
+                    success: function (response) {
+                        $('#pills-new-tab').html($(response).find('#pills-new-tab').html());
+                        $('#pills-pending-tab').html($(response).find('#pills-pending-tab').html());
+                        toastr.success('Case Successfully Accepted');
+                        AjaxAll();
+                    },
+                    error: function () {
+                        console.log('yes');
+                    }
+                });
             }
         });
-    };
-
+    }
 </script>
